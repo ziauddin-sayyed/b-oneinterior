@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>B-oneinterior | Coming Soon</title>
+
+    <!-- Meta Description and Keywords -->
+    <meta name="description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation.">
+    <meta name="keywords" content="interior design, home decor, renovation, B-oneinterior, coming soon">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="B-oneinterior | Coming Soon" />
+    <meta property="og:description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation." />
+    <meta property="og:image" content="https://b-oneinterior.com/coming_soon_thumb.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://b-oneinterior.com/" /> <!-- Update with your actual URL -->
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="B-oneinterior | Coming Soon">
+    <meta name="twitter:description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation.">
+    <meta name="twitter:image" content="./coming_soon_thumb.png">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        font-family: 'Limelight', cursive;
+      }
+
+      /* Shiny Golden Gradient */
+      .golden-gradient {
+        background: linear-gradient(90deg, #b8860b, #ffd700, #ffec8b, #ffd700, #b8860b);
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 6s linear infinite;
+      }
+
+      @keyframes shine {
+        0% { background-position: 0% center; }
+        100% { background-position: 100% center; }
+      }
+    </style>
+  </head>
+
+  <body class="bg-black text-white flex items-center justify-center min-h-screen relative overflow-hidden">
+    <!-- Background Image -->
+    <div 
+      class="absolute inset-0 bg-cover bg-center blur-md opacity-40" 
+      style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80');">
+    </div>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black opacity-60"></div>
+
+    <!-- Content -->
+    <div class="relative text-center z-10 px-4">
+      <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl golden-gradient whitespace-nowrap tracking-wide mb-4">
+        B-oneinterior
+      </h1>
+      <p class="text-2xl sm:text-3xl md:text-4xl text-gray-200">Coming Soon</p>
+    </div>
+  </body>
+</html>

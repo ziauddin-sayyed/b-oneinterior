@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saleor Storefront - Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+<!-- Full Width Hero Slider -->
+<section class="w-full">
+    <div class="owl-carousel hero-slider">
+        <div><img src="slider2.jpg" class="w-full h-96 object-cover" /></div>
+        <div><img src="slider1.jpg" class="w-full h-96 object-cover" /></div>
+        <div><img src="slider3.jpg" class="w-full h-96 object-cover" /></div>
+    </div>
+</section>
+
+<!-- Services Block -->
+<section class="py-12 container mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-8">Our Services</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 bg-white rounded-xl shadow">Service 1</div>
+        <div class="p-6 bg-white rounded-xl shadow">Service 2</div>
+        <div class="p-6 bg-white rounded-xl shadow">Service 3</div>
+        <div class="p-6 bg-white rounded-xl shadow">Service 4</div>
+    </div>
+</section>
+
+<!-- Before & After Gallery -->
+<section class="py-12 bg-white">
+    <h2 class="text-3xl font-bold text-center mb-8">Before & After</h2>
+    <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-gray-200 p-4 rounded-xl">
+            <p class="font-semibold mb-2">Project 1</p>
+            <div class="grid grid-cols-2 gap-2">
+                <img src="/images/before1.jpg" class="rounded" />
+                <img src="/images/after1.jpg" class="rounded" />
+            </div>
+        </div>
+        <div class="bg-gray-200 p-4 rounded-xl">
+            <p class="font-semibold mb-2">Project 2</p>
+            <div class="grid grid-cols-2 gap-2">
+                <img src="/images/before2.jpg" class="rounded" />
+                <img src="/images/after2.jpg" class="rounded" />
+            </div>
+        </div>
+        <div class="bg-gray-200 p-4 rounded-xl">
+            <p class="font-semibold mb-2">Project 3</p>
+            <div class="grid grid-cols-2 gap-2">
+                <img src="/images/before3.jpg" class="rounded" />
+                <img src="/images/after3.jpg" class="rounded" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Client Logos Slider -->
+<section class="py-12">
+    <h2 class="text-3xl font-bold text-center mb-8">Our Clients</h2>
+    <div class="container mx-auto">
+        <div class="owl-carousel clients-slider">
+            <img src="/images/logo1.png" class="h-20 mx-auto" />
+            <img src="/images/logo2.png" class="h-20 mx-auto" />
+            <img src="/images/logo3.png" class="h-20 mx-auto" />
+            <img src="/images/logo4.png" class="h-20 mx-auto" />
+        </div>
+    </div>
+</section>
+
+<!-- Products Section (Loaded from localhost:8000) -->
+<section class="py-12 bg-white">
+    <h2 class="text-3xl font-bold text-center mb-8">Latest Products</h2>
+    <div id="products-container" class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"></div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8 mt-12">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2025 Saleor Storefront. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+$(document).ready(function(){
+    $(".hero-slider").owlCarousel({ items:1, loop:true, autoplay:true });
+    $(".clients-slider").owlCarousel({ items:4, loop:true, autoplay:true, margin:20 });
+
+    // Fetch 5 products from localhost
+    fetch('http://localhost:8000/products?limit=5')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('products-container');
+            data.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-100 p-4 rounded-xl shadow';
+                card.innerHTML = `
+                    <img src="${product.image}" class="w-full h-40 object-cover rounded mb-2" />
+                    <h3 class="font-bold text-lg">${product.name}</h3>
+                    <p class="text-gray-700">$${product.price}</p>
+                `;
+                container.appendChild(card);
+            });
+        });
+});
+</script>
+
+</body>
+</html>

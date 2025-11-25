@@ -1,72 +1,486 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>B-oneinterior | Coming Soon</title>
-
-    <!-- Meta Description and Keywords -->
-    <meta name="description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation.">
-    <meta name="keywords" content="interior design, home decor, renovation, B-oneinterior, coming soon">
-
-    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
-    <meta property="og:title" content="B-oneinterior | Coming Soon" />
-    <meta property="og:description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation." />
-    <meta property="og:image" content="https://b-oneinterior.com/coming_soon_thumb.png" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://b-oneinterior.com/" /> <!-- Update with your actual URL -->
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="B-oneinterior | Coming Soon">
-    <meta name="twitter:description" content="B-oneinterior is coming soon! Stay tuned for an exciting new experience in interior design and innovation.">
-    <meta name="twitter:image" content="./coming_soon_thumb.png">
-
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Limelight&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saleor Store - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-      body {
-        font-family: 'Limelight', cursive;
-      }
-
-      /* Shiny Golden Gradient */
-      .golden-gradient {
-        background: linear-gradient(90deg, #b8860b, #ffd700, #ffec8b, #ffd700, #b8860b);
-        background-size: 300% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: shine 6s linear infinite;
-      }
-
-      @keyframes shine {
-        0% { background-position: 0% center; }
-        100% { background-position: 100% center; }
-      }
+        .owl-carousel .owl-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5) !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            font-size: 24px !important;
+        }
+        .owl-carousel .owl-nav button.owl-prev {
+            left: 20px;
+        }
+        .owl-carousel .owl-nav button.owl-next {
+            right: 20px;
+        }
+        .before-after-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .before-after-container img {
+            width: 100%;
+            display: block;
+        }
+        .after-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: white;
+            cursor: ew-resize;
+            z-index: 10;
+        }
+        .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #D4AF37;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .product-card {
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-top: 3px solid #D4AF37;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
-  </head>
+</head>
+<body class="bg-black">
+    <!-- Header -->
+    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
-  <body class="bg-black text-white flex items-center justify-center min-h-screen relative overflow-hidden">
-    <!-- Background Image -->
-    <div 
-      class="absolute inset-0 bg-cover bg-center blur-md opacity-40" 
-      style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80');">
-    </div>
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="#" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Shop</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Gallery</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Contact</a></li>
+            </ul>
+            <button class="md:hidden text-gold-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
 
-    <!-- Overlay -->
-    <div class="absolute inset-0 bg-black opacity-60"></div>
+    <!-- Hero Slider -->
+    <section class="hero-slider w-full">
+        <div class="owl-carousel owl-theme w-full" id="heroCarousel">
 
-    <!-- Content -->
-    <div class="relative text-center z-10 px-4">
-      <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl golden-gradient whitespace-nowrap tracking-wide mb-4">
-        B-oneinterior
-      </h1>
-      <p class="text-2xl sm:text-3xl md:text-4xl text-gray-200">Coming Soon</p>
-    </div>
-  </body>
+            <div class="item relative w-full">
+                <img src="slider1.jpg" class="w-full h-[700px] object-cover">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div class="text-center text-white px-4">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Our Store</h1>
+                        <p class="text-xl mb-6">Discover Amazing Products</p>
+                        <button class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Shop Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item relative w-full">
+                <img src="slider2.jpg" class="w-full h-[700px] object-cover">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div class="text-center text-white px-4">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Quality You Can Trust</h1>
+                        <p class="text-xl mb-6">Premium Products at Great Prices</p>
+                        <button class="bg-white text-green-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Learn More</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item relative w-full">
+                <img src="slider3.jpg" class="w-full h-[700px] object-cover">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div class="text-center text-white px-4">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Special Offers</h1>
+                        <p class="text-xl mb-6">Save Big This Season</p>
+                        <button class="bg-white text-orange-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">View Deals</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-16 container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Fast Delivery</h3>
+                <p class="text-gray-600">Quick and reliable shipping to your doorstep</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Quality Assured</h3>
+                <p class="text-gray-600">100% authentic products guaranteed</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Secure Payment</h3>
+                <p class="text-gray-600">Safe and encrypted transactions</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">24/7 Support</h3>
+                <p class="text-gray-600">Always here to help you</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before/After Gallery -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Transformations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="0">
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="After" class="after-img">
+                    <div class="after-image">
+                        <img src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=800" alt="Before">
+                    </div>
+                    <div class="slider-handle"></div>
+                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
+                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                </div>
+                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="1">
+                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" alt="After" class="after-img">
+                    <div class="after-image">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800" alt="Before">
+                    </div>
+                    <div class="slider-handle"></div>
+                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
+                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                </div>
+                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="2">
+                    <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800" alt="After" class="after-img">
+                    <div class="after-image">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" alt="Before">
+                    </div>
+                    <div class="slider-handle"></div>
+                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
+                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                </div>
+                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="3">
+                    <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" alt="After" class="after-img">
+                    <div class="after-image">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800" alt="Before">
+                    </div>
+                    <div class="slider-handle"></div>
+                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
+                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- PRODUCT CAROUSEL SECTION -->
+    <section class="py-10">
+        <div class="container mx-auto">
+
+            <div class="owl-carousel owl-theme" id="productCarousel">
+                <!-- LOOP PRODUCTS -->
+                <!-- Example structure (Saleor GraphQL fetch shown below) -->
+                <!-- Repeat this card for each product returned -->
+                <div class="item px-2">
+                    <div class="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#e8d7a8] shadow-sm">
+                        <img src="" class="w-full h-48 object-cover product-image">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-white product-name"></h3>
+                            <p class="text-gray-300 text-sm product-price"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- /LOOP -->
+            </div>
+
+        </div>
+    </section>
+    
+
+    <!-- Client Logos Slider -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Trusted By</h2>
+            <div class="owl-carousel owl-theme" id="clientsCarousel">
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 1</span>
+                </div>
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 2</span>
+                </div>
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 3</span>
+                </div>
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 4</span>
+                </div>
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 5</span>
+                </div>
+                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
+                    <span class="text-2xl font-bold text-gray-700">CLIENT 6</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">SALEOR</h3>
+                    <p class="text-gray-400">Your trusted e-commerce partner for quality products and exceptional service.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shop</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Customer Service</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shipping Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe for updates and exclusive offers</p>
+                    <div class="flex">
+                        <!-- <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900"> -->
+                        <button class="bg-blue-600 px-6 py-2 rounded-r-lg hover:bg-blue-700 transition">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Saleor Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function(){
+            // Hero Carousel
+            $("#heroCarousel").owlCarousel({
+                items: 1,
+                loop: true,
+                nav: true,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                navText: ["‹", "›"]
+            });
+
+            // Clients Carousel
+            $("#clientsCarousel").owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: false,
+                dots: false,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: { items: 2 },
+                    640: { items: 3 },
+                    768: { items: 4 },
+                    1024: { items: 6 }
+                }
+            });
+
+            // Before/After Image Slider
+            const containers = document.querySelectorAll('.before-after-container');
+            containers.forEach((container, idx) => {
+                const handle = container.querySelector('.slider-handle');
+                const afterImage = container.querySelector('.after-image');
+                let isDragging = false;
+
+                const updateSlider = (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+                    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                    
+                    afterImage.style.width = percentage + '%';
+                    handle.style.left = percentage + '%';
+                };
+
+                handle.addEventListener('mousedown', () => isDragging = true);
+                handle.addEventListener('touchstart', () => isDragging = true);
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) updateSlider(e);
+                });
+                document.addEventListener('touchmove', (e) => {
+                    if (isDragging) updateSlider(e);
+                });
+
+                document.addEventListener('mouseup', () => isDragging = false);
+                document.addEventListener('touchend', () => isDragging = false);
+
+                container.addEventListener('click', updateSlider);
+            });
+        });
+    </script>
+
+    <script>
+    async function loadProducts() {
+        const query = `
+        query {
+            products(first: 10, channel: "in") {
+                edges {
+                    node {
+                        id
+                        name
+                        thumbnail {
+                            url
+                        }
+                        pricing {
+                            priceRange {
+                                start {
+                                    gross {
+                                        amount
+                                        currency
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }`;
+
+        const res = await fetch("http://localhost:8000/graphql/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query })
+        });
+
+        const json = await res.json();
+        const products = json.data.products.edges;
+
+        const carousel = document.getElementById("productCarousel");
+        carousel.innerHTML = "";
+
+        products.forEach(p => {
+            const item = document.createElement("div");
+            item.className = "item px-2";
+
+            item.innerHTML = `
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <img src="${p.node.thumbnail?.url}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold">${p.node.name}</h3>
+                        <p class="text-gray-600 text-sm">
+                            ${p.node.pricing?.priceRange?.start?.gross?.amount} 
+                            ${p.node.pricing?.priceRange?.start?.gross?.currency}
+                        </p>
+                    </div>
+                </div>
+            `;
+            carousel.appendChild(item);
+        });
+
+        $("#productCarousel").owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: false,
+            dots: true,
+            responsive: {
+                0: { items: 1 },
+                640: { items: 2 },
+                1024: { items: 4 }
+            }
+        });
+    }
+
+    loadProducts();
+    </script>
+
+
+</body>
 </html>
