@@ -243,6 +243,9 @@
     text-align: center;
     color: #D4AF37;
 }
+#menu-btn{
+    color: #D4AF37;
+}
 .fixedBottom ul li ion-icon{
     font-size: 3.5vh;
 }
@@ -294,7 +297,7 @@
                         <!-- <input type="checkbox" id="menu-toggle" style="outline: red solid 3px;">
                         <label for="menu-toggle" class="menu-icon">&#9776;</label> -->
 
-    <div style="outline: #25D366 solid 3px;" id="drawer">
+    <div id="drawer">
         <ul>
         <li><a href="#company">Company</a></li>
         <li><a href="#shop">Shop</a></li>
@@ -337,11 +340,9 @@
             </li>
             <li>
                 <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
-                    <ion-icon name="menu-outline"></ion-icon>
                     <div>
-                        Menu
-
-
+                        <div class="menu-icon" id="menu-btn">&#9776;</div>
+                        
                     </div>
 
                 </a>
@@ -353,20 +354,37 @@
 </div>
 
 <script>
-    function toggleMenu(target) {
+const drawer = document.getElementById("drawer");
+const overlay = document.querySelector(".overlay");
+const menuBtn = document.getElementById("menu-btn");
 
-        let drawr = document.getElementById("drawer");
+menuBtn.addEventListener("click", () => {
+    drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
+    toggleOverlay();
+});
 
-        console.log(drawr.style.position);
-        
-        if(drawr.style.left < 0){
-            drawr.style.left = 0;
-        }else{
-            drawr.style.left = -250;
-        }
-        
-        
+overlay.addEventListener("click", () => {
+    drawer.style.left = "-250px";
+    hideOverlay();
+});
+
+function toggleOverlay() {
+    if (overlay.style.opacity === "1") {
+        hideOverlay();
+    } else {
+        showOverlay();
     }
+}
+
+function showOverlay() {
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+}
+
+function hideOverlay() {
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+}
 </script>
 
 
