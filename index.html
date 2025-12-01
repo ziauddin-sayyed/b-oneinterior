@@ -155,21 +155,19 @@
         border-radius: 50%;
         object-fit: cover;
         }
-        /* Hide on desktop */
-        @media (min-width: 769px) {
-            .fixedBottom {
+        /* Hide on monbile */
+        @media (max-width: 769px) {
+            #desktop-nav {
                 display: none;
             }
-        }
-
-        
+        }        
 
     </style>
 </head>
 <body class="bg-black">
     <!-- Header -->
     <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
-        <!-- <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
             <ul class="hidden md:flex space-x-6 text-gray-300">
@@ -184,7 +182,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-        </nav> -->
+        </nav>
 
 
 
@@ -255,10 +253,7 @@
     }
 }
 
-</style>
-
-    <style>
-    .floating-icon {
+.floating-icon {
         position: fixed;
         right: 0px; /* 20px from the right edge of the screen */
         bottom: 20vh; /* 20px from the bottom edge of the screen */
@@ -281,8 +276,42 @@
         <a target="_blank" href="https://wa.me/+917208649034?text=Hi%20TheManageMate%20Team"><img style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="" srcset=""></a>
     </div>
 
+<style>
+
+/* #menu-toggle{display:none} */
+.menu-icon{font-size:30px;cursor:pointer;padding:15px;display:inline-block;color:white}
+#drawer{position:fixed;left:-250px;top:0;width:250px;height:100%;background:#111;color:#fff;padding-top:60px;transition:.3s;z-index:9999}
+#drawer ul{list-style:none;margin:0;padding:0}
+#drawer ul li{border-bottom:1px solid rgba(255,255,255,.1)}
+#drawer ul li a{display:block;padding:15px;color:#fff;text-decoration:none;font-size:18px}
+#drawer ul li a:hover{background:#25D366}
+/* #menu-toggle:checked~ #drawer{left:0} */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.3s;z-index:9998}
+/* #menu-toggle:checked~ .overlay{opacity:1;pointer-events:auto} */
+
+</style>
+
+                        <!-- <input type="checkbox" id="menu-toggle" style="outline: red solid 3px;">
+                        <label for="menu-toggle" class="menu-icon">&#9776;</label> -->
+
+    <div style="outline: #25D366 solid 3px;" id="drawer">
+        <ul>
+        <li><a href="#company">Company</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        </ul>
+    </div>
+    <label for="menu-toggle" class="overlay"></label>
+
+
 
 <div class="fixedBottom">
+
+
+
+
         <a href="https://b-oneinterior.com/" class="logoBx"></a>
         <ul>
             <li>
@@ -307,17 +336,38 @@
                 </a>
             </li>
             <li>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#HeaderMenu">
+                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
                     <ion-icon name="menu-outline"></ion-icon>
-                    <div>Menu</div>
+                    <div>
+                        Menu
+
+
+                    </div>
 
                 </a>
+
             </li>
         </ul>
+
+
 </div>
 
-        
+<script>
+    function toggleMenu(target) {
 
+        let drawr = document.getElementById("drawer");
+
+        console.log(drawr.style.position);
+        
+        if(drawr.style.left < 0){
+            drawr.style.left = 0;
+        }else{
+            drawr.style.left = -250;
+        }
+        
+        
+    }
+</script>
 
 
 
