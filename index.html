@@ -157,7 +157,7 @@
         }
         /* Hide on desktop */
         @media (min-width: 769px) {
-            .bottom-nav {
+            .fixedBottom {
                 display: none;
             }
         }
@@ -169,7 +169,7 @@
 <body class="bg-black">
     <!-- Header -->
     <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <!-- <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
             <ul class="hidden md:flex space-x-6 text-gray-300">
@@ -184,46 +184,141 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-        </nav>
+        </nav> -->
 
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="#home" class="nav-item">
-                <ion-icon name="home-outline"></ion-icon>
-                <span>Home</span>
-            </a>
-            <a href="#offers" class="nav-item">
-                <ion-icon name="pricetag-outline"></ion-icon>
-                <span>Offers</span>
-            </a>
 
-            <a class="nav-item" style="background-color: transparent;">
 
-                <div style="
-                width:20vw;
-                height:7vh;
-                background:
-                radial-gradient(circle at 50% 0%,
-                transparent 50%,
-                white 50%);
-                ">
-                </div>
-            </a>
+<style>
 
-            <!-- Center Logo -->
-            <div class="nav-logo" style="background-color: black;">
-                <img src="logo.png" alt="Logo" />
-            </div>
 
-            <a href="#gallery" class="nav-item">
-                <ion-icon name="images-outline"></ion-icon>
-                <span>Gallery</span>
-            </a>
-            <a href="#menu" class="nav-item">
-                <ion-icon name="menu-outline"></ion-icon>
-                <span>Menu</span>
-            </a>
-        </nav>
+.fixedBottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 23vw;
+    z-index: 99;
+    padding: 0 15px;
+}
+
+
+.fixedBottom::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("btm.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.fixedBottom .logoBx {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 23vw;
+    height: 23vw;
+    border-radius: 50%;
+    background: #000 url("logo.png") no-repeat center/contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0px 20px 0 rgba(0,0,0,.2);
+}
+.fixedBottom ul {
+    height: 100%;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.fixedBottom ul li {
+    width: 20%;
+    text-align: center;
+    color: #D4AF37;
+}
+.fixedBottom ul li ion-icon{
+    font-size: 3.5vh;
+}
+
+@media (min-width: 769px) {
+    .fixedBottom {
+        display: none;
+    }
+}
+
+</style>
+
+    <style>
+    .floating-icon {
+        position: fixed;
+        right: 0px; /* 20px from the right edge of the screen */
+        bottom: 20vh; /* 20px from the bottom edge of the screen */
+        z-index: 9999; /* Make sure the icon stays on top */
+        background-color: #000;
+        padding: 2vh 0.5vh;
+        border-radius: 20px 0 0 20px;
+
+    }
+    .floating-icon a img{
+        margin: 0 auto;
+        margin-top: 1vh;
+    }
+    
+    </style>
+    <div class="floating-icon">
+        <a target="_blank" href="tel:+917208649034"><img style="max-width: initial;height: 4.5vh;" src="images/call_icon.svg" alt="" srcset=""></a>
+        <a target="_blank" href="https://wa.me/+917208649034?text=Hi%20TheManageMate%20Team"><img style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="" srcset=""></a>
+    </div>
+
+
+<div class="fixedBottom">
+        <a href="https://b-oneinterior.com/" class="logoBx"></a>
+        <ul>
+            <li>
+                <a href="https://b-oneinterior.com/company">
+                    <ion-icon name="home-outline"></ion-icon>
+                    <div>Home</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://b-oneinterior.com/offers">
+                    <ion-icon name="pricetag-outline"></ion-icon>
+                    <div>Offers</div>
+
+
+                </a>
+            </li>
+            <li></li>
+            <li>
+                <a href="https://b-oneinterior.com/gallery">
+                    <ion-icon name="images-outline"></ion-icon>
+                    <div>Gallery</div>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#HeaderMenu">
+                    <ion-icon name="menu-outline"></ion-icon>
+                    <div>Menu</div>
+
+                </a>
+            </li>
+        </ul>
+</div>
+
+        
+
+
+
+
 
     </header>
     <!-- Hero Slider -->
