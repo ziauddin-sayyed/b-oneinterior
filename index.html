@@ -263,7 +263,9 @@
         right: 0px; /* 20px from the right edge of the screen */
         bottom: 20vh; /* 20px from the bottom edge of the screen */
         z-index: 9999; /* Make sure the icon stays on top */
-        background-color: #000;
+        background: rgba(0, 0, 0, 0.2); /* transparent color */
+        backdrop-filter: blur(10px);          /* blur the background behind */
+        -webkit-backdrop-filter: blur(10px);  /* Safari support */
         padding: 2vh 0.5vh;
         border-radius: 20px 0 0 20px;
 
