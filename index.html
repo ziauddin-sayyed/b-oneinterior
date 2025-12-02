@@ -291,6 +291,21 @@
 /* #menu-toggle:checked~ #drawer{left:0} */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.3s;z-index:9998}
 /* #menu-toggle:checked~ .overlay{opacity:1;pointer-events:auto} */
+.after-image img{
+    height: 100%;
+    object-fit: cover;
+    object-position: left;
+}
+.fade-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.5s ease-out, transform 0.5s ease-out;}
+
+.fade-section.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 </style>
 
@@ -392,7 +407,7 @@ function hideOverlay() {
 
     </header>
     <!-- Hero Slider -->
-    <section class="hero-slider w-full">
+    <section class="fade-section hero-slider w-full">
         <div class="owl-carousel owl-theme w-full" id="heroCarousel">
 
             <div class="item relative w-full">
@@ -433,7 +448,7 @@ function hideOverlay() {
 
 
     <!-- Before/After Gallery -->
-    <section class="py-16 bg-white">
+    <section class="fade-section py-16 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Transformations</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -479,7 +494,7 @@ function hideOverlay() {
 
 
     <!-- PRODUCT CAROUSEL SECTION -->
-    <section class="py-10">
+    <section class="fade-section py-10">
         <div class="container mx-auto">
 
             <div class="owl-carousel owl-theme" id="productCarousel">
@@ -503,7 +518,7 @@ function hideOverlay() {
     
     
     <!-- Client Logos Slider -->
-    <section class="py-16 bg-gray-100">
+    <section class="fade-section py-16 bg-gray-100">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Trusted By</h2>
             <div class="owl-carousel owl-theme" id="clientsCarousel">
@@ -530,7 +545,7 @@ function hideOverlay() {
     </section>
 
     <!-- Services Section -->
-    <section class="py-16 container mx-auto px-4">
+    <section class="fade-section py-16 container mx-auto px-4">
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Services</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
@@ -616,6 +631,21 @@ function hideOverlay() {
     </footer>
 
     <script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            }
+        });
+        }, {
+        threshold: 0.3   // section must be 20% visible before showing
+    });
+
+    document.querySelectorAll('.fade-section').forEach(section => {
+    observer.observe(section);
+    });
+
+
         $(document).ready(function(){
             // Hero Carousel
             $("#heroCarousel").owlCarousel({
