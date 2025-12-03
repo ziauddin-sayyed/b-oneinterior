@@ -39,10 +39,33 @@
             font-size: 24px !important;
         }
         .owl-carousel .owl-nav button.owl-prev {
-            left: 20px;
+            left: 1vw;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 50%;       /* makes it circular */
+            border: 2px solid #333;   /* circle border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;         /* button background */
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s ease;
+
         }
         .owl-carousel .owl-nav button.owl-next {
-            right: 20px;
+            right: 1vw;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 50%;       /* makes it circular */
+            border: 2px solid #333;   /* circle border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;         /* button background */
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s ease;
         }
         .before-after-container {
             position: relative;
@@ -228,6 +251,7 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0 0px 20px 0 rgba(0,0,0,.2);
+    border: 1px solid #D4AF37;
 }
 .fixedBottom ul {
     height: 100%;
@@ -243,7 +267,7 @@
     text-align: center;
     color: #D4AF37;
 }
-#menu-btn{
+#menu-btn,.golden-text{
     color: #D4AF37;
 }
 .fixedBottom ul li ion-icon{
@@ -266,6 +290,7 @@
         -webkit-backdrop-filter: blur(10px);  /* Safari support */
         padding: 2vh 0.5vh;
         border-radius: 20px 0 0 20px;
+    border: 1px solid #D4AF37;
 
     }
     .floating-icon a img{
@@ -318,6 +343,8 @@
         <li><a href="#shop">Shop</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#gallery">Locations</a></li>
+        <li><a href="#gallery">Blogs</a></li>
         <li><a href="#contact">Contact Us</a></li>
         </ul>
     </div>
@@ -416,7 +443,7 @@ function hideOverlay() {
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Our Store</h1>
                         <p class="text-xl mb-6">Discover Amazing Products</p>
-                        <button class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Shop Now</button>
+                        <button class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Shop Now</button>
                     </div>
                 </div>
             </div>
@@ -427,7 +454,7 @@ function hideOverlay() {
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Quality You Can Trust</h1>
                         <p class="text-xl mb-6">Premium Products at Great Prices</p>
-                        <button class="bg-white text-green-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Learn More</button>
+                        <button class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Learn More</button>
                     </div>
                 </div>
             </div>
@@ -438,7 +465,7 @@ function hideOverlay() {
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Special Offers</h1>
                         <p class="text-xl mb-6">Save Big This Season</p>
-                        <button class="bg-white text-orange-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">View Deals</button>
+                        <button class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">View Deals</button>
                     </div>
                 </div>
             </div>
@@ -448,9 +475,9 @@ function hideOverlay() {
 
 
     <!-- Before/After Gallery -->
-    <section class="fade-section py-16 bg-white">
+    <section class="fade-section py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Transformations</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Our Transformations</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="0">
                     <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="After" class="after-img">
@@ -496,11 +523,8 @@ function hideOverlay() {
     <!-- PRODUCT CAROUSEL SECTION -->
     <section class="fade-section py-10">
         <div class="container mx-auto">
-
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Best Seller</h2>
             <div class="owl-carousel owl-theme" id="productCarousel">
-                <!-- LOOP PRODUCTS -->
-                <!-- Example structure (Saleor GraphQL fetch shown below) -->
-                <!-- Repeat this card for each product returned -->
                 <div class="item px-2">
                     <div class="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#e8d7a8] shadow-sm">
                         <img src="" class="w-full h-48 object-cover product-image">
@@ -518,9 +542,9 @@ function hideOverlay() {
     
     
     <!-- Client Logos Slider -->
-    <section class="fade-section py-16 bg-gray-100">
+    <section class="fade-section py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Trusted By</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Trusted By</h2>
             <div class="owl-carousel owl-theme" id="clientsCarousel">
                 <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
                     <span class="text-2xl font-bold text-gray-700">CLIENT 1</span>
@@ -546,7 +570,7 @@ function hideOverlay() {
 
     <!-- Services Section -->
     <section class="fade-section py-16 container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Services</h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Our Services</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -594,11 +618,7 @@ function hideOverlay() {
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-2xl font-bold mb-4">SALEOR</h3>
-                    <p class="text-gray-400">Your trusted e-commerce partner for quality products and exceptional service.</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <h4 class="text-lg font-semibold mb-4 golden-text">Quick Links</h4>
                     <ul class="space-y-2">
                         <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white">Shop</a></li>
@@ -757,7 +777,7 @@ function hideOverlay() {
                 <div class="bg-white shadow rounded-lg overflow-hidden">
                     <img src="${p.node.thumbnail?.url}" class="w-full h-48 object-cover">
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold">${p.node.name}</h3>
+                        <h3 class="text-lg font-semibold golden-text">${p.node.name}</h3>
                         <p class="text-gray-600 text-sm">
                             ${p.node.pricing?.priceRange?.start?.gross?.amount} 
                             ${p.node.pricing?.priceRange?.start?.gross?.currency}
