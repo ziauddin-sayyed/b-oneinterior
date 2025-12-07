@@ -343,8 +343,8 @@
         <li><a href="#shop">Shop</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li>
+        <!-- <li><a href="#gallery">Locations</a></li>
+        <li><a href="#gallery">Blogs</a></li> -->
         <li><a href="#contact">Contact Us</a></li>
         </ul>
     </div>
@@ -361,15 +361,14 @@
         <ul>
             <li>
                 <a href="https://b-oneinterior.com/company">
-                    <ion-icon name="home-outline"></ion-icon>
-                    <div>Home</div>
+                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                    <div>Company</div>
                 </a>
             </li>
             <li>
-                <a href="https://b-oneinterior.com/offers">
-                    <ion-icon name="pricetag-outline"></ion-icon>
-                    <div>Offers</div>
-
+                <a href="https://b-oneinterior.com/shop">
+                    <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                    <div>Shop</div>
 
                 </a>
             </li>
@@ -640,7 +639,8 @@ function hideOverlay() {
                     <p class="text-gray-400 mb-4">Subscribe for updates and exclusive offers</p>
                     <div class="flex">
                         <!-- <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900"> -->
-                        <button class="bg-blue-600 px-6 py-2 rounded-r-lg hover:bg-blue-700 transition">Subscribe</button>
+                        <button class="bg-[#D4AF37] text-white px-6 py-2 rounded-r-lg hover:bg-[#c39f2a] transition">Subscribe</button>
+
                     </div>
                 </div>
             </div>
@@ -733,29 +733,35 @@ function hideOverlay() {
     <script>
     async function loadProducts() {
         const query = `
-        query {
-            products(first: 10, channel: "in") {
+
+            query {
+            products(first: 100, channel: "in") {
                 edges {
-                    node {
-                        id
-                        name
-                        thumbnail {
-                            url
+                node {
+                    id
+                    name
+                    thumbnail {
+                    url
+                    }
+                    pricing {
+                    priceRange {
+                        start {
+                        gross {
+                            amount
+                            currency
                         }
-                        pricing {
-                            priceRange {
-                                start {
-                                    gross {
-                                        amount
-                                        currency
-                                    }
-                                }
-                            }
+                        }
+                    }
+                    }
+                    category {
+                            name
                         }
                     }
                 }
             }
-        }`;
+            }
+
+        `;
 
         const res = await fetch("https://api.b-oneinterior.com/graphql/", {
             method: "POST",
@@ -764,7 +770,9 @@ function hideOverlay() {
         });
 
         const json = await res.json();
-        const products = json.data.products.edges;
+        let products = json.data.products.edges;
+
+        products = products.filter(p => p.node.category?.name !== "Gallery Image Category");        
 
         const carousel = document.getElementById("productCarousel");
         carousel.innerHTML = "";
