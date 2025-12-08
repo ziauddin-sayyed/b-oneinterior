@@ -60,11 +60,13 @@
         <a href="https://b-oneinterior.com/" class="logoBx"></a>
         <ul>
             <li>
-                <a href="https://b-oneinterior.com/company">
-                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Company</div>
+                <a href="https://b-oneinterior.com/gallery">
+                    <ion-icon name="images-outline"></ion-icon>
+                    <div>Gallery</div>
                 </a>
             </li>
+
+
             <li>
                 <a href="https://b-oneinterior.com/shop">
                     <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
@@ -73,13 +75,27 @@
                 </a>
             </li>
             <li></li>
+
             <li>
-                <a href="https://b-oneinterior.com/gallery">
-                    <ion-icon name="images-outline"></ion-icon>
-                    <div>Gallery</div>
+                <a href="https://b-oneinterior.com/company">
+                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                    <div>Company</div>
                 </a>
             </li>
+
+            
             <li>
+                <a href="https://b-oneinterior.com/cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <div>Cart</div>
+                    <span id="cartCountBadge"
+                        class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                    </span>
+
+                </a>
+            </li>
+            <!-- <li>
                 <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
                     <div>
                         <div class="menu-icon" id="menu-btn">&#9776;</div>
@@ -88,48 +104,44 @@
 
                 </a>
 
-            </li>
+            </li> -->
         </ul>
 </div>
 
   <script>
-          const drawer = document.getElementById("drawer");
-          const overlay = document.querySelector(".overlay");
-          const menuBtn = document.getElementById("menu-btn");
+        //   const drawer = document.getElementById("drawer");
+        //   const overlay = document.querySelector(".overlay");
+        //   const menuBtn = document.getElementById("menu-btn");
 
-          menuBtn.addEventListener("click", () => {
-              drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-              toggleOverlay();
-          });
+        //   menuBtn.addEventListener("click", () => {
+        //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
+        //       toggleOverlay();
+        //   });
 
-          overlay.addEventListener("click", () => {
-              drawer.style.left = "-250px";
-              hideOverlay();
-          });
+        //   overlay.addEventListener("click", () => {
+        //       drawer.style.left = "-250px";
+        //       hideOverlay();
+        //   });
 
-          function toggleOverlay() {
-              if (overlay.style.opacity === "1") {
-                  hideOverlay();
-              } else {
-                  showOverlay();
-              }
-          }
+        //   function toggleOverlay() {
+        //       if (overlay.style.opacity === "1") {
+        //           hideOverlay();
+        //       } else {
+        //           showOverlay();
+        //       }
+        //   }
 
-          function showOverlay() {
-              overlay.style.opacity = "1";
-              overlay.style.pointerEvents = "auto";
-          }
+        //   function showOverlay() {
+        //       overlay.style.opacity = "1";
+        //       overlay.style.pointerEvents = "auto";
+        //   }
 
-          function hideOverlay() {
-              overlay.style.opacity = "0";
-              overlay.style.pointerEvents = "none";
-          }
+        //   function hideOverlay() {
+        //       overlay.style.opacity = "0";
+        //       overlay.style.pointerEvents = "none";
+        //   }
     </script>
     </header>
-
-
-
-
 
 <div class="container mx-auto px-4 py-10 space-y-6">
 
@@ -218,7 +230,18 @@ function renderGrid(products){
             <p>${p.category?.name || "—"}</p>
             <p>${p.productType?.name || ""}</p>
         </div>
-      </div>
+        <br>
+        <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
+                data-id="${p.id}"
+                data-name="${p.name}"
+                data-category="${p.category?.name || ''}"
+                data-type="${p.productType?.name || ''}"
+                data-image="${p.thumbnail?.url || FALLBACK_IMG}">
+
+        Add to inquiry list
+        </button>
+
+        </div>
   `).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
 }
 
@@ -233,7 +256,21 @@ function renderSlider(products){
             <p>${p.category?.name || "—"}</p>
             <p>${p.productType?.name || ""}</p>
         </div>
-    </div></div>`);
+        <br>
+
+        <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
+                data-id="${p.id}"
+                data-name="${p.name}"
+                data-category="${p.category?.name || ''}"
+                data-type="${p.productType?.name || ''}"
+                data-image="${p.thumbnail?.url || FALLBACK_IMG}">
+
+        Add to inquiry list
+        </button>
+
+
+
+        </div></div>`);
   });
   slider.owlCarousel("destroy");
   slider.owlCarousel({items:2, margin:10, nav:true, dots:false, loop:true, autoplay:true, responsive:{0:{items:1},480:{items:2}}});
@@ -263,6 +300,69 @@ function setupFiltering(allProducts){
   });
 }
 
+function setupInquiryButtons() {
+  const buttons = document.querySelectorAll(".inquiry-btn");
+
+  buttons.forEach(btn => {
+    const id = btn.dataset.id;
+
+    // Load state from localStorage
+    const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+    const exists = list.some(item => item.id === id);
+
+    if (exists) {
+      btn.textContent = "Remove from inquiry list";
+      btn.classList.remove("bg-gold");
+      btn.classList.add("bg-gray-400");
+    }
+
+    btn.onclick = () => {
+        let inquiryList = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+
+        const product = {
+            id: btn.dataset.id,
+            name: btn.dataset.name,
+            category: btn.dataset.category,
+            type: btn.dataset.type,
+            image: btn.dataset.image
+        };
+
+        const already = inquiryList.some(i => i.id === product.id);
+
+        if (already) {
+            inquiryList = inquiryList.filter(i => i.id !== product.id);
+            btn.textContent = "Add to inquiry list";
+            btn.classList.add("bg-gold");
+            btn.classList.remove("bg-gray-400");
+        } else {
+            inquiryList.push(product);
+            btn.textContent = "Remove from inquiry list";
+            btn.classList.remove("bg-gold");
+            btn.classList.add("bg-gray-400");
+        }
+
+        localStorage.setItem("inquiryList", JSON.stringify(inquiryList));
+
+        updateCartBadge(); // 🔥 update cart count badge
+    };
+
+  });
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById("cartCountBadge");
+  const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+  const count = list.length;
+
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+}
+
+
 (async()=>{
   const data = await fetchSaleor();
   if(!data) return alert("Error fetching Saleor API");
@@ -276,6 +376,9 @@ function setupFiltering(allProducts){
   renderGrid(products);
   renderSlider(products);
   setupFiltering(products);
+  setupInquiryButtons();  
+  updateCartBadge();
+
 })();
 </script>
 

@@ -272,3 +272,10 @@
   border-color: #D4AF37; /* optional if you want border to match */
 }
 
+#cartCountBadge{
+
+    right: 6%;
+    top: 9%;
+
+}
+
