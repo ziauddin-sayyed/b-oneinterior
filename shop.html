@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="style.css">
 
 </head>
-<body class="bg-black">
+<body class="bg-black min-h-[130vh]">
 
     <!-- Header -->
     <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
@@ -131,7 +131,7 @@
 
 
 
-<div class="container mx-auto px-4 py-6 space-y-6">
+<div class="container mx-auto px-4 py-10 space-y-6">
 
   <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6">
     <div>
@@ -214,8 +214,11 @@ function renderGrid(products){
     <div class="product-card bg-white shadow rounded-lg p-4 hover:shadow-lg transition" data-category="${p.category?.id||''}" data-type="${p.productType?.id||''}">
       <img src="${p.thumbnail?.url||FALLBACK_IMG}" class="w-full h-40 object-cover rounded mb-2" alt="${p.name}">
       <p class="font-semibold truncate">${p.name}</p>
-      <p class="text-sm text-gray-500">${p.category?.name||"—"}</p>
-    </div>
+        <div class="flex items-center justify-between text-sm text-gray-500">
+            <p>${p.category?.name || "—"}</p>
+            <p>${p.productType?.name || ""}</p>
+        </div>
+      </div>
   `).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
 }
 
@@ -226,7 +229,10 @@ function renderSlider(products){
     slider.append(`<div class="p-2"><div class="bg-white shadow rounded-lg p-4">
       <img src="${p.thumbnail?.url||FALLBACK_IMG}" class="w-full h-50 object-cover rounded mb-2">
       <p class="font-semibold truncate">${p.name}</p>
-      <p class="text-sm text-gray-500">${p.category?.name||"—"}</p>
+        <div class="flex items-center justify-between text-sm text-gray-500">
+            <p>${p.category?.name || "—"}</p>
+            <p>${p.productType?.name || ""}</p>
+        </div>
     </div></div>`);
   });
   slider.owlCarousel("destroy");
