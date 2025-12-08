@@ -1,0 +1,270 @@
+        .owl-carousel .owl-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5) !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            font-size: 24px !important;
+        }
+        .owl-carousel .owl-nav button.owl-prev {
+            left: 1vw;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 50%;       /* makes it circular */
+            border: 2px solid #333;   /* circle border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;         /* button background */
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s ease;
+
+        }
+        .owl-carousel .owl-nav button.owl-next {
+            right: 1vw;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 50%;       /* makes it circular */
+            border: 2px solid #333;   /* circle border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;         /* button background */
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+        .before-after-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .before-after-container img {
+            width: 100%;
+            display: block;
+        }
+        .after-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: white;
+            cursor: ew-resize;
+            z-index: 10;
+        }
+        .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #D4AF37;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .product-card {
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-top: 3px solid #D4AF37;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bottom nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: transparent;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+            
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            color: #555;
+            text-decoration: none;
+            font-size: 12px;
+            background-color: #fff;
+            padding: 3% 0;
+        }
+
+        .nav-item ion-icon {
+        font-size: 24px;
+        display: block;
+        margin: 0 auto 4px;
+        }
+
+        /* Center logo */
+        .nav-logo {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+        }
+
+        .nav-logo img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+        /* Hide on monbile */
+        @media (max-width: 769px) {
+            #desktop-nav {
+                display: none;
+            }
+        }     
+
+
+
+.fixedBottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 23vw;
+    z-index: 99;
+    padding: 0 15px;
+}
+
+
+.fixedBottom::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("btm.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.fixedBottom .logoBx {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 23vw;
+    height: 23vw;
+    border-radius: 50%;
+    background: #000 url("logo.png") no-repeat center/contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0px 20px 0 rgba(0,0,0,.2);
+    border: 1px solid #D4AF37;
+}
+.fixedBottom ul {
+    height: 100%;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.fixedBottom ul li {
+    width: 20%;
+    text-align: center;
+    color: #D4AF37;
+}
+#menu-btn,.golden-text{
+    color: #D4AF37;
+}
+.fixedBottom ul li ion-icon{
+    font-size: 3.5vh;
+}
+
+@media (min-width: 769px) {
+    .fixedBottom {
+        display: none;
+    }
+}
+
+.floating-icon {
+        position: fixed;
+        right: 0px; /* 20px from the right edge of the screen */
+        bottom: 20vh; /* 20px from the bottom edge of the screen */
+        z-index: 9999; /* Make sure the icon stays on top */
+        background: rgba(0, 0, 0, 0.2); /* transparent color */
+        backdrop-filter: blur(10px);          /* blur the background behind */
+        -webkit-backdrop-filter: blur(10px);  /* Safari support */
+        padding: 2vh 0.5vh;
+        border-radius: 20px 0 0 20px;
+    border: 1px solid #D4AF37;
+
+    }
+    .floating-icon a img{
+        margin: 0 auto;
+        margin-top: 1vh;
+    }
+
+/* #menu-toggle{display:none} */
+.menu-icon{font-size:30px;cursor:pointer;padding:15px;display:inline-block;color:white}
+#drawer{position:fixed;left:-250px;top:0;width:250px;height:100%;background:#111;color:#fff;padding-top:60px;transition:.3s;z-index:9999}
+#drawer ul{list-style:none;margin:0;padding:0}
+#drawer ul li{border-bottom:1px solid rgba(255,255,255,.1)}
+#drawer ul li a{display:block;padding:15px;color:#fff;text-decoration:none;font-size:18px}
+#drawer ul li a:hover{background:#25D366}
+/* #menu-toggle:checked~ #drawer{left:0} */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.3s;z-index:9998}
+/* #menu-toggle:checked~ .overlay{opacity:1;pointer-events:auto} */
+.after-image img{
+    height: 100%;
+    object-fit: cover;
+    object-position: left;
+}
+.fade-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.5s ease-out, transform 0.5s ease-out;}
+
+.fade-section.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+

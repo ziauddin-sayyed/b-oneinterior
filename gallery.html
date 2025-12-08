@@ -4,23 +4,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery Image Products</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    #productGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-    .product-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-    .product-card img { width: 100%; height: 150px; object-fit: cover; }
-    .product-card .content { padding: 10px; }
-    .product-card h3 { font-size: 1rem; margin: 0 0 5px 0; }
-    .product-card p { font-size: 0.9rem; margin: 0; color: #555; }
-    .product-card .attributes img { width: 100%; height: 100px; object-fit: cover; margin-top: 5px; border-radius: 4px; }
-  </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+  <link rel="stylesheet" href="style.css">
+
 </head>
-<body>
-  <h1>Gallery Image Products</h1>
-  <div id="productGrid"></div>
+<body class="bg-black">
+
+    <!-- Header -->
+    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="#" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Shop</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Gallery</a></li>
+                <li><a href="#" class="hover:text-gold-500 transition">Contact</a></li>
+            </ul>
+            <button class="md:hidden text-gold-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+
+    <div class="floating-icon">
+        <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;" src="images/call_icon.svg" alt="" srcset=""></a>
+        <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="" srcset=""></a>
+    </div>
+
+    <div id="drawer">
+        <ul>
+        <li><a href="#company">Company</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <!-- <li><a href="#gallery">Locations</a></li>
+        <li><a href="#gallery">Blogs</a></li> -->
+        <li><a href="#contact">Contact Us</a></li>
+        </ul>
+    </div>
+    <label for="menu-toggle" class="overlay"></label>
+
+<div class="fixedBottom">
+        <a href="https://b-oneinterior.com/" class="logoBx"></a>
+        <ul>
+            <li>
+                <a href="https://b-oneinterior.com/company">
+                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                    <div>Company</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://b-oneinterior.com/shop">
+                    <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                    <div>Shop</div>
+
+                </a>
+            </li>
+            <li></li>
+            <li>
+                <a href="https://b-oneinterior.com/gallery">
+                    <ion-icon name="images-outline"></ion-icon>
+                    <div>Gallery</div>
+                </a>
+            </li>
+            <li>
+                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
+                    <div>
+                        <div class="menu-icon" id="menu-btn">&#9776;</div>
+                        
+                    </div>
+
+                </a>
+
+            </li>
+        </ul>
+</div>
 
   <script>
-    const API_URL = "https://api.b-oneinterior.com/graphql/"; // replace with your endpoint
+          const drawer = document.getElementById("drawer");
+          const overlay = document.querySelector(".overlay");
+          const menuBtn = document.getElementById("menu-btn");
+
+          menuBtn.addEventListener("click", () => {
+              drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
+              toggleOverlay();
+          });
+
+          overlay.addEventListener("click", () => {
+              drawer.style.left = "-250px";
+              hideOverlay();
+          });
+
+          function toggleOverlay() {
+              if (overlay.style.opacity === "1") {
+                  hideOverlay();
+              } else {
+                  showOverlay();
+              }
+          }
+
+          function showOverlay() {
+              overlay.style.opacity = "1";
+              overlay.style.pointerEvents = "auto";
+          }
+
+          function hideOverlay() {
+              overlay.style.opacity = "0";
+              overlay.style.pointerEvents = "none";
+          }
+    </script>
+    </header>
+
+
+    <section>
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Our Transformations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="productGrid">
+
+
+            </div>
+        </div>
+    </section>
+
+  <script>
+    const API_URL = "https://api.b-oneinterior.com/graphql/";
     const CHANNEL = "in";
 
     async function fetchGraphQL(query, variables = {}) {
@@ -42,10 +157,10 @@
       `;
       const productTypeResult = await fetchGraphQL(productTypeQuery);
       const productTypeNode = productTypeResult.data.productTypes.edges[0]?.node;
-      if (!productTypeNode) {
-        document.getElementById("productGrid").innerHTML = "<p>No product type found.</p>";
-        return;
-      }
+      // if (!productTypeNode) {
+      //   document.getElementById("productGrid").innerHTML = "<p>No product type found.</p>";
+      //   return;
+      // }
 
       const productsQuery = `
         query ($productTypeId: ID!) {
@@ -69,34 +184,74 @@
       const productsResult = await fetchGraphQL(productsQuery, { productTypeId: productTypeNode.id });
       const products = productsResult.data.products.edges;
       const grid = document.getElementById("productGrid");
-      grid.innerHTML = "";
+      // grid.innerHTML = "";
 
       if (products.length === 0) {
         grid.innerHTML = "<p>No products found.</p>";
         return;
       }
 
-      products.forEach(p => {
+      await products.forEach(p => {
         const beforeFile = p.node.attributes.find(a => a.attribute.slug === "gallery-image-before")?.values[0]?.file?.url || '';
         const afterFile  = p.node.attributes.find(a => a.attribute.slug === "gallery-image-after")?.values[0]?.file?.url || '';
 
         const card = document.createElement("div");
-        card.className = "product-card";
+        card.className = "before-after-container rounded-lg overflow-hidden shadow-xl";
         card.innerHTML = `
-          <div class="content">
-            <h3>${p.node.name}</h3>
-            <p>${p.node.pricing?.priceRange?.start?.gross?.amount || '-'} ${p.node.pricing?.priceRange?.start?.gross?.currency || ''}</p>
-            <div class="attributes">
-              ${beforeFile ? `<img src="${beforeFile}" alt="Gallery Image Before">` : ''}
-              ${afterFile  ? `<img src="${afterFile}" alt="Gallery Image After">` : ''}
-            </div>
-          </div>
+
+                    <img src="${afterFile}" alt="After" class="after-img">
+                    <div class="after-image">
+                        <img src="${beforeFile}" alt="Before">
+                    </div>
+                    <div class="slider-handle"></div>
+
         `;
         grid.appendChild(card);
       });
+
+        const containers = document.querySelectorAll('.before-after-container');
+        containers.forEach((container, idx) => {
+            const handle = container.querySelector('.slider-handle');
+            const afterImage = container.querySelector('.after-image');
+            let isDragging = false;
+
+            const updateSlider = (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                
+                afterImage.style.width = percentage + '%';
+                handle.style.left = percentage + '%';
+            };
+
+            handle.addEventListener('mousedown', () => isDragging = true);
+            handle.addEventListener('touchstart', () => isDragging = true);
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) updateSlider(e);
+            });
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) updateSlider(e);
+            });
+
+            document.addEventListener('mouseup', () => isDragging = false);
+            document.addEventListener('touchend', () => isDragging = false);
+
+            container.addEventListener('click', updateSlider);
+
+        });
+
     }
 
     loadProducts();
+
+    $(document).ready(function(){
+        // Before/After Image Slider
+
+    });
+
+
+
   </script>
 </body>
 </html>
