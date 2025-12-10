@@ -1,50 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Saleor Shop</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
 
-<!-- jQuery + Owl Carousel -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <title>Saleor Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- jQuery + Owl Carousel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
 
   <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body class="bg-black min-h-[130vh]">
 
-    <!-- Header -->
-    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 ">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+  <!-- Header -->
+  <header class="bg-gray-900 shadow-lg sticky top-0 z-50 ">
+    <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+      <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
-            <ul class="hidden md:flex space-x-6 text-gray-300">
-                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
-                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-            </ul>
-            <button class="md:hidden text-gold-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </nav>
+      <ul class="hidden md:flex space-x-6 text-gray-300">
+        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+        <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
+        <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+      </ul>
+      <button class="md:hidden text-gold-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </nav>
 
     <div class="floating-icon">
-        <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;" src="images/call_icon.svg" alt="" srcset=""></a>
-        <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="" srcset=""></a>
+      <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
+          src="images/call_icon.svg" alt="Call" srcset=""></a>
+      <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
+          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
+      <a target="_blank" href="https://www.facebook.com/boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/facebook.svg" alt="Facebook" srcset=""></a>
+      <a target="_blank" href="https://www.instagram.com/boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/instagram.svg" alt="Instagram" srcset=""></a>
+      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/youtube.svg" alt="YouTube" srcset=""></a>
+      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/map_marker.svg" alt="Location" srcset=""></a>
     </div>
 
     <div id="drawer">
-        <ul>
+      <ul>
         <li><a href="#company">Company</a></li>
         <li><a href="#shop">Shop</a></li>
         <li><a href="#services">Services</a></li>
@@ -52,50 +69,49 @@
         <!-- <li><a href="#gallery">Locations</a></li>
         <li><a href="#gallery">Blogs</a></li> -->
         <li><a href="#contact">Contact Us</a></li>
-        </ul>
+      </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
 
-<div class="fixedBottom">
-        <a href="https://b-oneinterior.com/" class="logoBx"></a>
-        <ul>
-            <li>
-                <a href="https://b-oneinterior.com/gallery">
-                    <ion-icon name="images-outline"></ion-icon>
-                    <div>Gallery</div>
-                </a>
-            </li>
+    <div class="fixedBottom">
+      <a href="https://b-oneinterior.com/" class="logoBx"></a>
+      <ul>
+        <li>
+          <a href="https://b-oneinterior.com/gallery">
+            <ion-icon name="images-outline"></ion-icon>
+            <div>Gallery</div>
+          </a>
+        </li>
 
 
-            <li>
-                <a href="https://b-oneinterior.com/shop">
-                    <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Shop</div>
+        <li>
+          <a href="https://b-oneinterior.com/shop">
+            <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Shop</div>
 
-                </a>
-            </li>
-            <li></li>
+          </a>
+        </li>
+        <li></li>
 
-            <li>
-                <a href="https://b-oneinterior.com/company">
-                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Company</div>
-                </a>
-            </li>
+        <li>
+          <a href="https://b-oneinterior.com/company">
+            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Company</div>
+          </a>
+        </li>
 
-            
-            <li>
-                <a href="https://b-oneinterior.com/cart">
-                    <ion-icon name="cart-outline"></ion-icon>
-                    <div>Cart</div>
-                    <span id="cartCountBadge"
-                        class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+
+        <li>
+          <a href="https://b-oneinterior.com/cart">
+            <ion-icon name="cart-outline"></ion-icon>
+            <div>Cart</div>
+            <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
                                 w-5 h-5 flex items-center justify-center rounded-full hidden">
-                    </span>
+            </span>
 
-                </a>
-            </li>
-            <!-- <li>
+          </a>
+        </li>
+        <!-- <li>
                 <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
                     <div>
                         <div class="menu-icon" id="menu-btn">&#9776;</div>
@@ -105,282 +121,386 @@
                 </a>
 
             </li> -->
-        </ul>
-</div>
+      </ul>
+    </div>
 
-  <script>
-        //   const drawer = document.getElementById("drawer");
-        //   const overlay = document.querySelector(".overlay");
-        //   const menuBtn = document.getElementById("menu-btn");
+    <script>
+      //   const drawer = document.getElementById("drawer");
+      //   const overlay = document.querySelector(".overlay");
+      //   const menuBtn = document.getElementById("menu-btn");
 
-        //   menuBtn.addEventListener("click", () => {
-        //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-        //       toggleOverlay();
-        //   });
+      //   menuBtn.addEventListener("click", () => {
+      //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
+      //       toggleOverlay();
+      //   });
 
-        //   overlay.addEventListener("click", () => {
-        //       drawer.style.left = "-250px";
-        //       hideOverlay();
-        //   });
+      //   overlay.addEventListener("click", () => {
+      //       drawer.style.left = "-250px";
+      //       hideOverlay();
+      //   });
 
-        //   function toggleOverlay() {
-        //       if (overlay.style.opacity === "1") {
-        //           hideOverlay();
-        //       } else {
-        //           showOverlay();
-        //       }
-        //   }
+      //   function toggleOverlay() {
+      //       if (overlay.style.opacity === "1") {
+      //           hideOverlay();
+      //       } else {
+      //           showOverlay();
+      //       }
+      //   }
 
-        //   function showOverlay() {
-        //       overlay.style.opacity = "1";
-        //       overlay.style.pointerEvents = "auto";
-        //   }
+      //   function showOverlay() {
+      //       overlay.style.opacity = "1";
+      //       overlay.style.pointerEvents = "auto";
+      //   }
 
-        //   function hideOverlay() {
-        //       overlay.style.opacity = "0";
-        //       overlay.style.pointerEvents = "none";
-        //   }
+      //   function hideOverlay() {
+      //       overlay.style.opacity = "0";
+      //       overlay.style.pointerEvents = "none";
+      //   }
     </script>
-    </header>
+  </header>
 
-<div class="container mx-auto px-4 py-10 space-y-6">
+  <div class="container mx-auto px-4 py-10 space-y-6">
 
-  <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6">
-    <div>
-      <h3 class="font-semibold mb-3">Categories</h3>
-      <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
-    </div>
-    <div>
-      <h3 class="font-semibold mb-3">Product Types</h3>
-      <div id="productTypeFilter" class="flex flex-wrap gap-2"></div>
-    </div>
-  </aside>
+    <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6 sticky top-0 z-40">
+      <div>
+        <h3 class="font-semibold mb-3">Categories</h3>
+        <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
+        <br>
+        <hr>
+        <div id="subcategoryFilter" class="flex flex-wrap gap-2 mt-3 hidden">
 
-  <div id="mobileSliderWrapper" class="block md:hidden">
-    <div id="mobileSlider" class="owl-carousel owl-theme"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile: Vertical scroll product list -->
+    <div id="mobileProductList" class="block md:hidden space-y-4"></div>
+
+    <!-- Desktop: Grid layout -->
+    <main id="productGrid" class="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></main>
+
   </div>
 
-  <main id="productGrid" class="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></main>
+  <script>
+    const API_URL = "https://api.b-oneinterior.com/graphql/";
+    const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
+    const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
 
-</div>
-
-<script>
-const API_URL = "https://api.b-oneinterior.com/graphql/";
-const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
-const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
-
-const QUERY = `
+    // Updated query to fetch parent category information
+    const QUERY = `
 query {
-  categories(first: 100) { edges { node { id name } } }
-  productTypes(first: 100) { edges { node { id name } } }
-  products(first: 100, channel: "in") { edges { node { id name slug category { id name } productType { id name } thumbnail { url } } } }
+  categories(first: 100) { 
+    edges { 
+      node { 
+        id 
+        name 
+        parent { 
+          id 
+          name 
+        } 
+      } 
+    } 
+  }
+  products(first: 100, channel: "in") { 
+    edges { 
+      node { 
+        id 
+        name 
+        slug 
+        category { 
+          id 
+          name 
+          parent { 
+            id 
+            name 
+          } 
+        } 
+        productType { 
+          id 
+          name 
+        } 
+        thumbnail { 
+          url 
+        } 
+      } 
+    } 
+  }
 }
 `;
 
-async function fetchSaleor() {
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ query: QUERY })
-    });
-    const json = await res.json();
-    if (json.errors) console.error("GraphQL errors:", json.errors);
-    return json.data;
-  } catch (err) {
-    console.error("Fetch error:", err);
-    return null;
-  }
-}
+    let allCategories = [];
+    let allProducts = [];
+    let selectedParentCategory = null;
 
-function renderFilters(categories, productTypes, allProducts) {
-  const categoryCounts = {};
-  allProducts.forEach(p => { if(p.category?.id) categoryCounts[p.category.id]=(categoryCounts[p.category.id]||0)+1; });
-  const typeCounts = {};
-  allProducts.forEach(p => { if(p.productType?.id) typeCounts[p.productType.id]=(typeCounts[p.productType.id]||0)+1; });
+    async function fetchSaleor() {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: QUERY })
+        });
+        const json = await res.json();
+        if (json.errors) console.error("GraphQL errors:", json.errors);
+        return json.data;
+      } catch (err) {
+        console.error("Fetch error:", err);
+        return null;
+      }
+    }
 
-  document.getElementById("categoryFilter").innerHTML = `
-    <button class="filter-category px-3 py-1 rounded-full border text-sm bg-gold text-white " data-category="all">
-      All (${allProducts.length})
+    function getParentCategories(categories) {
+      return categories.filter(c => !c.parent && c.name !== HIDDEN_CATEGORY_NAME);
+    }
+
+    function getSubcategories(categories, parentId) {
+      return categories.filter(c => c.parent?.id === parentId);
+    }
+
+    function getCategoryCounts(products, categoryId) {
+      return products.filter(p => {
+        // Count products that belong to this category or have this category as parent
+        return p.category?.id === categoryId || p.category?.parent?.id === categoryId;
+      }).length;
+    }
+
+    function renderCategoryFilters(categories, products) {
+      const parentCategories = getParentCategories(categories);
+
+      // Calculate counts for parent categories (including their subcategories' products)
+      const parentCounts = {};
+      parentCategories.forEach(parent => {
+        const subcats = getSubcategories(categories, parent.id);
+        const subcatIds = subcats.map(s => s.id);
+        parentCounts[parent.id] = products.filter(p =>
+          p.category?.id === parent.id || subcatIds.includes(p.category?.id)
+        ).length;
+      });
+
+      document.getElementById("categoryFilter").innerHTML = `
+    <button class="filter-category px-3 py-1 rounded-full border text-sm bg-gold text-white" data-category="all" data-is-parent="true">
+      All (${products.length})
     </button>
-    ${categories.filter(c=>c.name!==HIDDEN_CATEGORY_NAME).map(c=>`
-      <button class="filter-category px-3 py-1 rounded-full border border-gray-300 text-gray-700 text-sm" data-category="${c.id}">
-        ${c.name} (${categoryCounts[c.id]||0})
+    ${parentCategories.map(c => `
+      <button class="filter-category px-3 py-1 rounded-full border border-gray-300 text-gray-700 text-sm" data-category="${c.id}" data-is-parent="true">
+        ${c.name} (${parentCounts[c.id] || 0})
       </button>`).join("")}
   `;
 
-  document.getElementById("productTypeFilter").innerHTML = `
-    <button class="filter-type px-3 py-1 rounded-full border text-sm bg-gold text-white " data-type="all">
-      All (${allProducts.length})
+      // Hide subcategory filter initially
+      document.getElementById("subcategoryFilter").classList.add("hidden");
+      document.getElementById("subcategoryFilter").innerHTML = "";
+    }
+
+    function renderSubcategoryFilters(parentId) {
+      const subcategories = getSubcategories(allCategories, parentId);
+      const subcategoryContainer = document.getElementById("subcategoryFilter");
+
+      if (subcategories.length === 0) {
+        subcategoryContainer.classList.add("hidden");
+        subcategoryContainer.innerHTML = "";
+        return;
+      }
+
+      // Calculate counts for subcategories
+      const subcatCounts = {};
+      subcategories.forEach(sub => {
+        subcatCounts[sub.id] = allProducts.filter(p => p.category?.id === sub.id).length;
+      });
+
+      // Get parent products count (products directly in parent, not in subcategories)
+      const parentDirectCount = allProducts.filter(p => p.category?.id === parentId).length;
+      const allInParentCount = allProducts.filter(p =>
+        p.category?.id === parentId || subcategories.map(s => s.id).includes(p.category?.id)
+      ).length;
+
+      subcategoryContainer.innerHTML = `
+    <button class="filter-subcategory px-3 py-1 rounded-full border text-sm bg-gold text-white" data-subcategory="all">
+      All (${allInParentCount})
     </button>
-    ${productTypes.map(t=>`
-      <button class="filter-type px-3 py-1 rounded-full border border-gray-300 text-gray-700 text-sm" data-type="${t.id}">
-        ${t.name} (${typeCounts[t.id]||0})
+    ${subcategories.map(s => `
+      <button class="filter-subcategory px-3 py-1 rounded-full border border-gray-300 text-gray-700 text-sm" data-subcategory="${s.id}">
+        ${s.name} (${subcatCounts[s.id] || 0})
       </button>`).join("")}
   `;
-}
 
-function renderGrid(products){
-  const grid = document.getElementById("productGrid");
-  grid.innerHTML = products.length ? products.map(p=>`
-    <div class="product-card bg-white shadow rounded-lg p-4 hover:shadow-lg transition" data-category="${p.category?.id||''}" data-type="${p.productType?.id||''}">
-      <img src="${p.thumbnail?.url||FALLBACK_IMG}" class="w-full h-40 object-cover rounded mb-2" alt="${p.name}">
+      subcategoryContainer.classList.remove("hidden");
+    }
+
+    function renderGrid(products) {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = products.length ? products.map(p => `
+    <div class="product-card bg-white shadow rounded-lg p-4 hover:shadow-lg transition" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
+      <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-40 object-cover rounded mb-2" alt="${p.name}">
       <p class="font-semibold truncate">${p.name}</p>
-        <div class="flex items-center justify-between text-sm text-gray-500">
-            <p>${p.category?.name || "—"}</p>
-            <p>${p.productType?.name || ""}</p>
-        </div>
-        <br>
-        <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
-                data-id="${p.id}"
-                data-name="${p.name}"
-                data-category="${p.category?.name || ''}"
-                data-type="${p.productType?.name || ''}"
-                data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-
+      <div class="flex items-center justify-between text-sm text-gray-500">
+        <p>${p.category?.name || "—"}</p>
+        <p>${p.productType?.name || ""}</p>
+      </div>
+      <br>
+      <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
+              data-id="${p.id}"
+              data-name="${p.name}"
+              data-category="${p.category?.name || ''}"
+              data-type="${p.productType?.name || ''}"
+              data-image="${p.thumbnail?.url || FALLBACK_IMG}">
         Add to inquiry list
-        </button>
-
-        </div>
+      </button>
+    </div>
   `).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
-}
+    }
 
-function renderSlider(products){
-  const slider = $("#mobileSlider");
-  slider.html("");
-  products.forEach(p=>{
-    slider.append(`<div class="p-2"><div class="bg-white shadow rounded-lg p-4">
-      <img src="${p.thumbnail?.url||FALLBACK_IMG}" class="w-full h-50 object-cover rounded mb-2">
-      <p class="font-semibold truncate">${p.name}</p>
-        <div class="flex items-center justify-between text-sm text-gray-500">
-            <p>${p.category?.name || "—"}</p>
-            <p>${p.productType?.name || ""}</p>
-        </div>
-        <br>
-
-        <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
-                data-id="${p.id}"
-                data-name="${p.name}"
-                data-category="${p.category?.name || ''}"
-                data-type="${p.productType?.name || ''}"
-                data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-
+    function renderMobileList(products) {
+      const mobileList = document.getElementById("mobileProductList");
+      mobileList.innerHTML = products.length ? products.map(p => `
+    <div class="bg-white shadow rounded-lg p-4">
+      <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover rounded mb-3" alt="${p.name}">
+      <p class="font-semibold text-lg">${p.name}</p>
+      <div class="flex items-center justify-between text-sm text-gray-500 mt-1">
+        <p>${p.category?.name || "—"}</p>
+        <p>${p.productType?.name || ""}</p>
+      </div>
+      <br>
+      <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
+              data-id="${p.id}"
+              data-name="${p.name}"
+              data-category="${p.category?.name || ''}"
+              data-type="${p.productType?.name || ''}"
+              data-image="${p.thumbnail?.url || FALLBACK_IMG}">
         Add to inquiry list
-        </button>
-
-
-
-        </div></div>`);
-  });
-  slider.owlCarousel("destroy");
-  slider.owlCarousel({items:2, margin:10, nav:true, dots:false, loop:true, autoplay:true, responsive:{0:{items:1},480:{items:2}}});
-}
-
-function setupFiltering(allProducts){
-  function applyFilters(){
-    const activeCat = document.querySelector(".filter-category.bg-gold")?.dataset.category||"all";
-    const activeType = document.querySelector(".filter-type.bg-gold")?.dataset.type||"all";
-    let filtered = allProducts;
-    if(activeCat!=="all") filtered = filtered.filter(p=>p.category?.id===activeCat);
-    if(activeType!=="all") filtered = filtered.filter(p=>p.productType?.id===activeType);
-    renderGrid(filtered);
-    renderSlider(filtered);
-  }
-  document.addEventListener("click",e=>{
-    if(e.target.classList.contains("filter-category")){
-      document.querySelectorAll(".filter-category").forEach(b=>b.classList.remove("bg-gold","text-white"));
-      e.target.classList.add("bg-gold","text-white");
-      applyFilters();
-    }
-    if(e.target.classList.contains("filter-type")){
-      document.querySelectorAll(".filter-type").forEach(b=>b.classList.remove("bg-gold","text-white"));
-      e.target.classList.add("bg-gold","text-white");
-      applyFilters();
-    }
-  });
-}
-
-function setupInquiryButtons() {
-  const buttons = document.querySelectorAll(".inquiry-btn");
-
-  buttons.forEach(btn => {
-    const id = btn.dataset.id;
-
-    // Load state from localStorage
-    const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-    const exists = list.some(item => item.id === id);
-
-    if (exists) {
-      btn.textContent = "Remove from inquiry list";
-      btn.classList.remove("bg-gold");
-      btn.classList.add("bg-gray-400");
+      </button>
+    </div>
+  `).join("") : `<p class="text-center text-gray-500">No products found.</p>`;
     }
 
-    btn.onclick = () => {
-        let inquiryList = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+    function applyFilters() {
+      const activeSubcat = document.querySelector(".filter-subcategory.bg-gold")?.dataset.subcategory;
+      let filtered = allProducts;
 
-        const product = {
+      if (selectedParentCategory && selectedParentCategory !== "all") {
+        const subcategories = getSubcategories(allCategories, selectedParentCategory);
+        const subcatIds = subcategories.map(s => s.id);
+
+        if (activeSubcat && activeSubcat !== "all") {
+          // Filter by specific subcategory
+          filtered = filtered.filter(p => p.category?.id === activeSubcat);
+        } else {
+          // Filter by parent category or any of its subcategories
+          filtered = filtered.filter(p =>
+            p.category?.id === selectedParentCategory || subcatIds.includes(p.category?.id)
+          );
+        }
+      }
+
+      renderGrid(filtered);
+      renderMobileList(filtered);
+      setupInquiryButtons();
+    }
+
+    function setupFiltering() {
+      document.addEventListener("click", e => {
+        // Handle parent category clicks
+        if (e.target.classList.contains("filter-category")) {
+          document.querySelectorAll(".filter-category").forEach(b => b.classList.remove("bg-gold", "text-white"));
+          e.target.classList.add("bg-gold", "text-white");
+
+          selectedParentCategory = e.target.dataset.category;
+
+          if (selectedParentCategory === "all") {
+            document.getElementById("subcategoryFilter").classList.add("hidden");
+            document.getElementById("subcategoryFilter").innerHTML = "";
+          } else {
+            renderSubcategoryFilters(selectedParentCategory);
+          }
+
+          applyFilters();
+        }
+
+        // Handle subcategory clicks
+        if (e.target.classList.contains("filter-subcategory")) {
+          document.querySelectorAll(".filter-subcategory").forEach(b => b.classList.remove("bg-gold", "text-white"));
+          e.target.classList.add("bg-gold", "text-white");
+          applyFilters();
+        }
+      });
+    }
+
+    function setupInquiryButtons() {
+      const buttons = document.querySelectorAll(".inquiry-btn");
+
+      buttons.forEach(btn => {
+        const id = btn.dataset.id;
+
+        // Load state from localStorage
+        const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+        const exists = list.some(item => item.id === id);
+
+        if (exists) {
+          btn.textContent = "Remove from inquiry list";
+          btn.classList.remove("bg-gold");
+          btn.classList.add("bg-gray-400");
+        }
+
+        btn.onclick = () => {
+          let inquiryList = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+
+          const product = {
             id: btn.dataset.id,
             name: btn.dataset.name,
             category: btn.dataset.category,
             type: btn.dataset.type,
             image: btn.dataset.image
-        };
+          };
 
-        const already = inquiryList.some(i => i.id === product.id);
+          const already = inquiryList.some(i => i.id === product.id);
 
-        if (already) {
+          if (already) {
             inquiryList = inquiryList.filter(i => i.id !== product.id);
             btn.textContent = "Add to inquiry list";
             btn.classList.add("bg-gold");
             btn.classList.remove("bg-gray-400");
-        } else {
+          } else {
             inquiryList.push(product);
             btn.textContent = "Remove from inquiry list";
             btn.classList.remove("bg-gold");
             btn.classList.add("bg-gray-400");
-        }
+          }
 
-        localStorage.setItem("inquiryList", JSON.stringify(inquiryList));
+          localStorage.setItem("inquiryList", JSON.stringify(inquiryList));
+          updateCartBadge();
+        };
+      });
+    }
 
-        updateCartBadge(); // 🔥 update cart count badge
-    };
+    function updateCartBadge() {
+      const badge = document.getElementById("cartCountBadge");
+      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+      const count = list.length;
 
-  });
-}
+      if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
 
-function updateCartBadge() {
-  const badge = document.getElementById("cartCountBadge");
-  const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-  const count = list.length;
+    (async () => {
+      const data = await fetchSaleor();
+      if (!data) return alert("Error fetching Saleor API");
 
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove("hidden");
-  } else {
-    badge.classList.add("hidden");
-  }
-}
+      allCategories = data.categories?.edges?.map(e => e.node) || [];
+      let products = data.products?.edges?.map(e => e.node) || [];
+      allProducts = products.filter(p => p.category?.name !== HIDDEN_CATEGORY_NAME);
 
-
-(async()=>{
-  const data = await fetchSaleor();
-  if(!data) return alert("Error fetching Saleor API");
-
-  const categories = data.categories?.edges?.map(e=>e.node)||[];
-  const productTypes = data.productTypes?.edges?.map(e=>e.node)||[];
-  let products = data.products?.edges?.map(e=>e.node)||[];
-  products = products.filter(p=>p.category?.name!==HIDDEN_CATEGORY_NAME);
-
-  renderFilters(categories,productTypes,products);
-  renderGrid(products);
-  renderSlider(products);
-  setupFiltering(products);
-  setupInquiryButtons();  
-  updateCartBadge();
-
-})();
-</script>
+      renderCategoryFilters(allCategories, allProducts);
+      renderGrid(allProducts);
+      renderMobileList(allProducts);
+      setupFiltering();
+      setupInquiryButtons();
+      updateCartBadge();
+    })();
+  </script>
 
 </body>
+
 </html>

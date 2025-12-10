@@ -5,44 +5,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery Image Products</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
   <link rel="stylesheet" href="style.css">
 
 </head>
 
 
 <body class="bg-black">
-    <!-- Header -->
-    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+  <!-- Header -->
+  <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
+    <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+      <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
-            <ul class="hidden md:flex space-x-6 text-gray-300">
-                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
-                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-            </ul>
-            <button class="md:hidden text-gold-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </nav>
+      <ul class="hidden md:flex space-x-6 text-gray-300">
+        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+        <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
+        <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+      </ul>
+      <button class="md:hidden text-gold-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </nav>
 
     <div class="floating-icon">
-        <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;" src="images/call_icon.svg" alt="" srcset=""></a>
-        <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="" srcset=""></a>
+      <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
+          src="images/call_icon.svg" alt="Call" srcset=""></a>
+      <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
+          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
+      <a target="_blank" href="https://www.facebook.com/boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/facebook.svg" alt="Facebook" srcset=""></a>
+      <a target="_blank" href="https://www.instagram.com/boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/instagram.svg" alt="Instagram" srcset=""></a>
+      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/youtube.svg" alt="YouTube" srcset=""></a>
+      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
+          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
+          src="images/map_marker.svg" alt="Location" srcset=""></a>
     </div>
 
     <div id="drawer">
-        <ul>
+      <ul>
         <li><a href="#company">Company</a></li>
         <li><a href="#shop">Shop</a></li>
         <li><a href="#services">Services</a></li>
@@ -50,50 +65,49 @@
         <!-- <li><a href="#gallery">Locations</a></li>
         <li><a href="#gallery">Blogs</a></li> -->
         <li><a href="#contact">Contact Us</a></li>
-        </ul>
+      </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
 
-<div class="fixedBottom">
-        <a href="https://b-oneinterior.com/" class="logoBx"></a>
-        <ul>
-            <li>
-                <a href="https://b-oneinterior.com/gallery">
-                    <ion-icon name="images-outline"></ion-icon>
-                    <div>Gallery</div>
-                </a>
-            </li>
+    <div class="fixedBottom">
+      <a href="https://b-oneinterior.com/" class="logoBx"></a>
+      <ul>
+        <li>
+          <a href="https://b-oneinterior.com/gallery">
+            <ion-icon name="images-outline"></ion-icon>
+            <div>Gallery</div>
+          </a>
+        </li>
 
 
-            <li>
-                <a href="https://b-oneinterior.com/shop">
-                    <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Shop</div>
+        <li>
+          <a href="https://b-oneinterior.com/shop">
+            <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Shop</div>
 
-                </a>
-            </li>
-            <li></li>
+          </a>
+        </li>
+        <li></li>
 
-            <li>
-                <a href="https://b-oneinterior.com/company">
-                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Company</div>
-                </a>
-            </li>
+        <li>
+          <a href="https://b-oneinterior.com/company">
+            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Company</div>
+          </a>
+        </li>
 
-            
-            <li>
-                <a href="https://b-oneinterior.com/cart">
-                    <ion-icon name="cart-outline"></ion-icon>
-                    <div>Cart</div>
-                    <span id="cartCountBadge"
-                        class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+
+        <li>
+          <a href="https://b-oneinterior.com/cart">
+            <ion-icon name="cart-outline"></ion-icon>
+            <div>Cart</div>
+            <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
                                 w-5 h-5 flex items-center justify-center rounded-full hidden">
-                    </span>
+            </span>
 
-                </a>
-            </li>
-            <!-- <li>
+          </a>
+        </li>
+        <!-- <li>
                 <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
                     <div>
                         <div class="menu-icon" id="menu-btn">&#9776;</div>
@@ -103,66 +117,67 @@
                 </a>
 
             </li> -->
-        </ul>
-</div>
+      </ul>
+    </div>
+
+    <script>
+      //   const drawer = document.getElementById("drawer");
+      //   const overlay = document.querySelector(".overlay");
+      //   const menuBtn = document.getElementById("menu-btn");
+
+      //   menuBtn.addEventListener("click", () => {
+      //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
+      //       toggleOverlay();
+      //   });
+
+      //   overlay.addEventListener("click", () => {
+      //       drawer.style.left = "-250px";
+      //       hideOverlay();
+      //   });
+
+      //   function toggleOverlay() {
+      //       if (overlay.style.opacity === "1") {
+      //           hideOverlay();
+      //       } else {
+      //           showOverlay();
+      //       }
+      //   }
+
+      //   function showOverlay() {
+      //       overlay.style.opacity = "1";
+      //       overlay.style.pointerEvents = "auto";
+      //   }
+
+      //   function hideOverlay() {
+      //       overlay.style.opacity = "0";
+      //       overlay.style.pointerEvents = "none";
+      //   }
+    </script>
+  </header>
+
+
+  <div class="container mx-auto p-6 space-y-6">
+
+    <h1 class="text-2xl font-bold mb-4 golden-text">Inquiry List</h1>
+
+    <div id="cartItems" class="space-y-4"></div>
+
+    <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90">Submit
+      Inquiry</button>
+
+  </div>
 
   <script>
-        //   const drawer = document.getElementById("drawer");
-        //   const overlay = document.querySelector(".overlay");
-        //   const menuBtn = document.getElementById("menu-btn");
+    function loadCart() {
+      const container = document.getElementById("cartItems");
+      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
 
-        //   menuBtn.addEventListener("click", () => {
-        //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-        //       toggleOverlay();
-        //   });
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-gray-500">No items added.</p>`;
+        return;
+      }
 
-        //   overlay.addEventListener("click", () => {
-        //       drawer.style.left = "-250px";
-        //       hideOverlay();
-        //   });
-
-        //   function toggleOverlay() {
-        //       if (overlay.style.opacity === "1") {
-        //           hideOverlay();
-        //       } else {
-        //           showOverlay();
-        //       }
-        //   }
-
-        //   function showOverlay() {
-        //       overlay.style.opacity = "1";
-        //       overlay.style.pointerEvents = "auto";
-        //   }
-
-        //   function hideOverlay() {
-        //       overlay.style.opacity = "0";
-        //       overlay.style.pointerEvents = "none";
-        //   }
-    </script>
-    </header>
-
-
-<div class="container mx-auto p-6 space-y-6">
-
-  <h1 class="text-2xl font-bold mb-4 golden-text">Inquiry List</h1>
-
-  <div id="cartItems" class="space-y-4"></div>
-
-  <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90">Submit Inquiry</button>
-
-</div>
-
-<script>
-function loadCart() {
-  const container = document.getElementById("cartItems");
-  const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-
-  if (list.length === 0) {
-    container.innerHTML = `<p class="text-gray-500">No items added.</p>`;
-    return;
-  }
-
-    container.innerHTML = list.map(item => `
+      container.innerHTML = list.map(item => `
     <div class="bg-white shadow p-4 rounded-lg flex items-center justify-between gap-4">
         
         <img src="${item.image}" class="w-16 h-16 object-cover rounded">
@@ -181,38 +196,39 @@ function loadCart() {
     `).join("");
 
 
-  document.querySelectorAll(".exclude-btn").forEach(btn => {
-    btn.onclick = () => {
-      const id = btn.dataset.id;
-      let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      list = list.filter(i => i.id !== id);
-      localStorage.setItem("inquiryList", JSON.stringify(list));
-      loadCart(); // Refresh
-      updateCartBadge();
+      document.querySelectorAll(".exclude-btn").forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+          list = list.filter(i => i.id !== id);
+          localStorage.setItem("inquiryList", JSON.stringify(list));
+          loadCart(); // Refresh
+          updateCartBadge();
 
-    };
-  });
-}
-function updateCartBadge() {
-  const badge = document.getElementById("cartCountBadge");
-  const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-  const count = list.length;
+        };
+      });
+    }
+    function updateCartBadge() {
+      const badge = document.getElementById("cartCountBadge");
+      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+      const count = list.length;
 
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove("hidden");
-  } else {
-    badge.classList.add("hidden");
-  }
-}
-
-
-
-loadCart();
-updateCartBadge();
+      if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
 
 
-</script>
+
+    loadCart();
+    updateCartBadge();
+
+
+  </script>
 
 </body>
+
 </html>
