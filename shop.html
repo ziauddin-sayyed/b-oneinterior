@@ -49,15 +49,20 @@
 
     /* Override floating icon position for Shop page */
     .floating-icon {
+      position: relative !important;
       bottom: auto !important;
-      top: 100px !important;
-      right: 10px !important;
+      top: 0 !important;
+      left: auto !important;
+      right: auto !important;
+      transform: none !important;
+      margin: 10px auto !important;
       display: flex !important;
       flex-direction: row !important;
       padding: 8px 15px !important;
       border-radius: 50px !important;
-      width: auto !important;
       gap: 10px !important;
+      justify-content: center !important;
+      width: fit-content !important;
     }
 
     .floating-icon a img {
@@ -71,7 +76,7 @@
 <body class="bg-black min-h-[130vh]">
 
   <!-- Header -->
-  <header class="bg-gray-900 shadow-lg sticky top-0 z-50 ">
+  <header class="bg-gray-900 shadow-lg top-0 z-50 ">
     <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
       <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
@@ -106,6 +111,20 @@
       <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
           style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
           src="images/map_marker.svg" alt="Location" srcset=""></a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="container mx-auto px-4 mt-6 flex justify-center sticky top-0 z-40 bg-black pb-4 pt-4">
+      <div class="relative w-full max-w-md">
+        <input type="text" id="searchInput" placeholder="Search products..."
+          class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <div id="drawer">
@@ -207,9 +226,9 @@
     </script>
   </header>
 
-  <div class="container mx-auto px-4 py-10 space-y-6">
+  <div class="container mx-auto px-4  space-y-6">
 
-    <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6 sticky top-0 z-40">
+    <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6  top-0 z-40">
       <div>
         <h3 class="font-semibold mb-3">Categories</h3>
         <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
@@ -694,6 +713,15 @@ query {
       const activeSubcat = document.querySelector(".filter-subcategory.bg-gold")?.dataset.subcategory;
       let filtered = allProducts;
 
+      // Filter by Search Query
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+      if (searchQuery) {
+        filtered = filtered.filter(p =>
+          p.name.toLowerCase().includes(searchQuery) ||
+          (p.category && p.category.name.toLowerCase().includes(searchQuery))
+        );
+      }
+
       if (selectedParentCategory && selectedParentCategory !== "all") {
         const subcategories = getSubcategories(allCategories, selectedParentCategory);
         const subcatIds = subcategories.map(s => s.id);
@@ -714,6 +742,11 @@ query {
     }
 
     function setupFiltering() {
+      // Search Input Listener
+      document.getElementById("searchInput").addEventListener("input", () => {
+        applyFilters();
+      });
+
       document.addEventListener("click", e => {
         // Handle parent category clicks
         if (e.target.classList.contains("filter-category")) {
