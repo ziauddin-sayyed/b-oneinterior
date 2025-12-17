@@ -55,19 +55,24 @@
       left: auto !important;
       right: auto !important;
       transform: none !important;
-      margin: 10px auto !important;
+      margin: 10px 16px auto !important;
       display: flex !important;
       flex-direction: row !important;
-      padding: 8px 15px !important;
+      padding: 2px 0px !important;
       border-radius: 50px !important;
       gap: 10px !important;
       justify-content: center !important;
-      width: fit-content !important;
+      /* width: fit-content !important; */
+      background: white !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     .floating-icon a img {
       margin: 0 !important;
-      height: 35px !important;
+      width: 40px !important;
+      height: 40px !important;
+      object-fit: contain !important;
+      filter: none !important;
     }
   </style>
 
@@ -96,25 +101,21 @@
 
     <div class="floating-icon">
       <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-          src="images/call_icon.svg" alt="Call" srcset=""></a>
+          src="images/call_icon.png" alt="Call" srcset=""></a>
       <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
-      <a target="_blank" href="https://www.facebook.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/facebook.svg" alt="Facebook" srcset=""></a>
-      <a target="_blank" href="https://www.instagram.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/instagram.svg" alt="Instagram" srcset=""></a>
-      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/youtube.svg" alt="YouTube" srcset=""></a>
-      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/map_marker.svg" alt="Location" srcset=""></a>
+          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
+      <a target="_blank" href="https://www.facebook.com/boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/facebook.png" alt="Facebook" srcset=""></a>
+      <a target="_blank" href="https://www.instagram.com/boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/instagram.png" alt="Instagram" srcset=""></a>
+      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/youtube.png" alt="YouTube" srcset=""></a>
+      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/map_marker.png" alt="Location" srcset=""></a>
     </div>
 
     <!-- Search Bar -->
-    <div class="container mx-auto px-4 mt-6 flex justify-center sticky top-0 z-40 bg-black pb-4 pt-4">
+    <div class="container mx-auto px-4 mt-2 flex justify-center sticky top-0 z-40 bg-black pb-4">
       <div class="relative w-full max-w-md">
         <input type="text" id="searchInput" placeholder="Search products..."
           class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
@@ -718,7 +719,8 @@ query {
       if (searchQuery) {
         filtered = filtered.filter(p =>
           p.name.toLowerCase().includes(searchQuery) ||
-          (p.category && p.category.name.toLowerCase().includes(searchQuery))
+          (p.category && p.category.name.toLowerCase().includes(searchQuery)) ||
+          (p.description && p.description.toLowerCase().includes(searchQuery))
         );
       }
 
