@@ -17,6 +17,36 @@
   <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
 
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom Owl Carousel Dots Styling */
+    .owl-dots {
+      text-align: center;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .owl-dot span {
+      width: 8px;
+      height: 8px;
+      margin: 0;
+      background: #d1d5db !important;
+      /* Gray-300 */
+      display: block;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+
+    .owl-dot.active span {
+      background: #000000 !important;
+      /* Black */
+    }
+
+    .owl-theme .owl-nav.disabled+.owl-dots {
+      margin-top: 10px;
+    }
+  </style>
 
 </head>
 
@@ -186,7 +216,7 @@
     const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
     const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
 
-    // Updated query to fetch parent category information
+    // Updated query to fetch parent category information and product attributes
     const QUERY = `
 query {
   categories(first: 100) { 
@@ -207,6 +237,32 @@ query {
         id 
         name 
         slug 
+        description
+        media {
+          url
+          type
+        }
+        attributes {
+          attribute {
+            name
+          }
+          values {
+            name
+            file {
+              url
+            }
+          }
+        }
+        pricing {
+            priceRange {
+              start {
+                gross {
+                  amount
+                  currency
+                }
+              }
+            }
+        }
         category { 
           id 
           name 
@@ -326,50 +382,261 @@ query {
       subcategoryContainer.classList.remove("hidden");
     }
 
+    function getActualPrice(product) {
+      if (!product.attributes) return null;
+      const priceAttr = product.attributes.find(a => a.attribute.name === "Actual Price");
+      if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
+        return priceAttr.values[0].name;
+      }
+      return null;
+    }
+
+    function getCatalogueLink(product) {
+      if (!product.attributes) return null;
+      const catAttr = product.attributes.find(a => a.attribute.name === "Catalogue");
+      if (catAttr && catAttr.values && catAttr.values.length > 0) {
+        return catAttr.values[0].file?.url;
+      }
+      return null;
+    }
+
     function renderGrid(products) {
       const grid = document.getElementById("productGrid");
-      grid.innerHTML = products.length ? products.map(p => `
-    <div class="product-card bg-white shadow rounded-lg p-4 hover:shadow-lg transition" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
-      <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-40 object-cover rounded mb-2" alt="${p.name}">
-      <p class="font-semibold truncate">${p.name}</p>
-      <div class="flex items-center justify-between text-sm text-gray-500">
-        <p>${p.category?.name || "—"}</p>
-        <p>${p.productType?.name || ""}</p>
+      grid.innerHTML = products.length ? products.map(p => {
+        const actualPriceStr = getActualPrice(p);
+        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+        const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+        const currency = currentPriceObj ? currentPriceObj.currency : "";
+        const catalogueUrl = getCatalogueLink(p);
+
+        let priceHtml = "";
+        let badgeHtml = "";
+        let catalogueBadgeHtml = "";
+
+        // Catalogue Link (Overlay)
+        if (catalogueUrl) {
+          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="absolute bottom-2 right-2 bg-white/90 text-gold text-xs font-bold px-2 py-1 rounded shadow-sm z-10 hover:bg-gold hover:text-white transition cursor-pointer">View Catalogue</a>`;
+        }
+
+        // Calculate Discount
+        if (actualPriceStr && currentPriceVal) {
+          const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+          if (!isNaN(actualVal) && actualVal > currentPriceVal) {
+            const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
+            if (discount > 0) {
+              badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+            }
+          }
+        }
+
+        // Build Price HTML (Compact for footer)
+        if (actualPriceStr || currentPriceVal) {
+          priceHtml = `<div class="flex-1 flex items-baseline justify-end gap-2 leading-tight min-w-0">`;
+          if (actualPriceStr) {
+            priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
+          }
+          if (currentPriceVal) {
+            const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
+            priceHtml += `<span class="text-green-600 font-bold text-lg">${formattedPrice}</span>`;
+          }
+          priceHtml += `</div>`;
+        }
+
+        // Description Logic
+        let descHtml = "";
+        if (p.description) {
+          // Attempt to parse if it's JSON string, or just use if string.
+          // Saleor often returns JSON for description. 
+          // Simple check: if it looks like JSON objects blocks...
+          // For now, let's treat it as string or try to extract text if it's an object.
+          let descText = p.description;
+          if (typeof p.description === 'string' && p.description.startsWith('{')) {
+            try {
+              const descObj = JSON.parse(p.description);
+              // Very basic extraction if it's EditorJS/DraftJS
+              if (descObj.blocks) {
+                descText = descObj.blocks.map(b => b.data.text).join(' ');
+              }
+            } catch (e) { }
+          }
+          if (descText.length > 100) {
+            descText = descText.substring(0, 100) + "...";
+          }
+          descHtml = `<p class="text-xs text-gray-600 mt-2 line-clamp-2">${descText}</p>`;
+        }
+
+        // Image Carousel Logic
+        let imageHtml = "";
+        if (p.media && p.media.length > 0) {
+          imageHtml = `<div class="owl-carousel product-carousel">`;
+          p.media.forEach(m => {
+            if (m.type === 'IMAGE') {
+              imageHtml += `<img src="${m.url}" class="w-full h-40 object-cover" alt="${p.name}">`;
+            }
+          });
+          imageHtml += `</div>`;
+        } else {
+          imageHtml = `<img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover" alt="${p.name}">`;
+        }
+
+        return `
+    <div class="product-card bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
+      <div class="relative">
+          ${badgeHtml}
+          <!-- Product Type Badge (Top Right) -->
+          ${p.productType?.name ? `<div class="absolute top-2 right-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.productType.name}</div>` : ''}
+          ${imageHtml}
+          <!-- Category Badge (Bottom Left) -->
+          ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
+          ${catalogueBadgeHtml}
       </div>
-      <br>
-      <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
-              data-id="${p.id}"
-              data-name="${p.name}"
-              data-category="${p.category?.name || ''}"
-              data-type="${p.productType?.name || ''}"
-              data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-        Add to inquiry list
-      </button>
+      
+      <div class="p-4 flex flex-col flex-grow">
+          <p class="font-semibold truncate">${p.name}</p>
+          ${descHtml}
+          
+          <div class="flex items-center justify-between gap-2 mt-auto border-t pt-3">
+               <button class="inquiry-btn flex-1 py-2 rounded-full text-xs font-medium bg-gold text-white hover:opacity-90 min-w-0"
+                    data-id="${p.id}"
+                    data-name="${p.name}"
+                    data-category="${p.category?.name || ''}"
+                    data-type="${p.productType?.name || ''}"
+                    data-image="${p.thumbnail?.url || FALLBACK_IMG}">
+                Add to inquiry
+              </button>
+              ${priceHtml}
+          </div>
+      </div>
     </div>
-  `).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
+  `}).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
+
+      // Initialize Carousel
+      setTimeout(() => {
+        $('.product-carousel').owlCarousel({
+          items: 1,
+          loop: true,
+          dots: true,
+          nav: false,
+          margin: 10
+        });
+      }, 100);
     }
 
     function renderMobileList(products) {
       const mobileList = document.getElementById("mobileProductList");
-      mobileList.innerHTML = products.length ? products.map(p => `
-    <div class="bg-white shadow rounded-lg p-4">
-      <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover rounded mb-3" alt="${p.name}">
-      <p class="font-semibold text-lg">${p.name}</p>
-      <div class="flex items-center justify-between text-sm text-gray-500 mt-1">
-        <p>${p.category?.name || "—"}</p>
-        <p>${p.productType?.name || ""}</p>
+      mobileList.innerHTML = products.length ? products.map(p => {
+        const actualPriceStr = getActualPrice(p);
+        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+        const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+        const currency = currentPriceObj ? currentPriceObj.currency : "";
+        const catalogueUrl = getCatalogueLink(p);
+
+        let priceHtml = "";
+        let badgeHtml = "";
+        let catalogueBadgeHtml = "";
+
+        if (catalogueUrl) {
+          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="absolute bottom-2 right-2 bg-white/90 text-gold text-xs font-bold px-2 py-1 rounded shadow-sm z-10 hover:bg-gold hover:text-white transition cursor-pointer">View Catalogue</a>`;
+        }
+
+        // Calculate Discount
+        if (actualPriceStr && currentPriceVal) {
+          const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+          if (!isNaN(actualVal) && actualVal > currentPriceVal) {
+            const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
+            if (discount > 0) {
+              badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+            }
+          }
+        }
+
+        // Build Price HTML
+        if (actualPriceStr || currentPriceVal) {
+          priceHtml = `<div class="flex-1 flex items-baseline justify-end gap-2 leading-tight min-w-0">`;
+          if (actualPriceStr) {
+            priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
+          }
+          if (currentPriceVal) {
+            const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
+            priceHtml += `<span class="text-green-600 font-bold text-lg">${formattedPrice}</span>`;
+          }
+          priceHtml += `</div>`;
+        }
+
+        // Description Logic
+        let descHtml = "";
+        if (p.description) {
+          let descText = p.description;
+          // Simple basic cleaning if it's stringified JSON structure
+          if (typeof p.description === 'string' && p.description.startsWith('{')) {
+            try {
+              const descObj = JSON.parse(p.description);
+              if (descObj.blocks) {
+                descText = descObj.blocks.map(b => b.data.text).join(' ');
+              }
+            } catch (e) { }
+          }
+          if (descText.length > 100) {
+            descText = descText.substring(0, 100) + "...";
+          }
+          descHtml = `<p class="text-xs text-gray-600 mt-2 mb-2 line-clamp-3">${descText}</p>`;
+        }
+
+        // Image Carousel Logic
+        let imageHtml = "";
+        if (p.media && p.media.length > 0) {
+          imageHtml = `<div class="owl-carousel product-carousel">`;
+          p.media.forEach(m => {
+            if (m.type === 'IMAGE') {
+              imageHtml += `<img src="${m.url}" class="w-full h-48 object-cover" alt="${p.name}">`;
+            }
+          });
+          imageHtml += `</div>`;
+        } else {
+          imageHtml = `<img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover" alt="${p.name}">`;
+        }
+
+        return `
+    <div class="bg-white shadow rounded-lg relative group overflow-hidden">
+      <div class="relative">
+          ${badgeHtml}
+          <!-- Product Type Badge (Top Right) -->
+          ${p.productType?.name ? `<div class="absolute top-2 right-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.productType.name}</div>` : ''}
+          ${imageHtml}
+          <!-- Category Badge (Bottom Left) -->
+          ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
+          ${catalogueBadgeHtml}
       </div>
-      <br>
-      <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90"
-              data-id="${p.id}"
-              data-name="${p.name}"
-              data-category="${p.category?.name || ''}"
-              data-type="${p.productType?.name || ''}"
-              data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-        Add to inquiry list
-      </button>
+      
+      <div class="p-4">
+          <p class="font-semibold text-lg">${p.name}</p>
+          ${descHtml}
+          
+          <div class="flex items-center justify-between gap-2 mt-2 border-t pt-3">
+               <button class="inquiry-btn flex-1 py-2 rounded-full text-xs font-medium bg-gold text-white hover:opacity-90 min-w-0"
+                    data-id="${p.id}"
+                    data-name="${p.name}"
+                    data-category="${p.category?.name || ''}"
+                    data-type="${p.productType?.name || ''}"
+                    data-image="${p.thumbnail?.url || FALLBACK_IMG}">
+                Add to inquiry
+              </button>
+              ${priceHtml}
+          </div>
+      </div>
     </div>
-  `).join("") : `<p class="text-center text-gray-500">No products found.</p>`;
+  `}).join("") : `<p class="text-center text-gray-500">No products found.</p>`;
+
+      // Initialize Carousel
+      setTimeout(() => {
+        $('.product-carousel').owlCarousel({
+          items: 1,
+          loop: true,
+          dots: true,
+          nav: false,
+          margin: 10
+        });
+      }, 100);
     }
 
     function applyFilters() {
