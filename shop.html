@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <title>Saleor Shop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+  <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -241,11 +243,11 @@
       </div>
     </aside>
 
-    <!-- Mobile: Vertical scroll product list -->
-    <div id="mobileProductList" class="block md:hidden space-y-4"></div>
+    <!-- Mobile: Vertical scroll product list -> Grid 2 cols -->
+    <div id="mobileProductList" class="grid grid-cols-2 gap-3 md:hidden px-2"></div>
 
     <!-- Desktop: Grid layout -->
-    <main id="productGrid" class="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></main>
+    <main id="productGrid" class="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></main>
 
     <!-- Loading Spinner -->
     <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
@@ -492,7 +494,7 @@ query {
 
         // Catalogue Link (Overlay)
         if (catalogueUrl) {
-          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="absolute bottom-2 right-2 bg-white/90 text-gold text-xs font-bold px-2 py-1 rounded shadow-sm z-10 hover:bg-gold hover:text-white transition cursor-pointer">View Catalogue</a>`;
+          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="block text-center bg-gray-100 text-gold text-xs font-bold px-2 py-2 rounded shadow-sm hover:bg-gold hover:text-white transition cursor-pointer mb-2 border border-gold">View Catalogue</a>`;
         }
 
         // Calculate Discount
@@ -508,7 +510,7 @@ query {
 
         // Build Price HTML (Compact for footer)
         if (actualPriceStr || currentPriceVal) {
-          priceHtml = `<div class="flex-1 flex items-baseline justify-end gap-2 leading-tight min-w-0">`;
+          priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">`;
           if (actualPriceStr) {
             priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
           }
@@ -560,23 +562,21 @@ query {
     <div class="product-card bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
       <div class="relative">
           ${badgeHtml}
-          <!-- Product Type Badge (Top Right) -->
-          ${p.productType?.name ? `<div class="absolute top-2 right-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.productType.name}</div>` : ''}
           ${imageHtml}
           <!-- Category Badge (Bottom Left) -->
           ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
-          ${catalogueBadgeHtml}
       </div>
       
       <div class="p-4 flex flex-col flex-grow">
           <p class="font-semibold truncate">${p.name}</p>
           ${descHtml}
           
-          <div class="flex items-center justify-between gap-2 mt-auto border-t pt-3">
-             <div class="cart-btn-wrapper flex-1 min-w-0" data-id="${p.id}">
+          <div class="flex flex-col-reverse gap-2 mt-auto border-t pt-3 w-full">
+             <div class="cart-btn-wrapper w-full" data-id="${p.id}">
                 ${cartBtnHtml}
              </div>
              ${priceHtml}
+             ${catalogueBadgeHtml}
           </div>
       </div>
     </div>
@@ -612,7 +612,7 @@ query {
         let catalogueBadgeHtml = "";
 
         if (catalogueUrl) {
-          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="absolute bottom-2 right-2 bg-white/90 text-gold text-xs font-bold px-2 py-1 rounded shadow-sm z-10 hover:bg-gold hover:text-white transition cursor-pointer">View Catalogue</a>`;
+          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="block text-center bg-gray-100 text-gold text-xs font-bold px-2 py-2 rounded shadow-sm hover:bg-gold hover:text-white transition cursor-pointer mb-2 border border-gold">View Catalogue</a>`;
         }
 
         // Calculate Discount
@@ -628,7 +628,7 @@ query {
 
         // Build Price HTML
         if (actualPriceStr || currentPriceVal) {
-          priceHtml = `<div class="flex-1 flex items-baseline justify-end gap-2 leading-tight min-w-0">`;
+          priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">`;
           if (actualPriceStr) {
             priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
           }
@@ -676,23 +676,21 @@ query {
     <div class="bg-white shadow rounded-lg relative group overflow-hidden">
       <div class="relative">
           ${badgeHtml}
-          <!-- Product Type Badge (Top Right) -->
-          ${p.productType?.name ? `<div class="absolute top-2 right-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.productType.name}</div>` : ''}
           ${imageHtml}
           <!-- Category Badge (Bottom Left) -->
           ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
-          ${catalogueBadgeHtml}
       </div>
       
       <div class="p-4">
           <p class="font-semibold text-lg">${p.name}</p>
           ${descHtml}
           
-          <div class="flex items-center justify-between gap-2 mt-2 border-t pt-3">
-               <div class="cart-btn-wrapper flex-1 min-w-0" data-id="${p.id}">
+          <div class="flex flex-col-reverse gap-2 mt-2 border-t pt-3 w-full">
+               <div class="cart-btn-wrapper w-full" data-id="${p.id}">
                   ${cartBtnHtml}
                </div>
               ${priceHtml}
+              ${catalogueBadgeHtml}
           </div>
       </div>
     </div>

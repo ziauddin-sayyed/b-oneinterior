@@ -2,305 +2,354 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gallery Image Products</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-  <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <title>Saleor Work</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery + Owl Carousel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Custom Owl Carousel Dots Styling */
+        .owl-dots {
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .owl-dot span {
+            width: 8px;
+            height: 8px;
+            margin: 0;
+            background: #d1d5db !important;
+            display: block;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .owl-dot.active span {
+            background: #000000 !important;
+        }
+
+        .owl-theme .owl-nav.disabled+.owl-dots {
+            margin-top: 10px;
+        }
+
+        /* Override floating icon position */
+        .floating-icon {
+            position: relative !important;
+            bottom: auto !important;
+            top: 0 !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            margin: 10px 16px auto !important;
+            display: flex !important;
+            flex-direction: row !important;
+            padding: 2px 0px !important;
+            border-radius: 50px !important;
+            gap: 10px !important;
+            justify-content: center !important;
+            background: white !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .floating-icon a img {
+            margin: 0 !important;
+            width: 40px !important;
+            height: 40px !important;
+            object-fit: contain !important;
+            filter: none !important;
+        }
+    </style>
 
 </head>
 
-<body class="bg-black">
+<body class="bg-black min-h-[130vh]">
+
+    <!-- Header -->
+    <header class="bg-gray-900 shadow-lg top-0 z-50 ">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+            </ul>
+            <button class="md:hidden text-gold-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </nav>
+
+        <div class="floating-icon">
+            <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
+                    src="images/call_icon.png" alt="Call" srcset=""></a>
+            <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
+                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
+            <a target="_blank" href="https://www.facebook.com/boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
+            <a target="_blank" href="https://www.instagram.com/boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
+            <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
+            <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
+        </div>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="#company">Company</a></li>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li>
+                    <a href="https://b-oneinterior.com/gallery">
+                        <ion-icon name="images-outline"></ion-icon>
+                        <div>Gallery</div>
+                    </a>
+                </li>
 
 
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Shop</div>
 
-  <!-- Header -->
-  <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
-    <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-      <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+                    </a>
+                </li>
+                <li></li>
 
-      <ul class="hidden md:flex space-x-6 text-gray-300">
-        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-        <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-        <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
-        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-      </ul>
-      <button class="md:hidden text-gold-500">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </nav>
-
-    <div class="floating-icon">
-      <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-          src="images/call_icon.svg" alt="Call" srcset=""></a>
-      <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
-      <a target="_blank" href="https://www.facebook.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/facebook.svg" alt="Facebook" srcset=""></a>
-      <a target="_blank" href="https://www.instagram.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/instagram.svg" alt="Instagram" srcset=""></a>
-      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/youtube.svg" alt="YouTube" srcset=""></a>
-      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/map_marker.svg" alt="Location" srcset=""></a>
-    </div>
-
-    <div id="drawer">
-      <ul>
-        <li><a href="#company">Company</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <!-- <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li> -->
-        <li><a href="#contact">Contact Us</a></li>
-      </ul>
-    </div>
-    <label for="menu-toggle" class="overlay"></label>
-
-    <div class="fixedBottom">
-      <a href="https://b-oneinterior.com/" class="logoBx"></a>
-      <ul>
-        <li>
-          <a href="https://b-oneinterior.com/gallery">
-            <ion-icon name="images-outline"></ion-icon>
-            <div>Gallery</div>
-          </a>
-        </li>
+                <li>
+                    <a href="https://b-oneinterior.com/company">
+                        <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Company</div>
+                    </a>
+                </li>
 
 
-        <li>
-          <a href="https://b-oneinterior.com/shop">
-            <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Shop</div>
-
-          </a>
-        </li>
-        <li></li>
-
-        <li>
-          <a href="https://b-oneinterior.com/company">
-            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Company</div>
-          </a>
-        </li>
-
-
-        <li>
-          <a href="https://b-oneinterior.com/cart">
-            <ion-icon name="cart-outline"></ion-icon>
-            <div>Cart</div>
-            <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+                <li>
+                    <a href="https://b-oneinterior.com/cart">
+                        <ion-icon name="cart-outline"></ion-icon>
+                        <div>Cart</div>
+                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
                                 w-5 h-5 flex items-center justify-center rounded-full hidden">
-            </span>
+                        </span>
 
-          </a>
-        </li>
-        <!-- <li>
-                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
-                    <div>
-                        <div class="menu-icon" id="menu-btn">&#9776;</div>
-                        
-                    </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-                </a>
+    <div class="container mx-auto px-4 mt-8 mb-24 max-w-3xl">
 
-            </li> -->
-      </ul>
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+        </div>
+
+        <!-- Vertical Product List -->
+        <div id="productList" class="space-y-8"></div>
+
     </div>
 
     <script>
-      // const drawer = document.getElementById("drawer");
-      // const overlay = document.querySelector(".overlay");
-      // const menuBtn = document.getElementById("menu-btn");
+        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
 
-      // menuBtn.addEventListener("click", () => {
-      //     drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-      //     toggleOverlay();
-      // });
-
-      // overlay.addEventListener("click", () => {
-      //     drawer.style.left = "-250px";
-      //     hideOverlay();
-      // });
-
-      // function toggleOverlay() {
-      //     if (overlay.style.opacity === "1") {
-      //         hideOverlay();
-      //     } else {
-      //         showOverlay();
-      //     }
-      // }
-
-      // function showOverlay() {
-      //     overlay.style.opacity = "1";
-      //     overlay.style.pointerEvents = "auto";
-      // }
-
-      // function hideOverlay() {
-      //     overlay.style.opacity = "0";
-      //     overlay.style.pointerEvents = "none";
-      // }
-    </script>
-  </header>
-
-
-  <section>
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Our Transformations</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="productGrid">
-
-
-      </div>
-    </div>
-  </section>
-
-  <script>
-    const API_URL = "https://api.b-oneinterior.com/graphql/";
-    const CHANNEL = "in";
-
-    async function fetchGraphQL(query, variables = {}) {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables }),
-      });
-      return res.json();
-    }
-
-    async function loadProducts() {
-      const productTypeQuery = `
-        query {
-          productTypes(first: 10, filter: { search: "gallery-image" }) {
-            edges { node { id name slug } }
-          }
-        }
-      `;
-      const productTypeResult = await fetchGraphQL(productTypeQuery);
-      const productTypeNode = productTypeResult.data.productTypes.edges[0]?.node;
-      // if (!productTypeNode) {
-      //   document.getElementById("productGrid").innerHTML = "<p>No product type found.</p>";
-      //   return;
-      // }
-
-      const productsQuery = `
-        query ($productTypeId: ID!) {
-          products(first: 20, channel: "${CHANNEL}", filter: { productTypes: [$productTypeId] }) {
-            edges {
-              node {
-                id
-                name
-                thumbnail { url }
-                pricing { priceRange { start { gross { amount currency } } } }
-                attributes{
-                  attribute { name slug }
-                  values { name file { url contentType } }
-                }
-              }
+        async function fetchGraphQL(query, variables = {}) {
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query, variables })
+                });
+                const json = await res.json();
+                if (json.errors) console.error("GraphQL errors:", json.errors);
+                return json.data;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                return null;
             }
-          }
         }
-      `;
 
-      const productsResult = await fetchGraphQL(productsQuery, { productTypeId: productTypeNode.id });
-      const products = productsResult.data.products.edges;
-      const grid = document.getElementById("productGrid");
-      // grid.innerHTML = "";
-
-      if (products.length === 0) {
-        grid.innerHTML = "<p>No products found.</p>";
-        return;
-      }
-
-      await products.forEach(p => {
-        const beforeFile = p.node.attributes.find(a => a.attribute.slug === "gallery-image-before")?.values[0]?.file?.url || '';
-        const afterFile = p.node.attributes.find(a => a.attribute.slug === "gallery-image-after")?.values[0]?.file?.url || '';
-
-        const card = document.createElement("div");
-        card.className = "before-after-container rounded-lg overflow-hidden shadow-xl";
-        card.innerHTML = `
-
-                    <img src="${afterFile}" alt="After" class="after-img">
-                    <div class="after-image">
-                        <img src="${beforeFile}" alt="Before">
-                    </div>
-                    <div class="slider-handle"></div>
-
+        async function loadWorkProducts() {
+            // 1. Fetch Product Type ID for "gallery-image"
+            const productTypeQuery = `
+            query {
+                productTypes(first: 10, filter: { search: "gallery-image" }) {
+                    edges { node { id name slug } }
+                }
+            }
         `;
-        grid.appendChild(card);
-      });
+            const typeData = await fetchGraphQL(productTypeQuery);
+            const productTypeNode = typeData?.productTypes?.edges[0]?.node;
 
-      const containers = document.querySelectorAll('.before-after-container');
-      containers.forEach((container, idx) => {
-        const handle = container.querySelector('.slider-handle');
-        const afterImage = container.querySelector('.after-image');
-        let isDragging = false;
+            if (!productTypeNode) {
+                document.getElementById("loadingSpinner").classList.add("hidden");
+                document.getElementById("productList").innerHTML = "<p class='text-white text-center'>No work items found.</p>";
+                return;
+            }
 
-        const updateSlider = (e) => {
-          const rect = container.getBoundingClientRect();
-          const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-          const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            // 2. Fetch Products for this Product Type
+            const productsQuery = `
+            query ($productTypeId: ID!) {
+                products(first: 50, channel: "in", filter: { productTypes: [$productTypeId] }) {
+                    edges {
+                        node {
+                            id
+                            name
+                            slug
+                            description
+                            media { url type }
+                            thumbnail { url }
+                            pricing {
+                                priceRange {
+                                    start {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                            attributes {
+                                attribute { name }
+                                values { name }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
 
-          afterImage.style.width = percentage + '%';
-          handle.style.left = percentage + '%';
-        };
+            const productData = await fetchGraphQL(productsQuery, { productTypeId: productTypeNode.id });
+            const products = productData?.products?.edges || [];
 
-        handle.addEventListener('mousedown', () => isDragging = true);
-        handle.addEventListener('touchstart', () => isDragging = true);
-
-        document.addEventListener('mousemove', (e) => {
-          if (isDragging) updateSlider(e);
-        });
-        document.addEventListener('touchmove', (e) => {
-          if (isDragging) updateSlider(e);
-        });
-
-        document.addEventListener('mouseup', () => isDragging = false);
-        document.addEventListener('touchend', () => isDragging = false);
-
-        container.addEventListener('click', updateSlider);
-
-      });
-
-    }
-
-    loadProducts();
-    function updateCartBadge() {
-      const badge = document.getElementById("cartCountBadge");
-      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      const count = list.length;
-
-      if (count > 0) {
-        badge.textContent = count;
-        badge.classList.remove("hidden");
-      } else {
-        badge.classList.add("hidden");
-      }
-    }
+            renderProducts(products);
+            document.getElementById("loadingSpinner").classList.add("hidden");
+        }
 
 
-    $(document).ready(function () {
-      // Before/After Image Slider
-      updateCartBadge();
+        function renderProducts(products) {
+            const list = document.getElementById("productList");
 
-    });
+            if (products.length === 0) {
+                list.innerHTML = "<p class='text-white text-center'>No items found.</p>";
+                return;
+            }
 
+            list.innerHTML = products.map(p => {
+                const node = p.node;
 
+                // Price Formatting
+                const currentPriceObj = node.pricing?.priceRange?.start?.gross;
+                const price = currentPriceObj ? currentPriceObj.amount : null;
+                const currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+                let priceHtml = "";
 
-  </script>
+                if (price) {
+                    const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
+                    priceHtml = `<p class="text-gold font-bold text-xl mt-2">${formattedPrice}</p>`;
+                }
+
+                // Description
+                let descHtml = "";
+                if (node.description) {
+                    let descText = node.description;
+                    if (typeof node.description === 'string' && node.description.startsWith('{')) {
+                        try {
+                            const descObj = JSON.parse(node.description);
+                            if (descObj.blocks) {
+                                descText = descObj.blocks.map(b => b.data.text).join(' ');
+                            }
+                        } catch (e) { }
+                    }
+                    descHtml = `<p class="text-gray-300 mt-2">${descText}</p>`;
+                }
+
+                // Image Carousel
+                let imageHtml = "";
+                if (node.media && node.media.length > 0) {
+                    imageHtml = `<div class="owl-carousel work-carousel">`;
+                    node.media.forEach(m => {
+                        if (m.type === 'IMAGE') {
+                            imageHtml += `<img src="${m.url}" class="w-full h-auto object-cover rounded-lg" alt="${node.name}">`;
+                        }
+                    });
+                    imageHtml += `</div>`;
+                } else {
+                    imageHtml = `<img src="${node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-auto object-cover rounded-lg" alt="${node.name}">`;
+                }
+
+                return `
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl p-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">${node.name}</h2>
+                    ${imageHtml}
+                    <div class="mt-4">
+                        ${descHtml}
+                        ${priceHtml}
+                    </div>
+                </div>
+             `;
+            }).join("");
+
+            // Initialize Carousel
+            setTimeout(() => {
+                $('.work-carousel').owlCarousel({
+                    items: 1,
+                    loop: true,
+                    dots: true,
+                    nav: false,
+                    margin: 10,
+                    autoHeight: true
+                });
+            }, 100);
+        }
+
+        loadWorkProducts();
+
+        // Cart Badge Logic (inherited)
+        function updateCartBadge() {
+            const badge = document.getElementById("cartCountBadge");
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const count = list.length;
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+        updateCartBadge();
+
+    </script>
 </body>
 
 </html>
