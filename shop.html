@@ -46,6 +46,24 @@
     .owl-theme .owl-nav.disabled+.owl-dots {
       margin-top: 10px;
     }
+
+    /* Override floating icon position for Shop page */
+    .floating-icon {
+      bottom: auto !important;
+      top: 100px !important;
+      right: 10px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      padding: 8px 15px !important;
+      border-radius: 50px !important;
+      width: auto !important;
+      gap: 10px !important;
+    }
+
+    .floating-icon a img {
+      margin: 0 !important;
+      height: 35px !important;
+    }
   </style>
 
 </head>
@@ -208,6 +226,11 @@
 
     <!-- Desktop: Grid layout -->
     <main id="productGrid" class="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></main>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+    </div>
 
   </div>
 
@@ -400,14 +423,48 @@ query {
       return null;
     }
 
+    function generateCartBtnHtml(p, cart) {
+      const inCart = cart.find(i => i.id === p.id);
+      const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+      const price = currentPriceObj ? currentPriceObj.amount : 0;
+      const currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+
+      if (inCart) {
+        return `
+              <div class="flex items-center justify-between rounded-full bg-gray-100 min-w-0 border border-gold w-full">
+                  <button class="qty-minus px-2 py-2 text-gray-600 hover:text-red-500 font-bold text-sm leading-none flex-1 flex items-center justify-center" data-id="${p.id}">-</button>
+                  <input type="number" min="1" class="qty-input w-12 text-center text-sm font-bold text-gray-800 bg-transparent border-none focus:ring-0 p-0" value="${inCart.quantity || 1}" data-id="${p.id}">
+                  <button class="qty-plus px-2 py-2 text-gold hover:text-gold-600 font-bold text-sm leading-none flex-1 flex items-center justify-center" data-id="${p.id}">+</button>
+              </div>
+            `;
+      } else {
+        return `
+               <button class="add-to-cart-btn w-full py-2 rounded-full text-xs font-medium bg-gold text-white hover:opacity-90 min-w-0"
+                    data-id="${p.id}"
+                    data-name="${p.name}"
+                    data-category="${p.category?.name || ''}"
+                    data-type="${p.productType?.name || ''}"
+                    data-image="${p.thumbnail?.url || FALLBACK_IMG}"
+                    data-price="${price}"
+                    data-currency="${currency}">
+                Add to Cart
+              </button>
+            `;
+      }
+    }
+
     function renderGrid(products) {
       const grid = document.getElementById("productGrid");
+      const cart = getCart();
+
       grid.innerHTML = products.length ? products.map(p => {
         const actualPriceStr = getActualPrice(p);
         const currentPriceObj = p.pricing?.priceRange?.start?.gross;
         const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
         const currency = currentPriceObj ? currentPriceObj.currency : "";
         const catalogueUrl = getCatalogueLink(p);
+
+        const cartBtnHtml = generateCartBtnHtml(p, cart);
 
         let priceHtml = "";
         let badgeHtml = "";
@@ -437,7 +494,7 @@ query {
           }
           if (currentPriceVal) {
             const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
-            priceHtml += `<span class="text-green-600 font-bold text-lg">${formattedPrice}</span>`;
+            priceHtml += `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
           }
           priceHtml += `</div>`;
         }
@@ -496,15 +553,10 @@ query {
           ${descHtml}
           
           <div class="flex items-center justify-between gap-2 mt-auto border-t pt-3">
-               <button class="inquiry-btn flex-1 py-2 rounded-full text-xs font-medium bg-gold text-white hover:opacity-90 min-w-0"
-                    data-id="${p.id}"
-                    data-name="${p.name}"
-                    data-category="${p.category?.name || ''}"
-                    data-type="${p.productType?.name || ''}"
-                    data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-                Add to inquiry
-              </button>
-              ${priceHtml}
+             <div class="cart-btn-wrapper flex-1 min-w-0" data-id="${p.id}">
+                ${cartBtnHtml}
+             </div>
+             ${priceHtml}
           </div>
       </div>
     </div>
@@ -524,12 +576,16 @@ query {
 
     function renderMobileList(products) {
       const mobileList = document.getElementById("mobileProductList");
+      const cart = getCart();
+
       mobileList.innerHTML = products.length ? products.map(p => {
         const actualPriceStr = getActualPrice(p);
         const currentPriceObj = p.pricing?.priceRange?.start?.gross;
         const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
         const currency = currentPriceObj ? currentPriceObj.currency : "";
         const catalogueUrl = getCatalogueLink(p);
+
+        const cartBtnHtml = generateCartBtnHtml(p, cart);
 
         let priceHtml = "";
         let badgeHtml = "";
@@ -558,7 +614,7 @@ query {
           }
           if (currentPriceVal) {
             const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
-            priceHtml += `<span class="text-green-600 font-bold text-lg">${formattedPrice}</span>`;
+            priceHtml += `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
           }
           priceHtml += `</div>`;
         }
@@ -613,14 +669,9 @@ query {
           ${descHtml}
           
           <div class="flex items-center justify-between gap-2 mt-2 border-t pt-3">
-               <button class="inquiry-btn flex-1 py-2 rounded-full text-xs font-medium bg-gold text-white hover:opacity-90 min-w-0"
-                    data-id="${p.id}"
-                    data-name="${p.name}"
-                    data-category="${p.category?.name || ''}"
-                    data-type="${p.productType?.name || ''}"
-                    data-image="${p.thumbnail?.url || FALLBACK_IMG}">
-                Add to inquiry
-              </button>
+               <div class="cart-btn-wrapper flex-1 min-w-0" data-id="${p.id}">
+                  ${cartBtnHtml}
+               </div>
               ${priceHtml}
           </div>
       </div>
@@ -660,7 +711,6 @@ query {
 
       renderGrid(filtered);
       renderMobileList(filtered);
-      setupInquiryButtons();
     }
 
     function setupFiltering() {
@@ -691,50 +741,88 @@ query {
       });
     }
 
-    function setupInquiryButtons() {
-      const buttons = document.querySelectorAll(".inquiry-btn");
+    function getCart() {
+      return JSON.parse(localStorage.getItem("inquiryList") || "[]");
+    }
 
-      buttons.forEach(btn => {
-        const id = btn.dataset.id;
+    function saveCart(cart) {
+      localStorage.setItem("inquiryList", JSON.stringify(cart));
+      updateCartBadge();
+    }
 
-        // Load state from localStorage
-        const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-        const exists = list.some(item => item.id === id);
+    function updateProductCartUI(productId) {
+      const cart = getCart();
+      const product = allProducts.find(p => p.id === productId);
+      if (!product) return;
 
-        if (exists) {
-          btn.textContent = "Remove from inquiry list";
-          btn.classList.remove("bg-gold");
-          btn.classList.add("bg-gray-400");
-        }
+      const newHtml = generateCartBtnHtml(product, cart);
+      const wrappers = document.querySelectorAll(`.cart-btn-wrapper[data-id="${productId}"]`);
 
-        btn.onclick = () => {
-          let inquiryList = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+      wrappers.forEach(w => {
+        w.innerHTML = newHtml;
+      });
+    }
 
+    function setupCartListeners() {
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.classList.contains('add-to-cart-btn')) {
           const product = {
             id: btn.dataset.id,
             name: btn.dataset.name,
             category: btn.dataset.category,
             type: btn.dataset.type,
-            image: btn.dataset.image
+            image: btn.dataset.image,
+            price: parseFloat(btn.dataset.price || 0),
+            currency: btn.dataset.currency || 'INR',
+            quantity: 1
           };
-
-          const already = inquiryList.some(i => i.id === product.id);
-
-          if (already) {
-            inquiryList = inquiryList.filter(i => i.id !== product.id);
-            btn.textContent = "Add to inquiry list";
-            btn.classList.add("bg-gold");
-            btn.classList.remove("bg-gray-400");
-          } else {
-            inquiryList.push(product);
-            btn.textContent = "Remove from inquiry list";
-            btn.classList.remove("bg-gold");
-            btn.classList.add("bg-gray-400");
+          let cart = getCart();
+          if (!cart.find(i => i.id === product.id)) {
+            cart.push(product);
+            saveCart(cart);
+            updateProductCartUI(product.id);
           }
+        } else if (btn.classList.contains('qty-plus')) {
+          const id = btn.dataset.id;
+          let cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (item) {
+            item.quantity = (item.quantity || 1) + 1;
+            saveCart(cart);
+            updateProductCartUI(id);
+          }
+        } else if (btn.classList.contains('qty-minus')) {
+          const id = btn.dataset.id;
+          let cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (item) {
+            item.quantity = (item.quantity || 1) - 1;
+            if (item.quantity <= 0) {
+              cart = cart.filter(i => i.id !== id);
+            }
+            saveCart(cart);
+            updateProductCartUI(id);
+          }
+        }
+      });
 
-          localStorage.setItem("inquiryList", JSON.stringify(inquiryList));
-          updateCartBadge();
-        };
+      document.addEventListener('change', e => {
+        if (e.target.classList.contains('qty-input')) {
+          const id = e.target.dataset.id;
+          let val = parseInt(e.target.value);
+          if (isNaN(val) || val < 1) val = 1;
+
+          let cart = getCart();
+          const item = cart.find(i => i.id === id);
+          if (item) {
+            item.quantity = val;
+            saveCart(cart);
+            updateProductCartUI(id);
+          }
+        }
       });
     }
 
@@ -763,8 +851,9 @@ query {
       renderGrid(allProducts);
       renderMobileList(allProducts);
       setupFiltering();
-      setupInquiryButtons();
+      setupCartListeners();
       updateCartBadge();
+      document.getElementById("loadingSpinner").classList.add("hidden");
     })();
   </script>
 

@@ -158,12 +158,15 @@
 
   <div class="container mx-auto p-6 space-y-6">
 
-    <h1 class="text-2xl font-bold mb-4 golden-text">Inquiry List</h1>
+    <h1 class="text-2xl font-bold mb-4 golden-text">Shopping Cart</h1>
 
     <div id="cartItems" class="space-y-4"></div>
 
-    <button class="inquiry-btn w-full py-2 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90">Submit
-      Inquiry</button>
+    <div class="flex justify-end mt-6">
+      <button
+        class="inquiry-btn px-8 py-3 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90 shadow-lg transition">Send
+        whatsapp inquiry</button>
+    </div>
 
   </div>
 
@@ -173,28 +176,71 @@
       const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
 
       if (list.length === 0) {
-        container.innerHTML = `<p class="text-gray-500">No items added.</p>`;
+        container.innerHTML = `<p class="text-gray-500 text-center py-10">Your cart is empty.</p>`;
         return;
       }
 
-      container.innerHTML = list.map(item => `
-    <div class="bg-white shadow p-4 rounded-lg flex items-center justify-between gap-4">
-        
-        <img src="${item.image}" class="w-16 h-16 object-cover rounded">
+      let grandTotal = 0;
 
-        <div class="flex-1">
-        <p class="font-semibold">${item.name}</p>
-        <p class="text-sm text-gray-500">${item.category}</p>
-        <p class="text-sm text-gray-500">${item.type}</p>
+      const itemsHtml = list.map(item => {
+        const price = parseFloat(item.price || 0);
+        const qty = parseInt(item.quantity || 1);
+        const total = price * qty;
+        grandTotal += total;
+        const currency = item.currency || 'INR';
+
+        return `
+        <tr class="border-b hover:bg-gray-50">
+            <td class="p-4 flex items-center gap-4">
+                <img src="${item.image}" class="w-16 h-16 object-cover rounded">
+                <div>
+                    <p class="font-semibold text-gray-800">${item.name}</p>
+                    <p class="text-xs text-gray-500">${item.category || ''}</p>
+                </div>
+            </td>
+            <td class="p-4 text-gray-700">
+                ${currency === 'INR' ? '₹' : ''}${price.toFixed(2)} ${currency !== 'INR' ? currency : ''}
+            </td>
+            <td class="p-4 text-center">
+                <span class="font-bold text-gray-800">${qty}</span>
+            </td>
+            <td class="p-4 font-bold text-gray-800">
+                ${currency === 'INR' ? '₹' : ''}${total.toFixed(2)} ${currency !== 'INR' ? currency : ''}
+            </td>
+            <td class="p-4 text-right">
+                <button class="exclude-btn text-red-500 hover:text-red-700 font-medium text-sm transition" data-id="${item.id}">
+                    Remove
+                </button>
+            </td>
+        </tr>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="overflow-x-auto bg-white shadow rounded-lg">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="p-4">Product</th>
+                        <th class="p-4">Price</th>
+                        <th class="p-4 text-center">Qty</th>
+                        <th class="p-4">Total</th>
+                        <th class="p-4 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm">
+                    ${itemsHtml}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 font-bold text-gray-800">
+                        <td colspan="3" class="p-4 text-right">Grand Total:</td>
+                        <td class="p-4 text-lg">₹${grandTotal.toFixed(2)}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-
-        <button class="exclude-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm"
-                data-id="${item.id}">
-        Remove
-        </button>
-    </div>
-    `).join("");
-
+      `;
 
       document.querySelectorAll(".exclude-btn").forEach(btn => {
         btn.onclick = () => {
@@ -204,7 +250,6 @@
           localStorage.setItem("inquiryList", JSON.stringify(list));
           loadCart(); // Refresh
           updateCartBadge();
-
         };
       });
     }
