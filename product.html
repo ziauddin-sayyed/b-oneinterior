@@ -28,9 +28,11 @@
 
 <body class="bg-white min-h-screen flex flex-col">
 
-    <!-- Header (Same as Shop) -->
-    <header class="bg-gray-900 shadow-lg top-0 sticky z-50">
-        <nav class="container mx-auto px-4 py-6 flex items-center justify-between">
+    <!-- Header -->
+    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+
             <ul class="hidden md:flex space-x-6 text-gray-300">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
@@ -46,6 +48,72 @@
             </button>
         </nav>
 
+        <div class="floating-icon">
+            <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
+                    src="images/call_icon.png" alt="Call" srcset=""></a>
+            <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
+                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
+            <a target="_blank" href="https://www.facebook.com/boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
+            <a target="_blank" href="https://www.instagram.com/boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
+            <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
+            <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
+        </div>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="#company">Company</a></li>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li>
+                    <a href="https://b-oneinterior.com/gallery">
+                        <ion-icon name="images-outline"></ion-icon>
+                        <div>Gallery</div>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Shop</div>
+
+                    </a>
+                </li>
+                <li></li>
+
+                <li>
+                    <a href="https://b-oneinterior.com/company">
+                        <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Company</div>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="https://b-oneinterior.com/cart">
+                        <ion-icon name="cart-outline"></ion-icon>
+                        <div>Cart</div>
+                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                        </span>
+
+                    </a>
+                </li>
+            </ul>
+        </div>
 
     </header>
 
@@ -71,6 +139,7 @@
 
                 <!-- Title & Price -->
                 <div>
+                    <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
                     <h1 id="productName" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2"></h1>
                     <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
                 </div>
@@ -92,6 +161,12 @@
             </div>
         </div>
 
+        <!-- Recommended Products Section -->
+        <div class="mt-12 border-t pt-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Recommended For You</h2>
+            <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
+        </div>
+
         <div id="errorContainer" class="hidden text-center py-20">
             <h2 class="text-2xl font-bold text-gray-700">Product not found</h2>
             <a href="shop.html" class="text-gold hover:underline mt-4 inline-block">Return to Shop</a>
@@ -100,46 +175,7 @@
     </main>
 
     <!-- Bottom Nav (Mobile) -->
-    <div class="fixedBottom">
-        <a href="https://b-oneinterior.com/" class="logoBx"></a>
-        <ul>
-            <li>
-                <a href="https://b-oneinterior.com/gallery">
-                    <ion-icon name="images-outline"></ion-icon>
-                    <div>Gallery</div>
-                </a>
-            </li>
 
-
-            <li>
-                <a href="https://b-oneinterior.com/shop">
-                    <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Shop</div>
-
-                </a>
-            </li>
-            <li></li>
-
-            <li>
-                <a href="https://b-oneinterior.com/company">
-                    <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                    <div>Company</div>
-                </a>
-            </li>
-
-
-            <li>
-                <a href="https://b-oneinterior.com/cart">
-                    <ion-icon name="cart-outline"></ion-icon>
-                    <div>Cart</div>
-                    <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
-                    </span>
-
-                </a>
-            </li>
-        </ul>
-    </div>
 
 
     <script>
@@ -207,7 +243,102 @@
                 console.error(err);
                 return null;
             }
+
         }
+
+        async function fetchRecommendedProducts(categoryName, currentId) {
+            const query = `
+            query {
+                products(first: 100, channel: "in") {
+                    edges {
+                        node {
+                            id
+                            name
+                            thumbnail { url }
+                            pricing {
+                                priceRange {
+                                    start {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                            category { name }
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                let products = json.data?.products?.edges || [];
+
+                // Filter by Category & Exclude Current
+                products = products.filter(p =>
+                    p.node.category?.name === categoryName &&
+                    p.node.id !== currentId
+                ).slice(0, 10);
+
+                const carousel = document.getElementById("recommendedCarousel");
+                carousel.innerHTML = "";
+
+                if (products.length === 0) {
+                    carousel.innerHTML = '<p class="text-gray-500">No recommendations found.</p>';
+                    return;
+                }
+
+                products.forEach(p => {
+                    const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
+                    const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
+                    const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+
+                    const item = document.createElement("div");
+                    item.className = "item px-1";
+                    item.innerHTML = `
+                        <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-100">
+                            <div class="relative">
+                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-40 object-cover" alt="${p.node.name}">
+                            </div>
+                            <div class="p-3 flex flex-col flex-grow">
+                                <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
+                                <div class="mt-auto border-t pt-2 w-full">
+                                    <span class="text-gold font-bold text-base block">${formattedPrice}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                    carousel.appendChild(item);
+                });
+
+                // Init Owl Carousel
+                setTimeout(() => {
+                    $('#recommendedCarousel').owlCarousel({
+                        loop: products.length > 4, // Only loop if enough items
+                        margin: 10,
+                        nav: false,
+                        dots: true,
+                        autoplay: true,
+                        responsive: {
+                            0: { items: 2 },
+                            600: { items: 3 },
+                            1000: { items: 4 }
+                        }
+                    });
+                }, 100);
+
+            } catch (e) {
+                console.error("Error drawing recommended:", e);
+            }
+        }
+
 
         function getCart() {
             return JSON.parse(localStorage.getItem("inquiryList") || "[]");
@@ -235,6 +366,12 @@
             }
 
             renderProduct(currentProduct);
+
+            // Fetch Recommended
+            if (currentProduct.category?.name) {
+                fetchRecommendedProducts(currentProduct.category.name, currentProduct.id);
+            }
+
             document.getElementById("loadingSpinner").classList.add("hidden");
             document.getElementById("productDetail").classList.remove("hidden");
         }
@@ -244,7 +381,30 @@
             document.getElementById("errorContainer").classList.remove("hidden");
         }
 
+        function getCategoryIcon(name) {
+            const lowerName = name.toLowerCase();
+            if (lowerName.includes('wallpaper')) return 'image-outline';
+            if (lowerName.includes('plumbing')) return 'water-outline';
+            if (lowerName.includes('fitting')) return 'build-outline';
+            if (lowerName.includes('electric')) return 'flash-outline';
+            if (lowerName.includes('carpentry')) return 'hammer-outline';
+            return 'cube-outline';
+        }
+
         function renderProduct(p) {
+            // Meta Badges (Category & Type)
+            const catName = p.category?.name || "Uncategorized";
+            const typeName = p.productType?.name || "Standard";
+
+            document.getElementById("metaContainer").innerHTML = `
+                <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
+                    <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
+                </span>
+                <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full border border-gray-200">
+                    <ion-icon name="pricetag-outline"></ion-icon> ${typeName}
+                </span>
+            `;
+
             // Name
             document.getElementById("productName").textContent = p.name;
 

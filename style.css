@@ -406,3 +406,9 @@
             top: 9%;
 
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 20vw;
+            }
+        }

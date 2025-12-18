@@ -227,6 +227,39 @@
 
 
 
+    function sendWhatsappInquiry() {
+      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+      if (list.length === 0) return alert("Your cart is empty.");
+
+      let message = "Hi, I am interested in the following products:\n";
+      let grandTotal = 0;
+
+      list.forEach((item, index) => {
+        let price = parseFloat(item.price);
+        if (isNaN(price)) price = 0;
+        const qty = parseInt(item.quantity || 1);
+        const total = price * qty;
+        grandTotal += total;
+
+        const currency = item.currency === 'INR' ? '₹' : (item.currency || '');
+        const priceStr = item.currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${item.currency}`;
+        const totalStr = item.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${item.currency}`;
+
+        message += `${index + 1}. *${item.name}*\n`;
+        message += `   Qty: ${qty}\n`;
+        message += `   Price: ${priceStr}\n`;
+        message += `   Total: ${totalStr}\n\n`;
+      });
+
+      message += `*Grand Total: ₹${grandTotal.toFixed(2)}*`;
+
+      const phoneNumber = "917738130131";
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+
+    document.querySelector('.inquiry-btn').addEventListener('click', sendWhatsappInquiry);
+
     loadCart();
     updateCartBadge();
 
