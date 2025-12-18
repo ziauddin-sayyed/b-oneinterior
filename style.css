@@ -184,7 +184,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 23vw;
+            height: 18vw;
             z-index: 99;
             padding: 0 15px;
         }
@@ -210,8 +210,8 @@
             top: 0;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 23vw;
-            height: 23vw;
+            width: 17.25vw;
+            height: 17.25vw;
             border-radius: 50%;
             background: #000 url("logo.png") no-repeat center/contain;
             display: flex;
@@ -234,6 +234,7 @@
             width: 20%;
             text-align: center;
             color: #D4AF37;
+            font-size: 12px;
         }
 
         #menu-btn,
@@ -242,7 +243,7 @@
         }
 
         .fixedBottom ul li ion-icon {
-            font-size: 3.5vh;
+            font-size: 2.63vh;
         }
 
         @media (min-width: 769px) {
@@ -251,29 +252,73 @@
             }
         }
 
+        /* Floating Icon (Relative Header Style) */
         .floating-icon {
-            position: fixed;
-            right: 0px;
-            /* 20px from the right edge of the screen */
-            bottom: 20vh;
-            /* 20px from the bottom edge of the screen */
-            z-index: 9999;
-            /* Make sure the icon stays on top */
-            background: rgba(0, 0, 0, 0.2);
-            /* transparent color */
-            backdrop-filter: blur(10px);
-            /* blur the background behind */
-            -webkit-backdrop-filter: blur(10px);
-            /* Safari support */
-            padding: 2vh 0.5vh;
-            border-radius: 20px 0 0 20px;
-            border: 1px solid #D4AF37;
-
+            position: relative !important;
+            bottom: auto !important;
+            top: 0 !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            margin: 10px 16px auto !important;
+            display: flex !important;
+            flex-direction: row !important;
+            padding: 2px 0px !important;
+            border-radius: 50px !important;
+            gap: 10px !important;
+            justify-content: center !important;
+            /* background: white !important; */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .floating-icon a img {
-            margin: 0 auto;
-            margin-top: 1vh;
+            margin: 0 !important;
+            width: 40px !important;
+            height: 40px !important;
+            object-fit: contain !important;
+            filter: none !important;
+        }
+
+        /* Custom Owl Carousel Dots Styling */
+        .owl-dots {
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .owl-dot span {
+            width: 8px;
+            height: 8px;
+            margin: 0;
+            background: #d1d5db !important;
+            display: block;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .owl-dot.active span {
+            background: #000000 !important;
+        }
+
+        .owl-theme .owl-nav.disabled+.owl-dots {
+            margin-top: 10px;
+        }
+
+        /* Product Image Carousel Dots */
+        .product-image-carousel .owl-dots {
+            margin-top: 20px;
+        }
+
+        .product-image-carousel .owl-dot span {
+            width: 12px;
+            height: 12px;
+            background: #d1d5db;
+        }
+
+        .product-image-carousel .owl-dot.active span {
+            background: #000;
         }
 
         /* #menu-toggle{display:none} */

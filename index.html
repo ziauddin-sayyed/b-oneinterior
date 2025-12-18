@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
-    <title>Saleor Store - Home</title>
+    <title>B-One Interior - Premium Home Decor & Furniture Store</title>
+    <meta property="og:title" content="B-One Interior - Premium Home Decor & Furniture Store">
+    <meta property="og:description"
+        content="Discover premium home decor and furniture at B-One Interior. Shop our exclusive collection of modern designs, quality craftsmanship, and timeless elegance for your home.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet"
@@ -32,6 +35,7 @@
             }
         }
     </script>
+
 </head>
 
 <body class="bg-black">
@@ -58,21 +62,17 @@
 
         <div class="floating-icon">
             <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-                    src="images/call_icon.svg" alt="Call" srcset=""></a>
+                    src="images/call_icon.png" alt="Call" srcset=""></a>
             <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
+                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
             <a target="_blank" href="https://www.facebook.com/boneinterior"><img
-                    style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-                    src="images/facebook.svg" alt="Facebook" srcset=""></a>
+                    style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
             <a target="_blank" href="https://www.instagram.com/boneinterior"><img
-                    style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-                    src="images/instagram.svg" alt="Instagram" srcset=""></a>
+                    style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
             <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
-                    style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-                    src="images/youtube.svg" alt="YouTube" srcset=""></a>
+                    style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
             <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
-                    style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-                    src="images/map_marker.svg" alt="Location" srcset=""></a>
+                    style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
         </div>
 
         <div id="drawer">
@@ -172,14 +172,39 @@
             //       overlay.style.pointerEvents = "none";
             //   }
         </script>
+        <!-- Search Bar -->
+        <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center bg-gray-900 border-t border-gray-800"
+            id="homeSearchBar">
+            <div class="relative w-full max-w-md">
+                <input type="text" id="homeSearchInput" placeholder="Search products..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('homeSearchInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        </script>
     </header>
 
     <!-- Hero Slider -->
     <section class="fade-section hero-slider w-full">
-        <div class="owl-carousel owl-theme w-full h-[50%]" id="heroCarousel">
+        <div class="owl-carousel owl-theme w-full" id="heroCarousel">
 
             <div class="item relative w-full">
-                <img src="slider1.jpg" class="w-full h-[300px] object-cover">
+                <img src="slider1.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Our Store</h1>
@@ -192,7 +217,7 @@
             </div>
 
             <div class="item relative w-full">
-                <img src="slider2.jpg" class="w-full h-[300px] object-cover">
+                <img src="slider2.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Quality You Can Trust</h1>
@@ -205,7 +230,7 @@
             </div>
 
             <div class="item relative w-full">
-                <img src="slider3.jpg" class="w-full h-[300px] object-cover">
+                <img src="slider3.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div class="text-center text-white px-4">
                         <h1 class="text-4xl md:text-6xl font-bold mb-4">Special Offers</h1>
@@ -553,19 +578,25 @@
 
             products.forEach(p => {
                 const item = document.createElement("div");
-                item.className = "item px-2";
+                item.className = "item px-1";
+
+                const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
+                const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
+                const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
 
                 item.innerHTML = `
-                <div class="bg-white shadow rounded-lg overflow-hidden">
-                    <img src="${p.node.thumbnail?.url}" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold golden-text">${p.node.name}</h3>
-                        <p class="text-gray-600 text-sm">
-                            ${p.node.pricing?.priceRange?.start?.gross?.amount} 
-                            ${p.node.pricing?.priceRange?.start?.gross?.currency}
-                        </p>
+                <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
+                    <div class="relative">
+                        <img src="${p.node.thumbnail?.url}" class="w-full h-40 object-cover" alt="${p.node.name}">
                     </div>
-                </div>
+                    
+                    <div class="p-3 flex flex-col flex-grow">
+                        <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
+                        <div class="mt-auto border-t pt-2 w-full">
+                            <span class="text-black font-bold text-base block">${formattedPrice}</span>
+                        </div>
+                    </div>
+                </a>
             `;
                 carousel.appendChild(item);
             });
@@ -576,8 +607,9 @@
                 nav: false,
                 dots: true,
                 responsive: {
-                    0: { items: 1 },
-                    640: { items: 2 },
+                    0: { items: 2 },
+                    640: { items: 3 },
+                    768: { items: 4 },
                     1024: { items: 4 }
                 }
             });

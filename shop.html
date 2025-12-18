@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Saleor Shop</title>
+  <title>Shop Premium Furniture & Decor | B-One Interior Store</title>
+  <meta property="og:title" content="Shop Premium Furniture & Decor | B-One Interior Store">
+  <meta property="og:description"
+    content="Browse our extensive catalog of high-quality furniture and home decor. Find the perfect pieces to elevate your living space with B-One Interior's curated collection.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta property="og:image" content="https://b-oneinterior.com/logo.png">
   <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
@@ -19,64 +22,7 @@
   <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
 
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Custom Owl Carousel Dots Styling */
-    .owl-dots {
-      text-align: center;
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-    }
 
-    .owl-dot span {
-      width: 8px;
-      height: 8px;
-      margin: 0;
-      background: #d1d5db !important;
-      /* Gray-300 */
-      display: block;
-      border-radius: 50%;
-      transition: background 0.3s;
-    }
-
-    .owl-dot.active span {
-      background: #000000 !important;
-      /* Black */
-    }
-
-    .owl-theme .owl-nav.disabled+.owl-dots {
-      margin-top: 10px;
-    }
-
-    /* Override floating icon position for Shop page */
-    .floating-icon {
-      position: relative !important;
-      bottom: auto !important;
-      top: 0 !important;
-      left: auto !important;
-      right: auto !important;
-      transform: none !important;
-      margin: 10px 16px auto !important;
-      display: flex !important;
-      flex-direction: row !important;
-      padding: 2px 0px !important;
-      border-radius: 50px !important;
-      gap: 10px !important;
-      justify-content: center !important;
-      /* width: fit-content !important; */
-      background: white !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    .floating-icon a img {
-      margin: 0 !important;
-      width: 40px !important;
-      height: 40px !important;
-      object-fit: contain !important;
-      filter: none !important;
-    }
-  </style>
 
 </head>
 
@@ -117,7 +63,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="container mx-auto px-4 mt-2 flex justify-center sticky top-0 z-40 bg-black pb-4">
+    <div class="container mx-auto px-4 mt-2 flex justify-center sticky top-0 z-40 pb-4">
       <div class="relative w-full max-w-md">
         <input type="text" id="searchInput" placeholder="Search products..."
           class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
@@ -229,9 +175,9 @@
     </script>
   </header>
 
-  <div class="container mx-auto px-4  space-y-6">
+  <div class="container mx-auto px-2  space-y-6">
 
-    <aside class="bg-gray-100 p-6 shadow rounded-lg space-y-6  top-0 z-40">
+    <aside class="bg-gray-100 p-1 shadow rounded-lg space-y-2  top-0 z-40">
       <div>
         <h3 class="font-semibold mb-3">Categories</h3>
         <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
@@ -448,8 +394,17 @@ query {
     function generateCartBtnHtml(p, cart) {
       const inCart = cart.find(i => i.id === p.id);
       const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-      const price = currentPriceObj ? currentPriceObj.amount : 0;
+      let price = currentPriceObj ? currentPriceObj.amount : 0;
       const currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+
+      if (price === 0) {
+        // Fallback to Actual Price attribute if available
+        const actualPriceStr = getActualPrice(p);
+        if (actualPriceStr) {
+          const parsed = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+          if (!isNaN(parsed)) price = parsed;
+        }
+      }
 
       if (inCart) {
         return `
@@ -559,9 +514,8 @@ query {
         }
 
         return `
-    <div class="product-card bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
+    <a href="product.html?id=${p.id}" class="product-card bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer" data-category="${p.category?.id || ''}" data-type="${p.productType?.id || ''}">
       <div class="relative">
-          ${badgeHtml}
           ${imageHtml}
           <!-- Category Badge (Bottom Left) -->
           ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
@@ -569,17 +523,11 @@ query {
       
       <div class="p-4 flex flex-col flex-grow">
           <p class="font-semibold truncate">${p.name}</p>
-          ${descHtml}
-          
           <div class="flex flex-col-reverse gap-2 mt-auto border-t pt-3 w-full">
-             <div class="cart-btn-wrapper w-full" data-id="${p.id}">
-                ${cartBtnHtml}
-             </div>
              ${priceHtml}
-             ${catalogueBadgeHtml}
           </div>
       </div>
-    </div>
+    </a>
   `}).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
 
       // Initialize Carousel
@@ -673,9 +621,8 @@ query {
         }
 
         return `
-    <div class="bg-white shadow rounded-lg relative group overflow-hidden">
+    <a href="product.html?id=${p.id}" class="bg-white shadow rounded-lg relative group overflow-hidden cursor-pointer block">
       <div class="relative">
-          ${badgeHtml}
           ${imageHtml}
           <!-- Category Badge (Bottom Left) -->
           ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
@@ -683,17 +630,12 @@ query {
       
       <div class="p-4">
           <p class="font-semibold text-lg">${p.name}</p>
-          ${descHtml}
           
           <div class="flex flex-col-reverse gap-2 mt-2 border-t pt-3 w-full">
-               <div class="cart-btn-wrapper w-full" data-id="${p.id}">
-                  ${cartBtnHtml}
-               </div>
               ${priceHtml}
-              ${catalogueBadgeHtml}
           </div>
       </div>
-    </div>
+    </a>
   `}).join("") : `<p class="text-center text-gray-500">No products found.</p>`;
 
       // Initialize Carousel
@@ -881,8 +823,16 @@ query {
       allProducts = products.filter(p => p.category?.name !== HIDDEN_CATEGORY_NAME);
 
       renderCategoryFilters(allCategories, allProducts);
-      renderGrid(allProducts);
-      renderMobileList(allProducts);
+
+      // Check URL for search query
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get('q');
+      if (query) {
+        document.getElementById("searchInput").value = query;
+      }
+
+      applyFilters();
+
       setupFiltering();
       setupCartListeners();
       updateCartBadge();

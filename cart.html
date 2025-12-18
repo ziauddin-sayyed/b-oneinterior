@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta property="og:image" content="https://b-oneinterior.com/logo.png">
   <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
-  <title>Gallery Image Products</title>
+  <title>Your Shopping Cart - Secure Checkout | B-One Interior</title>
+  <meta property="og:title" content="Your Shopping Cart - Secure Checkout | B-One Interior">
+  <meta property="og:description"
+    content="Review your selected items in the cart. Proceed to inquiry or checkout securely. Complete your purchase of premium home decor and furniture at B-One Interior.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
   <link rel="stylesheet"
@@ -41,21 +44,17 @@
 
     <div class="floating-icon">
       <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-          src="images/call_icon.svg" alt="Call" srcset=""></a>
+          src="images/call_icon.png" alt="Call" srcset=""></a>
       <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.svg" alt="WhatsApp" srcset=""></a>
-      <a target="_blank" href="https://www.facebook.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/facebook.svg" alt="Facebook" srcset=""></a>
-      <a target="_blank" href="https://www.instagram.com/boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/instagram.svg" alt="Instagram" srcset=""></a>
-      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/youtube.svg" alt="YouTube" srcset=""></a>
-      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img
-          style="max-width: initial;height: 4.5vh; filter: invert(48%) sepia(79%) saturate(452%) hue-rotate(10deg) brightness(97%) contrast(87%);"
-          src="images/map_marker.svg" alt="Location" srcset=""></a>
+          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
+      <a target="_blank" href="https://www.facebook.com/boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/facebook.png" alt="Facebook" srcset=""></a>
+      <a target="_blank" href="https://www.instagram.com/boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/instagram.png" alt="Instagram" srcset=""></a>
+      <a target="_blank" href="https://www.youtube.com/@boneinterior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/youtube.png" alt="YouTube" srcset=""></a>
+      <a target="_blank" href="https://maps.google.com/?q=B-One+Interior"><img style="max-width: initial;height: 4.5vh;"
+          src="images/map_marker.png" alt="Location" srcset=""></a>
     </div>
 
     <div id="drawer">
@@ -109,52 +108,9 @@
 
           </a>
         </li>
-        <!-- <li>
-                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
-                    <div>
-                        <div class="menu-icon" id="menu-btn">&#9776;</div>
-                        
-                    </div>
-
-                </a>
-
-            </li> -->
       </ul>
     </div>
 
-    <script>
-      //   const drawer = document.getElementById("drawer");
-      //   const overlay = document.querySelector(".overlay");
-      //   const menuBtn = document.getElementById("menu-btn");
-
-      //   menuBtn.addEventListener("click", () => {
-      //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-      //       toggleOverlay();
-      //   });
-
-      //   overlay.addEventListener("click", () => {
-      //       drawer.style.left = "-250px";
-      //       hideOverlay();
-      //   });
-
-      //   function toggleOverlay() {
-      //       if (overlay.style.opacity === "1") {
-      //           hideOverlay();
-      //       } else {
-      //           showOverlay();
-      //       }
-      //   }
-
-      //   function showOverlay() {
-      //       overlay.style.opacity = "1";
-      //       overlay.style.pointerEvents = "auto";
-      //   }
-
-      //   function hideOverlay() {
-      //       overlay.style.opacity = "0";
-      //       overlay.style.pointerEvents = "none";
-      //   }
-    </script>
   </header>
 
 
@@ -185,34 +141,38 @@
       let grandTotal = 0;
 
       const itemsHtml = list.map(item => {
-        const price = parseFloat(item.price || 0);
+        let price = parseFloat(item.price);
+        if (isNaN(price)) price = 0;
+
         const qty = parseInt(item.quantity || 1);
         const total = price * qty;
         grandTotal += total;
-        const currency = item.currency || 'INR';
+
+        // Handle currency simply
+        const currency = item.currency === 'INR' ? '₹' : (item.currency || '');
+        const totalStr = item.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${item.currency}`;
 
         return `
-        <tr class="border-b hover:bg-gray-50">
-            <td class="p-4 flex items-center gap-4">
-                <img src="${item.image}" class="w-16 h-16 object-cover rounded">
-                <div>
-                    <p class="font-semibold text-gray-800">${item.name}</p>
-                    <p class="text-xs text-gray-500">${item.category || ''}</p>
+        <tr class="border-b hover:bg-gray-50 align-top">
+            <!-- Product Column -->
+            <td class="p-2 w-1/2">
+                <div class="relative w-full mb-2">
+                    <img src="${item.image}" class="w-full h-auto object-cover rounded-md shadow-sm aspect-[4/3]">
+                    <button class="exclude-btn absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-md transition" data-id="${item.id}">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
+                <p class="font-semibold text-gray-800 text-sm leading-tight">${item.name}</p>
             </td>
-            <td class="p-4 text-gray-700">
-                ${currency === 'INR' ? '₹' : ''}${price.toFixed(2)} ${currency !== 'INR' ? currency : ''}
+            
+            <!-- Qty Column -->
+            <td class="p-2 text-center align-middle">
+                 <span class="font-bold text-gray-900 bg-gray-100 py-1 px-3 rounded-full text-sm">${qty}</span>
             </td>
-            <td class="p-4 text-center">
-                <span class="font-bold text-gray-800">${qty}</span>
-            </td>
-            <td class="p-4 font-bold text-gray-800">
-                ${currency === 'INR' ? '₹' : ''}${total.toFixed(2)} ${currency !== 'INR' ? currency : ''}
-            </td>
-            <td class="p-4 text-right">
-                <button class="exclude-btn text-red-500 hover:text-red-700 font-medium text-sm transition" data-id="${item.id}">
-                    Remove
-                </button>
+            
+            <!-- Total Column -->
+            <td class="p-2 text-right align-middle">
+                <span class="font-bold text-gold text-sm whitespace-nowrap">${totalStr}</span>
             </td>
         </tr>
         `;
@@ -220,14 +180,12 @@
 
       container.innerHTML = `
         <div class="overflow-x-auto bg-white shadow rounded-lg">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse table-auto">
                 <thead>
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="p-4">Product</th>
-                        <th class="p-4">Price</th>
-                        <th class="p-4 text-center">Qty</th>
-                        <th class="p-4">Total</th>
-                        <th class="p-4 text-right">Action</th>
+                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
+                        <th class="p-2 w-1/2">Product</th>
+                        <th class="p-2 text-center">Qty</th>
+                        <th class="p-2 text-right">Total</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 text-sm">
@@ -235,9 +193,8 @@
                 </tbody>
                 <tfoot>
                     <tr class="bg-gray-50 font-bold text-gray-800">
-                        <td colspan="3" class="p-4 text-right">Grand Total:</td>
-                        <td class="p-4 text-lg">₹${grandTotal.toFixed(2)}</td>
-                        <td></td>
+                        <td class="p-4 text-right" colspan="2">Grand Total:</td>
+                        <td class="p-4 text-right text-lg text-gold">₹${grandTotal.toFixed(2)}</td>
                     </tr>
                 </tfoot>
             </table>
