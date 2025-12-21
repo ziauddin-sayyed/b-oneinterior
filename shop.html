@@ -202,10 +202,15 @@ query {
       node { 
         id 
         name 
-        parent { 
           id 
           name 
-        } 
+          backgroundImage {
+              url
+          }
+          parent { 
+            id 
+            name 
+          } 
       } 
     } 
   }
@@ -320,19 +325,26 @@ query {
         ).length;
       });
 
-      document.getElementById("categoryFilter").className = "grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3";
+      document.getElementById("categoryFilter").className = "grid grid-cols-3 md:grid-cols-5 gap-3";
       document.getElementById("categoryFilter").innerHTML = `
     <div class="filter-category group flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 bg-white hover:border-gold hover:shadow-md cursor-pointer transition relative h-24 ${selectedParentCategory === 'all' ? 'border-gold ring-1 ring-gold bg-gold/5' : ''}" data-category="all" data-is-parent="true">
       <ion-icon name="apps-outline" class="text-2xl text-gray-500 group-hover:text-gold mb-2"></ion-icon>
       <span class="text-xs font-semibold text-center text-gray-700 leading-tight">All</span>
       <span class="text-[10px] text-gray-400 mt-1">(${products.length})</span>
     </div>
-    ${parentCategories.map(c => `
+    ${parentCategories.map(c => {
+        const hasImage = c.backgroundImage?.url;
+        const iconHtml = hasImage
+          ? `<img src="${c.backgroundImage.url}" class="w-8 h-8 object-contain mb-2" alt="${c.name}">`
+          : `<ion-icon name="${getCategoryIcon(c.name)}" class="text-2xl text-gray-500 group-hover:text-gold mb-2"></ion-icon>`;
+
+        return `
       <div class="filter-category group flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 bg-white hover:border-gold hover:shadow-md cursor-pointer transition relative h-24 ${selectedParentCategory === c.id ? 'border-gold ring-1 ring-gold bg-gold/5' : ''}" data-category="${c.id}" data-is-parent="true">
-        <ion-icon name="${getCategoryIcon(c.name)}" class="text-2xl text-gray-500 group-hover:text-gold mb-2"></ion-icon>
+        ${iconHtml}
         <span class="text-xs font-semibold text-center text-gray-700 leading-tight line-clamp-2">${c.name}</span>
         <span class="text-[10px] text-gray-400 mt-1">(${parentCounts[c.id] || 0})</span>
-      </div>`).join("")}
+      </div>`;
+      }).join("")}
   `;
 
       // Hide subcategory filter initially

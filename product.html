@@ -26,10 +26,10 @@
 
 </head>
 
-<body class="bg-white min-h-screen flex flex-col">
+<body class="bg-black min-h-screen flex flex-col text-gray-100">
 
     <!-- Header -->
-    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+    <header class="bg-black shadow-lg sticky sticky top-0 z-50 border-b border-gold-700 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
@@ -48,20 +48,7 @@
             </button>
         </nav>
 
-        <div class="floating-icon">
-            <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-                    src="images/call_icon.png" alt="Call" srcset=""></a>
-            <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
-            <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img
-                    style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
-            <a target="_blank" href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="><img
-                    style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
-            <a target="_blank" href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK"><img
-                    style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
-            <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img
-                    style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
-        </div>
+
 
         <div id="drawer">
             <ul>
@@ -129,7 +116,8 @@
 
             <!-- Left: Image Section -->
             <div class="w-full">
-                <div id="imageContainer" class="rounded-lg overflow-hidden shadow-lg bg-gray-100">
+                <div id="imageContainer"
+                    class="rounded-lg overflow-hidden shadow-lg bg-gray-900 border border-gray-800">
                     <!-- Carousel will be injected here -->
                 </div>
                 <div id="variantContainer" class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-4">
@@ -143,7 +131,7 @@
                 <!-- Title & Price -->
                 <div>
                     <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
-                    <h1 id="productName" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2"></h1>
+                    <h1 id="productName" class="text-3xl md:text-4xl font-bold text-white mb-2"></h1>
                     <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
                 </div>
 
@@ -151,7 +139,7 @@
                 <div id="catalogueContainer"></div>
 
                 <!-- Short Description / Attributes -->
-                <div id="descriptionContainer" class="text-gray-600 leading-relaxed text-sm md:text-base"></div>
+                <div id="descriptionContainer" class="text-gray-300 leading-relaxed text-sm md:text-base"></div>
 
                 <!-- Attributes List -->
                 <div id="attributesContainer" class="space-y-2 pt-4 border-t"></div>
@@ -165,19 +153,19 @@
         </div>
 
         <!-- Recommended Products Section -->
-        <div id="recommendedSection" class="hidden mt-12 border-t pt-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">Recommended For You</h2>
+        <div id="recommendedSection" class="hidden mt-12 border-t border-gray-800 pt-8">
+            <h2 class="text-2xl font-bold mb-6 text-white">Recommended For You</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
         <!-- Collection Products Section -->
-        <div id="collectionSection" class="hidden mt-12 border-t pt-8">
-            <h2 id="collectionTitle" class="text-2xl font-bold mb-6 text-gray-800">More from this Collection</h2>
+        <div id="collectionSection" class="hidden mt-12 border-t border-gray-800 pt-8">
+            <h2 id="collectionTitle" class="text-2xl font-bold mb-6 text-white">More from this Collection</h2>
             <div id="collectionCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
         <div id="errorContainer" class="hidden text-center py-20">
-            <h2 class="text-2xl font-bold text-gray-700">Product not found</h2>
+            <h2 class="text-2xl font-bold text-gray-400">Product not found</h2>
             <a href="shop.html" class="text-gold hover:underline mt-4 inline-block">Return to Shop</a>
         </div>
 
@@ -387,13 +375,13 @@
                     const item = document.createElement("div");
                     item.className = "item px-1";
                     item.innerHTML = `
-                        <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-100">
+                        <a href="product.html?id=${p.node.id}" class="block bg-gray-900 shadow rounded-lg hover:shadow-lg hover:shadow-gold/20 transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-800">
                             <div class="relative">
                                 <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-52 object-cover" alt="${p.node.name}">
                             </div>
                             <div class="p-3 flex flex-col flex-grow">
-                                <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
-                                <div class="mt-auto border-t pt-2 w-full">
+                                <h3 class="font-semibold text-gray-200 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
+                                <div class="mt-auto border-t border-gray-800 pt-2 w-full">
                                     <span class="text-gold font-bold text-base block">${formattedPrice}</span>
                                 </div>
                             </div>
@@ -435,6 +423,20 @@
         }
 
         let currentProduct = null;
+        let selectedVariant = null;
+
+        function selectVariant(variantId) {
+            if (!currentProduct || !currentProduct.variants) return;
+            const variant = currentProduct.variants.find(v => v.id === variantId);
+            if (variant) {
+                selectedVariant = variant;
+                // Update Gallery
+                renderGallery(variant.media, currentProduct.thumbnail?.url, variant.name);
+                // Update Price if needed (optional)
+                // Re-render variants to update selection style
+                renderVariants(currentProduct.variants);
+            }
+        }
 
         async function fetchCollectionProducts(collectionId, currentId) {
             const query = `
@@ -497,13 +499,13 @@
 
                 return `
                 <div class="item p-4">
-                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer" onclick="window.location.href='product.html?id=${p.id}'">
+                    <div class="bg-gray-900 rounded-lg shadow hover:shadow-lg hover:shadow-gold/20 transition overflow-hidden cursor-pointer border border-gray-800" onclick="window.location.href='product.html?id=${p.id}'">
                          <div class="relative h-52">
                              <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover">
-                              ${p.category?.name ? `<span class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 text-xs font-bold rounded shadow-sm">${p.category.name}</span>` : ''}
+                              ${p.category?.name ? `<span class="absolute bottom-2 left-2 bg-black/80 text-white px-2 py-1 text-xs font-bold rounded shadow-sm">${p.category.name}</span>` : ''}
                          </div>
                          <div class="p-4">
-                             <h3 class="font-bold text-gray-800 text-lg mb-1 truncate">${p.name}</h3>
+                             <h3 class="font-bold text-gray-200 text-lg mb-1 truncate">${p.name}</h3>
                              <p class="text-gold font-bold">${formattedPrice}</p>
                          </div>
                     </div>
@@ -574,7 +576,7 @@
                 <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
                     <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
                 </span>
-                <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full border border-gray-200">
+                <span class="inline-flex items-center gap-1 bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
                     <ion-icon name="pricetag-outline"></ion-icon> ${typeName}
                 </span>
             `;
@@ -754,22 +756,21 @@
                 const price = priceObj ? priceObj.amount : 0;
                 const currency = priceObj ? priceObj.currency : 'INR';
                 const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
+                const isSelected = selectedVariant && selectedVariant.id === v.id;
+                const borderClass = isSelected ? "border-gold ring-1 ring-gold bg-gold/10" : "border-gray-700 bg-gray-900 hover:border-gold/50";
 
                 const div = document.createElement("div");
-                div.className = "border rounded-lg p-2 cursor-pointer hover:shadow-md transition bg-white text-center";
                 div.innerHTML = `
-                    <img src="${imgUrl}" class="w-full h-24 object-cover rounded mb-2" alt="${v.name}">
-                    <p class="text-xs font-semibold text-gray-700 truncate">${v.name}</p>
-                    <p class="text-xs text-gold font-bold">${formattedPrice}</p>
+                <div class="cursor-pointer border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group" onclick="selectVariant('${v.id}')">
+                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative">
+                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs font-bold text-gray-300 truncate mb-1">${v.name}</p>
+                        <p class="text-gold font-bold text-sm">${formattedPrice}</p>
+                    </div>
+                </div>
                 `;
-
-                // Optional: click to select logic could go here
-                div.onclick = () => {
-                    console.log("Variant clicked:", v.id);
-                    // Show only this variant's images
-                    renderGallery(v.media, currentProduct.thumbnail?.url, v.name);
-                };
-
                 container.appendChild(div);
             });
         }
