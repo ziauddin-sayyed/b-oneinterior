@@ -41,7 +41,7 @@
 <body class="bg-black">
 
     <!-- Header -->
-    <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
@@ -173,22 +173,53 @@
             //   }
         </script>
         <!-- Search Bar -->
-        <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center bg-gray-900 border-t border-gray-800"
-            id="homeSearchBar">
+        <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
             <div class="relative w-full max-w-md">
-                <input type="text" id="homeSearchInput" placeholder="Search products..."
-                    class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
+                <input type="text" id="homeSearchInput" placeholder="Fetching products..." disabled autocomplete="off"
+                    class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500 disabled:opacity-50 disabled:cursor-not-allowed">
                 <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
+                <!-- Search Results Dropdown -->
+                <div id="searchDropdown"
+                    class="absolute w-full mt-2 bg-white rounded-lg shadow-xl z-50 hidden max-h-96 overflow-y-auto border border-gray-200">
+                    <!-- Results will be injected here -->
+                </div>
             </div>
         </div>
 
         <script>
-            document.getElementById('homeSearchInput').addEventListener('keydown', function (e) {
+            const searchInput = document.getElementById('homeSearchInput');
+            const searchDropdown = document.getElementById('searchDropdown');
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+
+            searchInput.addEventListener('input', function (e) {
+                const query = this.value.trim().toLowerCase();
+
+                if (query.length === 0) {
+                    searchDropdown.classList.add('hidden');
+                    return;
+                }
+
+                if (window.allProducts && window.allProducts.length > 0) {
+                    const matchedProducts = window.allProducts.filter(p =>
+                        p.node.name.toLowerCase().includes(query)
+                    );
+
+                    renderDropdown(matchedProducts);
+                }
+            });
+
+            searchInput.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
                     const query = this.value.trim();
                     if (query) {
@@ -196,6 +227,38 @@
                     }
                 }
             });
+
+            function renderDropdown(products) {
+                if (products.length === 0) {
+                    searchDropdown.innerHTML = `
+                        <div class="p-4 text-center text-gray-500">
+                            No products found
+                        </div>
+                    `;
+                    searchDropdown.classList.remove('hidden');
+                    return;
+                }
+
+                const html = products.map(p => {
+                    const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
+                    const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
+                    const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+
+                    return `
+                        <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                             onclick="window.location.href='product.html?id=${p.node.id}'">
+                            <img src="${p.node.thumbnail?.url}" class="w-12 h-12 object-cover rounded" alt="${p.node.name}">
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800">${p.node.name}</h4>
+                                <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.remove('hidden');
+            }
         </script>
     </header>
 
@@ -315,6 +378,10 @@
 
         </div>
     </section>
+
+    <!-- Dynamic Collections Section -->
+    <div id="dynamicCollectionsContainer"></div>
+
 
 
     <!-- Client Logos Slider -->
@@ -530,9 +597,17 @@
 
 
 
-        async function loadProducts() {
-            const query = `
 
+        // Global variable to store products for search
+        window.allProducts = [];
+
+        async function loadSearchData() {
+            const searchInput = document.getElementById('homeSearchInput');
+            // Set loading state
+            searchInput.placeholder = "Fetching products...";
+            searchInput.disabled = true;
+
+            const query = `
             query {
             products(first: 100, channel: "in") {
                 edges {
@@ -559,32 +634,160 @@
                 }
             }
             }
-
         `;
 
-            const res = await fetch("https://api.b-oneinterior.com/graphql/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query })
-            });
+            try {
+                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
 
-            const json = await res.json();
-            let products = json.data.products.edges;
+                const json = await res.json();
+                let products = json.data.products.edges;
 
-            products = products.filter(p => p.node.category?.name !== "Gallery Image Category");
+                products = products.filter(p => p.node.category?.name !== "Gallery Image Category");
 
-            const carousel = document.getElementById("productCarousel");
-            carousel.innerHTML = "";
+                // Store for search
+                window.allProducts = products;
 
-            products.forEach(p => {
-                const item = document.createElement("div");
-                item.className = "item px-1";
+            } catch (error) {
+                console.error("Error loading products for search:", error);
+            } finally {
+                // Reset loading state
+                searchInput.placeholder = "Search products...";
+                searchInput.disabled = false;
+            }
+        }
 
-                const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
-                const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
-                const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+        async function loadCollections() {
+            const query = `
+            query {
+                collections(first: 20) {
+                    edges {
+                        node {
+                            id
+                            name
+                            products(first: 20) {
+                                edges {
+                                    node {
+                                        id
+                                        name
+                                        thumbnail { url }
+                                        pricing {
+                                            priceRange {
+                                                start {
+                                                    gross {
+                                                        amount
+                                                        currency
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        category { name }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
 
-                item.innerHTML = `
+            try {
+                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+
+                const json = await res.json();
+                const collections = json.data?.collections?.edges || [];
+
+                console.log(collections);
+
+
+                // 1. Handle Best Seller (Special Position)
+                const bestSellerCol = collections.find(c => c.node.name === "Best Seller");
+                const carousel = document.getElementById("productCarousel");
+
+                if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {
+                    const products = bestSellerCol.node.products.edges;
+                    carousel.innerHTML = "";
+                    products.forEach(p => carousel.appendChild(createProductItem(p)));
+
+                    $("#productCarousel").owlCarousel({
+                        loop: true,
+                        margin: 10,
+                        nav: false,
+                        dots: true,
+                        responsive: {
+                            0: { items: 2 },
+                            640: { items: 3 },
+                            768: { items: 4 },
+                            1024: { items: 4 }
+                        }
+                    });
+                } else {
+                    carousel.innerHTML = "<p class='text-center text-white'>No best sellers found.</p>";
+                }
+
+                // 2. Handle Other Collections
+                const otherCollections = collections.filter(c => c.node.name !== "Best Seller" && c.node.products.edges.length > 0);
+                const container = document.getElementById("dynamicCollectionsContainer");
+                container.innerHTML = "";
+
+                otherCollections.forEach((col, index) => {
+                    const sectionId = `dynamicCarousel-${index}`;
+                    const products = col.node.products.edges;
+
+                    const sectionHtml = `
+                    <section class="fade-section py-10" id="section-${index}">
+                        <div class="container mx-auto">
+                            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">${col.node.name}</h2>
+                            <div class="owl-carousel owl-theme" id="${sectionId}"></div>
+                        </div>
+                    </section>
+                    `;
+                    container.insertAdjacentHTML('beforeend', sectionHtml);
+
+                    const sectionCarousel = document.getElementById(sectionId);
+                    products.forEach(p => sectionCarousel.appendChild(createProductItem(p)));
+
+                    $(`#${sectionId}`).owlCarousel({
+                        loop: true,
+                        margin: 10,
+                        nav: false,
+                        dots: true,
+                        responsive: {
+                            0: { items: 2 },
+                            640: { items: 3 },
+                            768: { items: 4 },
+                            1024: { items: 4 }
+                        }
+                    });
+
+                    // Observe the new section for fade effect
+                    const newSection = document.getElementById(`section-${index}`);
+                    if (typeof observer !== 'undefined' && newSection) {
+                        observer.observe(newSection);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading collections:", error);
+            }
+        }
+
+        function createProductItem(p) {
+            const item = document.createElement("div");
+            item.className = "item px-1";
+
+            const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
+            const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
+            const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+
+            item.innerHTML = `
                 <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
                     <div class="relative">
                         <img src="${p.node.thumbnail?.url}" class="w-full h-40 object-cover" alt="${p.node.name}">
@@ -598,23 +801,13 @@
                     </div>
                 </a>
             `;
-                carousel.appendChild(item);
-            });
-
-            $("#productCarousel").owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: false,
-                dots: true,
-                responsive: {
-                    0: { items: 2 },
-                    640: { items: 3 },
-                    768: { items: 4 },
-                    1024: { items: 4 }
-                }
-            });
+            return item;
         }
-        loadProducts();
+
+        loadSearchData();
+        loadCollections();
+
+
     </script>
 </body>
 

@@ -299,7 +299,7 @@
         }
 
         .owl-dot.active span {
-            background: #000000 !important;
+            background: #D4AF37 !important;
         }
 
         .owl-theme .owl-nav.disabled+.owl-dots {
@@ -318,7 +318,7 @@
         }
 
         .product-image-carousel .owl-dot.active span {
-            background: #000;
+            background: #D4AF37;
         }
 
         /* #menu-toggle{display:none} */
