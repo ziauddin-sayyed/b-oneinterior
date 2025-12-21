@@ -165,9 +165,15 @@
         </div>
 
         <!-- Recommended Products Section -->
-        <div class="mt-12 border-t pt-8">
+        <div id="recommendedSection" class="hidden mt-12 border-t pt-8">
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Recommended For You</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
+        </div>
+
+        <!-- Collection Products Section -->
+        <div id="collectionSection" class="hidden mt-12 border-t pt-8">
+            <h2 id="collectionTitle" class="text-2xl font-bold mb-6 text-gray-800">More from this Collection</h2>
+            <div id="collectionCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
         <div id="errorContainer" class="hidden text-center py-20">
@@ -188,6 +194,58 @@
         // Get Product ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
+
+        function renderGallery(media, fallbackUrl, altName) {
+            // Show Loader
+            const spinner = document.getElementById("loadingSpinner");
+            spinner.classList.remove("hidden");
+
+            const container = document.getElementById("imageContainer");
+            const $carousel = $('.product-image-carousel');
+            if ($carousel.length > 0) {
+                $carousel.trigger('destroy.owl.carousel');
+            }
+
+            let imageHtml = "";
+            let hasImages = false;
+
+            if (media && media.length > 0) {
+                // Check if there are actual images
+                const images = media.filter(m => !m.type || m.type === 'IMAGE');
+                if (images.length > 0) {
+                    hasImages = true;
+                    imageHtml = `<div class="owl-carousel product-image-carousel h-96 md:h-[500px]">`;
+                    images.forEach(m => {
+                        imageHtml += `<div class="item h-full"><img src="${m.url}" class="w-full h-full object-cover object-center" alt="${altName}"></div>`;
+                    });
+                    imageHtml += `</div>`;
+                }
+            }
+
+            if (!hasImages) {
+                imageHtml = `<img src="${fallbackUrl || FALLBACK_IMG}" class="w-full h-96 md:h-[500px] object-cover object-center" alt="${altName}">`;
+            }
+
+            container.innerHTML = imageHtml;
+
+            if (hasImages) {
+                setTimeout(() => {
+                    $('.product-image-carousel').owlCarousel({
+                        items: 1,
+                        loop: true,
+                        dots: true,
+                        nav: false,
+                        autoplay: true,
+                        autoplayHoverPause: true
+                    });
+                    // Hide Loader after init
+                    setTimeout(() => spinner.classList.add("hidden"), 300);
+                }, 100);
+            } else {
+                // Hide loader immediately if no carousel
+                setTimeout(() => spinner.classList.add("hidden"), 300);
+            }
+        }
 
         async function fetchProductDetails(id) {
             const query = `
@@ -245,6 +303,10 @@
                                 }
                             }
                         }
+                    }
+                    collections {
+                        id
+                        name
                     }
                 }
             }
@@ -307,12 +369,15 @@
                 ).slice(0, 10);
 
                 const carousel = document.getElementById("recommendedCarousel");
+                const section = document.getElementById("recommendedSection");
                 carousel.innerHTML = "";
 
                 if (products.length === 0) {
-                    carousel.innerHTML = '<p class="text-gray-500">No recommendations found.</p>';
+                    section.classList.add("hidden");
                     return;
                 }
+
+                section.classList.remove("hidden");
 
                 products.forEach(p => {
                     const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
@@ -324,7 +389,7 @@
                     item.innerHTML = `
                         <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-100">
                             <div class="relative">
-                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-40 object-cover" alt="${p.node.name}">
+                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-52 object-cover" alt="${p.node.name}">
                             </div>
                             <div class="p-3 flex flex-col flex-grow">
                                 <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
@@ -340,7 +405,7 @@
                 // Init Owl Carousel
                 setTimeout(() => {
                     $('#recommendedCarousel').owlCarousel({
-                        loop: products.length > 4, // Only loop if enough items
+                        loop: products.length > 5, // Only loop if enough items
                         margin: 10,
                         nav: false,
                         dots: true,
@@ -348,7 +413,7 @@
                         responsive: {
                             0: { items: 2 },
                             600: { items: 3 },
-                            1000: { items: 4 }
+                            1000: { items: 5 }
                         }
                     });
                 }, 100);
@@ -370,6 +435,96 @@
         }
 
         let currentProduct = null;
+
+        async function fetchCollectionProducts(collectionId, currentId) {
+            const query = `
+            query {
+                collection(id: "${collectionId}", channel: "in") {
+                    products(first: 20) {
+                        edges {
+                            node {
+                                id
+                                name
+                                thumbnail { url }
+                                pricing {
+                                    priceRange {
+                                        start {
+                                            gross {
+                                                amount
+                                                currency
+                                            }
+                                        }
+                                    }
+                                }
+                                category { name }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                const edges = json.data?.collection?.products?.edges || [];
+                return edges.map(e => e.node).filter(p => p.id !== currentId);
+            } catch (err) {
+                console.error(err);
+                return [];
+            }
+        }
+
+        function renderCollectionProducts(products) {
+            const container = document.getElementById("collectionCarousel");
+            const section = document.getElementById("collectionSection");
+
+            if (products.length === 0) {
+                section.classList.add("hidden");
+                return;
+            }
+
+            section.classList.remove("hidden");
+
+            const html = products.map(p => {
+                const price = p.pricing?.priceRange?.start?.gross?.amount?.toFixed(2);
+                const currency = p.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.pricing?.priceRange?.start?.gross?.currency || '');
+                const formattedPrice = p.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+
+                return `
+                <div class="item p-4">
+                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer" onclick="window.location.href='product.html?id=${p.id}'">
+                         <div class="relative h-52">
+                             <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover">
+                              ${p.category?.name ? `<span class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 text-xs font-bold rounded shadow-sm">${p.category.name}</span>` : ''}
+                         </div>
+                         <div class="p-4">
+                             <h3 class="font-bold text-gray-800 text-lg mb-1 truncate">${p.name}</h3>
+                             <p class="text-gold font-bold">${formattedPrice}</p>
+                         </div>
+                    </div>
+                </div>
+                `;
+            }).join("");
+
+            container.innerHTML = html;
+
+            $('#collectionCarousel').owlCarousel({
+                loop: false,
+                margin: 20,
+                nav: false,
+                dots: true,
+                responsive: {
+                    0: { items: 2 },
+                    600: { items: 3 },
+                    1000: { items: 5 }
+                }
+            });
+        }
 
         async function init() {
             if (!productId) {
@@ -512,34 +667,21 @@
             }
 
             // Images
-            let imageHtml = "";
-            if (p.media && p.media.length > 0) {
-                imageHtml = `<div class="owl-carousel product-image-carousel h-96 md:h-[500px]">`;
-                p.media.forEach(m => {
-                    if (m.type === 'IMAGE') {
-                        imageHtml += `<div class="item h-full"><img src="${m.url}" class="w-full h-full object-cover object-center" alt="${p.name}"></div>`;
-                    }
-                });
-                imageHtml += `</div>`;
-            } else {
-                imageHtml = `<img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-96 md:h-[500px] object-cover object-center" alt="${p.name}">`;
-            }
-            document.getElementById("imageContainer").innerHTML = imageHtml;
-
-            // Init Carousel
-            setTimeout(() => {
-                $('.product-image-carousel').owlCarousel({
-                    items: 1,
-                    loop: true,
-                    dots: true,
-                    nav: false,
-                    autoplay: true,
-                    autoplayHoverPause: true
-                });
-            }, 100);
+            renderGallery(p.media, p.thumbnail?.url, p.name);
 
             renderCartAction();
             renderVariants(p.variants);
+
+            // Fetch Collection Products
+            if (p.collections && p.collections.length > 0) {
+                const collectionId = p.collections[0].id;
+                const collectionTitle = p.collections[0].name;
+                document.getElementById("collectionTitle").innerText = `More from ${collectionTitle}`;
+
+                fetchCollectionProducts(collectionId, p.id).then(products => {
+                    renderCollectionProducts(products);
+                });
+            }
         }
 
         function renderCartAction() {
@@ -623,8 +765,9 @@
 
                 // Optional: click to select logic could go here
                 div.onclick = () => {
-                    // Logic to switch variant if needed
                     console.log("Variant clicked:", v.id);
+                    // Show only this variant's images
+                    renderGallery(v.media, currentProduct.thumbnail?.url, v.name);
                 };
 
                 container.appendChild(div);
