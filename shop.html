@@ -571,15 +571,15 @@ query {
           ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
       </div>
       
-      <div class="p-4">
-          <p class="font-semibold text-lg">${p.name}</p>
+      <div class="p-3">
+          <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
           
-          <div class="flex flex-col-reverse gap-2 mt-2 border-t pt-3 w-full">
+          <div class="flex flex-col-reverse gap-2 mt-auto border-t pt-3 w-full">
               ${priceHtml}
           </div>
       </div>
     </a>
-  `}).join("") : `<p class="text-center text-gray-500">No products found.</p>`;
+  `}).join("") : `<p class="col-span-full text-center text-gray-500">No products found.</p>`;
 
       // Initialize Carousel
       setTimeout(() => {
