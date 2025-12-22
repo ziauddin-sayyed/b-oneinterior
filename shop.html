@@ -202,15 +202,13 @@ query {
       node { 
         id 
         name 
+        backgroundImage {
+            url
+        }
+        parent { 
           id 
           name 
-          backgroundImage {
-              url
-          }
-          parent { 
-            id 
-            name 
-          } 
+        } 
       } 
     } 
   }
@@ -335,7 +333,7 @@ query {
     ${parentCategories.map(c => {
         const hasImage = c.backgroundImage?.url;
         const iconHtml = hasImage
-          ? `<img src="${c.backgroundImage.url}" class="w-8 h-8 object-contain mb-2" alt="${c.name}">`
+          ? `<img src="${c.backgroundImage.url}" class="w-12 h-12 object-contain mb-2" alt="${c.name}">`
           : `<ion-icon name="${getCategoryIcon(c.name)}" class="text-2xl text-gray-500 group-hover:text-gold mb-2"></ion-icon>`;
 
         return `
