@@ -65,13 +65,11 @@
 
     <div id="drawer">
       <ul>
-        <li><a href="#company">Company</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <!-- <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li> -->
-        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="https://b-oneinterior.com/company">Company</a></li>
+        <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
+        <li><a href="https://b-oneinterior.com/company">Services</a></li>
+        <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
       </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
@@ -97,10 +95,10 @@
         <li></li>
 
         <li>
-          <a href="https://b-oneinterior.com/company">
-            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Company</div>
-          </a>
+          <div class="cursor-pointer" onclick="toggleDrawer()">
+            <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Menu</div>
+          </div>
         </li>
 
 
@@ -128,37 +126,27 @@
     </div>
 
     <script>
-      //   const drawer = document.getElementById("drawer");
-      //   const overlay = document.querySelector(".overlay");
-      //   const menuBtn = document.getElementById("menu-btn");
+      function toggleDrawer() {
+        const drawer = document.getElementById("drawer");
+        const overlay = document.querySelector(".overlay");
+        if (drawer.style.left === "0px") {
+          drawer.style.left = "-250px";
+          overlay.style.opacity = "0";
+          overlay.style.pointerEvents = "none";
+        } else {
+          drawer.style.left = "0px";
+          overlay.style.opacity = "1";
+          overlay.style.pointerEvents = "auto";
+        }
+      }
 
-      //   menuBtn.addEventListener("click", () => {
-      //       drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-      //       toggleOverlay();
-      //   });
-
-      //   overlay.addEventListener("click", () => {
-      //       drawer.style.left = "-250px";
-      //       hideOverlay();
-      //   });
-
-      //   function toggleOverlay() {
-      //       if (overlay.style.opacity === "1") {
-      //           hideOverlay();
-      //       } else {
-      //           showOverlay();
-      //       }
-      //   }
-
-      //   function showOverlay() {
-      //       overlay.style.opacity = "1";
-      //       overlay.style.pointerEvents = "auto";
-      //   }
-
-      //   function hideOverlay() {
-      //       overlay.style.opacity = "0";
-      //       overlay.style.pointerEvents = "none";
-      //   }
+      const overlay = document.querySelector(".overlay");
+      overlay.addEventListener("click", () => {
+        const drawer = document.getElementById("drawer");
+        drawer.style.left = "-250px";
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+      });
     </script>
   </header>
 

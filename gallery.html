@@ -51,13 +51,11 @@
 
         <div id="drawer">
             <ul>
-                <li><a href="#company">Company</a></li>
-                <li><a href="#shop">Shop</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <!-- <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li> -->
-                <li><a href="#contact">Contact Us</a></li>
+                <li><a href="https://b-oneinterior.com/company">Company</a></li>
+                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
             </ul>
         </div>
         <label for="menu-toggle" class="overlay"></label>
@@ -83,10 +81,10 @@
                 <li></li>
 
                 <li>
-                    <a href="https://b-oneinterior.com/company">
-                        <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                        <div>Company</div>
-                    </a>
+                    <div class="cursor-pointer" onclick="toggleDrawer()">
+                        <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Menu</div>
+                    </div>
                 </li>
 
 
@@ -105,15 +103,59 @@
 
     </header>
 
-    <div class="container mx-auto px-4 mt-8 mb-24 max-w-3xl">
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById("drawer");
+            const overlay = document.querySelector(".overlay");
+            if (drawer.style.left === "0px") {
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            } else {
+                drawer.style.left = "0px";
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "auto";
+            }
+        }
+
+        const overlay = document.querySelector(".overlay");
+        overlay.addEventListener("click", () => {
+            const drawer = document.getElementById("drawer");
+            drawer.style.left = "-250px";
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        });
+    </script>
+
+    <div class="container mx-auto px-4 mt-8 mb-24">
+
+        <!-- Search Bar -->
+        <div class="relative w-full max-w-md mx-auto mb-8">
+            <input type="text" id="gallerySearchInput" placeholder="Search gallery..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <aside class="bg-gray-100 p-1 shadow rounded-lg space-y-2 mb-6">
+            <div>
+                <h3 class="font-semibold mb-3 px-2 text-black">Categories</h3>
+                <div id="subcategoryFilter" class="flex flex-wrap gap-2 mt-3 hidden px-2 pb-2"></div>
+            </div>
+        </aside>
 
         <!-- Loading Spinner -->
         <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
         </div>
 
-        <!-- Vertical Product List -->
-        <div id="productList" class="space-y-8"></div>
+        <!-- Product Grid -->
+        <div id="productList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
 
     </div>
 
@@ -181,6 +223,12 @@
                                 attribute { name }
                                 values { name }
                             }
+                            category {
+                                id
+                                name
+                                backgroundImage { url }
+                                parent { id name }
+                            }
                         }
                     }
                 }
@@ -190,9 +238,168 @@
             const productData = await fetchGraphQL(productsQuery, { productTypeId: productTypeNode.id });
             const products = productData?.products?.edges || [];
 
-            renderProducts(products);
+            // Store globally
+            window.allGalleryProducts = products;
+
+            // Extract categories from products
+            const categoryMap = new Map();
+            products.forEach(p => {
+                const cat = p.node.category;
+                if (cat) {
+                    // Add category itself
+                    if (!categoryMap.has(cat.id)) {
+                        categoryMap.set(cat.id, { ...cat });
+                    }
+                    // Add parent if exists (ensure we capture parents even if not directly assigned to a product)
+                    if (cat.parent && !categoryMap.has(cat.parent.id)) {
+                        // Note: Parent from this query won't have backgroundImage, but that's expected if not fetched
+                        categoryMap.set(cat.parent.id, { ...cat.parent });
+                    }
+                }
+            });
+            window.allCategories = Array.from(categoryMap.values());
+
+            // Auto-select the single parent category (Gallery Image Category)
+            const parentCategories = getParentCategories(window.allCategories);
+            if (parentCategories.length > 0) {
+                selectedParentCategory = parentCategories[0].id;
+            }
+
+            // renderCategoryFilters(window.allCategories, window.allGalleryProducts); // Removed
+
+            // Initial render of products (filtered by the default parent if selected)
+            if (selectedParentCategory) {
+                renderSubcategoryFilters(selectedParentCategory);
+            } else {
+                renderProducts(products);
+            }
+
             document.getElementById("loadingSpinner").classList.add("hidden");
         }
+
+        // --- Filter Helpers ---
+        let selectedParentCategory = null;
+
+        function getParentCategories(categories) {
+            return categories.filter(c => !c.parent);
+        }
+
+        function getSubcategories(categories, parentId) {
+            return categories.filter(c => c.parent?.id === parentId);
+        }
+
+
+
+        function renderCategoryFilters(categories, products) {
+            const parentCategories = getParentCategories(categories);
+            const parentCounts = {};
+            parentCategories.forEach(parent => {
+                const subcats = getSubcategories(categories, parent.id);
+                const subcatIds = subcats.map(s => s.id);
+                parentCounts[parent.id] = products.filter(p =>
+                    p.node.category?.id === parent.id || subcatIds.includes(p.node.category?.id) || p.node.category?.parent?.id === parent.id
+                ).length;
+            });
+
+            const categoryFilter = document.getElementById("categoryFilter");
+            categoryFilter.innerHTML = `
+            <div class="filter-category group flex flex-col items-center justify-center p-2 cursor-pointer transition rounded-lg ${selectedParentCategory === 'all' || selectedParentCategory === null ? 'bg-gold text-white' : 'bg-white text-black hover:bg-gray-200'}" onclick="filterByCategory('all')">
+                <ion-icon name="apps-outline" class="text-3xl mb-2"></ion-icon>
+                <span class="text-xs font-semibold text-center leading-tight">All</span>
+                <span class="text-[10px] opacity-75 mt-1">(${products.length})</span>
+            </div>
+            ${parentCategories.map(c => {
+                const hasImage = c.backgroundImage?.url;
+                const iconHtml = hasImage
+                    ? `<img src="${c.backgroundImage.url}" class="w-12 h-12 object-contain mb-2" alt="${c.name}">`
+                    : `<ion-icon name="${getCategoryIcon(c.name)}" class="text-3xl mb-2"></ion-icon>`;
+
+                const isActive = selectedParentCategory === c.id;
+                const activeClass = isActive ? 'bg-gold text-white' : 'bg-white text-black hover:bg-gray-200';
+
+                return `
+                <div class="filter-category group flex flex-col items-center justify-center p-2 cursor-pointer transition rounded-lg ${activeClass}" onclick="filterByCategory('${c.id}')">
+                    ${iconHtml}
+                    <span class="text-xs font-semibold text-center leading-tight line-clamp-2">${c.name}</span>
+                    <span class="text-[10px] opacity-75 mt-1">(${parentCounts[c.id] || 0})</span>
+                </div>`;
+            }).join("")}
+            `;
+        }
+
+        function renderSubcategoryFilters(parentId) {
+            const subcategories = getSubcategories(window.allCategories, parentId);
+            const subcategoryContainer = document.getElementById("subcategoryFilter");
+
+            if (subcategories.length === 0) {
+                subcategoryContainer.classList.add("hidden");
+                subcategoryContainer.innerHTML = "";
+                filterGalleryProducts(parentId, 'all');
+                return;
+            }
+
+            const subcatCounts = {};
+            subcategories.forEach(sub => {
+                subcatCounts[sub.id] = window.allGalleryProducts.filter(p => p.node.category?.id === sub.id).length;
+            });
+
+            const allInParentCount = window.allGalleryProducts.filter(p =>
+                p.node.category?.id === parentId || p.node.category?.parent?.id === parentId
+            ).length;
+
+            subcategoryContainer.innerHTML = `
+            <button class="filter-subcategory px-3 py-1 rounded-full border text-sm bg-gold text-white transition hover:opacity-90" onclick="filterGalleryProducts('${parentId}', 'all')">
+                All (${allInParentCount})
+            </button>
+            ${subcategories.map(s => `
+            <button class="filter-subcategory px-3 py-1 rounded-full border border-gray-300 text-gray-700 bg-white text-sm transition hover:bg-gray-100" onclick="filterGalleryProducts('${parentId}', '${s.id}')">
+                ${s.name} (${subcatCounts[s.id] || 0})
+            </button>`).join("")}
+            `;
+            subcategoryContainer.classList.remove("hidden");
+            filterGalleryProducts(parentId, 'all');
+        }
+
+
+
+        function filterGalleryProducts(parentId, subcatId) {
+            let filtered = [];
+            if (subcatId === 'all') {
+                filtered = window.allGalleryProducts.filter(p =>
+                    p.node.category?.id === parentId || p.node.category?.parent?.id === parentId
+                );
+            } else {
+                filtered = window.allGalleryProducts.filter(p => p.node.category?.id === subcatId);
+            }
+            renderProducts(filtered);
+
+            const buttons = document.querySelectorAll('#subcategoryFilter button');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(subcatId === 'all' ? 'All' : window.allCategories.find(c => c.id === subcatId)?.name)) {
+                    btn.className = "filter-subcategory px-3 py-1 rounded-full border text-sm bg-gold text-white transition hover:opacity-90";
+                } else {
+                    btn.className = "filter-subcategory px-3 py-1 rounded-full border border-gray-300 text-gray-700 bg-white text-sm transition hover:bg-gray-100";
+                }
+            });
+        }
+
+        // Search Functionality
+        const searchInput = document.getElementById('gallerySearchInput');
+        searchInput.addEventListener('input', function (e) {
+            const query = this.value.trim().toLowerCase();
+            const allProducts = window.allGalleryProducts || [];
+
+            if (query.length === 0) {
+                renderProducts(allProducts);
+                return;
+            }
+
+            const filteredProducts = allProducts.filter(p =>
+                p.node.name.toLowerCase().includes(query)
+            );
+
+            renderProducts(filteredProducts);
+        });
 
 
         function renderProducts(products) {
@@ -232,19 +439,25 @@
                     descHtml = `<p class="text-gray-300 mt-2">${descText}</p>`;
                 }
 
-                // Image Carousel
+                // Image Carousel / Single Image
                 let imageHtml = "";
-                if (node.media && node.media.length > 0) {
-                    imageHtml = `<div class="owl-carousel work-carousel">`;
-                    node.media.forEach(m => {
-                        if (m.type === 'IMAGE') {
-                            imageHtml += `<img src="${m.url}" class="w-full h-auto object-cover rounded-lg" alt="${node.name}">`;
-                        }
-                    });
-                    imageHtml += `</div>`;
-                } else {
-                    imageHtml = `<img src="${node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-auto object-cover rounded-lg" alt="${node.name}">`;
+                // Use the first image as the main display, clicking handles the rest
+                let displayImage = FALLBACK_IMG;
+                if (node.thumbnail && node.thumbnail.url) {
+                    displayImage = node.thumbnail.url;
+                } else if (node.media && node.media.length > 0) {
+                    const firstImg = node.media.find(m => m.type === 'IMAGE');
+                    if (firstImg) displayImage = firstImg.url;
                 }
+
+                imageHtml = `
+                    <div class="relative w-full pt-[100%] overflow-hidden rounded-lg cursor-pointer group" onclick="openProductModal('${node.id}')">
+                         <img src="${displayImage}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="${node.name}">
+                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition duration-300 flex items-center justify-center">
+                            <ion-icon name="resize-outline" class="text-white text-3xl opacity-0 group-hover:opacity-100 transition duration-300 transform scale-0 group-hover:scale-100"></ion-icon>
+                         </div>
+                    </div>
+                `;
 
                 return `
                 <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl p-6">
@@ -258,17 +471,7 @@
              `;
             }).join("");
 
-            // Initialize Carousel
-            setTimeout(() => {
-                $('.work-carousel').owlCarousel({
-                    items: 1,
-                    loop: true,
-                    dots: true,
-                    nav: false,
-                    margin: 10,
-                    autoHeight: true
-                });
-            }, 100);
+
         }
 
         loadWorkProducts();
@@ -287,6 +490,152 @@
         }
         updateCartBadge();
 
+    </script>
+    <!-- Product Details Modal -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/90 transition-opacity backdrop-blur-sm" onclick="closeProductModal()"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div
+                class="relative transform overflow-hidden rounded-lg bg-gray-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-700">
+
+                <!-- Close Button -->
+                <button type="button" class="absolute right-4 top-4 z-10 text-gray-400 hover:text-white"
+                    onclick="closeProductModal()">
+                    <span class="sr-only">Close</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+                    <!-- Image Section -->
+                    <div class="bg-black p-4 flex flex-col items-center justify-center h-full min-h-[400px]">
+                        <div class="relative w-full h-[400px] mb-4">
+                            <img id="modalMainImage" src="" alt="Product Image"
+                                class="absolute inset-0 w-full h-full object-contain">
+                        </div>
+                        <!-- Thumbnails -->
+                        <div id="modalThumbnails"
+                            class="flex gap-2 overflow-x-auto w-full px-2 pb-2 hide-scrollbar justify-center">
+                            <!-- Thumbnails injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Details Section -->
+                    <!-- Details Section -->
+                    <div class="p-6 md:p-8 flex flex-col overflow-y-auto max-h-[80vh] md:max-h-full">
+                        <h3 id="modalTitle" class="text-2xl font-bold leading-6 text-gold mb-2"></h3>
+                        <!-- Price Removed -->
+
+                        <div class="prose prose-invert max-w-none text-gray-300 text-sm mb-6 flex-grow">
+                            <p id="modalDescription"></p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-auto pt-4 border-t border-gray-700">
+                            <a id="modalEnquireBtn" href="#" target="_blank"
+                                class="w-full inline-flex justify-center rounded-md bg-gold px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-600 sm:w-auto">
+                                Enquire Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        const modal = document.getElementById('productModal');
+        const modalMainImage = document.getElementById('modalMainImage');
+        const modalThumbnails = document.getElementById('modalThumbnails');
+        const modalTitle = document.getElementById('modalTitle');
+        // Price removed
+        const modalDescription = document.getElementById('modalDescription');
+        const modalEnquireBtn = document.getElementById('modalEnquireBtn');
+
+        function openProductModal(productId) {
+            const product = window.allGalleryProducts.find(p => p.node.id === productId);
+            if (!product) return;
+            const node = product.node;
+
+            // Set Details
+            modalTitle.textContent = node.name;
+
+            // Description
+            let descText = node.description || '';
+            if (typeof descText === 'string' && descText.startsWith('{')) {
+                try {
+                    const descObj = JSON.parse(descText);
+                    if (descObj.blocks) {
+                        descText = descObj.blocks.map(b => b.data.text).join(' ');
+                    }
+                } catch (e) { }
+            }
+            modalDescription.textContent = descText;
+
+            // Images
+            let allImages = [];
+            if (node.media && node.media.length > 0) {
+                allImages = node.media.filter(m => m.type === 'IMAGE').map(m => m.url);
+            } else if (node.thumbnail) {
+                allImages = [node.thumbnail.url];
+            } else {
+                allImages = [FALLBACK_IMG];
+            }
+
+            // Set Main Image
+            setMainImage(allImages[0]);
+
+            // WhatsApp Enquiry Link
+            const phone = "+917738130131";
+            const message = `Hi, I am interested in ${node.name}. \nCheck this out: ${allImages[0]}`;
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            if (modalEnquireBtn) modalEnquireBtn.href = whatsappUrl;
+
+            // Render Thumbnails
+            modalThumbnails.innerHTML = allImages.map((url, index) => `
+                <img src="${url}" 
+                     class="w-16 h-16 object-cover rounded border-2 cursor-pointer transition ${index === 0 ? 'border-gold' : 'border-transparent hover:border-gray-500'}" 
+                     onclick="setMainImage('${url}'); highlightThumbnail(this)"
+                >
+            `).join('');
+
+            // Show Modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeProductModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function setMainImage(url) {
+            modalMainImage.src = url;
+        }
+
+        function highlightThumbnail(imgElement) {
+            // Remove active class from all
+            const thumbs = modalThumbnails.getElementsByTagName('img');
+            for (let t of thumbs) {
+                t.classList.remove('border-gold');
+                t.classList.add('border-transparent');
+            }
+            // Add to clicked
+            imgElement.classList.remove('border-transparent');
+            imgElement.classList.add('border-gold');
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === "Escape") {
+                closeProductModal();
+            }
+        });
     </script>
 </body>
 

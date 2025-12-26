@@ -42,30 +42,15 @@
       </button>
     </nav>
 
-    <div class="floating-icon">
-      <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-          src="images/call_icon.png" alt="Call" srcset=""></a>
-      <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
-      <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img
-          style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
-      <a target="_blank" href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="><img
-          style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
-      <a target="_blank" href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK"><img
-          style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
-      <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img style="max-width: initial;height: 4.5vh;"
-          src="images/map_marker.png" alt="Location" srcset=""></a>
-    </div>
+
 
     <div id="drawer">
       <ul>
-        <li><a href="#company">Company</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <!-- <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li> -->
-        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="https://b-oneinterior.com/company">Company</a></li>
+        <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
+        <li><a href="https://b-oneinterior.com/company">Services</a></li>
+        <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
       </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
@@ -91,10 +76,10 @@
         <li></li>
 
         <li>
-          <a href="https://b-oneinterior.com/company">
-            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Company</div>
-          </a>
+          <div class="cursor-pointer" onclick="toggleDrawer()">
+            <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+            <div>Menu</div>
+          </div>
         </li>
 
 
@@ -110,7 +95,29 @@
         </li>
       </ul>
     </div>
+    <script>
+      function toggleDrawer() {
+        const drawer = document.getElementById("drawer");
+        const overlay = document.querySelector(".overlay");
+        if (drawer.style.left === "0px") {
+          drawer.style.left = "-250px";
+          overlay.style.opacity = "0";
+          overlay.style.pointerEvents = "none";
+        } else {
+          drawer.style.left = "0px";
+          overlay.style.opacity = "1";
+          overlay.style.pointerEvents = "auto";
+        }
+      }
 
+      const overlay = document.querySelector(".overlay");
+      overlay.addEventListener("click", () => {
+        const drawer = document.getElementById("drawer");
+        drawer.style.left = "-250px";
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+      });
+    </script>
   </header>
 
 

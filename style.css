@@ -362,7 +362,9 @@
         }
 
         #drawer ul li a:hover {
-            background: #25D366
+            background: #D4AF37;
+            color: #000;
+            /* Optional: Change text to black for better contrast on gold */
         }
 
         /* #menu-toggle:checked~ #drawer{left:0} */
