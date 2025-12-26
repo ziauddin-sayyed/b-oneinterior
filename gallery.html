@@ -56,6 +56,8 @@
                 <li><a href="https://b-oneinterior.com/company">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
             </ul>
         </div>
         <label for="menu-toggle" class="overlay"></label>
@@ -144,7 +146,7 @@
         <!-- Category Filters -->
         <aside class="bg-gray-100 p-1 shadow rounded-lg space-y-2 mb-6">
             <div>
-                <h3 class="font-semibold mb-3 px-2 text-black">Categories</h3>
+                <h3 class="font-semibold mb-3 px-2 text-black">Projects</h3>
                 <div id="subcategoryFilter" class="flex flex-wrap gap-2 mt-3 hidden px-2 pb-2"></div>
             </div>
         </aside>
@@ -155,13 +157,13 @@
         </div>
 
         <!-- Product Grid -->
-        <div id="productList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+        <div id="productList" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
 
     </div>
 
     <script>
         const API_URL = "https://api.b-oneinterior.com/graphql/";
-        const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
+        const FALLBACK_IMG = "images/placeholder.png";
 
         async function fetchGraphQL(query, variables = {}) {
             try {
@@ -436,6 +438,9 @@
                             }
                         } catch (e) { }
                     }
+                    if (descText.length > 100) {
+                        descText = descText.substring(0, 100) + "...";
+                    }
                     descHtml = `<p class="text-gray-300 mt-2">${descText}</p>`;
                 }
 
@@ -497,9 +502,9 @@
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-black/90 transition-opacity backdrop-blur-sm" onclick="closeProductModal()"></div>
 
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+        <div class="flex min-h-full items-center justify-center p-0 text-center sm:p-0">
             <div
-                class="relative transform overflow-hidden rounded-lg bg-gray-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-700">
+                class="relative transform overflow-hidden rounded-none sm:rounded-lg bg-gray-900 text-left shadow-xl transition-all w-full sm:my-8 sm:w-full sm:max-w-4xl border-0 sm:border border-gray-700">
 
                 <!-- Close Button -->
                 <button type="button" class="absolute right-4 top-4 z-10 text-gray-400 hover:text-white"
@@ -527,7 +532,7 @@
                     <!-- Details Section -->
                     <!-- Details Section -->
                     <div class="p-6 md:p-8 flex flex-col overflow-y-auto max-h-[80vh] md:max-h-full">
-                        <h3 id="modalTitle" class="text-2xl font-bold leading-6 text-gold mb-2"></h3>
+                        <h3 id="modalTitle" class="text-2xl font-bold leading-6 text-white mb-2"></h3>
                         <!-- Price Removed -->
 
                         <div class="prose prose-invert max-w-none text-gray-300 text-sm mb-6 flex-grow">
@@ -637,6 +642,7 @@
             }
         });
     </script>
+    <script src="placeholder.js"></script>
 </body>
 
 </html>

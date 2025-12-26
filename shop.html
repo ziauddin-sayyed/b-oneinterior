@@ -70,6 +70,8 @@
         <li><a href="https://b-oneinterior.com/company">Services</a></li>
         <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
         <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+        <li><a href="terms.html">Terms and Conditions</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
       </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
@@ -182,7 +184,7 @@
   <script>
     const API_URL = "https://api.b-oneinterior.com/graphql/";
     const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
-    const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Image";
+    const FALLBACK_IMG = "images/placeholder.png";
 
     // Updated query to fetch parent category information and product attributes
     const QUERY = `
@@ -777,6 +779,7 @@ query {
     })();
   </script>
 
+  <script src="placeholder.js"></script>
 </body>
 
 </html>

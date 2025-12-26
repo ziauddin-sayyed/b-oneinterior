@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+    <title>Terms and Conditions | B-One Interior</title>
+    <meta property="og:title" content="Terms and Conditions | B-One Interior">
+    <meta property="og:description" content="Terms and Conditions for B-One Interior.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+</head>
+
+<body class="bg-black text-white">
+
+    <!-- Header -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;"
+                        alt="B-One Interior"></a></div>
+
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+            </ul>
+            <button class="md:hidden text-gold-500" onclick="toggleDrawer()">
+                <ion-icon name="menu-outline" class="text-3xl"></ion-icon>
+            </button>
+        </nav>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="https://b-oneinterior.com/company">Company</a></li>
+                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li>
+                    <a href="https://b-oneinterior.com/gallery">
+                        <ion-icon name="images-outline"></ion-icon>
+                        <div>Gallery</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Shop</div>
+                    </a>
+                </li>
+                <li></li>
+                <li>
+                    <div class="cursor-pointer" onclick="toggleDrawer()">
+                        <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Menu</div>
+                    </div>
+                </li>
+                <li>
+                    <a href="https://b-oneinterior.com/cart">
+                        <ion-icon name="cart-outline"></ion-icon>
+                        <div>Cart</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <script>
+            function toggleDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                if (drawer.style.left === "0px") {
+                    drawer.style.left = "-250px";
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                } else {
+                    drawer.style.left = "0px";
+                    overlay.style.opacity = "1";
+                    overlay.style.pointerEvents = "auto";
+                }
+            }
+            const overlay = document.querySelector(".overlay");
+            overlay.addEventListener("click", () => {
+                const drawer = document.getElementById("drawer");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            });
+
+            // Cart Badge Logic (inherited)
+            function updateCartBadge() {
+                const badge = document.getElementById("cartCountBadge");
+                const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                const count = list.length;
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove("hidden");
+                } else {
+                    badge.classList.add("hidden");
+                }
+            }
+            updateCartBadge();
+        </script>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 mb-24 max-w-4xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-gold-500 mb-6 text-center">Terms and Conditions</h1>
+
+        <div class="prose prose-invert max-w-none text-gray-300">
+            <p>Welcome to B-One Interior!</p>
+            <p>These terms and conditions outline the rules and regulations for the use of B-One Interior's Website.</p>
+
+            <h3>1. Definitions</h3>
+            <p>"Client", "You" and "Your" refers to you, the person log on this website and compliant to the Company’s
+                terms and conditions. "The Company", "Ourselves", "We", "Our" and "Us", refers to our Company. "Party",
+                "Parties", or "Us", refers to both the Client and ourselves.</p>
+
+            <h3>2. Use License</h3>
+            <p>Permission is granted to temporarily download one copy of the materials (information or software) on
+                B-One Interior's website for personal, non-commercial transitory viewing only.</p>
+
+            <h3>3. Disclaimer</h3>
+            <p>The materials on B-One Interior's website are provided on an 'as is' basis. B-One Interior makes no
+                warranties, expressed or implied, and hereby disclaims and negates all other warranties including,
+                without limitation, implied warranties or conditions of merchantability, fitness for a particular
+                purpose, or non-infringement of intellectual property or other violation of rights.</p>
+
+            <h3>4. Limitations</h3>
+            <p>In no event shall B-One Interior or its suppliers be liable for any damages (including, without
+                limitation, damages for loss of data or profit, or due to business interruption) arising out of the use
+                or inability to use the materials on B-One Interior's website, even if B-One Interior or a B-One
+                Interior authorized representative has been notified orally or in writing of the possibility of such
+                damage.</p>
+
+            <h3>5. Revisions and Errata</h3>
+            <p>The materials appearing on B-One Interior's website could include technical, typographical, or
+                photographic errors. B-One Interior does not warrant that any of the materials on its website are
+                accurate, complete, or current.</p>
+
+            <h3>6. Product Inquiries</h3>
+            <p>Prices and availability of products are subject to change without notice. All inquiries made through the
+                website are subject to confirmation by our sales team.</p>
+
+            <h3>7. Governing Law</h3>
+            <p>These terms and conditions are governed by and construed in accordance with the laws of India and you
+                irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
+        </div>
+    </main>
+
+    <script src="placeholder.js"></script>
+</body>
+
+</html>
