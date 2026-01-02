@@ -20,10 +20,10 @@
     <script src="assets/js/owl.carousel.min.js"></script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 
+    <link rel="stylesheet" href="style.css">
+
     <!-- PDF.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs" type="module"></script>
-
-    <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -167,7 +167,7 @@
             <div class="flex items-center justify-between p-3 bg-black border-b border-gray-800">
                 <h3 id="pdfTitle" class="text-white font-bold text-sm truncate flex-1 mr-4">Catalogue</h3>
                 <div class="flex items-center gap-2">
-                    <a id="pdfDownloadBtn" href="#" target="_blank"
+                    <a id="pdfDownloadBtn" href="#" target="_blank" download
                         class="text-gold hover:text-white transition px-3 py-1 border border-gold rounded-full text-xs font-bold">
                         Download
                     </a>
@@ -181,29 +181,33 @@
             </div>
 
             <!-- PDF Container -->
-            <div id="pdfContainer" class="flex-1 overflow-auto flex items-center justify-center p-2 relative">
+            <div id="pdfContainer"
+                class="flex-1 overflow-auto flex items-center justify-center p-2 relative bg-gray-900">
                 <!-- Loading indicator -->
-                <div id="pdfLoading" class="absolute inset-0 flex items-center justify-center bg-black/50">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-gold"></div>
+                <div id="pdfLoading" class="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-gold mx-auto mb-4">
+                        </div>
+                        <p id="loadingText" class="text-white text-sm">Loading page...</p>
+                    </div>
                 </div>
                 <canvas id="pdfCanvas" class="max-w-full shadow-2xl"></canvas>
+                <iframe id="pdfFrame" class="w-full h-full border-0 absolute inset-0 hidden" src="about:blank"></iframe>
             </div>
 
             <!-- Footer Navigation -->
             <div class="flex items-center justify-center gap-4 p-3 bg-black border-t border-gray-800">
-                <button onclick="prevPage()" class="text-white hover:text-gold transition p-2 disabled:opacity-50"
-                    id="prevBtn">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="prevPage()" class="text-white hover:text-gold transition p-2" id="prevBtn">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
                         </path>
                     </svg>
                 </button>
-                <span class="text-white text-sm">
-                    <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                <span class="text-white text-sm font-bold">
+                    Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
                 </span>
-                <button onclick="nextPage()" class="text-white hover:text-gold transition p-2 disabled:opacity-50"
-                    id="nextBtn">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="nextPage()" class="text-white hover:text-gold transition p-2" id="nextBtn">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
@@ -572,7 +576,7 @@ query {
 
     <!-- PDF.js Viewer Script -->
     <script type="module">
-        // PDF.js setup
+        // PDF.js setup with ES module import
         const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs');
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
 
@@ -580,13 +584,11 @@ query {
         let currentPageNum = 1;
         let pageRendering = false;
         let pageNumPending = null;
-        let currentPdfUrl = null;
 
-        // Open PDF viewer
+        // Open PDF viewer with incremental loading
         window.openPdfViewer = async function (url, title) {
             const modal = document.getElementById('pdfModal');
             const loading = document.getElementById('pdfLoading');
-            const canvas = document.getElementById('pdfCanvas');
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -597,36 +599,39 @@ query {
             document.getElementById('pdfTitle').textContent = title + ' - Catalogue';
             document.getElementById('pdfDownloadBtn').href = url;
 
-            currentPdfUrl = url;
             currentPageNum = 1;
 
             try {
-                // Load PDF with streaming enabled (default)
+                // Load PDF with incremental/streaming loading
+                // disableAutoFetch: true = Only fetch page data when specifically requested
+                // disableStream: false = Enable streaming for initial load
                 pdfDoc = await pdfjsLib.getDocument({
                     url: url,
-                    disableAutoFetch: true,  // Only fetch pages as needed
-                    disableStream: false     // Enable streaming
+                    disableAutoFetch: true,
+                    disableStream: false
                 }).promise;
 
                 document.getElementById('totalPages').textContent = pdfDoc.numPages;
 
-                // Render first page
+                // Render only the first page initially
                 await renderPage(currentPageNum);
-                loading.classList.add('hidden');
             } catch (error) {
                 console.error('Error loading PDF:', error);
-                alert('Error loading catalogue. Please try downloading instead.');
-                closePdfViewer();
+                loading.classList.add('hidden');
+                alert('Error loading catalogue. Please try the Download button.');
             }
         };
 
-        // Render a specific page
+        // Render a specific page (fetches only that page's data)
         async function renderPage(num) {
+            if (!pdfDoc) return;
+
             pageRendering = true;
             const loading = document.getElementById('pdfLoading');
             loading.classList.remove('hidden');
 
             try {
+                // This fetches only the bytes needed for this specific page
                 const page = await pdfDoc.getPage(num);
 
                 const canvas = document.getElementById('pdfCanvas');
@@ -634,25 +639,26 @@ query {
 
                 // Calculate scale to fit container
                 const container = document.getElementById('pdfContainer');
-                const containerWidth = container.clientWidth - 20;
-                const containerHeight = container.clientHeight - 20;
+                const containerWidth = container.clientWidth - 40;
+                const containerHeight = container.clientHeight - 40;
 
                 const viewport = page.getViewport({ scale: 1 });
                 const scaleX = containerWidth / viewport.width;
                 const scaleY = containerHeight / viewport.height;
-                const scale = Math.min(scaleX, scaleY, 2); // Max 2x scale
+                const scale = Math.min(scaleX, scaleY, 2.5); // Max 2.5x scale for readability
 
                 const scaledViewport = page.getViewport({ scale });
 
                 canvas.height = scaledViewport.height;
                 canvas.width = scaledViewport.width;
 
+                // Render the page
                 await page.render({
                     canvasContext: ctx,
                     viewport: scaledViewport
                 }).promise;
 
-                // Clean up page resources after render
+                // Clean up page resources to free memory
                 page.cleanup();
 
                 document.getElementById('currentPage').textContent = num;
@@ -665,14 +671,14 @@ query {
             loading.classList.add('hidden');
             pageRendering = false;
 
-            // Render pending page if any
+            // If there's a pending page request, render it now
             if (pageNumPending !== null) {
                 renderPage(pageNumPending);
                 pageNumPending = null;
             }
         }
 
-        // Queue page render
+        // Queue page render (prevents multiple simultaneous renders)
         function queueRenderPage(num) {
             if (pageRendering) {
                 pageNumPending = num;
@@ -697,27 +703,30 @@ query {
 
         // Update navigation button states
         function updateNavButtons() {
-            document.getElementById('prevBtn').disabled = currentPageNum <= 1;
-            document.getElementById('nextBtn').disabled = !pdfDoc || currentPageNum >= pdfDoc.numPages;
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
 
-            document.getElementById('prevBtn').style.opacity = currentPageNum <= 1 ? '0.5' : '1';
-            document.getElementById('nextBtn').style.opacity = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? '0.5' : '1';
+            prevBtn.style.opacity = currentPageNum <= 1 ? '0.3' : '1';
+            prevBtn.style.pointerEvents = currentPageNum <= 1 ? 'none' : 'auto';
+
+            nextBtn.style.opacity = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? '0.3' : '1';
+            nextBtn.style.pointerEvents = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? 'none' : 'auto';
         }
 
-        // Close PDF viewer
+        // Close PDF viewer and clean up
         window.closePdfViewer = function () {
             const modal = document.getElementById('pdfModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.body.style.overflow = '';
 
-            // Clean up
+            // Destroy PDF document to free memory
             if (pdfDoc) {
                 pdfDoc.destroy();
                 pdfDoc = null;
             }
             currentPageNum = 1;
-            currentPdfUrl = null;
+            pageNumPending = null;
 
             // Clear canvas
             const canvas = document.getElementById('pdfCanvas');
@@ -735,19 +744,19 @@ query {
             if (e.key === 'Escape') closePdfViewer();
         });
 
-        // Touch swipe support
+        // Touch swipe support for mobile
         let touchStartX = 0;
-        document.getElementById('pdfContainer').addEventListener('touchstart', (e) => {
+        document.getElementById('pdfContainer')?.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
         });
 
-        document.getElementById('pdfContainer').addEventListener('touchend', (e) => {
+        document.getElementById('pdfContainer')?.addEventListener('touchend', (e) => {
             const touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > 50) {
-                if (diff > 0) nextPage();  // Swipe left = next
-                else prevPage();           // Swipe right = prev
+                if (diff > 0) nextPage();  // Swipe left = next page
+                else prevPage();           // Swipe right = previous page
             }
         });
     </script>
