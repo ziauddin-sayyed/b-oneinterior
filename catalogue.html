@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Product Catalogues | B-One Interior Store</title>
+    <meta property="og:title" content="Product Catalogues | B-One Interior Store">
+    <meta property="og:description"
+        content="Browse and download product catalogues from B-One Interior. Find detailed specifications and designs for our premium furniture and decor collections.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+    <!-- Tailwind CSS -->
+    <script src="assets/js/tailwind.min.js"></script>
+
+    <!-- jQuery + Owl Carousel -->
+    <script src="assets/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs" type="module"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="bg-black min-h-[130vh]">
+
+    <!-- Header -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+            </ul>
+            <button class="md:hidden text-gold-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </nav>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="https://b-oneinterior.com/company">Company</a></li>
+                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
+                <li><a href="https://b-oneinterior.com/company">Services</a></li>
+                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li>
+                    <a href="https://b-oneinterior.com/gallery">
+                        <ion-icon name="images-outline"></ion-icon>
+                        <div>Gallery</div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Shop</div>
+                    </a>
+                </li>
+                <li></li>
+
+                <li>
+                    <div class="cursor-pointer" onclick="toggleDrawer()">
+                        <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
+                        <div>Menu</div>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="https://b-oneinterior.com/cart">
+                        <ion-icon name="cart-outline"></ion-icon>
+                        <div>Cart</div>
+                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
+                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            function toggleDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                if (drawer.style.left === "0px") {
+                    drawer.style.left = "-250px";
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                } else {
+                    drawer.style.left = "0px";
+                    overlay.style.opacity = "1";
+                    overlay.style.pointerEvents = "auto";
+                }
+            }
+
+            const overlay = document.querySelector(".overlay");
+            overlay.addEventListener("click", () => {
+                const drawer = document.getElementById("drawer");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            });
+        </script>
+
+        <!-- Search Bar -->
+        <div
+            class="container mx-auto px-4 flex justify-center sticky top-0 z-40 bg-black py-4 border-b border-gray-800">
+            <div class="relative w-full max-w-md">
+                <input type="text" id="searchInput" placeholder="Search catalogues..."
+                    class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto p-2 space-y-6">
+
+        <aside class="bg-gray-100 p-1 shadow rounded-lg space-y-2 top-0 z-40">
+            <div>
+                <h3 class="font-semibold"></h3>
+                <div class="overflow-x-auto pb-2 hide-scrollbar">
+                    <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile: Vertical scroll product list -> Grid 2 cols -->
+        <div id="mobileProductList" class="grid grid-cols-2 gap-3 md:hidden px-2"></div>
+
+        <!-- Desktop: Grid layout -->
+        <main id="productGrid" class="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></main>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+        </div>
+
+        <!-- PDF Viewer Modal -->
+        <div id="pdfModal" class="fixed inset-0 bg-black/95 z-[100] hidden flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-3 bg-black border-b border-gray-800">
+                <h3 id="pdfTitle" class="text-white font-bold text-sm truncate flex-1 mr-4">Catalogue</h3>
+                <div class="flex items-center gap-2">
+                    <a id="pdfDownloadBtn" href="#" target="_blank"
+                        class="text-gold hover:text-white transition px-3 py-1 border border-gold rounded-full text-xs font-bold">
+                        Download
+                    </a>
+                    <button onclick="closePdfViewer()" class="text-white hover:text-gold transition p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PDF Container -->
+            <div id="pdfContainer" class="flex-1 overflow-auto flex items-center justify-center p-2 relative">
+                <!-- Loading indicator -->
+                <div id="pdfLoading" class="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-gold"></div>
+                </div>
+                <canvas id="pdfCanvas" class="max-w-full shadow-2xl"></canvas>
+            </div>
+
+            <!-- Footer Navigation -->
+            <div class="flex items-center justify-center gap-4 p-3 bg-black border-t border-gray-800">
+                <button onclick="prevPage()" class="text-white hover:text-gold transition p-2 disabled:opacity-50"
+                    id="prevBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                </button>
+                <span class="text-white text-sm">
+                    <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                </span>
+                <button onclick="nextPage()" class="text-white hover:text-gold transition p-2 disabled:opacity-50"
+                    id="nextBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
+        const FALLBACK_IMG = "images/placeholder.png";
+
+        const QUERY = `
+query {
+  categories(first: 100) { 
+    edges { 
+      node { 
+        id 
+        name 
+        backgroundImage {
+            url
+        }
+        parent { 
+          id 
+          name 
+        } 
+      } 
+    } 
+  }
+  products(first: 100, channel: "in") { 
+    edges { 
+      node { 
+        id 
+        name 
+        slug 
+        description
+        media {
+          url
+          type
+        }
+        attributes {
+          attribute {
+            name
+          }
+          values {
+            name
+            file {
+              url
+            }
+          }
+        }
+        pricing {
+            priceRange {
+              start {
+                gross {
+                  amount
+                  currency
+                }
+              }
+            }
+        }
+        category { 
+          id 
+          name 
+          parent { 
+            id 
+            name 
+          } 
+        } 
+        productType { 
+          id 
+          name 
+        } 
+        thumbnail { 
+          url 
+        } 
+      } 
+    } 
+  }
+}
+`;
+
+        let allCategories = [];
+        let allProducts = [];
+        let selectedParentCategory = null;
+
+        async function fetchSaleor() {
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: QUERY })
+                });
+                const json = await res.json();
+                if (json.errors) console.error("GraphQL errors:", json.errors);
+                return json.data;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                return null;
+            }
+        }
+
+        function getCatalogueLink(product) {
+            if (!product.attributes) return null;
+            const catAttr = product.attributes.find(a => a.attribute.name === "Catalogue");
+            if (catAttr && catAttr.values && catAttr.values.length > 0) {
+                return catAttr.values[0].file?.url;
+            }
+            return null;
+        }
+
+        function getParentCategories(categories) {
+            return categories.filter(c => !c.parent && c.name !== HIDDEN_CATEGORY_NAME);
+        }
+
+        function getSubcategories(categories, parentId) {
+            return categories.filter(c => c.parent?.id === parentId);
+        }
+
+        function getCategoryIcon(name) {
+            const lowerName = name.toLowerCase();
+            if (lowerName.includes('wallpaper')) return 'image-outline';
+            if (lowerName.includes('plumbing')) return 'water-outline';
+            if (lowerName.includes('fitting')) return 'build-outline';
+            if (lowerName.includes('electric')) return 'flash-outline';
+            if (lowerName.includes('carpentry')) return 'hammer-outline';
+            return 'cube-outline';
+        }
+
+        function renderCategoryFilters(categories, products) {
+            // Get unique category IDs from products with catalogues
+            const productCategoryIds = new Set();
+            const productParentCategoryIds = new Set();
+
+            products.forEach(p => {
+                if (p.category?.id) productCategoryIds.add(p.category.id);
+                if (p.category?.parent?.id) productParentCategoryIds.add(p.category.parent.id);
+            });
+
+            // Get parent categories that have products with catalogues
+            const parentCategories = getParentCategories(categories).filter(c => {
+                // Check if this parent has direct products with catalogues
+                if (productCategoryIds.has(c.id)) return true;
+                // Check if this parent has subcategories with products that have catalogues
+                if (productParentCategoryIds.has(c.id)) return true;
+                // Check if any subcategory has products
+                const subcats = getSubcategories(categories, c.id);
+                return subcats.some(sub => productCategoryIds.has(sub.id));
+            });
+
+            document.getElementById("categoryFilter").className = "grid grid-cols-10 gap-2 min-w-[250vw] md:min-w-0 md:w-full";
+            document.getElementById("categoryFilter").innerHTML = `
+    <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === 'all' || !selectedParentCategory ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="all" data-is-parent="true">
+      <ion-icon name="apps-outline" class="text-3xl mb-2"></ion-icon>
+      <span class="text-xs font-semibold text-center leading-tight">All</span>
+    </div>
+    ${parentCategories.map(c => {
+                const hasImage = c.backgroundImage?.url;
+                const iconHtml = hasImage
+                    ? `<img src="${c.backgroundImage.url}" class="w-12 h-12 object-cover mb-2" alt="${c.name}">`
+                    : `<ion-icon name="${getCategoryIcon(c.name)}" class="text-3xl mb-2"></ion-icon>`;
+
+                return `
+      <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === c.id ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="${c.id}" data-is-parent="true">
+        ${iconHtml}
+        <span class="text-xs font-semibold text-center leading-tight line-clamp-2">${c.name}</span>
+      </div>`;
+            }).join("")}
+  `;
+        }
+
+        function getActualPrice(product) {
+            if (!product.attributes) return null;
+            const priceAttr = product.attributes.find(a => a.attribute.name === "Actual Price");
+            if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
+                return priceAttr.values[0].name;
+            }
+            return null;
+        }
+
+        function renderDesktopList(products) {
+            const desktopList = document.getElementById("productGrid");
+
+            desktopList.innerHTML = products.length ? products.map(p => {
+                const catalogueUrl = getCatalogueLink(p);
+                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+                const currency = currentPriceObj ? currentPriceObj.currency : "";
+
+                const price = currentPriceVal?.toFixed(2) || "0.00";
+                const currSymbol = currency === 'INR' ? '₹' : (currency || '');
+                const formattedPrice = currency === 'INR' ? `₹${price}` : `${price} ${currSymbol}`;
+
+                const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
+
+                return `
+        <div class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden h-full">
+            <a href="product.html?id=${p.id}" class="block">
+              <div class="relative">
+                  <img src="${imageUrl}" class="w-full h-40 object-cover" alt="${p.name}">
+                  ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
+              </div>
+              
+              <div class="p-3 flex flex-col flex-grow">
+                  <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
+                  <div class="mt-auto border-t pt-2 w-full">
+                      <span class="text-black font-bold text-base block">${formattedPrice}</span>
+                  </div>
+              </div>
+            </a>
+            <div class="px-3 pb-3">
+              <button onclick="openPdfViewer('${catalogueUrl}', '${p.name.replace(/'/g, "\\'")}')"
+                class="w-full block text-center bg-gold text-white text-md font-bold px-3 py-2 rounded-full shadow hover:bg-opacity-90 transition cursor-pointer">
+                View Catalogue
+              </button>
+            </div>
+        </div>
+      `;
+            }).join("") : `<p class="col-span-full text-center text-gray-500">No catalogues found.</p>`;
+        }
+
+        function renderMobileList(products) {
+            const mobileList = document.getElementById("mobileProductList");
+
+            mobileList.innerHTML = products.length ? products.map(p => {
+                const catalogueUrl = getCatalogueLink(p);
+                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+                const currency = currentPriceObj ? currentPriceObj.currency : "";
+
+                let priceHtml = "";
+                if (currentPriceVal) {
+                    const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
+                    priceHtml = `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
+                }
+
+                const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
+
+                return `
+    <div class="bg-white shadow rounded-lg relative group overflow-hidden block">
+      <a href="product.html?id=${p.id}" class="block">
+        <div class="relative">
+            <img src="${imageUrl}" class="w-full h-48 object-cover" alt="${p.name}">
+            ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
+        </div>
+        
+        <div class="p-3">
+            <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
+            
+            <div class="flex flex-col gap-2 mt-auto border-t pt-3 w-full">
+                ${priceHtml}
+            </div>
+        </div>
+      </a>
+      <div class="px-2 pb-3">
+        <button onclick="openPdfViewer('${catalogueUrl}', '${p.name.replace(/'/g, "\\'")}')"
+          class="w-full flex items-center justify-center bg-gold text-white text-[11px] font-bold px-1 py-2 rounded-full shadow hover:bg-opacity-90 transition whitespace-nowrap gap-1 cursor-pointer">
+          <span>View Catalogue</span>
+        </button>
+      </div>
+    </div>
+  `}).join("") : `<p class="col-span-full text-center text-gray-500">No catalogues found.</p>`;
+        }
+
+        function applyFilters() {
+            let filtered = allProducts;
+
+            // Filter by Search Query
+            const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+            if (searchQuery) {
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(searchQuery) ||
+                    (p.category && p.category.name.toLowerCase().includes(searchQuery)) ||
+                    (p.description && p.description.toLowerCase().includes(searchQuery))
+                );
+            }
+
+            if (selectedParentCategory && selectedParentCategory !== "all") {
+                const subcategories = getSubcategories(allCategories, selectedParentCategory);
+                const subcatIds = subcategories.map(s => s.id);
+
+                filtered = filtered.filter(p =>
+                    p.category?.id === selectedParentCategory || subcatIds.includes(p.category?.id)
+                );
+            }
+
+            if (window.innerWidth >= 768) {
+                renderDesktopList(filtered);
+            } else {
+                renderMobileList(filtered);
+            }
+        }
+
+        function setupFiltering() {
+            // Search Input Listener
+            document.getElementById("searchInput").addEventListener("input", () => {
+                applyFilters();
+            });
+
+            document.addEventListener("click", e => {
+                if (e.target.closest(".filter-category")) {
+                    const target = e.target.closest(".filter-category");
+                    document.querySelectorAll(".filter-category").forEach(b => {
+                        b.classList.remove("text-gold");
+                        b.classList.add("text-gray-500");
+                    });
+                    target.classList.remove("text-gray-500");
+                    target.classList.add("text-gold");
+
+                    selectedParentCategory = target.dataset.category;
+                    applyFilters();
+                }
+            });
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById("cartCountBadge");
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const count = list.length;
+
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+
+        (async () => {
+            const data = await fetchSaleor();
+            if (!data) return alert("Error fetching Saleor API");
+
+            allCategories = data.categories?.edges?.map(e => e.node) || [];
+            let products = data.products?.edges?.map(e => e.node) || [];
+
+            // Find the hidden category and all its subcategories
+            const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
+            const hiddenCategoryId = hiddenCategory?.id;
+            const hiddenSubcategoryIds = hiddenCategoryId
+                ? allCategories.filter(c => c.parent?.id === hiddenCategoryId).map(c => c.id)
+                : [];
+
+            // Filter: only products with catalogue AND not in hidden category
+            allProducts = products.filter(p => {
+                const hasCatalogue = getCatalogueLink(p) !== null;
+                if (!hasCatalogue) return false;
+
+                const categoryId = p.category?.id;
+                const parentCategoryId = p.category?.parent?.id;
+
+                if (categoryId === hiddenCategoryId) return false;
+                if (hiddenSubcategoryIds.includes(categoryId)) return false;
+                if (parentCategoryId === hiddenCategoryId) return false;
+
+                return true;
+            });
+
+            renderCategoryFilters(allCategories, allProducts);
+            applyFilters();
+            setupFiltering();
+            updateCartBadge();
+            document.getElementById("loadingSpinner").classList.add("hidden");
+        })();
+    </script>
+
+    <!-- PDF.js Viewer Script -->
+    <script type="module">
+        // PDF.js setup
+        const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+
+        let pdfDoc = null;
+        let currentPageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let currentPdfUrl = null;
+
+        // Open PDF viewer
+        window.openPdfViewer = async function (url, title) {
+            const modal = document.getElementById('pdfModal');
+            const loading = document.getElementById('pdfLoading');
+            const canvas = document.getElementById('pdfCanvas');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            loading.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Set title and download link
+            document.getElementById('pdfTitle').textContent = title + ' - Catalogue';
+            document.getElementById('pdfDownloadBtn').href = url;
+
+            currentPdfUrl = url;
+            currentPageNum = 1;
+
+            try {
+                // Load PDF with streaming enabled (default)
+                pdfDoc = await pdfjsLib.getDocument({
+                    url: url,
+                    disableAutoFetch: true,  // Only fetch pages as needed
+                    disableStream: false     // Enable streaming
+                }).promise;
+
+                document.getElementById('totalPages').textContent = pdfDoc.numPages;
+
+                // Render first page
+                await renderPage(currentPageNum);
+                loading.classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading PDF:', error);
+                alert('Error loading catalogue. Please try downloading instead.');
+                closePdfViewer();
+            }
+        };
+
+        // Render a specific page
+        async function renderPage(num) {
+            pageRendering = true;
+            const loading = document.getElementById('pdfLoading');
+            loading.classList.remove('hidden');
+
+            try {
+                const page = await pdfDoc.getPage(num);
+
+                const canvas = document.getElementById('pdfCanvas');
+                const ctx = canvas.getContext('2d');
+
+                // Calculate scale to fit container
+                const container = document.getElementById('pdfContainer');
+                const containerWidth = container.clientWidth - 20;
+                const containerHeight = container.clientHeight - 20;
+
+                const viewport = page.getViewport({ scale: 1 });
+                const scaleX = containerWidth / viewport.width;
+                const scaleY = containerHeight / viewport.height;
+                const scale = Math.min(scaleX, scaleY, 2); // Max 2x scale
+
+                const scaledViewport = page.getViewport({ scale });
+
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
+
+                await page.render({
+                    canvasContext: ctx,
+                    viewport: scaledViewport
+                }).promise;
+
+                // Clean up page resources after render
+                page.cleanup();
+
+                document.getElementById('currentPage').textContent = num;
+                updateNavButtons();
+
+            } catch (error) {
+                console.error('Error rendering page:', error);
+            }
+
+            loading.classList.add('hidden');
+            pageRendering = false;
+
+            // Render pending page if any
+            if (pageNumPending !== null) {
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
+        }
+
+        // Queue page render
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        // Navigate to previous page
+        window.prevPage = function () {
+            if (currentPageNum <= 1) return;
+            currentPageNum--;
+            queueRenderPage(currentPageNum);
+        };
+
+        // Navigate to next page
+        window.nextPage = function () {
+            if (!pdfDoc || currentPageNum >= pdfDoc.numPages) return;
+            currentPageNum++;
+            queueRenderPage(currentPageNum);
+        };
+
+        // Update navigation button states
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentPageNum <= 1;
+            document.getElementById('nextBtn').disabled = !pdfDoc || currentPageNum >= pdfDoc.numPages;
+
+            document.getElementById('prevBtn').style.opacity = currentPageNum <= 1 ? '0.5' : '1';
+            document.getElementById('nextBtn').style.opacity = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? '0.5' : '1';
+        }
+
+        // Close PDF viewer
+        window.closePdfViewer = function () {
+            const modal = document.getElementById('pdfModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+
+            // Clean up
+            if (pdfDoc) {
+                pdfDoc.destroy();
+                pdfDoc = null;
+            }
+            currentPageNum = 1;
+            currentPdfUrl = null;
+
+            // Clear canvas
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        };
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('pdfModal');
+            if (modal.classList.contains('hidden')) return;
+
+            if (e.key === 'ArrowLeft') prevPage();
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'Escape') closePdfViewer();
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        document.getElementById('pdfContainer').addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.getElementById('pdfContainer').addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextPage();  // Swipe left = next
+                else prevPage();           // Swipe right = prev
+            }
+        });
+    </script>
+
+    <script src="placeholder.js"></script>
+</body>
+
+</html>

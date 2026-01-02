@@ -12,15 +12,14 @@
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/tailwind.min.js"></script>
 
     <!-- jQuery + Owl Carousel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 
     <link rel="stylesheet" href="style.css">
 
@@ -688,7 +687,7 @@
             if (catAttr && catAttr.values[0]?.file?.url) {
                 const url = catAttr.values[0].file.url;
                 document.getElementById("catalogueContainer").innerHTML = `
-                    <a href="${url}" target="_blank" class="block w-full text-center bg-gray-100 text-gold font-bold py-3 rounded-lg border border-gold hover:bg-gold hover:text-white transition transform active:scale-95">
+                    <a href="${url}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95">
                         Download Catalogue
                     </a>
                  `;
@@ -727,10 +726,22 @@
                 actionContainer.innerHTML = `
                  <div class="flex items-center justify-between bg-gray-100 rounded-full p-1 border border-gold">
                     <button class="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-500 font-bold text-xl transition" onclick="updateQty('${currentProduct.id}', -1)">-</button>
-                    <input type="number" readonly class="w-16 text-center bg-transparent font-bold text-xl text-gray-800 focus:outline-none" value="${inCart.quantity}">
+                    <input type="number" 
+                           id="quantityInput" 
+                           class="w-16 text-center bg-transparent font-bold text-xl text-gray-800 focus:outline-none" 
+                           value="${inCart.quantity}"
+                           min="1"
+                           step="1"
+                           onkeydown="validateQuantityKey(event)"
+                           oninput="handleQuantityInput(this, '${currentProduct.id}')"
+                           onblur="finalizeQuantity(this, '${currentProduct.id}')">
                     <button class="w-12 h-12 flex items-center justify-center text-gold hover:text-gold-600 font-bold text-xl transition" onclick="updateQty('${currentProduct.id}', 1)">+</button>
                  </div>
                  <div class="mt-2 text-center text-xs text-gray-500">Item is in your cart</div>
+                 <button onclick="removeFromCart('${currentProduct.id}')" class="w-full mt-3 bg-red-500 text-white font-bold py-3 rounded-full shadow-lg hover:bg-red-600 hover:shadow-xl transition transform active:scale-95 text-sm flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    Remove from Cart
+                 </button>
                 `;
             } else {
                 // Show Add to Cart
@@ -814,6 +825,12 @@
             }
         };
 
+        window.removeFromCart = function (id) {
+            let cart = getCart();
+            cart = cart.filter(i => i.id !== id);
+            saveCart(cart);
+        };
+
         // Cart Badge Logic
         function updateCartBadge() {
             const badge = document.getElementById("cartCountBadge");
@@ -827,6 +844,51 @@
             }
         }
         updateCartBadge();
+
+        // Validate key press - only allow numbers, backspace, delete, arrow keys, tab
+        window.validateQuantityKey = function (event) {
+            const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+            if (allowedKeys.includes(event.key)) return true;
+
+            // Allow numbers 0-9
+            if (/^[0-9]$/.test(event.key)) return true;
+
+            // Prevent everything else (letters, symbols, negative sign, decimal, etc.)
+            event.preventDefault();
+            return false;
+        };
+
+        // Handle input - remove any non-numeric characters and enforce minimum
+        window.handleQuantityInput = function (input, productId) {
+            // Remove any non-numeric characters
+            let value = input.value.replace(/[^0-9]/g, '');
+
+            // Remove leading zeros but keep at least one digit
+            value = value.replace(/^0+/, '') || '';
+
+            input.value = value;
+        };
+
+        // Finalize quantity on blur - set to 1 if empty or invalid, update cart
+        window.finalizeQuantity = function (input, productId) {
+            let value = parseInt(input.value, 10);
+
+            // If empty, invalid, zero, or negative, set to 1
+            if (isNaN(value) || value <= 0) {
+                value = 1;
+            }
+
+            input.value = value;
+
+            // Update cart with the new quantity
+            let cart = getCart();
+            const item = cart.find(i => i.id === productId);
+
+            if (item) {
+                item.quantity = value;
+                saveCart(cart);
+            }
+        };
 
         init();
 
