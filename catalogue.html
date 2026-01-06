@@ -196,7 +196,8 @@
             </div>
 
             <!-- Footer Navigation -->
-            <div class="flex items-center justify-center gap-4 p-3 bg-black border-t border-gray-800">
+            <div id="pdfNavigation"
+                class="flex items-center justify-center gap-4 p-3 bg-black border-t border-gray-800">
                 <button onclick="prevPage()" class="text-white hover:text-gold transition p-2" id="prevBtn">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
@@ -574,9 +575,9 @@ query {
         })();
     </script>
 
-    <!-- PDF.js Viewer Script -->
+    <!-- PDF Viewer Script with CORS Fallback -->
     <script type="module">
-        // PDF.js setup with ES module import
+        // PDF.js setup
         const pdfjsLib = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs');
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
 
@@ -584,27 +585,37 @@ query {
         let currentPageNum = 1;
         let pageRendering = false;
         let pageNumPending = null;
+        let usingIframeFallback = false;
 
-        // Open PDF viewer with incremental loading
+        // Open PDF viewer - tries PDF.js, falls back to iframe on CORS error
         window.openPdfViewer = async function (url, title) {
             const modal = document.getElementById('pdfModal');
             const loading = document.getElementById('pdfLoading');
+            const loadingText = document.getElementById('loadingText');
+            const canvas = document.getElementById('pdfCanvas');
+            const iframe = document.getElementById('pdfFrame');
+            const navigation = document.getElementById('pdfNavigation');
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             loading.classList.remove('hidden');
+            loadingText.textContent = 'Loading catalogue...';
             document.body.style.overflow = 'hidden';
 
             // Set title and download link
             document.getElementById('pdfTitle').textContent = title + ' - Catalogue';
             document.getElementById('pdfDownloadBtn').href = url;
 
+            // Reset state
             currentPageNum = 1;
+            usingIframeFallback = false;
+            canvas.classList.remove('hidden');
+            iframe.classList.add('hidden');
+            if (navigation) navigation.classList.remove('hidden');
 
+            // Try PDF.js first for incremental loading
             try {
-                // Load PDF with incremental/streaming loading
-                // disableAutoFetch: true = Only fetch page data when specifically requested
-                // disableStream: false = Enable streaming for initial load
+                loadingText.textContent = 'Loading page 1...';
                 pdfDoc = await pdfjsLib.getDocument({
                     url: url,
                     disableAutoFetch: true,
@@ -612,58 +623,54 @@ query {
                 }).promise;
 
                 document.getElementById('totalPages').textContent = pdfDoc.numPages;
-
-                // Render only the first page initially
                 await renderPage(currentPageNum);
+                return; // Success
             } catch (error) {
-                console.error('Error loading PDF:', error);
-                loading.classList.add('hidden');
-                alert('Error loading catalogue. Please try the Download button.');
+                console.warn('PDF.js failed (likely CORS), using iframe:', error.message);
             }
+
+            // Fallback to iframe
+            usingIframeFallback = true;
+            canvas.classList.add('hidden');
+            iframe.classList.remove('hidden');
+            if (navigation) navigation.classList.add('hidden');
+
+            iframe.src = url;
+            iframe.onload = () => loading.classList.add('hidden');
+            setTimeout(() => loading.classList.add('hidden'), 3000);
         };
 
-        // Render a specific page (fetches only that page's data)
+        // Render page (PDF.js mode only)
         async function renderPage(num) {
-            if (!pdfDoc) return;
+            if (!pdfDoc || usingIframeFallback) return;
 
             pageRendering = true;
             const loading = document.getElementById('pdfLoading');
+            const loadingText = document.getElementById('loadingText');
             loading.classList.remove('hidden');
+            loadingText.textContent = 'Loading page ' + num + '...';
 
             try {
-                // This fetches only the bytes needed for this specific page
                 const page = await pdfDoc.getPage(num);
-
                 const canvas = document.getElementById('pdfCanvas');
                 const ctx = canvas.getContext('2d');
 
-                // Calculate scale to fit container
                 const container = document.getElementById('pdfContainer');
                 const containerWidth = container.clientWidth - 40;
                 const containerHeight = container.clientHeight - 40;
 
                 const viewport = page.getViewport({ scale: 1 });
-                const scaleX = containerWidth / viewport.width;
-                const scaleY = containerHeight / viewport.height;
-                const scale = Math.min(scaleX, scaleY, 2.5); // Max 2.5x scale for readability
-
+                const scale = Math.min(containerWidth / viewport.width, containerHeight / viewport.height, 2.5);
                 const scaledViewport = page.getViewport({ scale });
 
                 canvas.height = scaledViewport.height;
                 canvas.width = scaledViewport.width;
 
-                // Render the page
-                await page.render({
-                    canvasContext: ctx,
-                    viewport: scaledViewport
-                }).promise;
-
-                // Clean up page resources to free memory
+                await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
                 page.cleanup();
 
                 document.getElementById('currentPage').textContent = num;
                 updateNavButtons();
-
             } catch (error) {
                 console.error('Error rendering page:', error);
             }
@@ -671,93 +678,74 @@ query {
             loading.classList.add('hidden');
             pageRendering = false;
 
-            // If there's a pending page request, render it now
             if (pageNumPending !== null) {
                 renderPage(pageNumPending);
                 pageNumPending = null;
             }
         }
 
-        // Queue page render (prevents multiple simultaneous renders)
         function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
+            if (pageRendering) pageNumPending = num;
+            else renderPage(num);
         }
 
-        // Navigate to previous page
         window.prevPage = function () {
-            if (currentPageNum <= 1) return;
+            if (usingIframeFallback || currentPageNum <= 1) return;
             currentPageNum--;
             queueRenderPage(currentPageNum);
         };
 
-        // Navigate to next page
         window.nextPage = function () {
-            if (!pdfDoc || currentPageNum >= pdfDoc.numPages) return;
+            if (usingIframeFallback || !pdfDoc || currentPageNum >= pdfDoc.numPages) return;
             currentPageNum++;
             queueRenderPage(currentPageNum);
         };
 
-        // Update navigation button states
         function updateNavButtons() {
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-
             prevBtn.style.opacity = currentPageNum <= 1 ? '0.3' : '1';
             prevBtn.style.pointerEvents = currentPageNum <= 1 ? 'none' : 'auto';
-
             nextBtn.style.opacity = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? '0.3' : '1';
             nextBtn.style.pointerEvents = (!pdfDoc || currentPageNum >= pdfDoc.numPages) ? 'none' : 'auto';
         }
 
-        // Close PDF viewer and clean up
         window.closePdfViewer = function () {
             const modal = document.getElementById('pdfModal');
+            const iframe = document.getElementById('pdfFrame');
+            const canvas = document.getElementById('pdfCanvas');
+
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.body.style.overflow = '';
 
-            // Destroy PDF document to free memory
-            if (pdfDoc) {
-                pdfDoc.destroy();
-                pdfDoc = null;
-            }
+            if (pdfDoc) { pdfDoc.destroy(); pdfDoc = null; }
+            iframe.src = 'about:blank';
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
             currentPageNum = 1;
             pageNumPending = null;
-
-            // Clear canvas
-            const canvas = document.getElementById('pdfCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            usingIframeFallback = false;
         };
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             const modal = document.getElementById('pdfModal');
             if (modal.classList.contains('hidden')) return;
-
-            if (e.key === 'ArrowLeft') prevPage();
-            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft' && !usingIframeFallback) prevPage();
+            if (e.key === 'ArrowRight' && !usingIframeFallback) nextPage();
             if (e.key === 'Escape') closePdfViewer();
         });
 
-        // Touch swipe support for mobile
+        // Touch swipe (PDF.js mode only)
         let touchStartX = 0;
         document.getElementById('pdfContainer')?.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
+            if (!usingIframeFallback) touchStartX = e.changedTouches[0].screenX;
         });
-
         document.getElementById('pdfContainer')?.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) nextPage();  // Swipe left = next page
-                else prevPage();           // Swipe right = previous page
-            }
+            if (usingIframeFallback) return;
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 50) { if (diff > 0) nextPage(); else prevPage(); }
         });
     </script>
 

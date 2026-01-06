@@ -196,8 +196,58 @@
 
     </main>
 
-    <!-- Bottom Nav (Mobile) -->
 
+    <!-- Catalogue Viewer Modal -->
+    <div id="catalogueModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
+
+        <!-- Close Button -->
+        <button onclick="closeCatalogue()"
+            class="absolute top-6 right-6 bg-red-600 text-white rounded-full p-2 z-[200] shadow-lg hover:bg-red-700 transition transform hover:scale-110 flex items-center justify-center">
+            <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+        </button>
+
+        <!-- Floating Prev Button (Outside) -->
+        <button onclick="changePage(-1)" id="catPrevBtn"
+            class="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-back-outline" class="text-4xl"></ion-icon>
+        </button>
+
+        <!-- Floating Next Button (Outside) -->
+        <button onclick="changePage(1)" id="catNextBtn"
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-forward-outline" class="text-4xl"></ion-icon>
+        </button>
+
+        <!-- Zoom Controls -->
+        <div class="absolute top-24 right-6 flex flex-col gap-2 z-[200]">
+            <button onclick="updateZoom(0.25)"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="add-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="updateZoom(-0.25)"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="remove-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="resetZoom()"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110"
+                title="Reset Zoom">
+                <ion-icon name="scan-outline" class="text-xl"></ion-icon>
+            </button>
+        </div>
+
+        <div class="relative w-full h-full flex flex-col items-center justify-center p-4 content-center">
+            <div id="catalogueViewer"
+                class="relative max-w-6xl w-full h-[90vh] flex items-center justify-center bg-gray-900 rounded-lg overflow-hidden border border-gray-800 shadow-2xl cursor-grab active:cursor-grabbing">
+                <!-- Canvas injected here -->
+                <div id="catalogueLoader"
+                    class="absolute inset-0 flex items-center justify-center bg-black/50 z-10 hidden rounded-lg">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+                </div>
+            </div>
+            <!-- Footer Removed as requested -->
+        </div>
+    </div>
 
 
     <script>
@@ -273,6 +323,10 @@
                     }
                     thumbnail {
                         url
+                    }
+                    metadata {
+                        key
+                        value
                     }
                     pricing {
                         priceRange {
@@ -423,11 +477,7 @@
                         nav: false,
                         dots: true,
                         autoplay: true,
-                        responsive: {
-                            0: { items: 2 },
-                            600: { items: 3 },
-                            1000: { items: 5 }
-                        }
+                        autoplayHoverPause: true
                     });
                 }, 100);
 
@@ -594,6 +644,7 @@
 
         function renderProduct(p) {
             // Meta Badges (Category & Type)
+            console.log("Product Metadata:", p.metadata);
             const catName = p.category?.name || "Uncategorized";
             const typeName = p.productType?.name || "Standard";
 
@@ -683,15 +734,51 @@
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
 
             // Catalogue Link
+            // Catalogue Links
+            let catalogueHtml = "";
+
+            // 1. Check for Attribute-based Catalogue
             const catAttr = p.attributes.find(a => a.attribute.name === "Catalogue");
             if (catAttr && catAttr.values[0]?.file?.url) {
                 const url = catAttr.values[0].file.url;
-                document.getElementById("catalogueContainer").innerHTML = `
-                    <a href="${url}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95">
+                catalogueHtml += `
+                    <a href="${url}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
                         Download Catalogue
-                    </a>
-                 `;
+                    </a>`;
             }
+
+            // 2. Check for Metadata-based Catalogues (catalogue_x)
+            if (p.metadata) {
+                const BASE_PDF_URL = "https://pdf-serve.themanagemate.com/files/";
+                const catalogues = p.metadata
+                    .filter(m => m.key.startsWith("catalogue_"))
+                    .sort((a, b) => {
+                        const numA = parseInt(a.key.split('_')[1]) || 0;
+                        const numB = parseInt(b.key.split('_')[1]) || 0;
+                        return numA - numB;
+                    });
+
+                catalogues.forEach(cat => {
+                    const filename = cat.value;
+                    const num = cat.key.split('_')[1];
+
+                    if (filename.startsWith('http')) {
+                        catalogueHtml += `
+                            <a href="${filename}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
+                                View Catalogue ${num ? num : ''}
+                            </a>
+                        `;
+                    } else {
+                        catalogueHtml += `
+                            <button onclick="openCatalogueViewer('${filename}')" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
+                                View Catalogue ${num ? num : ''}
+                            </button>
+                        `;
+                    }
+                });
+            }
+
+            document.getElementById("catalogueContainer").innerHTML = catalogueHtml;
 
             // Images
             renderGallery(p.media, p.thumbnail?.url, p.name);
@@ -890,9 +977,255 @@
             }
         };
 
+
         init();
 
     </script>
+
+    <!-- PDF.js Logic -->
+    <script type="module">
+        import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+
+        let pdfDoc = null; // Represents the CURRENT page's PDF document
+        let currentPage = 1;
+        let totalPages = 1;
+        let isRendering = false;
+        let pageNumPending = null;
+        let currentFilename = "";
+
+        // Caching blobs to avoid re-fetching pages
+
+        const pageBlobCache = new Map(); // Key: "filename_page" -> Blob URL
+        let zoomLevel = 1.0;
+
+        // Pan State
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
+
+        window.openCatalogueViewer = async function (filename) {
+            const nameWithoutExt = filename.replace(/\.[^/.]+$/, "").trim();
+            currentFilename = nameWithoutExt;
+            currentPage = 1;
+            zoomLevel = 1.0;
+            pageBlobCache.clear();
+
+            const modal = document.getElementById("catalogueModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            // Setup Pan Events
+            const container = document.getElementById("catalogueViewer");
+            container.innerHTML = `
+                 <div id="catalogueLoader" class="absolute inset-0 flex items-center justify-center bg-black/50 z-10 hidden rounded-lg">
+                     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+                 </div>
+            `;
+
+            // Attach mouse events for panning
+            container.onmousedown = (e) => {
+                isDragging = true;
+                container.classList.add('active');
+                startX = e.pageX - container.offsetLeft;
+                startY = e.pageY - container.offsetTop;
+                scrollLeft = container.scrollLeft;
+                scrollTop = container.scrollTop;
+            };
+
+            container.onmouseleave = () => {
+                isDragging = false;
+                container.classList.remove('active');
+            };
+
+            container.onmouseup = () => {
+                isDragging = false;
+                container.classList.remove('active');
+            };
+
+            container.onmousemove = (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const y = e.pageY - container.offsetTop;
+                const walkX = (x - startX) * 2;
+                const walkY = (y - startY) * 2;
+                container.scrollLeft = scrollLeft - walkX;
+                container.scrollTop = scrollTop - walkY;
+            };
+
+            await fetchPageCount();
+            await loadPageDocument(1);
+        };
+
+        window.updateZoom = function (delta) {
+            const newZoom = zoomLevel + delta;
+            if (newZoom >= 0.5 && newZoom <= 3.0) {
+                zoomLevel = newZoom;
+                if (currentFilename && currentPage) {
+                    loadPageDocument(currentPage);
+                }
+            }
+        };
+
+        window.resetZoom = function () {
+            zoomLevel = 1.0;
+            if (currentFilename && currentPage) {
+                loadPageDocument(currentPage);
+            }
+        };
+
+        window.closeCatalogue = function () {
+            document.getElementById("catalogueModal").classList.add("hidden");
+            document.getElementById("catalogueModal").classList.remove("flex");
+            zoomLevel = 1.0;
+        };
+
+        window.changePage = function (delta) {
+            const next = currentPage + delta;
+            if (next >= 1 && next <= totalPages) {
+                currentPage = next;
+                loadPageDocument(next);
+            }
+        };
+
+        async function fetchPageCount() {
+            const encodedName = encodeURIComponent(currentFilename);
+            try {
+                const res = await fetch(`https://pdf-serve.themanagemate.com/list-pdfs/${encodedName}`);
+                if (!res.ok) throw new Error("Failed to list PDF info");
+                const json = await res.json();
+                if (json && json.length > 0) {
+                    totalPages = json[0].pageCount || 1;
+                } else {
+                    totalPages = 1;
+                }
+            } catch (e) {
+                console.error("Error fetching page count:", e);
+                totalPages = 1;
+            }
+            updateUI(currentPage);
+        }
+
+        async function loadPageDocument(pageNum) {
+            const loader = document.getElementById("catalogueLoader");
+            loader.classList.remove("hidden");
+
+            const cacheKey = `${currentFilename}_${pageNum}`;
+            let url = "";
+
+            try {
+                if (pageBlobCache.has(cacheKey)) {
+                    url = pageBlobCache.get(cacheKey);
+                } else {
+                    const encodedName = encodeURIComponent(currentFilename);
+                    const fetchUrl = `https://pdf-serve.themanagemate.com/fetch-page/${encodedName}/${pageNum}`;
+                    const res = await fetch(fetchUrl);
+                    if (!res.ok) throw new Error("Failed to fetch page");
+                    const blob = await res.blob();
+                    url = URL.createObjectURL(blob);
+                    pageBlobCache.set(cacheKey, url);
+                }
+
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdf = await loadingTask.promise;
+
+                await renderPageToCanvas(pdf, 1, pageNum);
+
+                updateUI(pageNum);
+
+            } catch (error) {
+                console.error("Error loading PDF page:", error);
+            } finally {
+                loader.classList.add("hidden");
+            }
+        }
+
+        async function renderPageToCanvas(pdf, pdfPageIndex, globalPageNum) {
+            const page = await pdf.getPage(pdfPageIndex);
+
+            // Create Canvas
+            const canvas = document.createElement("canvas");
+            canvas.className = "shadow-2xl rounded-lg max-h-full max-w-full object-contain";
+
+            const container = document.getElementById("catalogueViewer");
+            // Clear content but keep loader
+            const loader = document.getElementById("catalogueLoader");
+            container.innerHTML = "";
+            container.appendChild(loader);
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const viewport = page.getViewport({ scale: 1 });
+
+            // Scale: Fit to container height (Single Page) * zoomLevel
+            const containerWidth = container.clientWidth || window.innerWidth * 0.8;
+            const containerHeight = container.clientHeight || window.innerHeight * 0.8;
+
+            const hScale = containerHeight / viewport.height;
+            const wScale = containerWidth / viewport.width;
+
+            // Base scale is "Fit Within"
+            let finalScale = Math.min(hScale, wScale);
+
+            // Apply User Zoom
+            finalScale = finalScale * zoomLevel;
+
+            const scaledViewport = page.getViewport({ scale: finalScale });
+
+            canvas.height = scaledViewport.height;
+            canvas.width = scaledViewport.width;
+
+            // Enforce overflow behavior on container
+            if (zoomLevel > 1.0) {
+                container.classList.remove('overflow-hidden');
+                container.classList.add('overflow-auto');
+                container.style.justifyContent = 'flex-start'; // Allow scrolling
+                container.style.alignItems = 'flex-start';
+            } else {
+                container.classList.add('overflow-hidden');
+                container.classList.remove('overflow-auto');
+                container.style.justifyContent = 'center'; // Center it
+                container.style.alignItems = 'center';
+            }
+
+            // CSS to make it responsive but respect zoom
+            canvas.style.maxWidth = "none"; // Allow exceeding container width for zoom
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: scaledViewport
+            };
+
+            await page.render(renderContext).promise;
+        }
+
+        function updateUI(pageNum) {
+            const prevBtn = document.getElementById("catPrevBtn");
+            const nextBtn = document.getElementById("catNextBtn");
+
+            if (prevBtn) {
+                prevBtn.disabled = pageNum <= 1;
+                // If disabled, hide interaction
+                if (pageNum <= 1) {
+                    prevBtn.classList.add("opacity-0", "pointer-events-none");
+                } else {
+                    prevBtn.classList.remove("opacity-0", "pointer-events-none");
+                }
+            }
+
+            if (nextBtn) {
+                nextBtn.disabled = pageNum >= totalPages;
+                if (pageNum >= totalPages) {
+                    nextBtn.classList.add("opacity-0", "pointer-events-none");
+                } else {
+                    nextBtn.classList.remove("opacity-0", "pointer-events-none");
+                }
+            }
+
+            currentPage = pageNum;
+        }
+    </script>
+
     <script src="placeholder.js"></script>
 </body>
 

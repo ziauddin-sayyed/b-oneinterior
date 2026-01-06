@@ -1,304 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:image" content="https://b-oneinterior.com/logo.png">
-  <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
-  <title>Gallery Image Products</title>
-  <script src="assets/js/tailwind.min.js"></script>
-  <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-  <link rel="stylesheet"
-    href="assets/css/owl.theme.default.min.css">
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/owl.carousel.min.js"></script>
-  <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
-  <link rel="stylesheet" href="style.css">
-
+    <title>PDF URL Viewer</title>
 </head>
+<body>
+    <input value="https://api.b-oneinterior.com/media/file_upload/Enrich_vol-6_3a2c0533.pdf" id="urlInput" placeholder="Paste PDF URL" size="50">
+    <button onclick="loadPdf()">Load</button>
 
-<body class="bg-black">
-
-
-
-  <!-- Header -->
-  <header class="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gold-700">
-    <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-      <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-
-      <ul class="hidden md:flex space-x-6 text-gray-300">
-        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-        <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-        <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
-        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-      </ul>
-      <button class="md:hidden text-gold-500">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </nav>
-
-    <div class="floating-icon">
-      <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
-          src="images/call_icon.svg" alt="Call" srcset=""></a>
-      <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
-          style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
-      <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img
-          style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
-      <a target="_blank" href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="><img
-          style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
-      <a target="_blank" href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK"><img
-          style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
-      <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img style="max-width: initial;height: 4.5vh;"
-          src="images/map_marker.png" alt="Location" srcset=""></a>
+    <div>
+        <button onclick="prevPage()">Prev</button>
+        <span>Page <span id="pageNum">1</span> of <span id="pageCount">0</span></span>
+        <button onclick="nextPage()">Next</button>
     </div>
 
-    <div id="drawer">
-      <ul>
-        <li><a href="#company">Company</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <!-- <li><a href="#gallery">Locations</a></li>
-        <li><a href="#gallery">Blogs</a></li> -->
-        <li><a href="#contact">Contact Us</a></li>
-      </ul>
-    </div>
-    <label for="menu-toggle" class="overlay"></label>
+    <canvas id="pdfCanvas"></canvas>
 
-    <div class="fixedBottom">
-      <a href="https://b-oneinterior.com/" class="logoBx"></a>
-      <ul>
-        <li>
-          <a href="https://b-oneinterior.com/gallery">
-            <ion-icon name="images-outline"></ion-icon>
-            <div>Gallery</div>
-          </a>
-        </li>
-
-
-        <li>
-          <a href="https://b-oneinterior.com/shop">
-            <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Shop</div>
-
-          </a>
-        </li>
-        <li></li>
-
-        <li>
-          <a href="https://b-oneinterior.com/company">
-            <ion-icon name="people-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Company</div>
-          </a>
-        </li>
-
-
-        <li>
-          <a href="https://b-oneinterior.com/cart">
-            <ion-icon name="cart-outline"></ion-icon>
-            <div>Cart</div>
-            <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
-            </span>
-
-          </a>
-        </li>
-        <!-- <li>
-                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
-                    <div>
-                        <div class="menu-icon" id="menu-btn">&#9776;</div>
-                        
-                    </div>
-
-                </a>
-
-            </li> -->
-      </ul>
-    </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      // const drawer = document.getElementById("drawer");
-      // const overlay = document.querySelector(".overlay");
-      // const menuBtn = document.getElementById("menu-btn");
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pageRendering = false;
 
-      // menuBtn.addEventListener("click", () => {
-      //     drawer.style.left = drawer.style.left === "0px" ? "-250px" : "0px";
-      //     toggleOverlay();
-      // });
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
 
-      // overlay.addEventListener("click", () => {
-      //     drawer.style.left = "-250px";
-      //     hideOverlay();
-      // });
+        function loadPdf() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) return;
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdfDoc = pdf;
+                document.getElementById('pageCount').textContent = pdf.numPages;
+                currentPage = 1;
+                document.getElementById('pageNum').textContent = 1;
+                renderPage(currentPage);
+            }).catch(err => alert('Load failed: ' + err));
+        }
 
-      // function toggleOverlay() {
-      //     if (overlay.style.opacity === "1") {
-      //         hideOverlay();
-      //     } else {
-      //         showOverlay();
-      //     }
-      // }
+        function renderPage(num) {
+            if (pageRendering || !pdfDoc) return;
+            pageRendering = true;
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({scale: 1.5});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                return page.render({canvasContext: ctx, viewport}).promise;
+            }).then(() => {
+                pageRendering = false;
+            });
+        }
 
-      // function showOverlay() {
-      //     overlay.style.opacity = "1";
-      //     overlay.style.pointerEvents = "auto";
-      // }
+        function prevPage() {
+            if (currentPage <= 1) return;
+            currentPage--;
+            document.getElementById('pageNum').textContent = currentPage;
+            renderPage(currentPage);
+        }
 
-      // function hideOverlay() {
-      //     overlay.style.opacity = "0";
-      //     overlay.style.pointerEvents = "none";
-      // }
+        function nextPage() {
+            if (currentPage >= pdfDoc.numPages) return;
+            currentPage++;
+            document.getElementById('pageNum').textContent = currentPage;
+            renderPage(currentPage);
+        }
     </script>
-  </header>
-
-
-  <section>
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 golden-text">Our Transformations</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="productGrid">
-
-
-      </div>
-    </div>
-  </section>
-
-  <script>
-    const API_URL = "https://api.b-oneinterior.com/graphql/";
-    const CHANNEL = "in";
-
-    async function fetchGraphQL(query, variables = {}) {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables }),
-      });
-      return res.json();
-    }
-
-    async function loadProducts() {
-      const productTypeQuery = `
-        query {
-          productTypes(first: 10, filter: { search: "gallery-image" }) {
-            edges { node { id name slug } }
-          }
-        }
-      `;
-      const productTypeResult = await fetchGraphQL(productTypeQuery);
-      const productTypeNode = productTypeResult.data.productTypes.edges[0]?.node;
-      // if (!productTypeNode) {
-      //   document.getElementById("productGrid").innerHTML = "<p>No product type found.</p>";
-      //   return;
-      // }
-
-      const productsQuery = `
-        query ($productTypeId: ID!) {
-          products(first: 20, channel: "${CHANNEL}", filter: { productTypes: [$productTypeId] }) {
-            edges {
-              node {
-                id
-                name
-                thumbnail { url }
-                pricing { priceRange { start { gross { amount currency } } } }
-                attributes{
-                  attribute { name slug }
-                  values { name file { url contentType } }
-                }
-              }
-            }
-          }
-        }
-      `;
-
-      const productsResult = await fetchGraphQL(productsQuery, { productTypeId: productTypeNode.id });
-      const products = productsResult.data.products.edges;
-      const grid = document.getElementById("productGrid");
-      // grid.innerHTML = "";
-
-      if (products.length === 0) {
-        grid.innerHTML = "<p>No products found.</p>";
-        return;
-      }
-
-      await products.forEach(p => {
-        const beforeFile = p.node.attributes.find(a => a.attribute.slug === "gallery-image-before")?.values[0]?.file?.url || '';
-        const afterFile = p.node.attributes.find(a => a.attribute.slug === "gallery-image-after")?.values[0]?.file?.url || '';
-
-        const card = document.createElement("div");
-        card.className = "before-after-container rounded-lg overflow-hidden shadow-xl";
-        card.innerHTML = `
-
-                    <img src="${afterFile}" alt="After" class="after-img">
-                    <div class="after-image">
-                        <img src="${beforeFile}" alt="Before">
-                    </div>
-                    <div class="slider-handle"></div>
-
-        `;
-        grid.appendChild(card);
-      });
-
-      const containers = document.querySelectorAll('.before-after-container');
-      containers.forEach((container, idx) => {
-        const handle = container.querySelector('.slider-handle');
-        const afterImage = container.querySelector('.after-image');
-        let isDragging = false;
-
-        const updateSlider = (e) => {
-          const rect = container.getBoundingClientRect();
-          const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-          const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-
-          afterImage.style.width = percentage + '%';
-          handle.style.left = percentage + '%';
-        };
-
-        handle.addEventListener('mousedown', () => isDragging = true);
-        handle.addEventListener('touchstart', () => isDragging = true);
-
-        document.addEventListener('mousemove', (e) => {
-          if (isDragging) updateSlider(e);
-        });
-        document.addEventListener('touchmove', (e) => {
-          if (isDragging) updateSlider(e);
-        });
-
-        document.addEventListener('mouseup', () => isDragging = false);
-        document.addEventListener('touchend', () => isDragging = false);
-
-        container.addEventListener('click', updateSlider);
-
-      });
-
-    }
-
-    loadProducts();
-    function updateCartBadge() {
-      const badge = document.getElementById("cartCountBadge");
-      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      const count = list.length;
-
-      if (count > 0) {
-        badge.textContent = count;
-        badge.classList.remove("hidden");
-      } else {
-        badge.classList.add("hidden");
-      }
-    }
-
-
-    $(document).ready(function () {
-      // Before/After Image Slider
-      updateCartBadge();
-
-    });
-
-
-
-  </script>
 </body>
-
 </html>
