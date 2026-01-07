@@ -221,6 +221,10 @@
 
         <!-- Zoom Controls -->
         <div class="absolute top-24 right-6 flex flex-col gap-2 z-[200]">
+            <button onclick="shareCatalogue()" title="Share Catalogue"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
+            </button>
             <button onclick="updateZoom(0.25)"
                 class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
                 <ion-icon name="add-outline" class="text-xl"></ion-icon>
@@ -655,6 +659,9 @@
                 <span class="inline-flex items-center gap-1 bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
                     <ion-icon name="pricetag-outline"></ion-icon> ${typeName}
                 </span>
+                <button onclick="shareProduct()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700 ml-auto">
+                    <ion-icon name="share-social-outline" class="text-sm"></ion-icon> Share
+                </button>
             `;
 
             // Name
@@ -979,6 +986,38 @@
         };
 
 
+        window.shareProduct = async function () {
+            const shareData = {
+                title: document.title,
+                text: 'Check out this product from B-One Interior!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Error sharing:', err);
+                }
+            } else {
+                // Fallback
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    // Use a simple toast or alert if no UI library for toast is present
+                    const btn = document.querySelector('ion-icon[name="share-social-outline"]')?.parentElement;
+                    if (btn) {
+                        const originalText = btn.querySelector('div').innerText;
+                        btn.querySelector('div').innerText = "Copied!";
+                        setTimeout(() => btn.querySelector('div').innerText = originalText, 2000);
+                    } else {
+                        alert('Link copied to clipboard!');
+                    }
+                } catch (err) {
+                    console.error('Share failed', err);
+                }
+            }
+        };
+
         init();
 
     </script>
@@ -994,6 +1033,7 @@
         let isRendering = false;
         let pageNumPending = null;
         let currentFilename = "";
+        let rawFilename = ""; // Store full filename with extension for sharing
 
         // Caching blobs to avoid re-fetching pages
 
@@ -1005,6 +1045,7 @@
         let startX, startY, scrollLeft, scrollTop;
 
         window.openCatalogueViewer = async function (filename) {
+            rawFilename = filename; // Store for sharing
             const nameWithoutExt = filename.replace(/\.[^/.]+$/, "").trim();
             currentFilename = nameWithoutExt;
             currentPage = 1;
@@ -1086,6 +1127,43 @@
             if (next >= 1 && next <= totalPages) {
                 currentPage = next;
                 loadPageDocument(next);
+            }
+        };
+
+        window.shareCatalogue = async function () {
+            if (!rawFilename) return;
+
+            let url = rawFilename;
+            if (!url.startsWith("http")) {
+                url = "https://pdf-serve.themanagemate.com/files/" + encodeURIComponent(rawFilename);
+            }
+
+            const shareData = {
+                title: 'View Catalogue',
+                text: 'Check out this catalogue: ' + rawFilename,
+                url: url
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Error sharing:', err);
+                }
+            } else {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    const btn = document.querySelector('button[title="Share Catalogue"]');
+                    if (btn) {
+                        const icon = btn.querySelector('ion-icon');
+                        const originalName = icon.getAttribute('name');
+                        icon.setAttribute('name', 'checkmark-outline');
+                        setTimeout(() => icon.setAttribute('name', originalName), 2000);
+                    }
+                    alert('Catalogue Link copied to clipboard!');
+                } catch (err) {
+                    console.error('Share failed', err);
+                }
             }
         };
 
