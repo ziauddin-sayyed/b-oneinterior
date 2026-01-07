@@ -760,18 +760,19 @@
 
                 catalogues.forEach(cat => {
                     const filename = cat.value;
-                    const num = cat.key.split('_')[1];
+                    // Extract printable name: remove path, remove extension, replace underscores with spaces
+                    const displayName = filename.split('/').pop().replace(/\.[^/.]+$/, "").replace(/_/g, " ");
 
                     if (filename.startsWith('http')) {
                         catalogueHtml += `
                             <a href="${filename}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
-                                View Catalogue ${num ? num : ''}
+                                View ${displayName}
                             </a>
                         `;
                     } else {
                         catalogueHtml += `
                             <button onclick="openCatalogueViewer('${filename}')" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
-                                View Catalogue ${num ? num : ''}
+                                View ${displayName}
                             </button>
                         `;
                     }
