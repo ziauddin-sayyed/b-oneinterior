@@ -223,7 +223,7 @@
         <div class="absolute top-24 right-6 flex flex-col gap-2 z-[200]">
             <button onclick="shareCatalogue()" title="Share Catalogue"
                 class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
-                <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
+                <ion-icon name="share-outline" class="text-xl"></ion-icon>
             </button>
             <button onclick="updateZoom(0.25)"
                 class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
@@ -460,7 +460,7 @@
                     item.innerHTML = `
                         <a href="product.html?id=${p.node.id}" class="block bg-gray-900 shadow rounded-lg hover:shadow-lg hover:shadow-gold/20 transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-800">
                             <div class="relative">
-                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-52 object-cover" alt="${p.node.name}">
+                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-36 object-cover" alt="${p.node.name}">
                             </div>
                             <div class="p-3 flex flex-col flex-grow">
                                 <h3 class="font-semibold text-gray-200 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
@@ -579,7 +579,7 @@
                 return `
                 <div class="item p-4">
                     <div class="bg-gray-900 rounded-lg shadow hover:shadow-lg hover:shadow-gold/20 transition overflow-hidden cursor-pointer border border-gray-800" onclick="window.location.href='product.html?id=${p.id}'">
-                         <div class="relative h-52">
+                         <div class="relative h-36">
                              <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover">
                               ${p.category?.name ? `<span class="absolute bottom-2 left-2 bg-black/80 text-white px-2 py-1 text-xs font-bold rounded shadow-sm">${p.category.name}</span>` : ''}
                          </div>
@@ -683,7 +683,7 @@
                 }
                 if (price) {
                     const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
-                    priceHtml += `<span class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
+                    priceHtml += `<span id="productPrice" class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
                 }
             }
 
@@ -792,6 +792,11 @@
             renderGallery(p.media, p.thumbnail?.url, p.name);
 
             renderCartAction();
+
+            // Set default variant if available
+            if (p.variants && p.variants.length > 0) {
+                selectedVariant = p.variants[0];
+            }
             renderVariants(p.variants);
 
             // Fetch Collection Products
@@ -876,6 +881,24 @@
             saveCart(cart);
         };
 
+        window.selectVariant = function (variantId) {
+            const variant = currentProduct.variants.find(v => v.id === variantId);
+            if (!variant) return;
+
+            selectedVariant = variant;
+
+            // Update Price
+            const priceObj = variant.pricing?.price?.gross;
+            const price = priceObj ? priceObj.amount : 0;
+            const currency = priceObj ? priceObj.currency : 'INR';
+            const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
+
+            document.getElementById("productPrice").innerText = formattedPrice;
+
+            // Re-render variants to update selection border
+            renderVariants(currentProduct.variants);
+        };
+
         function renderVariants(variants) {
             const container = document.getElementById("variantContainer");
             container.innerHTML = "";
@@ -891,18 +914,27 @@
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
                 const borderClass = isSelected ? "border-gold ring-1 ring-gold bg-gold/10" : "border-gray-700 bg-gray-900 hover:border-gold/50";
 
+                // Create the card container strictly
                 const div = document.createElement("div");
+                div.className = `cursor-pointer border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
+                div.style.zIndex = "10"; // Ensure it catches clicks
+
                 div.innerHTML = `
-                <div class="cursor-pointer border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group" onclick="selectVariant('${v.id}')">
-                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative">
-                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative pointer-events-none">
+                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 pointer-events-none">
                     </div>
-                    <div class="text-center">
-                        <p class="text-xs font-bold text-gray-300 truncate mb-1">${v.name}</p>
-                        <p class="text-gold font-bold text-sm">${formattedPrice}</p>
+                    <div class="text-center pointer-events-none">
+                        <p class="text-xs font-bold text-gray-300 truncate mb-1 pointer-events-none">${v.name}</p>
+                        <p class="text-gold font-bold text-sm pointer-events-none">${formattedPrice}</p>
                     </div>
-                </div>
                 `;
+
+                // Bind click event directly to the element
+                div.onclick = function (e) {
+                    e.preventDefault(); // Good practice even for divs sometimes
+                    window.selectVariant(v.id);
+                };
+
                 container.appendChild(div);
             });
         }
@@ -1133,10 +1165,10 @@
         window.shareCatalogue = async function () {
             if (!rawFilename) return;
 
-            let url = rawFilename;
-            if (!url.startsWith("http")) {
-                url = "https://pdf-serve.themanagemate.com/files/" + encodeURIComponent(rawFilename);
-            }
+            // Generate Deep Link
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('catalogue', rawFilename);
+            const url = currentUrl.toString();
 
             const shareData = {
                 title: 'View Catalogue',
