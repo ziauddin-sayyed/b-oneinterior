@@ -201,44 +201,43 @@
     <div id="catalogueModal"
         class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
 
-        <!-- Close Button -->
-        <button onclick="closeCatalogue()"
-            class="absolute top-6 right-6 bg-red-600 text-white rounded-full p-2 z-[200] shadow-lg hover:bg-red-700 transition transform hover:scale-110 flex items-center justify-center">
-            <ion-icon name="close-outline" class="text-3xl"></ion-icon>
-        </button>
+        <!-- Top Right Controls Bar -->
+        <div class="absolute top-6 right-6 flex flex-row items-center gap-2 z-[200]">
+            <!-- Control Icons -->
+            <button onclick="shareCatalogue()" title="Share Catalogue"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="updateZoom(0.25)" title="Zoom In"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="add-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="updateZoom(-0.25)" title="Zoom Out"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="remove-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="resetZoom()" title="Reset Zoom"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="scan-outline" class="text-xl"></ion-icon>
+            </button>
+            <!-- Close Button -->
+            <button onclick="closeCatalogue()"
+                class="bg-red-600 text-white rounded-full p-2 shadow-lg hover:bg-red-700 transition transform hover:scale-110 flex items-center justify-center">
+                <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+            </button>
+        </div>
 
         <!-- Floating Prev Button (Outside) -->
         <button onclick="changePage(-1)" id="catPrevBtn"
-            class="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
-            <ion-icon name="chevron-back-outline" class="text-4xl"></ion-icon>
+            class="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-2 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-back-outline" class="text-2xl"></ion-icon>
         </button>
 
         <!-- Floating Next Button (Outside) -->
         <button onclick="changePage(1)" id="catNextBtn"
-            class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
-            <ion-icon name="chevron-forward-outline" class="text-4xl"></ion-icon>
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-2 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-forward-outline" class="text-2xl"></ion-icon>
         </button>
-
-        <!-- Zoom Controls -->
-        <div class="absolute top-24 right-6 flex flex-col gap-2 z-[200]">
-            <button onclick="shareCatalogue()" title="Share Catalogue"
-                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
-                <ion-icon name="share-outline" class="text-xl"></ion-icon>
-            </button>
-            <button onclick="updateZoom(0.25)"
-                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
-                <ion-icon name="add-outline" class="text-xl"></ion-icon>
-            </button>
-            <button onclick="updateZoom(-0.25)"
-                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
-                <ion-icon name="remove-outline" class="text-xl"></ion-icon>
-            </button>
-            <button onclick="resetZoom()"
-                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110"
-                title="Reset Zoom">
-                <ion-icon name="scan-outline" class="text-xl"></ion-icon>
-            </button>
-        </div>
 
         <div class="relative w-full h-full flex flex-col items-center justify-center p-4 content-center">
             <div id="catalogueViewer"
@@ -1138,6 +1137,53 @@
                 container.scrollLeft = scrollLeft - walkX;
                 container.scrollTop = scrollTop - walkY;
             };
+
+            // Touch Swipe for Page Navigation
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchEndX = 0;
+            let touchEndY = 0;
+            const swipeThreshold = 50; // Minimum swipe distance in pixels
+
+            container.ontouchstart = (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            };
+
+            container.ontouchend = (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            };
+
+            function handleSwipe() {
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+
+                // Check if horizontal swipe is dominant
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (Math.abs(deltaX) > swipeThreshold) {
+                        if (deltaX > 0) {
+                            // Swipe right -> Previous page
+                            window.changePage(-1);
+                        } else {
+                            // Swipe left -> Next page
+                            window.changePage(1);
+                        }
+                    }
+                } else {
+                    // Vertical swipe
+                    if (Math.abs(deltaY) > swipeThreshold) {
+                        if (deltaY > 0) {
+                            // Swipe down -> Previous page
+                            window.changePage(-1);
+                        } else {
+                            // Swipe up -> Next page
+                            window.changePage(1);
+                        }
+                    }
+                }
+            }
 
             await fetchPageCount();
             await loadPageDocument(1);
