@@ -40,6 +40,7 @@
                 <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
             </ul>
             <button class="md:hidden text-gold-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +59,7 @@
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
             </ul>
         </div>
         <label for="menu-toggle" class="overlay"></label>
@@ -121,6 +123,41 @@
                 overlay.style.opacity = "0";
                 overlay.style.pointerEvents = "none";
             });
+
+            // Auth check and navigation update
+            function checkAuth() {
+                const token = localStorage.getItem('saleor_auth_token');
+                const userEmail = localStorage.getItem('saleor_user_email');
+                const desktopLink = document.getElementById('authLinkDesktop');
+                const drawerLink = document.getElementById('authLinkDrawer');
+
+                if (token && userEmail) {
+                    if (desktopLink) {
+                        desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
+                    }
+                    if (drawerLink) {
+                        drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                    }
+                } else {
+                    if (desktopLink) {
+                        desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                    }
+                    if (drawerLink) {
+                        drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+                    }
+                }
+            }
+
+            function signOut() {
+                localStorage.removeItem('saleor_auth_token');
+                localStorage.removeItem('saleor_refresh_token');
+                localStorage.removeItem('saleor_csrf_token');
+                localStorage.removeItem('saleor_user_email');
+                localStorage.removeItem('saleor_user_name');
+                window.location.reload();
+            }
+
+            document.addEventListener('DOMContentLoaded', checkAuth);
         </script>
 
         <!-- Search Bar -->

@@ -38,6 +38,7 @@
         <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
         <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
         <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+        <li id="authLinkDesktop"></li>
       </ul>
       <button class="md:hidden text-gold-500">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,6 +72,7 @@
         <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
         <li><a href="terms.html">Terms and Conditions</a></li>
         <li><a href="privacy.html">Privacy Policy</a></li>
+        <li id="authLinkDrawer"></li>
       </ul>
     </div>
     <label for="menu-toggle" class="overlay"></label>
@@ -148,6 +150,47 @@
         overlay.style.opacity = "0";
         overlay.style.pointerEvents = "none";
       });
+
+      // Auth check and navigation update
+      function checkAuth() {
+        const token = localStorage.getItem('saleor_auth_token');
+        const userEmail = localStorage.getItem('saleor_user_email');
+        const desktopLink = document.getElementById('authLinkDesktop');
+        const drawerLink = document.getElementById('authLinkDrawer');
+
+        if (token && userEmail) {
+          if (desktopLink) {
+            desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
+          }
+          if (drawerLink) {
+            drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+          }
+        } else {
+          if (desktopLink) {
+            desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+          }
+          if (drawerLink) {
+            drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+          }
+        }
+      }
+
+      function signOut() {
+        localStorage.removeItem('saleor_auth_token');
+        localStorage.removeItem('saleor_refresh_token');
+        localStorage.removeItem('saleor_csrf_token');
+        localStorage.removeItem('saleor_user_email');
+        localStorage.removeItem('saleor_user_name');
+        window.location.reload();
+      }
+
+      document.addEventListener('DOMContentLoaded', checkAuth);
+
+      // Helper function to check if user is logged in
+      function isUserLoggedIn() {
+        const token = localStorage.getItem('saleor_auth_token');
+        return !!token;
+      }
     </script>
   </header>
 
@@ -233,6 +276,17 @@ query {
                 }
               }
             }
+        }
+        variants {
+          id
+          pricing {
+            price {
+              gross {
+                amount
+                currency
+              }
+            }
+          }
         }
         category { 
           id 
@@ -391,6 +445,18 @@ query {
       return null;
     }
 
+    // Get cost price from "Cost Price" attribute
+    function getCostPrice(product) {
+      if (!product.attributes) return null;
+      const costPriceAttr = product.attributes.find(a => a.attribute.name === "Cost Price");
+      if (costPriceAttr && costPriceAttr.values && costPriceAttr.values.length > 0) {
+        const costPriceStr = costPriceAttr.values[0].name;
+        const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+        return !isNaN(parsed) ? parsed : null;
+      }
+      return null;
+    }
+
     function generateCartBtnHtml(p, cart) {
       const inCart = cart.find(i => i.id === p.id);
       const currentPriceObj = p.pricing?.priceRange?.start?.gross;
@@ -433,21 +499,29 @@ query {
     function renderDesktopList(products) {
       const desktopList = document.getElementById("productGrid"); // Changed to productGrid as per original renderGrid
       const cart = getCart();
+      const loggedIn = isUserLoggedIn();
 
       desktopList.innerHTML = products.length ? products.map(p => {
         const actualPriceStr = getActualPrice(p);
         const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-        const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+        const sellingPrice = currentPriceObj ? currentPriceObj.amount : null;
         const currency = currentPriceObj ? currentPriceObj.currency : "";
+        const costPrice = getCostPrice(p);
 
         let priceHtml = "";
+        let priceClass = "text-black";
+        let displayPrice;
 
-        // Build Price HTML similar to index.html but keeping discount logic if exists (or simplify to match index exactly?)
-        // Index just shows one price. Let's try to match index.html simple bold price at bottom.
+        if (loggedIn && costPrice !== null) {
+          // Show cost price for logged-in users
+          displayPrice = costPrice.toFixed(2);
+          priceClass = "text-green-600";
+        } else {
+          displayPrice = sellingPrice?.toFixed(2) || "0.00";
+        }
 
-        const price = currentPriceVal?.toFixed(2) || "0.00";
         const currSymbol = currency === 'INR' ? '₹' : (currency || '');
-        const formattedPrice = currency === 'INR' ? `₹${price}` : `${price} ${currSymbol}`;
+        const formattedPrice = currency === 'INR' ? `₹${displayPrice}` : `${displayPrice} ${currSymbol}`;
 
         // Fallback image logic
         const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
@@ -462,7 +536,7 @@ query {
             <div class="p-3 flex flex-col flex-grow">
                 <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
                 <div class="mt-auto border-t pt-2 w-full">
-                    <span class="text-black font-bold text-base block">${formattedPrice}</span>
+                    <span class="${priceClass} font-bold text-base block">${formattedPrice}</span>
                 </div>
             </div>
         </a>
@@ -473,6 +547,7 @@ query {
     function renderMobileList(products) {
       const mobileList = document.getElementById("mobileProductList");
       const cart = getCart();
+      const loggedIn = isUserLoggedIn();
 
       mobileList.innerHTML = products.length ? products.map(p => {
         const actualPriceStr = getActualPrice(p);
@@ -480,6 +555,7 @@ query {
         const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
         const currency = currentPriceObj ? currentPriceObj.currency : "";
         const catalogueUrl = getCatalogueLink(p);
+        const costPrice = getCostPrice(p);
 
         const cartBtnHtml = generateCartBtnHtml(p, cart);
 
@@ -491,28 +567,36 @@ query {
           catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="block text-center bg-gray-100 text-gold text-xs font-bold px-2 py-2 rounded shadow-sm hover:bg-gold hover:text-white transition cursor-pointer mb-2 border border-gold">View Catalogue</a>`;
         }
 
-        // Calculate Discount
-        if (actualPriceStr && currentPriceVal) {
-          const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-          if (!isNaN(actualVal) && actualVal > currentPriceVal) {
-            const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
-            if (discount > 0) {
-              badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+        if (loggedIn && costPrice !== null) {
+          // Show cost price for logged-in users
+          const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
+          priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">
+            <span class="text-green-600 font-bold text-lg">${formattedCostPrice}</span>
+          </div>`;
+        } else {
+          // Calculate Discount for non-logged-in users
+          if (actualPriceStr && currentPriceVal) {
+            const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+            if (!isNaN(actualVal) && actualVal > currentPriceVal) {
+              const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
+              if (discount > 0) {
+                badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+              }
             }
           }
-        }
 
-        // Build Price HTML
-        if (actualPriceStr || currentPriceVal) {
-          priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">`;
-          if (actualPriceStr) {
-            priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
+          // Build Price HTML for non-logged-in users
+          if (actualPriceStr || currentPriceVal) {
+            priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">`;
+            if (actualPriceStr) {
+              priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
+            }
+            if (currentPriceVal) {
+              const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
+              priceHtml += `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
+            }
+            priceHtml += `</div>`;
           }
-          if (currentPriceVal) {
-            const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
-            priceHtml += `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
-          }
-          priceHtml += `</div>`;
         }
 
         // Description Logic

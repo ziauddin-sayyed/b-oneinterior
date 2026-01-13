@@ -38,6 +38,7 @@
                 <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
             </ul>
             <button class="md:hidden text-gold-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +59,7 @@
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
             </ul>
         </div>
         <label for="menu-toggle" class="overlay"></label>
@@ -127,6 +129,47 @@
             overlay.style.opacity = "0";
             overlay.style.pointerEvents = "none";
         });
+
+        // Auth check and navigation update
+        function checkAuth() {
+            const token = localStorage.getItem('saleor_auth_token');
+            const userEmail = localStorage.getItem('saleor_user_email');
+            const desktopLink = document.getElementById('authLinkDesktop');
+            const drawerLink = document.getElementById('authLinkDrawer');
+
+            if (token && userEmail) {
+                if (desktopLink) {
+                    desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                }
+            } else {
+                if (desktopLink) {
+                    desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+                }
+            }
+        }
+
+        function signOut() {
+            localStorage.removeItem('saleor_auth_token');
+            localStorage.removeItem('saleor_refresh_token');
+            localStorage.removeItem('saleor_csrf_token');
+            localStorage.removeItem('saleor_user_email');
+            localStorage.removeItem('saleor_user_name');
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        // Helper function to check if user is logged in
+        function isUserLoggedIn() {
+            const token = localStorage.getItem('saleor_auth_token');
+            return !!token;
+        }
     </script>
 
     <!-- Main Content -->
@@ -158,6 +201,14 @@
                     <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
                     <h1 id="productName" class="text-3xl md:text-4xl font-bold text-white mb-2"></h1>
                     <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
+                    <!-- Color Select Dropdown -->
+                    <div id="colorSelectContainer" class="mt-4 hidden">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
+                        <select id="colorSelect"
+                            class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
+                            <!-- Options will be injected here -->
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Catalogue Button -->
@@ -373,6 +424,14 @@
                                 }
                             }
                         }
+                        attributes {
+                            attribute {
+                                name
+                            }
+                            values {
+                                name
+                            }
+                        }
                     }
                     collections {
                         id
@@ -394,7 +453,34 @@
                 console.error(err);
                 return null;
             }
+        }
 
+        // Fetch variant details and get its parent product
+        async function fetchVariantDetails(variantId) {
+            const query = `
+            query {
+                productVariant(id: "${variantId}", channel: "in") {
+                    id
+                    name
+                    product {
+                        id
+                    }
+                }
+            }
+            `;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                return json.data?.productVariant;
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
         }
 
         async function fetchRecommendedProducts(categoryName, currentId) {
@@ -606,17 +692,53 @@
             });
         }
 
+        // Track if a specific variant was requested via URL
+        let requestedVariantId = null;
+
         async function init() {
             if (!productId) {
                 showError();
                 return;
             }
 
-            currentProduct = await fetchProductDetails(productId);
+            // Try to detect if this is a variant ID by checking the base64 decoded prefix
+            let actualProductId = productId;
+            let isVariantId = false;
+
+            try {
+                const decoded = atob(productId);
+                if (decoded.startsWith('ProductVariant:')) {
+                    isVariantId = true;
+                    requestedVariantId = productId;
+                }
+            } catch (e) {
+                // Not valid base64, likely a regular ID
+            }
+
+            // If it's a variant ID, fetch the variant to get the parent product
+            if (isVariantId) {
+                const variantData = await fetchVariantDetails(productId);
+                if (variantData && variantData.product) {
+                    actualProductId = variantData.product.id;
+                } else {
+                    showError();
+                    return;
+                }
+            }
+
+            currentProduct = await fetchProductDetails(actualProductId);
 
             if (!currentProduct) {
                 showError();
                 return;
+            }
+
+            // If a specific variant was requested, pre-select it
+            if (requestedVariantId && currentProduct.variants) {
+                const matchingVariant = currentProduct.variants.find(v => v.id === requestedVariantId);
+                if (matchingVariant) {
+                    selectedVariant = matchingVariant;
+                }
             }
 
             renderProduct(currentProduct);
@@ -663,35 +785,77 @@
                 </button>
             `;
 
-            // Name
-            document.getElementById("productName").textContent = p.name;
+            // Name - append variant name if a specific variant is selected (variant name in smaller text)
+            if (selectedVariant && selectedVariant.name) {
+                document.getElementById("productName").innerHTML = `${p.name} <span class="text-lg font-normal text-gray-400">- ${selectedVariant.name}</span>`;
+            } else {
+                document.getElementById("productName").textContent = p.name;
+            }
 
-            // Price
-            const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-            const price = currentPriceObj ? currentPriceObj.amount : null;
-            const currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+            // Price - Show cost price for logged-in users, selling price for non-logged-in users
+            // If a variant is selected, use its price instead of the product's price range
+            const loggedIn = isUserLoggedIn();
+            let currentPriceObj;
+            let currency;
 
-            // Extract "Actual Price" for discount logic
+            if (selectedVariant && selectedVariant.pricing?.price?.gross) {
+                currentPriceObj = selectedVariant.pricing.price.gross;
+            } else {
+                currentPriceObj = p.pricing?.priceRange?.start?.gross;
+            }
+
+            const sellingPrice = currentPriceObj ? currentPriceObj.amount : null;
+            currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+
+            // Get cost price from "Cost Price" attribute if available
+            const costPriceAttr = p.attributes.find(a => a.attribute.name === "Cost Price");
+            const costPriceStr = costPriceAttr?.values[0]?.name;
+            let costPrice = null;
+            if (costPriceStr) {
+                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                if (!isNaN(parsed)) {
+                    costPrice = parsed;
+                }
+            }
+
+            // Debug logging - check console to see attribute names
+            console.log("== Price Debug ==");
+            console.log("Logged In:", loggedIn);
+            console.log("All attributes:", p.attributes.map(a => a.attribute.name));
+            console.log("Cost Price Attr found:", costPriceAttr);
+            console.log("Cost Price value:", costPrice);
+            console.log("Selling Price:", sellingPrice);
+
+            // Determine which price to display
+            const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
+
+            // Extract "Actual Price" for discount logic (only for non-logged-in users)
             const actualPriceAttr = p.attributes.find(a => a.attribute.name === "Actual Price");
             const actualPriceStr = actualPriceAttr?.values[0]?.name;
 
             let priceHtml = "";
-            if (actualPriceStr || price) {
+            if (loggedIn && costPrice !== null) {
+                // Logged in: show cost price with label
+                const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
+                priceHtml = `<span class="inline-flex items-center gap-2">
+                    <span class="text-xs text-gray-400 uppercase">Cost Price:</span>
+                    <span id="productPrice" class="text-green-500 font-bold text-3xl">${formattedCostPrice}</span>
+                </span>`;
+            } else if (displayPrice) {
+                // Not logged in: show selling price with discount if applicable
                 if (actualPriceStr) {
                     priceHtml += `<span class="line-through text-gray-400 text-xl">${actualPriceStr}</span>`;
                 }
-                if (price) {
-                    const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
-                    priceHtml += `<span id="productPrice" class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
-                }
-            }
+                const formattedPrice = currency === 'INR' ? `₹${displayPrice.toFixed(2)}` : `${displayPrice.toFixed(2)} ${currency}`;
+                priceHtml += `<span id="productPrice" class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
 
-            // Discount Badge calculation
-            if (actualPriceStr && price) {
-                const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-                if (!isNaN(actualVal) && actualVal > price) {
-                    const discount = ((actualVal - price) / actualVal) * 100;
-                    priceHtml += `<span class="ml-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm align-top">${Math.round(discount)}% OFF</span>`;
+                // Discount Badge calculation
+                if (actualPriceStr && displayPrice) {
+                    const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+                    if (!isNaN(actualVal) && actualVal > displayPrice) {
+                        const discount = ((actualVal - displayPrice) / actualVal) * 100;
+                        priceHtml += `<span class="ml-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm align-top">${Math.round(discount)}% OFF</span>`;
+                    }
                 }
             }
 
@@ -799,13 +963,20 @@
 
             document.getElementById("catalogueContainer").innerHTML = catalogueHtml;
 
-            // Images
-            renderGallery(p.media, p.thumbnail?.url, p.name);
+            // Images - use selected variant's media if available, otherwise product media
+            if (selectedVariant && selectedVariant.media && selectedVariant.media.length > 0) {
+                renderGallery(selectedVariant.media, p.thumbnail?.url, selectedVariant.name);
+            } else {
+                renderGallery(p.media, p.thumbnail?.url, p.name);
+            }
 
             renderCartAction();
 
-            // Set default variant if available
-            if (p.variants && p.variants.length > 0) {
+            // Render Color Select Dropdown
+            renderColorSelect(p.variants);
+
+            // Set default variant if available (only if not already pre-selected via URL)
+            if (p.variants && p.variants.length > 0 && !selectedVariant) {
                 selectedVariant = p.variants[0];
             }
             renderVariants(p.variants);
@@ -898,17 +1069,100 @@
 
             selectedVariant = variant;
 
-            // Update Price
-            const priceObj = variant.pricing?.price?.gross;
-            const price = priceObj ? priceObj.amount : 0;
-            const currency = priceObj ? priceObj.currency : 'INR';
-            const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
+            // Update Price based on login status
+            const loggedIn = isUserLoggedIn();
+            const sellingPriceObj = variant.pricing?.price?.gross;
+
+            const sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+            const currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+
+            // Get cost price from product attribute (same for all variants)
+            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
+            const costPriceStr = costPriceAttr?.values[0]?.name;
+            let costPrice = null;
+            if (costPriceStr) {
+                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                if (!isNaN(parsed)) costPrice = parsed;
+            }
+
+            let formattedPrice;
+            if (loggedIn && costPrice !== null) {
+                formattedPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
+            } else {
+                formattedPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+            }
 
             document.getElementById("productPrice").innerText = formattedPrice;
+
+            // Sync color dropdown with selected variant
+            const colorSelect = document.getElementById("colorSelect");
+            if (colorSelect) {
+                colorSelect.value = variantId;
+            }
 
             // Re-render variants to update selection border
             renderVariants(currentProduct.variants);
         };
+
+        function renderColorSelect(variants) {
+            const container = document.getElementById("colorSelectContainer");
+            const select = document.getElementById("colorSelect");
+
+            if (!variants || variants.length === 0) {
+                container.classList.add("hidden");
+                return;
+            }
+
+            // Extract Color attribute from variants
+            const colorOptions = [];
+            variants.forEach(v => {
+                if (v.attributes) {
+                    const colorAttr = v.attributes.find(a => a.attribute.name === "Color");
+                    if (colorAttr && colorAttr.values && colorAttr.values.length > 0) {
+                        const colorName = colorAttr.values[0].name;
+                        // Avoid duplicates
+                        if (!colorOptions.find(opt => opt.color === colorName)) {
+                            colorOptions.push({
+                                color: colorName,
+                                variantId: v.id,
+                                variantName: v.name
+                            });
+                        }
+                    }
+                }
+            });
+
+            // If no color attributes found, hide the container
+            if (colorOptions.length === 0) {
+                container.classList.add("hidden");
+                return;
+            }
+
+            // Show the container
+            container.classList.remove("hidden");
+
+            // Build select options
+            let optionsHtml = '<option value="" disabled>Select a color</option>';
+            colorOptions.forEach((opt, index) => {
+                const isSelected = selectedVariant && selectedVariant.id === opt.variantId;
+                optionsHtml += `<option value="${opt.variantId}" ${isSelected ? 'selected' : ''}>${opt.color}</option>`;
+            });
+
+            select.innerHTML = optionsHtml;
+
+            // Add change event listener
+            select.onchange = function () {
+                const selectedVariantId = this.value;
+                if (selectedVariantId) {
+                    window.selectVariant(selectedVariantId);
+                }
+            };
+
+            // Select first option if no variant is selected
+            if (!selectedVariant && colorOptions.length > 0) {
+                select.value = colorOptions[0].variantId;
+            }
+        }
 
         function renderVariants(variants) {
             const container = document.getElementById("variantContainer");
@@ -916,37 +1170,53 @@
 
             if (!variants || variants.length === 0) return;
 
+            const loggedIn = isUserLoggedIn();
+
+            // Get cost price from product attribute (same for all variants)
+            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
+            const costPriceStr = costPriceAttr?.values[0]?.name;
+            let productCostPrice = null;
+            if (costPriceStr) {
+                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                if (!isNaN(parsed)) productCostPrice = parsed;
+            }
+
             variants.forEach(v => {
                 const imgUrl = v.media && v.media.length > 0 ? v.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
-                const priceObj = v.pricing?.price?.gross;
-                const price = priceObj ? priceObj.amount : 0;
-                const currency = priceObj ? priceObj.currency : 'INR';
-                const formattedPrice = currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${currency}`;
+                const sellingPriceObj = v.pricing?.price?.gross;
+
+                const sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                const currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+
+                let formattedPrice;
+                let priceClass = "text-gold";
+
+                if (loggedIn && productCostPrice !== null) {
+                    formattedPrice = currency === 'INR' ? `₹${productCostPrice.toFixed(2)}` : `${productCostPrice.toFixed(2)} ${currency}`;
+                    priceClass = "text-green-500";
+                } else {
+                    formattedPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                }
+
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
                 const borderClass = isSelected ? "border-gold ring-1 ring-gold bg-gold/10" : "border-gray-700 bg-gray-900 hover:border-gold/50";
 
-                // Create the card container strictly
-                const div = document.createElement("div");
-                div.className = `cursor-pointer border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
-                div.style.zIndex = "10"; // Ensure it catches clicks
+                // Create the card as an anchor link to variant page
+                const link = document.createElement("a");
+                link.href = `product.html?id=${v.id}`;
+                link.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
 
-                div.innerHTML = `
-                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative pointer-events-none">
-                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 pointer-events-none">
+                link.innerHTML = `
+                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative">
+                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
-                    <div class="text-center pointer-events-none">
-                        <p class="text-xs font-bold text-gray-300 truncate mb-1 pointer-events-none">${v.name}</p>
-                        <p class="text-gold font-bold text-sm pointer-events-none">${formattedPrice}</p>
+                    <div class="text-center">
+                        <p class="text-xs font-bold text-gray-300 truncate mb-1">${v.name}</p>
+                        <p class="${priceClass} font-bold text-sm">${formattedPrice}</p>
                     </div>
                 `;
 
-                // Bind click event directly to the element
-                div.onclick = function (e) {
-                    e.preventDefault(); // Good practice even for divs sometimes
-                    window.selectVariant(v.id);
-                };
-
-                container.appendChild(div);
+                container.appendChild(link);
             });
         }
 
