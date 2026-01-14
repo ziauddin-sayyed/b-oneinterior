@@ -509,6 +509,14 @@
                             url
                             type
                         }
+                        pricing {
+                            price {
+                                gross {
+                                    amount
+                                    currency
+                                }
+                            }
+                        }
                         ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                         attributes {
                             attribute {
@@ -580,6 +588,15 @@
                             }
                             category { name }
                             variants {
+                                id
+                                pricing {
+                                    price {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
                                 ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                             }
                         }
@@ -716,6 +733,15 @@
                                 }
                                 category { name }
                                 variants {
+                                    id
+                                    pricing {
+                                        price {
+                                            gross {
+                                                amount
+                                                currency
+                                            }
+                                        }
+                                    }
                                     ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                                 }
                             }
@@ -915,6 +941,11 @@
                 sellingPrice = listing.price?.amount || 0;
                 currency = listing.price?.currency || 'INR';
                 costPrice = listing.costPrice?.amount || null;
+                variantPricingFound = true;
+            } else if (activeVariant && activeVariant.pricing && activeVariant.pricing.price && activeVariant.pricing.price.gross) {
+                const gross = activeVariant.pricing.price.gross;
+                sellingPrice = gross.amount;
+                currency = gross.currency;
                 variantPricingFound = true;
             }
 
