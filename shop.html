@@ -508,12 +508,14 @@ query {
         const currency = currentPriceObj ? currentPriceObj.currency : "";
         const costPrice = getCostPrice(p);
 
+        const isStaff = localStorage.getItem('saleor_user_is_staff') === 'true';
+
         let priceHtml = "";
         let priceClass = "text-black";
         let displayPrice;
 
         if (loggedIn && costPrice !== null) {
-          // Show cost price for logged-in users
+          // Show cost price for ANY logged-in user
           displayPrice = costPrice.toFixed(2);
           priceClass = "text-green-600";
         } else {
@@ -567,8 +569,10 @@ query {
           catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="block text-center bg-gray-100 text-gold text-xs font-bold px-2 py-2 rounded shadow-sm hover:bg-gold hover:text-white transition cursor-pointer mb-2 border border-gold">View Catalogue</a>`;
         }
 
+        const isStaff = localStorage.getItem('saleor_user_is_staff') === 'true';
+
         if (loggedIn && costPrice !== null) {
-          // Show cost price for logged-in users
+          // Show cost price for ANY logged-in users
           const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
           priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">
             <span class="text-green-600 font-bold text-lg">${formattedCostPrice}</span>

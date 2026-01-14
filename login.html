@@ -331,6 +331,7 @@
                             email
                             firstName
                             lastName
+                            isStaff
                         }
                     }
                 }
@@ -360,6 +361,11 @@
                     throw new Error(tokenCreate.errors[0].message);
                 }
 
+                // Check if user is staff - REMOVED per user request
+                // if (tokenCreate.user && !tokenCreate.user.isStaff) {
+                //    throw new Error('Access denied. Only staff members can login here.');
+                // }
+
                 // Store tokens in localStorage
                 localStorage.setItem('saleor_auth_token', tokenCreate.token);
                 localStorage.setItem('saleor_refresh_token', tokenCreate.refreshToken);
@@ -371,6 +377,7 @@
                     localStorage.setItem('saleor_user_name',
                         (tokenCreate.user.firstName || '') + ' ' + (tokenCreate.user.lastName || '').trim() || tokenCreate.user.email
                     );
+                    localStorage.setItem('saleor_user_is_staff', tokenCreate.user.isStaff);
                 }
 
                 return { success: true };
