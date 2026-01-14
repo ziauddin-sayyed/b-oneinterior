@@ -181,6 +181,7 @@
         localStorage.removeItem('saleor_csrf_token');
         localStorage.removeItem('saleor_user_email');
         localStorage.removeItem('saleor_user_name');
+        localStorage.removeItem('saleor_user_is_staff');
         window.location.reload();
       }
 
@@ -228,7 +229,25 @@
     const FALLBACK_IMG = "images/placeholder.png";
 
     // Updated query to fetch parent category information and product attributes
-    const QUERY = `
+    function getGraphqlQuery(isStaff) {
+      const variantChannelListings = isStaff ? `
+          channelListings {
+            channel {
+              name
+              currencyCode
+            }
+            price {
+              amount
+              currency
+            }
+            costPrice {
+              amount
+              currency
+            }
+          }
+        ` : '';
+
+      return `
 query {
   categories(first: 100) { 
     edges { 
@@ -245,7 +264,7 @@ query {
       } 
     } 
   }
-  products(first: 100, channel: "in") { 
+  products(first: 100, channel: "in", filter: { isPublished: true }) { 
     edges { 
       node { 
         id 
@@ -279,14 +298,8 @@ query {
         }
         variants {
           id
-          pricing {
-            price {
-              gross {
-                amount
-                currency
-              }
-            }
-          }
+          sku
+          ${variantChannelListings}
         }
         category { 
           id 
@@ -308,25 +321,82 @@ query {
   }
 }
 `;
+    }
 
     let allCategories = [];
     let allProducts = [];
     let selectedParentCategory = null;
 
-    async function fetchSaleor() {
+    async function fetchSaleor(retry = true) {
       try {
+        const token = localStorage.getItem('saleor_auth_token');
+        const headers = {
+          "Content-Type": "application/json"
+        };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const isStaff = token && localStorage.getItem('saleor_user_is_staff') === 'true';
         const res = await fetch(API_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: QUERY })
+          headers: headers,
+          body: JSON.stringify({ query: getGraphqlQuery(isStaff) })
         });
         const json = await res.json();
-        if (json.errors) console.error("GraphQL errors:", json.errors);
+
+        if (json.errors) {
+          const isExpired = json.errors.some(e => e.message === "Signature has expired" || e.extensions?.exception?.code === "ExpiredSignatureError");
+          if (isExpired && retry) {
+            console.log("Token expired, attempting refresh...");
+            const refreshed = await refreshToken();
+            if (refreshed) {
+              return fetchSaleor(false); // Retry once
+            } else {
+              console.log("Refresh failed, signing out...");
+              signOut(); // Force logout if refresh fails
+            }
+          }
+          console.error("GraphQL errors:", json.errors);
+        }
         return json.data;
       } catch (err) {
         console.error("Fetch error:", err);
         return null;
       }
+    }
+
+    async function refreshToken() {
+      const refreshToken = localStorage.getItem('saleor_refresh_token');
+      if (!refreshToken) return false;
+
+      const mutation = `
+            mutation {
+                tokenRefresh(refreshToken: "${refreshToken}") {
+                    token
+                    errors {
+                        field
+                        message
+                    }
+                }
+            }
+        `;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: mutation })
+        });
+        const json = await res.json();
+        if (json.data?.tokenRefresh?.token) {
+          localStorage.setItem('saleor_auth_token', json.data.tokenRefresh.token);
+          return true;
+        }
+      } catch (e) {
+        console.error("Error refreshing token:", e);
+      }
+      return false;
     }
 
     function getParentCategories(categories) {
@@ -496,36 +566,48 @@ query {
       }
     }
 
+    function getVariantPricing(product) {
+      if (product.variants && product.variants.length > 0) {
+        const variant = product.variants[0]; // Use first variant
+        if (variant.channelListings && variant.channelListings.length > 0) {
+          const listing = variant.channelListings[0]; // Use first listing
+          return {
+            price: listing.price,
+            costPrice: listing.costPrice
+          };
+        }
+      }
+      return null;
+    }
+
     function renderDesktopList(products) {
       const desktopList = document.getElementById("productGrid"); // Changed to productGrid as per original renderGrid
       const cart = getCart();
       const loggedIn = isUserLoggedIn();
 
       desktopList.innerHTML = products.length ? products.map(p => {
-        const actualPriceStr = getActualPrice(p);
-        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-        const sellingPrice = currentPriceObj ? currentPriceObj.amount : null;
-        const currency = currentPriceObj ? currentPriceObj.currency : "";
-        const costPrice = getCostPrice(p);
+        const variantPricing = getVariantPricing(p);
+        let sellingPrice = 0;
+        let costPrice = null;
+        let currency = 'INR';
 
-        const isStaff = localStorage.getItem('saleor_user_is_staff') === 'true';
-
-        let priceHtml = "";
-        let priceClass = "text-black";
-        let displayPrice;
-
-        if (loggedIn && costPrice !== null) {
-          // Show cost price for ANY logged-in user
-          displayPrice = costPrice.toFixed(2);
-          priceClass = "text-green-600";
+        if (variantPricing) {
+          sellingPrice = variantPricing.price?.amount || 0;
+          currency = variantPricing.price?.currency || 'INR';
+          costPrice = variantPricing.costPrice?.amount || null;
         } else {
-          displayPrice = sellingPrice?.toFixed(2) || "0.00";
+          const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+          sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+          currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+          if (costPrice === null) {
+            const attrCost = getCostPrice(p);
+            if (attrCost !== null) costPrice = attrCost;
+          }
         }
 
         const currSymbol = currency === 'INR' ? '₹' : (currency || '');
-        const formattedPrice = currency === 'INR' ? `₹${displayPrice}` : `${displayPrice} ${currSymbol}`;
-
-        // Fallback image logic
+        const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currSymbol}`;
+        const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currSymbol}`) : '';
         const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
 
         return `
@@ -537,8 +619,8 @@ query {
             
             <div class="p-3 flex flex-col flex-grow">
                 <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
-                <div class="mt-auto border-t pt-2 w-full">
-                    <span class="${priceClass} font-bold text-base block">${formattedPrice}</span>
+                <div class="mt-auto border-t pt-2 w-full">                    
+                    ${(loggedIn && costPrice !== null) ? `<span class="text-black font-bold text-base block">${formattedCostPrice}</span>` : `<span class="text-black font-bold text-base block">${formattedSellingPrice}</span>`}
                 </div>
             </div>
         </a>
@@ -552,12 +634,33 @@ query {
       const loggedIn = isUserLoggedIn();
 
       mobileList.innerHTML = products.length ? products.map(p => {
+        // Variant Pricing Logic
+        const variantPricing = getVariantPricing(p);
+        let sellingPrice = 0;
+        let costPrice = null;
+        let currency = 'INR';
+
+        if (variantPricing) {
+          sellingPrice = variantPricing.price?.amount || 0;
+          currency = variantPricing.price?.currency || 'INR';
+          costPrice = variantPricing.costPrice?.amount || null;
+        } else {
+          const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+          sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+          currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+          if (costPrice === null) {
+            const attrCost = getCostPrice(p);
+            if (attrCost !== null) costPrice = attrCost;
+          }
+        }
+
         const actualPriceStr = getActualPrice(p);
-        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-        const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
-        const currency = currentPriceObj ? currentPriceObj.currency : "";
         const catalogueUrl = getCatalogueLink(p);
-        const costPrice = getCostPrice(p);
+
+        // Map to old variable name if necessary for existing logic not yet updated? 
+        // No, I will update the logic in next steps.
+        // But for now, I should keep currentPriceVal defined to avoid breaking subsequent code before I update it.
+        const currentPriceVal = sellingPrice;
 
         const cartBtnHtml = generateCartBtnHtml(p, cart);
 
@@ -574,8 +677,10 @@ query {
         if (loggedIn && costPrice !== null) {
           // Show cost price for ANY logged-in users
           const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
-          priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">
-            <span class="text-green-600 font-bold text-lg">${formattedCostPrice}</span>
+          const formattedSellingPrice = currency === 'INR' ? `₹${currentPriceVal?.toFixed(2) || "0.00"}` : `${currentPriceVal?.toFixed(2) || "0.00"} ${currency}`;
+
+          priceHtml = `<div class="w-full flex flex-col items-center justify-center gap-1 leading-tight">
+            <span class="text-black font-bold text-base block">${formattedCostPrice}</span>
           </div>`;
         } else {
           // Calculate Discount for non-logged-in users

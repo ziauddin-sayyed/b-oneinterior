@@ -160,6 +160,7 @@
             localStorage.removeItem('saleor_csrf_token');
             localStorage.removeItem('saleor_user_email');
             localStorage.removeItem('saleor_user_name');
+            localStorage.removeItem('saleor_user_is_staff');
             window.location.reload();
         }
 
@@ -308,6 +309,97 @@
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
 
+        async function fetchSaleor(query, retry = true) {
+            try {
+                const token = localStorage.getItem('saleor_auth_token');
+                const headers = {
+                    "Content-Type": "application/json"
+                };
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+
+                if (json.errors) {
+                    const isExpired = json.errors.some(e => e.message === "Signature has expired" || e.extensions?.exception?.code === "ExpiredSignatureError");
+                    if (isExpired && retry) {
+                        console.log("Token expired, attempting refresh...");
+                        const refreshed = await refreshToken();
+                        if (refreshed) {
+                            return fetchSaleor(query, false); // Retry once
+                        } else {
+                            console.log("Refresh failed, signing out...");
+                            signOut(); // Force logout if refresh fails
+                            return null;
+                        }
+                    }
+                    console.error("GraphQL errors:", json.errors);
+                }
+                return json.data;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                return null;
+            }
+        }
+
+        async function refreshToken() {
+            const refreshToken = localStorage.getItem('saleor_refresh_token');
+            if (!refreshToken) return false;
+
+            const mutation = `
+            mutation {
+                tokenRefresh(refreshToken: "${refreshToken}") {
+                    token
+                    errors {
+                        field
+                        message
+                    }
+                }
+            }
+        `;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: mutation })
+                });
+                const json = await res.json();
+                if (json.data?.tokenRefresh?.token) {
+                    localStorage.setItem('saleor_auth_token', json.data.tokenRefresh.token);
+                    return true;
+                }
+            } catch (e) {
+                console.error("Error refreshing token:", e);
+            }
+            return false;
+        }
+
+        function getVariantFields(isStaff) {
+            return isStaff ? `
+          channelListings {
+            channel {
+              name
+              currencyCode
+            }
+            price {
+              amount
+              currency
+            }
+            costPrice {
+              amount
+              currency
+            }
+          }
+        ` : '';
+        }
+
         // Get Product ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
@@ -412,18 +504,12 @@
                     variants {
                         id
                         name
+                        sku
                         media {
                             url
                             type
                         }
-                        pricing {
-                            price {
-                                gross {
-                                    amount
-                                    currency
-                                }
-                            }
-                        }
+                        ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                         attributes {
                             attribute {
                                 name
@@ -442,13 +528,8 @@
             `;
 
             try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query })
-                });
-                const json = await res.json();
-                return json.data?.product;
+                const data = await fetchSaleor(query);
+                return data?.product;
             } catch (err) {
                 console.error(err);
                 return null;
@@ -470,13 +551,8 @@
             `;
 
             try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query })
-                });
-                const json = await res.json();
-                return json.data?.productVariant;
+                const data = await fetchSaleor(query);
+                return data?.productVariant;
             } catch (err) {
                 console.error(err);
                 return null;
@@ -503,6 +579,9 @@
                                 }
                             }
                             category { name }
+                            variants {
+                                ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
+                            }
                         }
                     }
                 }
@@ -510,13 +589,8 @@
             `;
 
             try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query })
-                });
-                const json = await res.json();
-                let products = json.data?.products?.edges || [];
+                const data = await fetchSaleor(query);
+                let products = data?.products?.edges || [];
 
                 // Filter by Category & Exclude Current
                 products = products.filter(p =>
@@ -536,9 +610,27 @@
                 section.classList.remove("hidden");
 
                 products.forEach(p => {
-                    const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
-                    const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
-                    const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+                    // Variant Pricing Logic for Card
+                    let sellingPrice = 0;
+                    let costPrice = null;
+                    let currency = 'INR';
+
+                    if (p.node.variants && p.node.variants.length > 0 && p.node.variants[0].channelListings && p.node.variants[0].channelListings.length > 0) {
+                        const listing = p.node.variants[0].channelListings[0];
+                        sellingPrice = listing.price?.amount || 0;
+                        currency = listing.price?.currency || 'INR';
+                        costPrice = listing.costPrice?.amount || null;
+                    } else {
+                        // Fallback
+                        const currentPriceObj = p.node.pricing?.priceRange?.start?.gross;
+                        sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+                        currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+                    }
+
+                    const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                    const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
+
+                    const loggedIn = isUserLoggedIn(); // Check global auth status
 
                     const item = document.createElement("div");
                     item.className = "item px-1";
@@ -550,7 +642,7 @@
                             <div class="p-3 flex flex-col flex-grow">
                                 <h3 class="font-semibold text-gray-200 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
                                 <div class="mt-auto border-t border-gray-800 pt-2 w-full">
-                                    <span class="text-gold font-bold text-base block">${formattedPrice}</span>
+                                    ${(loggedIn && costPrice !== null) ? `<span class="text-gold font-bold text-sm block">${formattedCostPrice}</span>` : `<span class="text-gold font-bold text-sm block">${formattedSellingPrice}</span>`}
                                 </div>
                             </div>
                         </a>
@@ -623,6 +715,9 @@
                                     }
                                 }
                                 category { name }
+                                variants {
+                                    ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
+                                }
                             }
                         }
                     }
@@ -631,13 +726,8 @@
             `;
 
             try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query })
-                });
-                const json = await res.json();
-                const edges = json.data?.collection?.products?.edges || [];
+                const data = await fetchSaleor(query);
+                const edges = data?.collection?.products?.edges || [];
                 return edges.map(e => e.node).filter(p => p.id !== currentId);
             } catch (err) {
                 console.error(err);
@@ -657,9 +747,27 @@
             section.classList.remove("hidden");
 
             const html = products.map(p => {
-                const price = p.pricing?.priceRange?.start?.gross?.amount?.toFixed(2);
-                const currency = p.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.pricing?.priceRange?.start?.gross?.currency || '');
-                const formattedPrice = p.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+                // Variant Pricing Logic for Card
+                let sellingPrice = 0;
+                let costPrice = null;
+                let currency = 'INR';
+
+                if (p.variants && p.variants.length > 0 && p.variants[0].channelListings && p.variants[0].channelListings.length > 0) {
+                    const listing = p.variants[0].channelListings[0];
+                    sellingPrice = listing.price?.amount || 0;
+                    currency = listing.price?.currency || 'INR';
+                    costPrice = listing.costPrice?.amount || null;
+                } else {
+                    // Fallback
+                    const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                    sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+                    currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+                }
+
+                const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
+
+                const loggedIn = isUserLoggedIn();
 
                 return `
                 <div class="item p-4">
@@ -670,7 +778,7 @@
                          </div>
                          <div class="p-4">
                              <h3 class="font-bold text-gray-200 text-lg mb-1 truncate">${p.name}</h3>
-                             <p class="text-gold font-bold">${formattedPrice}</p>
+                             ${(loggedIn && costPrice !== null) ? `<p class="text-gold font-bold text-sm">${formattedCostPrice}</p>` : `<p class="text-gold font-bold text-sm">${formattedSellingPrice}</p>`}
                          </div>
                     </div>
                 </div>
@@ -793,38 +901,55 @@
             }
 
             // Price - Show cost price for logged-in users, selling price for non-logged-in users
-            // If a variant is selected, use its price instead of the product's price range
             const loggedIn = isUserLoggedIn();
-            let currentPriceObj;
-            let currency;
+            let sellingPrice = 0;
+            let costPrice = null;
+            let currency = 'INR';
 
-            if (selectedVariant && selectedVariant.pricing?.price?.gross) {
-                currentPriceObj = selectedVariant.pricing.price.gross;
-            } else {
-                currentPriceObj = p.pricing?.priceRange?.start?.gross;
+            // Determine active variant for pricing (selected or default to first)
+            const activeVariant = selectedVariant || (p.variants && p.variants.length > 0 ? p.variants[0] : null);
+            let variantPricingFound = false;
+
+            if (activeVariant && activeVariant.channelListings && activeVariant.channelListings.length > 0) {
+                const listing = activeVariant.channelListings[0];
+                sellingPrice = listing.price?.amount || 0;
+                currency = listing.price?.currency || 'INR';
+                costPrice = listing.costPrice?.amount || null;
+                variantPricingFound = true;
             }
 
-            const sellingPrice = currentPriceObj ? currentPriceObj.amount : null;
-            currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+            if (!variantPricingFound) {
+                // Fallback to existing logic
+                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+                currency = currentPriceObj ? currentPriceObj.currency : 'INR';
 
-            // Get cost price from "Cost Price" attribute if available
-            const costPriceAttr = p.attributes.find(a => a.attribute.name === "Cost Price");
-            const costPriceStr = costPriceAttr?.values[0]?.name;
-            let costPrice = null;
-            if (costPriceStr) {
-                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
-                if (!isNaN(parsed)) {
-                    costPrice = parsed;
+                // Get cost price from "Cost Price" attribute if available
+                const costPriceAttr = p.attributes.find(a => a.attribute.name === "Cost Price");
+                const costPriceStr = costPriceAttr?.values[0]?.name;
+                if (costPriceStr) {
+                    const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                    if (!isNaN(parsed)) {
+                        costPrice = parsed;
+                    }
                 }
             }
 
             // Debug logging - check console to see attribute names
+            // Debug logging - check console to see attribute names
             console.log("== Price Debug ==");
             console.log("Logged In:", loggedIn);
-            console.log("All attributes:", p.attributes.map(a => a.attribute.name));
-            console.log("Cost Price Attr found:", costPriceAttr);
-            console.log("Cost Price value:", costPrice);
-            console.log("Selling Price:", sellingPrice);
+            console.log("Selected Variant:", selectedVariant);
+            if (selectedVariant && selectedVariant.channelListings) {
+                console.log("Variant Listings:", selectedVariant.channelListings);
+                if (selectedVariant.channelListings.length > 0) {
+                    console.log("First Listing:", selectedVariant.channelListings[0]);
+                    console.log("Listing Cost Price:", selectedVariant.channelListings[0].costPrice);
+                }
+            }
+            console.log("Product Attributes:", p.attributes);
+            console.log("Calculated Cost Price:", costPrice);
+            console.log("Calculated Selling Price:", sellingPrice);
 
             // Determine which price to display
             const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
@@ -1183,20 +1308,34 @@
 
             variants.forEach(v => {
                 const imgUrl = v.media && v.media.length > 0 ? v.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
-                const sellingPriceObj = v.pricing?.price?.gross;
 
-                const sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
-                const currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+                // Variant Pricing Logic
+                let sellingPrice = 0;
+                let costPrice = null;
+                let currency = 'INR';
 
-                let formattedPrice;
-                let priceClass = "text-gold";
-
-                if (loggedIn && productCostPrice !== null) {
-                    formattedPrice = currency === 'INR' ? `₹${productCostPrice.toFixed(2)}` : `${productCostPrice.toFixed(2)} ${currency}`;
-                    priceClass = "text-green-500";
+                if (v.channelListings && v.channelListings.length > 0) {
+                    const listing = v.channelListings[0];
+                    sellingPrice = listing.price?.amount || 0;
+                    currency = listing.price?.currency || 'INR';
+                    costPrice = listing.costPrice?.amount || null;
                 } else {
-                    formattedPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                    // Fallback to existing pricing structure if channelListings missing
+                    let sellingPriceObj = v.pricing?.price?.gross;
+                    if (!sellingPriceObj) {
+                        sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
+                    }
+                    sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                    currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
                 }
+
+                // Cost Price Fallback from Product Attributes if not in variant
+                if (costPrice === null && productCostPrice !== null) {
+                    costPrice = productCostPrice;
+                }
+
+                const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
 
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
                 const borderClass = isSelected ? "border-gold ring-1 ring-gold bg-gold/10" : "border-gray-700 bg-gray-900 hover:border-gold/50";
@@ -1212,7 +1351,8 @@
                     </div>
                     <div class="text-center">
                         <p class="text-xs font-bold text-gray-300 truncate mb-1">${v.name}</p>
-                        <p class="${priceClass} font-bold text-sm">${formattedPrice}</p>
+                        <span class="text-gold font-bold text-sm block">${formattedSellingPrice}</span>
+                        ${(loggedIn && costPrice !== null) ? `<span class="text-gold font-bold text-sm block">${formattedCostPrice}</span>` : ''}
                     </div>
                 `;
 
