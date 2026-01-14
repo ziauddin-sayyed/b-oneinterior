@@ -490,6 +490,7 @@
                         }
                         values {
                             name
+                            richText
                             file {
                                 url
                             }
@@ -524,6 +525,7 @@
                             }
                             values {
                                 name
+                                richText
                             }
                         }
                     }
@@ -901,6 +903,50 @@
             return 'cube-outline';
         }
 
+        function parseDescription(description) {
+            let descText = "";
+            let content = description;
+
+            // If it's already an object (rare for JSONString scalar but possible in some clients), use it
+            if (typeof content === 'object' && content !== null) {
+                // already object
+            } else if (typeof content === 'string') {
+                try {
+                    // check if it looks like JSON
+                    if (content.trim().startsWith('{')) {
+                        content = JSON.parse(content);
+                    } else {
+                        // treat as plain HTML/Text
+                        return content;
+                    }
+                } catch (e) {
+                    return content;
+                }
+            } else {
+                return "";
+            }
+
+            if (content && content.blocks) {
+                descText = content.blocks.map(b => {
+                    if (b.type === 'paragraph') {
+                        return `<p class="mb-4 text-gray-300 leading-relaxed">${b.data.text}</p>`;
+                    } else if (b.type === 'list') {
+                        const tag = b.data.style === 'ordered' ? 'ol' : 'ul';
+                        const listClass = b.data.style === 'ordered' ? 'list-decimal' : 'list-disc';
+                        const items = b.data.items.map(i => `<li class="mb-2 pl-1">${i}</li>`).join('');
+                        return `<${tag} class="${listClass} ml-6 mb-4 space-y-1 text-gray-300">${items}</${tag}>`;
+                    } else if (b.type === 'header') {
+                        const level = b.data.level || 3;
+                        const sizes = { 1: 'text-3xl', 2: 'text-2xl', 3: 'text-xl', 4: 'text-lg' };
+                        const cls = sizes[level] || 'text-xl';
+                        return `<h${level} class="${cls} font-bold mb-3 mt-6 text-white">${b.data.text}</h${level}>`;
+                    }
+                    return '';
+                }).join('');
+            }
+            return descText;
+        }
+
         function renderProduct(p) {
             // Meta Badges (Category & Type)
             console.log("Product Metadata:", p.metadata);
@@ -1019,31 +1065,8 @@
 
 
             // Description
-            let descText = "";
-            if (p.description) {
-                descText = p.description;
-                if (typeof p.description === 'string' && p.description.startsWith('{')) {
-                    try {
-                        const descObj = JSON.parse(p.description);
-                        if (descObj.blocks) {
-                            descText = descObj.blocks.map(b => {
-                                if (b.type === 'paragraph') {
-                                    return `<p class="mb-2">${b.data.text}</p>`;
-                                } else if (b.type === 'list') {
-                                    const tag = b.data.style === 'ordered' ? 'ol' : 'ul';
-                                    const listClass = b.data.style === 'ordered' ? 'list-decimal' : 'list-disc';
-                                    const items = b.data.items.map(i => `<li class="mb-1">${i}</li>`).join('');
-                                    return `<${tag} class="${listClass} ml-5 mb-2 pl-2">${items}</${tag}>`;
-                                } else if (b.type === 'header') {
-                                    return `<h3 class="text-xl font-bold mb-2 mt-4 text-white">${b.data.text}</h3>`;
-                                }
-                                return '';
-                            }).join('');
-                        }
-                    } catch (e) { }
-                }
-            }
-            document.getElementById("descriptionContainer").innerHTML = descText;
+            // Description
+            document.getElementById("descriptionContainer").innerHTML = parseDescription(p.description);
 
             // Attributes
             let attrsHtml = "";
@@ -1135,6 +1158,17 @@
             if (p.variants && p.variants.length > 0 && !selectedVariant) {
                 selectedVariant = p.variants[0];
             }
+
+            // Check for Variant Description on the initial selected variant
+            if (selectedVariant) {
+                const variantDescAttr = selectedVariant.attributes?.find(a => a.attribute.name === "Variant Description");
+                if (variantDescAttr && variantDescAttr.values.length > 0) {
+                    const val = variantDescAttr.values[0];
+                    const descContent = val.richText || val.name;
+                    document.getElementById("descriptionContainer").innerHTML = parseDescription(descContent);
+                }
+            }
+
             renderVariants(p.variants);
 
             // Fetch Collection Products
@@ -1254,6 +1288,16 @@
             const colorSelect = document.getElementById("colorSelect");
             if (colorSelect) {
                 colorSelect.value = variantId;
+            }
+
+            // Update Description if "Variant Description" attribute exists
+            const variantDescAttr = variant.attributes?.find(a => a.attribute.name === "Variant Description");
+            if (variantDescAttr && variantDescAttr.values.length > 0) {
+                const val = variantDescAttr.values[0];
+                const descContent = val.richText || val.name;
+                document.getElementById("descriptionContainer").innerHTML = parseDescription(descContent);
+            } else {
+                document.getElementById("descriptionContainer").innerHTML = parseDescription(currentProduct.description);
             }
 
             // Re-render variants to update selection border
