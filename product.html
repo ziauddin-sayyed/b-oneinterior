@@ -74,12 +74,17 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="https://b-oneinterior.com/catalogue">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <div>Catalogue</div>
+                    </a>
+                </li>
 
                 <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                        <div>Shop</div>
-
+                    <a href="https://b-oneinterior.com/login">
+                        <ion-icon name="log-in-outline"></ion-icon>
+                        <div>Login</div>
                     </a>
                 </li>
                 <li></li>
@@ -91,6 +96,12 @@
                     </div>
                 </li>
 
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline"></ion-icon>
+                        <div>Shop</div>
+                    </a>
+                </li>
 
                 <li>
                     <a href="https://b-oneinterior.com/cart">
@@ -99,7 +110,6 @@
                         <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
                                 w-5 h-5 flex items-center justify-center rounded-full hidden">
                         </span>
-
                     </a>
                 </li>
             </ul>
@@ -1011,8 +1021,21 @@
                 </button>
             `;
             document.getElementById("metaContainer").innerHTML = metaHtml;
+
+            // Mobile meta with back button
+            const metaHtmlMobile = `
+                <button onclick="window.history.back()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
+                    <ion-icon name="arrow-back-outline" class="text-sm"></ion-icon> Back
+                </button>
+                <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
+                    <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
+                </span>
+                <button onclick="shareProduct()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700 ml-auto">
+                    <ion-icon name="share-social-outline" class="text-sm"></ion-icon> Share
+                </button>
+            `;
             const metaContainerMobile = document.getElementById("metaContainerMobile");
-            if (metaContainerMobile) metaContainerMobile.innerHTML = metaHtml;
+            if (metaContainerMobile) metaContainerMobile.innerHTML = metaHtmlMobile;
 
             // Name - highlight variant name as main heading, product name as secondary
             let nameHtml = "";
@@ -1633,6 +1656,8 @@
         // Cart Badge Logic
         function updateCartBadge() {
             const badge = document.getElementById("cartCountBadge");
+            if (!badge) return; // Badge element may not exist
+
             const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
             const count = list.length;
             if (count > 0) {

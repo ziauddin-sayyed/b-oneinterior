@@ -99,12 +99,17 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="https://b-oneinterior.com/catalogue">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <div>Catalogue</div>
+                    </a>
+                </li>
 
                 <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                        <div>Shop</div>
-
+                    <a href="https://b-oneinterior.com/login">
+                        <ion-icon name="log-in-outline"></ion-icon>
+                        <div>Login</div>
                     </a>
                 </li>
                 <li></li>
@@ -116,6 +121,12 @@
                     </div>
                 </li>
 
+                <li>
+                    <a href="https://b-oneinterior.com/shop">
+                        <ion-icon name="storefront-outline"></ion-icon>
+                        <div>Shop</div>
+                    </a>
+                </li>
 
                 <li>
                     <a href="https://b-oneinterior.com/cart">
@@ -124,19 +135,8 @@
                         <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
                                 w-5 h-5 flex items-center justify-center rounded-full hidden">
                         </span>
-
                     </a>
                 </li>
-                <!-- <li>
-                <a href="#" id="menu-toggle" onclick="toggleMenu(this)">
-                    <div>
-                        <div class="menu-icon" id="menu-btn">&#9776;</div>
-                        
-                    </div>
-
-                </a>
-
-            </li> -->
             </ul>
         </div>
 
@@ -577,6 +577,8 @@
 
         function updateCartBadge() {
             const badge = document.getElementById("cartCountBadge");
+            if (!badge) return; // Badge element may not exist
+
             const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
             const count = list.length;
 
