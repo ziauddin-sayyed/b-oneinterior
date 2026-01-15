@@ -298,6 +298,7 @@ query {
         }
         variants {
           id
+          name
           sku
           ${variantChannelListings}
         }
@@ -775,14 +776,25 @@ query {
       const activeSubcat = document.querySelector(".filter-subcategory.bg-gold")?.dataset.subcategory;
       let filtered = allProducts;
 
-      // Filter by Search Query
+      // Filter by Search Query (product name, description, and variant names)
       const searchQuery = document.getElementById("searchInput").value.toLowerCase();
       if (searchQuery) {
-        filtered = filtered.filter(p =>
-          p.name.toLowerCase().includes(searchQuery) ||
-          (p.category && p.category.name.toLowerCase().includes(searchQuery)) ||
-          (p.description && p.description.toLowerCase().includes(searchQuery))
-        );
+        filtered = filtered.filter(p => {
+          // Check product name
+          if (p.name.toLowerCase().includes(searchQuery)) return true;
+          // Check category name
+          if (p.category && p.category.name.toLowerCase().includes(searchQuery)) return true;
+          // Check description
+          if (p.description && p.description.toLowerCase().includes(searchQuery)) return true;
+          // Check variant names
+          if (p.variants && p.variants.length > 0) {
+            const hasMatchingVariant = p.variants.some(v =>
+              v.name && v.name.toLowerCase().includes(searchQuery)
+            );
+            if (hasMatchingVariant) return true;
+          }
+          return false;
+        });
       }
 
       if (selectedParentCategory && selectedParentCategory !== "all") {

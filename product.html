@@ -181,51 +181,95 @@
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
         </div>
 
-        <div id="productDetail" class="hidden grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div id="productDetail" class="hidden">
 
-            <!-- Left: Image Section -->
-            <div class="w-full">
-                <div id="imageContainer"
+            <!-- Mobile Layout -->
+            <div class="md:hidden flex flex-col gap-4">
+                <!-- Mobile: Name & Price Above Image -->
+                <div>
+                    <div id="metaContainerMobile" class="flex flex-wrap gap-2 mb-3"></div>
+                    <h1 id="productNameMobile" class="text-2xl font-bold text-white mb-2"></h1>
+                    <div id="priceContainerMobile" class="flex items-baseline gap-4 mt-2"></div>
+                </div>
+
+                <!-- Mobile: Main Image -->
+                <div id="imageContainerMobile"
                     class="rounded-lg overflow-hidden shadow-lg bg-gray-900 border border-gray-800">
                     <!-- Carousel will be injected here -->
                 </div>
-                <div id="variantContainer" class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-4">
+
+                <!-- Mobile: Cart Action Below Image -->
+                <div id="cartActionContainerMobile" class="w-full"></div>
+
+                <!-- Mobile: Variant Cards -->
+                <div id="variantContainerMobile" class="grid grid-cols-3 gap-3">
                     <!-- Variants will be injected here -->
                 </div>
+
+                <!-- Mobile: Color Select -->
+                <div id="colorSelectContainerMobile" class="hidden">
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
+                    <select id="colorSelectMobile"
+                        class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
+                    </select>
+                </div>
+
+                <!-- Mobile: Catalogue -->
+                <div id="catalogueContainerMobile"></div>
+
+                <!-- Mobile: Description -->
+                <div id="descriptionContainerMobile" class="text-gray-300 leading-relaxed text-sm"></div>
+
+                <!-- Mobile: Attributes -->
+                <div id="attributesContainerMobile" class="space-y-2 pt-4 border-t border-gray-800"></div>
             </div>
 
-            <!-- Right: Details Section -->
-            <div class="flex flex-col space-y-6">
-
-                <!-- Title & Price -->
-                <div>
-                    <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
-                    <h1 id="productName" class="text-3xl md:text-4xl font-bold text-white mb-2"></h1>
-                    <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
-                    <!-- Color Select Dropdown -->
-                    <div id="colorSelectContainer" class="mt-4 hidden">
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
-                        <select id="colorSelect"
-                            class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
-                            <!-- Options will be injected here -->
-                        </select>
+            <!-- Desktop Layout (2 columns) -->
+            <div class="hidden md:grid grid-cols-2 gap-12">
+                <!-- Left: Image Section -->
+                <div class="w-full">
+                    <div id="imageContainer"
+                        class="rounded-lg overflow-hidden shadow-lg bg-gray-900 border border-gray-800">
+                        <!-- Carousel will be injected here -->
+                    </div>
+                    <div id="variantContainer" class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-4">
+                        <!-- Variants will be injected here -->
                     </div>
                 </div>
 
-                <!-- Catalogue Button -->
-                <div id="catalogueContainer"></div>
+                <!-- Right: Details Section -->
+                <div class="flex flex-col space-y-6">
 
-                <!-- Short Description / Attributes -->
-                <div id="descriptionContainer" class="text-gray-300 leading-relaxed text-sm md:text-base"></div>
+                    <!-- Title & Price -->
+                    <div>
+                        <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
+                        <h1 id="productName" class="text-3xl md:text-4xl font-bold text-white mb-2"></h1>
+                        <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
+                        <!-- Color Select Dropdown -->
+                        <div id="colorSelectContainer" class="mt-4 hidden">
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
+                            <select id="colorSelect"
+                                class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
+                                <!-- Options will be injected here -->
+                            </select>
+                        </div>
+                    </div>
 
-                <!-- Attributes List -->
-                <div id="attributesContainer" class="space-y-2 pt-4 border-t"></div>
+                    <!-- Catalogue Button -->
+                    <div id="catalogueContainer"></div>
 
-                <!-- Add to Cart / Quantity -->
-                <div class="pt-6 mt-auto">
-                    <div id="cartActionContainer" class="w-full"></div>
+                    <!-- Short Description / Attributes -->
+                    <div id="descriptionContainer" class="text-gray-300 leading-relaxed text-sm md:text-base"></div>
+
+                    <!-- Attributes List -->
+                    <div id="attributesContainer" class="space-y-2 pt-4 border-t"></div>
+
+                    <!-- Add to Cart / Quantity -->
+                    <div class="pt-6 mt-auto">
+                        <div id="cartActionContainer" class="w-full"></div>
+                    </div>
+
                 </div>
-
             </div>
         </div>
 
@@ -410,6 +454,7 @@
             spinner.classList.remove("hidden");
 
             const container = document.getElementById("imageContainer");
+            const containerMobile = document.getElementById("imageContainerMobile");
             const $carousel = $('.product-image-carousel');
             if ($carousel.length > 0) {
                 $carousel.trigger('destroy.owl.carousel');
@@ -436,6 +481,7 @@
             }
 
             container.innerHTML = imageHtml;
+            if (containerMobile) containerMobile.innerHTML = imageHtml;
 
             if (hasImages) {
                 setTimeout(() => {
@@ -953,7 +999,7 @@
             const catName = p.category?.name || "Uncategorized";
             const typeName = p.productType?.name || "Standard";
 
-            document.getElementById("metaContainer").innerHTML = `
+            const metaHtml = `
                 <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
                     <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
                 </span>
@@ -964,13 +1010,20 @@
                     <ion-icon name="share-social-outline" class="text-sm"></ion-icon> Share
                 </button>
             `;
+            document.getElementById("metaContainer").innerHTML = metaHtml;
+            const metaContainerMobile = document.getElementById("metaContainerMobile");
+            if (metaContainerMobile) metaContainerMobile.innerHTML = metaHtml;
 
-            // Name - append variant name if a specific variant is selected (variant name in smaller text)
+            // Name - highlight variant name as main heading, product name as secondary
+            let nameHtml = "";
             if (selectedVariant && selectedVariant.name) {
-                document.getElementById("productName").innerHTML = `${p.name} <span class="text-lg font-normal text-gray-400">- ${selectedVariant.name}</span>`;
+                nameHtml = `${selectedVariant.name} <span class="text-lg font-normal text-gray-400 block mt-1">${p.name}</span>`;
             } else {
-                document.getElementById("productName").textContent = p.name;
+                nameHtml = p.name;
             }
+            document.getElementById("productName").innerHTML = nameHtml;
+            const productNameMobile = document.getElementById("productNameMobile");
+            if (productNameMobile) productNameMobile.innerHTML = nameHtml;
 
             // Price - Show cost price for logged-in users, selling price for non-logged-in users
             const loggedIn = isUserLoggedIn();
@@ -1062,11 +1115,15 @@
             }
 
             document.getElementById("priceContainer").innerHTML = priceHtml;
+            const priceContainerMobile = document.getElementById("priceContainerMobile");
+            if (priceContainerMobile) priceContainerMobile.innerHTML = priceHtml;
 
 
             // Description
-            // Description
-            document.getElementById("descriptionContainer").innerHTML = parseDescription(p.description);
+            const descHtml = parseDescription(p.description);
+            document.getElementById("descriptionContainer").innerHTML = descHtml;
+            const descContainerMobile = document.getElementById("descriptionContainerMobile");
+            if (descContainerMobile) descContainerMobile.innerHTML = descHtml;
 
             // Attributes
             let attrsHtml = "";
@@ -1093,8 +1150,9 @@
                 `;
             });
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
+            const attrsContainerMobile = document.getElementById("attributesContainerMobile");
+            if (attrsContainerMobile) attrsContainerMobile.innerHTML = attrsHtml;
 
-            // Catalogue Link
             // Catalogue Links
             let catalogueHtml = "";
 
@@ -1141,6 +1199,8 @@
             }
 
             document.getElementById("catalogueContainer").innerHTML = catalogueHtml;
+            const catalogueContainerMobile = document.getElementById("catalogueContainerMobile");
+            if (catalogueContainerMobile) catalogueContainerMobile.innerHTML = catalogueHtml;
 
             // Images - use selected variant's media if available, otherwise product media
             if (selectedVariant && selectedVariant.media && selectedVariant.media.length > 0) {
@@ -1189,14 +1249,16 @@
             const inCart = cart.find(i => i.id === activeId);
 
             const actionContainer = document.getElementById("cartActionContainer");
+            const actionContainerMobile = document.getElementById("cartActionContainerMobile");
 
+            let cartHtml = "";
             if (inCart) {
                 // Calculate Total
                 const total = inCart.quantity * inCart.price;
                 const totalFormatted = inCart.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${inCart.currency}`;
 
                 // Show Quantity Controls and Total Amount
-                actionContainer.innerHTML = `
+                cartHtml = `
                  <div class="flex items-center justify-between bg-gray-100 rounded-full p-1 border border-gold">
                     <button class="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-500 font-bold text-xl transition" onclick="updateQty('${activeId}', -1)">-</button>
                     <input type="number" 
@@ -1224,12 +1286,15 @@
                 `;
             } else {
                 // Show Add to Cart
-                actionContainer.innerHTML = `
+                cartHtml = `
                     <button onclick="addToCart()" class="w-full bg-gold text-white font-bold py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-opacity-90 transition transform active:scale-95 text-lg">
                         Add to Inquiry Cart
                     </button>
                 `;
             }
+
+            actionContainer.innerHTML = cartHtml;
+            if (actionContainerMobile) actionContainerMobile.innerHTML = cartHtml;
         }
 
         window.addToCart = function () {
@@ -1359,6 +1424,14 @@
 
             document.getElementById("productPrice").innerText = formattedPrice;
 
+            // Update heading to show variant name as main and product name as secondary
+            if (variant.name) {
+                const nameHtml = `${variant.name} <span class="text-lg font-normal text-gray-400 block mt-1">${currentProduct.name}</span>`;
+                document.getElementById("productName").innerHTML = nameHtml;
+                const productNameMobile = document.getElementById("productNameMobile");
+                if (productNameMobile) productNameMobile.innerHTML = nameHtml;
+            }
+
             // Sync color dropdown with selected variant
             const colorSelect = document.getElementById("colorSelect");
             if (colorSelect) {
@@ -1390,9 +1463,12 @@
         function renderColorSelect(variants) {
             const container = document.getElementById("colorSelectContainer");
             const select = document.getElementById("colorSelect");
+            const containerMobile = document.getElementById("colorSelectContainerMobile");
+            const selectMobile = document.getElementById("colorSelectMobile");
 
             if (!variants || variants.length === 0) {
                 container.classList.add("hidden");
+                if (containerMobile) containerMobile.classList.add("hidden");
                 return;
             }
 
@@ -1418,11 +1494,13 @@
             // If no color attributes found, hide the container
             if (colorOptions.length === 0) {
                 container.classList.add("hidden");
+                if (containerMobile) containerMobile.classList.add("hidden");
                 return;
             }
 
             // Show the container
             container.classList.remove("hidden");
+            if (containerMobile) containerMobile.classList.remove("hidden");
 
             // Build select options
             let optionsHtml = '<option value="" disabled>Select a color</option>';
@@ -1432,24 +1510,30 @@
             });
 
             select.innerHTML = optionsHtml;
+            if (selectMobile) selectMobile.innerHTML = optionsHtml;
 
             // Add change event listener
-            select.onchange = function () {
+            const handleColorChange = function () {
                 const selectedVariantId = this.value;
                 if (selectedVariantId) {
                     window.selectVariant(selectedVariantId);
                 }
             };
+            select.onchange = handleColorChange;
+            if (selectMobile) selectMobile.onchange = handleColorChange;
 
             // Select first option if no variant is selected
             if (!selectedVariant && colorOptions.length > 0) {
                 select.value = colorOptions[0].variantId;
+                if (selectMobile) selectMobile.value = colorOptions[0].variantId;
             }
         }
 
         function renderVariants(variants) {
             const container = document.getElementById("variantContainer");
+            const containerMobile = document.getElementById("variantContainerMobile");
             container.innerHTML = "";
+            if (containerMobile) containerMobile.innerHTML = "";
 
             if (!variants || variants.length === 0) return;
 
@@ -1465,7 +1549,7 @@
             }
 
             variants.forEach(v => {
-                const imgUrl = v.media && v.media.length > 0 ? v.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
+                const imgUrl = v.media && v.media.length > 0 ? v.media[0].url : (currentProduct.media && currentProduct.media.length > 0 ? currentProduct.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG));
 
                 // Variant Pricing Logic
                 let sellingPrice = 0;
@@ -1496,14 +1580,9 @@
                 const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
 
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
-                const borderClass = isSelected ? "border-gold ring-1 ring-gold bg-gold/10" : "border-gray-700 bg-gray-900 hover:border-gold/50";
+                const borderClass = isSelected ? "border-2 border-[#D4AF37] ring-2 ring-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30" : "border border-gray-700 bg-gray-900 hover:border-[#D4AF37]/50";
 
-                // Create the card as an anchor link to variant page
-                const link = document.createElement("a");
-                link.href = `product.html?id=${v.id}`;
-                link.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
-
-                link.innerHTML = `
+                const cardHtml = `
                     <div class="aspect-square rounded overflow-hidden bg-gray-800 relative">
                          <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
@@ -1514,7 +1593,21 @@
                     </div>
                 `;
 
+                // Create the card as an anchor link to variant page - for desktop
+                const link = document.createElement("a");
+                link.href = `product.html?id=${v.id}`;
+                link.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
+                link.innerHTML = cardHtml;
                 container.appendChild(link);
+
+                // Create for mobile
+                if (containerMobile) {
+                    const linkMobile = document.createElement("a");
+                    linkMobile.href = `product.html?id=${v.id}`;
+                    linkMobile.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
+                    linkMobile.innerHTML = cardHtml;
+                    containerMobile.appendChild(linkMobile);
+                }
             });
         }
 
