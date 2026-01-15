@@ -1184,20 +1184,21 @@
         }
 
         function renderCartAction() {
+            const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
             const cart = getCart();
-            const inCart = cart.find(i => i.id === currentProduct.id);
+            const inCart = cart.find(i => i.id === activeId);
 
             const actionContainer = document.getElementById("cartActionContainer");
 
-            // prepare price for cart obj
-            const priceVal = currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
-            const currency = currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
-
             if (inCart) {
-                // Show Quantity Controls
+                // Calculate Total
+                const total = inCart.quantity * inCart.price;
+                const totalFormatted = inCart.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${inCart.currency}`;
+
+                // Show Quantity Controls and Total Amount
                 actionContainer.innerHTML = `
                  <div class="flex items-center justify-between bg-gray-100 rounded-full p-1 border border-gold">
-                    <button class="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-500 font-bold text-xl transition" onclick="updateQty('${currentProduct.id}', -1)">-</button>
+                    <button class="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-500 font-bold text-xl transition" onclick="updateQty('${activeId}', -1)">-</button>
                     <input type="number" 
                            id="quantityInput" 
                            class="w-16 text-center bg-transparent font-bold text-xl text-gray-800 focus:outline-none" 
@@ -1205,12 +1206,18 @@
                            min="1"
                            step="1"
                            onkeydown="validateQuantityKey(event)"
-                           oninput="handleQuantityInput(this, '${currentProduct.id}')"
-                           onblur="finalizeQuantity(this, '${currentProduct.id}')">
-                    <button class="w-12 h-12 flex items-center justify-center text-gold hover:text-gold-600 font-bold text-xl transition" onclick="updateQty('${currentProduct.id}', 1)">+</button>
+                           oninput="handleRealtimeTotal(this, ${inCart.price}, '${inCart.currency}')"
+                           onblur="finalizeQuantity(this, '${activeId}')">
+                    <button class="w-12 h-12 flex items-center justify-center text-gold hover:text-gold-600 font-bold text-xl transition" onclick="updateQty('${activeId}', 1)">+</button>
                  </div>
+                 
+                 <div class="mt-4 text-center border-t border-gray-800 pt-2">
+                    <span class="text-xs text-gray-400 uppercase tracking-widest block mb-1">Total Amount</span>
+                    <span id="cartItemTotal" class="text-2xl text-gold font-bold">${totalFormatted}</span>
+                 </div>
+
                  <div class="mt-2 text-center text-xs text-gray-500">Item is in your cart</div>
-                 <button onclick="removeFromCart('${currentProduct.id}')" class="w-full mt-3 bg-red-500 text-white font-bold py-3 rounded-full shadow-lg hover:bg-red-600 hover:shadow-xl transition transform active:scale-95 text-sm flex items-center justify-center gap-2">
+                 <button onclick="removeFromCart('${activeId}')" class="w-full mt-3 bg-red-500 text-white font-bold py-3 rounded-full shadow-lg hover:bg-red-600 hover:shadow-xl transition transform active:scale-95 text-sm flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     Remove from Cart
                  </button>
@@ -1227,24 +1234,73 @@
 
         window.addToCart = function () {
             const cart = getCart();
-            let priceVal = currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
-            const currency = currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
 
-            // Fallback to Actual Price attribute if price is 0
-            if (priceVal === 0 && currentProduct.attributes) {
-                const priceAttr = currentProduct.attributes.find(a => a.attribute.name === "Actual Price");
-                if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
-                    const parsed = parseFloat(priceAttr.values[0].name.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(parsed)) priceVal = parsed;
+            let id, name, image, priceVal, currency;
+
+            if (selectedVariant) {
+                id = selectedVariant.id;
+                name = `${currentProduct.name} - ${selectedVariant.name}`;
+                image = (selectedVariant.media && selectedVariant.media.length > 0) ? selectedVariant.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
+
+                // Price logic - check logged in
+                const loggedIn = isUserLoggedIn();
+
+                let sellingPrice = 0;
+                let costPrice = null;
+                currency = 'INR';
+
+                if (selectedVariant.channelListings && selectedVariant.channelListings.length > 0) {
+                    const listing = selectedVariant.channelListings[0];
+                    sellingPrice = listing.price?.amount || 0;
+                    currency = listing.price?.currency || 'INR';
+                    costPrice = listing.costPrice?.amount || null;
+                } else {
+                    let sellingPriceObj = selectedVariant.pricing?.price?.gross;
+                    if (!sellingPriceObj) sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
+                    sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                    currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+                }
+
+                const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
+                let productCostPrice = null;
+                if (costPriceAttr) {
+                    const costPriceStr = costPriceAttr.values[0]?.name;
+                    if (costPriceStr) {
+                        const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) productCostPrice = parsed;
+                    }
+                }
+
+                if (costPrice === null && productCostPrice !== null) {
+                    costPrice = productCostPrice;
+                }
+
+                priceVal = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+
+            } else {
+                // Fallback to Product Default
+                id = currentProduct.id;
+                name = currentProduct.name;
+                image = currentProduct.thumbnail?.url || FALLBACK_IMG;
+                priceVal = currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
+                currency = currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
+
+                // Look for "Actual Price" fallback if 0
+                if (priceVal === 0 && currentProduct.attributes) {
+                    const priceAttr = currentProduct.attributes.find(a => a.attribute.name === "Actual Price");
+                    if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
+                        const parsed = parseFloat(priceAttr.values[0].name.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) priceVal = parsed;
+                    }
                 }
             }
 
             const newItem = {
-                id: currentProduct.id,
-                name: currentProduct.name,
+                id: id,
+                name: name,
                 category: currentProduct.category?.name || '',
                 type: currentProduct.productType?.name || '',
-                image: currentProduct.thumbnail?.url || FALLBACK_IMG,
+                image: image,
                 price: priceVal,
                 currency: currency,
                 quantity: 1
@@ -1261,18 +1317,37 @@
 
             // Update Price based on login status
             const loggedIn = isUserLoggedIn();
-            const sellingPriceObj = variant.pricing?.price?.gross;
 
-            const sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
-            const currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
-
-            // Get cost price from product attribute (same for all variants)
-            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
-            const costPriceStr = costPriceAttr?.values[0]?.name;
+            // Check Price logic
+            let sellingPrice = 0;
             let costPrice = null;
-            if (costPriceStr) {
-                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
-                if (!isNaN(parsed)) costPrice = parsed;
+            let currency = 'INR';
+
+            if (variant.channelListings && variant.channelListings.length > 0) {
+                const listing = variant.channelListings[0];
+                sellingPrice = listing.price?.amount || 0;
+                currency = listing.price?.currency || 'INR';
+                costPrice = listing.costPrice?.amount || null;
+            } else {
+                let sellingPriceObj = variant.pricing?.price?.gross;
+                if (!sellingPriceObj) sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
+                sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+            }
+
+            // Get cost price from product attribute (same for all variants) if not in variant
+            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
+            let productCostPrice = null;
+            if (costPriceAttr) {
+                const costPriceStr = costPriceAttr.values[0]?.name;
+                if (costPriceStr) {
+                    const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                    if (!isNaN(parsed)) productCostPrice = parsed;
+                }
+            }
+
+            if (costPrice === null && productCostPrice !== null) {
+                costPrice = productCostPrice;
             }
 
             let formattedPrice;
@@ -1300,8 +1375,16 @@
                 document.getElementById("descriptionContainer").innerHTML = parseDescription(currentProduct.description);
             }
 
+            // Update Gallery
+            if (variant.media && variant.media.length > 0) {
+                renderGallery(variant.media, currentProduct.thumbnail?.url, variant.name);
+            }
+
             // Re-render variants to update selection border
             renderVariants(currentProduct.variants);
+
+            // Update Cart Action Button (Add to Cart vs Qty)
+            renderCartAction();
         };
 
         function renderColorSelect(variants) {
@@ -1482,6 +1565,7 @@
         };
 
         // Handle input - remove any non-numeric characters and enforce minimum
+        // Handle input - remove any non-numeric characters and enforce minimum
         window.handleQuantityInput = function (input, productId) {
             // Remove any non-numeric characters
             let value = input.value.replace(/[^0-9]/g, '');
@@ -1490,6 +1574,20 @@
             value = value.replace(/^0+/, '') || '';
 
             input.value = value;
+        };
+
+        window.handleRealtimeTotal = function (input, price, currency) {
+            // Sanitize input
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '0';
+
+            const qty = parseInt(value, 10);
+            if (!isNaN(qty) && qty > 0) {
+                const total = qty * price;
+                const totalFormatted = currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${currency}`;
+                const totalEl = document.getElementById("cartItemTotal");
+                if (totalEl) totalEl.innerText = totalFormatted;
+            }
         };
 
         // Finalize quantity on blur - set to 1 if empty or invalid, update cart
