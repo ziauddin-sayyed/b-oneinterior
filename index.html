@@ -16,7 +16,7 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/owl.carousel.min.js"></script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=1.1">
     <script>
         tailwind.config = {
             theme: {
@@ -52,12 +52,7 @@
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
-            <button class="md:hidden text-gold-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
-            </button>
+
         </nav>
 
         <div class="floating-icon">
@@ -73,6 +68,9 @@
                     style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
             <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img
                     style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
+            <div onclick="toggleDrawer()" class="cursor-pointer md:hidden flex items-center justify-center">
+                <ion-icon name="menu-outline" class="text-[#D4AF37]" style="font-size: 40px;"></ion-icon>
+            </div>
         </div>
 
         <div id="drawer">
@@ -81,6 +79,8 @@
                 <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
                 <li><a href="https://b-oneinterior.com/company">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+
+                
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
@@ -92,34 +92,25 @@
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-                <li>
+                
+        <li>
+          <a href="https://b-oneinterior.com/catalogue">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <div>Catalogue</div>
+          </a>
+        </li>
+
+<li>
                     <a href="https://b-oneinterior.com/gallery">
                         <ion-icon name="images-outline"></ion-icon>
                         <div>Gallery</div>
                     </a>
                 </li>
 
-                <li>
-                    <a href="https://b-oneinterior.com/catalogue">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                        <div>Catalogue</div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/login">
-                        <ion-icon name="log-in-outline"></ion-icon>
-                        <div>Login</div>
-                    </a>
-                </li>
+                
                 <li></li>
 
-                <li>
-                    <div class="cursor-pointer" onclick="toggleDrawer()">
-                        <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                        <div>Menu</div>
-                    </div>
-                </li>
+                
 
                 <li>
                     <a href="https://b-oneinterior.com/shop">

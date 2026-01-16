@@ -231,7 +231,7 @@
         }
 
         .fixedBottom ul li {
-            width: 14%;
+            width: 20%;
             text-align: center;
             color: #D4AF37;
             font-size: 12px;
@@ -243,7 +243,7 @@
         }
 
         .fixedBottom ul li ion-icon {
-            font-size: 2.63vh;
+            font-size: 3vh;
         }
 
         @media (min-width: 769px) {

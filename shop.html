@@ -20,7 +20,7 @@
   <script src="assets/js/owl.carousel.min.js"></script>
   <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=1.1">
 
 
 </head>
@@ -40,17 +40,14 @@
         <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
         <li id="authLinkDesktop"></li>
       </ul>
-      <button class="md:hidden text-gold-500">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
+
     </nav>
 
 
 
     <!-- Search Bar -->
-    <div class="container mx-auto px-4 flex justify-center sticky top-0 z-40 bg-black py-4 border-b border-gray-800">
+    <div
+      class="container mx-auto px-4 flex justify-center items-center gap-3 sticky top-0 z-40 bg-black py-4 border-b border-gray-800">
       <div class="relative w-full max-w-md">
         <input type="text" id="searchInput" placeholder="Search products..."
           class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
@@ -61,6 +58,11 @@
           </svg>
         </div>
       </div>
+      <button class="md:hidden text-[#D4AF37] flex-shrink-0" onclick="toggleDrawer()">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
     </div>
 
     <div id="drawer">
@@ -69,6 +71,8 @@
         <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
         <li><a href="https://b-oneinterior.com/company">Services</a></li>
         <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+
+        
         <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
         <li><a href="terms.html">Terms and Conditions</a></li>
         <li><a href="privacy.html">Privacy Policy</a></li>
@@ -80,13 +84,7 @@
     <div class="fixedBottom">
       <a href="https://b-oneinterior.com/" class="logoBx"></a>
       <ul>
-        <li>
-          <a href="https://b-oneinterior.com/gallery">
-            <ion-icon name="images-outline"></ion-icon>
-            <div>Gallery</div>
-          </a>
-        </li>
-
+        
         <li>
           <a href="https://b-oneinterior.com/catalogue">
             <ion-icon name="document-text-outline"></ion-icon>
@@ -94,20 +92,17 @@
           </a>
         </li>
 
-        <li>
-          <a href="https://b-oneinterior.com/login">
-            <ion-icon name="log-in-outline"></ion-icon>
-            <div>Login</div>
+<li>
+          <a href="https://b-oneinterior.com/gallery">
+            <ion-icon name="images-outline"></ion-icon>
+            <div>Gallery</div>
           </a>
         </li>
+
+        
         <li></li>
 
-        <li>
-          <div class="cursor-pointer" onclick="toggleDrawer()">
-            <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-            <div>Menu</div>
-          </div>
-        </li>
+        
 
         <li>
           <a href="https://b-oneinterior.com/shop">
@@ -289,6 +284,12 @@ query {
         pricing {
             priceRange {
               start {
+                gross {
+                  amount
+                  currency
+                }
+              }
+              stop {
                 gross {
                   amount
                   currency
@@ -631,123 +632,119 @@ query {
 
     function renderMobileList(products) {
       const mobileList = document.getElementById("mobileProductList");
-      const cart = getCart();
       const loggedIn = isUserLoggedIn();
 
       mobileList.innerHTML = products.length ? products.map(p => {
-        // Variant Pricing Logic
-        const variantPricing = getVariantPricing(p);
-        let sellingPrice = 0;
-        let costPrice = null;
-        let currency = 'INR';
+        // 1. Calculate Prices (Range vs Single)
+        const priceStart = p.pricing?.priceRange?.start?.gross;
+        const priceStop = p.pricing?.priceRange?.stop?.gross;
+        const currency = priceStart?.currency || 'INR';
+        const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
-        if (variantPricing) {
-          sellingPrice = variantPricing.price?.amount || 0;
-          currency = variantPricing.price?.currency || 'INR';
-          costPrice = variantPricing.costPrice?.amount || null;
-        } else {
-          const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-          sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
-          currency = currentPriceObj ? currentPriceObj.currency : 'INR';
-          if (costPrice === null) {
-            const attrCost = getCostPrice(p);
-            if (attrCost !== null) costPrice = attrCost;
+        const minPrice = priceStart?.amount || 0;
+        const maxPrice = priceStop?.amount || 0;
+
+        // Cost Price Logic (Staff)
+        let minCost = null;
+        let maxCost = null;
+
+        if (loggedIn && p.variants && p.variants.length) {
+          const costs = p.variants.map(v => {
+            const listing = v.channelListings && v.channelListings[0];
+            return listing ? listing.costPrice?.amount : null;
+          }).filter(c => c !== null);
+
+          if (costs.length) {
+            minCost = Math.min(...costs);
+            maxCost = Math.max(...costs);
           }
         }
 
+        // Actual Price (MRP) - kept from attribute
         const actualPriceStr = getActualPrice(p);
-        const catalogueUrl = getCatalogueLink(p);
 
-        // Map to old variable name if necessary for existing logic not yet updated? 
-        // No, I will update the logic in next steps.
-        // But for now, I should keep currentPriceVal defined to avoid breaking subsequent code before I update it.
-        const currentPriceVal = sellingPrice;
+        // Logic for single price vs range
+        const isRange = maxPrice > minPrice;
 
-        const cartBtnHtml = generateCartBtnHtml(p, cart);
-
-        let priceHtml = "";
         let badgeHtml = "";
-        let catalogueBadgeHtml = "";
+        let priceHtml = "";
 
-        if (catalogueUrl) {
-          catalogueBadgeHtml = `<a href="${catalogueUrl}" target="_blank" class="block text-center bg-gray-100 text-gold text-xs font-bold px-2 py-2 rounded shadow-sm hover:bg-gold hover:text-white transition cursor-pointer mb-2 border border-gold">View Catalogue</a>`;
-        }
-
-        const isStaff = localStorage.getItem('saleor_user_is_staff') === 'true';
-
-        if (loggedIn && costPrice !== null) {
-          // Show cost price for ANY logged-in users
-          const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
-          const formattedSellingPrice = currency === 'INR' ? `₹${currentPriceVal?.toFixed(2) || "0.00"}` : `${currentPriceVal?.toFixed(2) || "0.00"} ${currency}`;
-
-          priceHtml = `<div class="w-full flex flex-col items-center justify-center gap-1 leading-tight">
-            <span class="text-black font-bold text-base block">${formattedCostPrice}</span>
-          </div>`;
+        // 2. Build Price HTML
+        if (loggedIn && minCost !== null) {
+          // Staff View: Cost Price
+          if (maxCost > minCost) {
+            priceHtml = `<div class="w-full flex flex-col items-center justify-center gap-1 leading-tight">
+                    <span class="text-black font-bold text-sm block">Range ${symbol}${Math.round(minCost)} - ${symbol}${Math.round(maxCost)}</span>
+                </div>`;
+          } else {
+            priceHtml = `<div class="w-full flex flex-col items-center justify-center gap-1 leading-tight">
+                    <span class="text-black font-bold text-base block">${symbol}${minCost.toFixed(2)}</span>
+                </div>`;
+          }
         } else {
-          // Calculate Discount for non-logged-in users
-          if (actualPriceStr && currentPriceVal) {
-            const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-            if (!isNaN(actualVal) && actualVal > currentPriceVal) {
-              const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
-              if (discount > 0) {
-                badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+          // Public View: Selling Price
+          if (isRange) {
+            priceHtml = `<div class="w-full flex flex-col items-center justify-center gap-1 leading-tight">
+                    <span class="text-black font-bold text-sm block">Range ${symbol}${Math.round(minPrice)} - ${symbol}${Math.round(maxPrice)}</span>
+                 </div>`;
+          } else {
+            // Single Price with Discount Logic
+            const currentPriceVal = minPrice;
+
+            // Discount Badge?
+            if (actualPriceStr && currentPriceVal) {
+              const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+              if (!isNaN(actualVal) && actualVal > currentPriceVal) {
+                const discount = ((actualVal - currentPriceVal) / actualVal) * 100;
+                if (discount > 0) {
+                  badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${Math.round(discount)}% OFF</div>`;
+                }
               }
             }
-          }
 
-          // Build Price HTML for non-logged-in users
-          if (actualPriceStr || currentPriceVal) {
             priceHtml = `<div class="w-full flex items-baseline justify-center gap-2 leading-tight">`;
             if (actualPriceStr) {
               priceHtml += `<span class="line-through text-gray-400 text-xs">${actualPriceStr}</span>`;
             }
-            if (currentPriceVal) {
-              const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
-              priceHtml += `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
-            }
+            priceHtml += `<span class="text-black font-bold text-lg">${symbol}${currentPriceVal.toFixed(2)}</span>`;
             priceHtml += `</div>`;
           }
         }
 
-        // Description Logic
-        let descHtml = "";
-        if (p.description) {
-          let descText = p.description;
-          // Simple basic cleaning if it's stringified JSON structure
-          if (typeof p.description === 'string' && p.description.startsWith('{')) {
-            try {
-              const descObj = JSON.parse(p.description);
-              if (descObj.blocks) {
-                descText = descObj.blocks.map(b => b.data.text).join(' ');
-              }
-            } catch (e) { }
-          }
-          if (descText.length > 100) {
-            descText = descText.substring(0, 100) + "...";
-          }
-          descHtml = `<p class="text-xs text-gray-600 mt-2 mb-2 line-clamp-3">${descText}</p>`;
-        }
-
         // Image Carousel Logic
         let imageHtml = "";
-        if (p.media && p.media.length > 0) {
+        let customNavHtml = "";
+        const images = p.media ? p.media.filter(m => m.type === 'IMAGE') : [];
+
+        if (images.length > 1) {
           imageHtml = `<div class="owl-carousel product-carousel">`;
-          p.media.forEach(m => {
-            if (m.type === 'IMAGE') {
-              imageHtml += `<img src="${m.url}" class="w-full h-48 object-cover" alt="${p.name}">`;
-            }
+          images.forEach(m => {
+            imageHtml += `<img src="${m.url}" class="w-full h-48 object-cover" alt="${p.name}">`;
           });
           imageHtml += `</div>`;
+
+          // Custom Nav: < 1 / N >
+          customNavHtml = `
+            <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-full z-20 flex items-center gap-2 custom-carousel-nav" onclick="event.preventDefault(); event.stopPropagation();">
+                <button class="prev-slide hover:text-gold transition px-1 font-bold">&lt;</button>
+                <span class="carousel-counter">1 / ${images.length}</span>
+                <button class="next-slide hover:text-gold transition px-1 font-bold">&gt;</button>
+            </div>
+          `;
+        } else if (images.length === 1) {
+          imageHtml = `<img src="${images[0].url}" class="w-full h-48 object-cover" alt="${p.name}">`;
         } else {
           imageHtml = `<img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover" alt="${p.name}">`;
         }
 
         return `
     <a href="product.html?id=${p.id}" class="bg-white shadow rounded-lg relative group overflow-hidden cursor-pointer block">
-      <div class="relative">
+      <div class="relative product-image-container">
           ${imageHtml}
+          ${customNavHtml}
           <!-- Category Badge (Bottom Left) -->
-          ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
+          ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10 pointer-events-none">${p.category.name}</div>` : ''}
+          ${badgeHtml}
       </div>
       
       <div class="p-3">
@@ -762,12 +759,36 @@ query {
 
       // Initialize Carousel
       setTimeout(() => {
-        $('.product-carousel').owlCarousel({
-          items: 1,
-          loop: true,
-          dots: true,
-          nav: false,
-          margin: 10
+        $('.product-carousel').each(function () {
+          const $carousel = $(this);
+          const $wrapper = $carousel.closest('.product-image-container');
+          const $counter = $wrapper.find('.carousel-counter');
+
+          $carousel.owlCarousel({
+            items: 1,
+            loop: true,
+            dots: false,
+            nav: false,
+            margin: 0,
+            onChanged: function (e) {
+              if (!e.namespace || e.property.name !== 'position') return;
+              let current = e.relatedTarget.relative(e.item.index) + 1;
+              let total = e.item.count;
+              $counter.text(`${current} / ${total}`);
+            }
+          });
+
+          $wrapper.find('.prev-slide').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $carousel.trigger('prev.owl.carousel');
+          });
+
+          $wrapper.find('.next-slide').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $carousel.trigger('next.owl.carousel');
+          });
         });
       }, 100);
     }

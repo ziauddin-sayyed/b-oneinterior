@@ -20,7 +20,7 @@
     <script src="assets/js/owl.carousel.min.js"></script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=1.1">
 
 
 </head>
@@ -40,12 +40,7 @@
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
-            <button class="md:hidden text-gold-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
-            </button>
+
         </nav>
 
 
@@ -55,6 +50,8 @@
                 <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
                 <li><a href="https://b-oneinterior.com/company">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+
+                
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
@@ -66,34 +63,25 @@
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-                <li>
+                
+        <li>
+          <a href="https://b-oneinterior.com/catalogue">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <div>Catalogue</div>
+          </a>
+        </li>
+
+<li>
                     <a href="https://b-oneinterior.com/gallery">
                         <ion-icon name="images-outline"></ion-icon>
                         <div>Gallery</div>
                     </a>
                 </li>
 
-                <li>
-                    <a href="https://b-oneinterior.com/catalogue">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                        <div>Catalogue</div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/login">
-                        <ion-icon name="log-in-outline"></ion-icon>
-                        <div>Login</div>
-                    </a>
-                </li>
+                
                 <li></li>
 
-                <li>
-                    <div class="cursor-pointer" onclick="toggleDrawer()">
-                        <ion-icon name="menu-outline" class="text-[#D4AF37] text-2xl"></ion-icon>
-                        <div>Menu</div>
-                    </div>
-                </li>
+                
 
                 <li>
                     <a href="https://b-oneinterior.com/shop">
@@ -178,15 +166,23 @@
     <div class="container mx-auto px-4 mt-8 mb-24">
 
         <!-- Search Bar -->
-        <div class="relative w-full max-w-md mx-auto mb-8">
-            <input type="text" id="gallerySearchInput" placeholder="Search gallery..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
-            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
+        <div class="flex items-center justify-center gap-3 mb-8 max-w-md mx-auto">
+            <div class="relative w-full">
+                <input type="text" id="gallerySearchInput" placeholder="Search gallery..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
             </div>
+            <button class="md:hidden text-[#D4AF37] flex-shrink-0" onclick="toggleDrawer()">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
         </div>
 
         <!-- Category Filters -->
