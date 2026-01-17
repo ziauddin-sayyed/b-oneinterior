@@ -51,7 +51,7 @@
                 <li><a href="https://b-oneinterior.com/company">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
 
-                
+
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
@@ -63,25 +63,25 @@
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-                
-        <li>
-          <a href="https://b-oneinterior.com/catalogue">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div>Catalogue</div>
-          </a>
-        </li>
 
-<li>
+                <li>
+                    <a href="https://b-oneinterior.com/catalogue">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <div>Catalogue</div>
+                    </a>
+                </li>
+
+                <li>
                     <a href="https://b-oneinterior.com/gallery">
                         <ion-icon name="images-outline"></ion-icon>
                         <div>Gallery</div>
                     </a>
                 </li>
 
-                
+
                 <li></li>
 
-                
+
 
                 <li>
                     <a href="https://b-oneinterior.com/shop">
@@ -166,8 +166,9 @@
     <div class="container mx-auto px-4 mt-8 mb-24">
 
         <!-- Search Bar -->
-        <div class="flex items-center justify-center gap-3 mb-8 max-w-md mx-auto">
-            <div class="relative w-full">
+        <div
+            class="sticky top-[0.1vh] z-40 bg-black/90 pb-4 pt-2 -mx-4 px-4 mb-2 flex items-center justify-center gap-3 backdrop-blur-sm">
+            <div class="relative w-full max-w-md mx-auto">
                 <input type="text" id="gallerySearchInput" placeholder="Search gallery..."
                     class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500">
                 <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -272,6 +273,19 @@
                                 name
                                 backgroundImage { url }
                                 parent { id name }
+                            }
+                            variants {
+                                id
+                                name
+                                media { url type }
+                                pricing {
+                                    price {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -508,9 +522,9 @@
 
                 return `
                 <div class=" rounded-xl overflow-hidden shadow-2xl py-6">
-                    <h2 class="text-2xl font-bold text-white mb-4">${node.name}</h2>
                     ${imageHtml}
                     <div class="mt-4">
+                        <h2 class="text-2xl font-bold text-white mb-2">${node.name}</h2>
                         ${descHtml}
                         ${priceHtml}
                     </div>
@@ -577,7 +591,10 @@
                     <!-- Details Section -->
                     <div class="p-6 md:p-8 flex flex-col overflow-y-auto max-h-[80vh] md:max-h-full">
                         <h3 id="modalTitle" class="text-2xl font-bold leading-6 text-white mb-2"></h3>
-                        <!-- Price Removed -->
+                        <div id="modalPrice" class="text-white font-bold text-2xl mb-4"></div>
+
+                        <!-- Variants Block -->
+                        <div id="modalVariants" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 hidden"></div>
 
                         <div class="prose prose-invert max-w-none text-gray-300 text-sm mb-6 flex-grow">
                             <p id="modalDescription"></p>
@@ -602,7 +619,8 @@
         const modalMainImage = document.getElementById('modalMainImage');
         const modalThumbnails = document.getElementById('modalThumbnails');
         const modalTitle = document.getElementById('modalTitle');
-        // Price removed
+        const modalPrice = document.getElementById('modalPrice');
+        const modalVariants = document.getElementById('modalVariants');
         const modalDescription = document.getElementById('modalDescription');
         const modalEnquireBtn = document.getElementById('modalEnquireBtn');
 
@@ -653,10 +671,88 @@
                 >
             `).join('');
 
+            // Render Price & Variants
+            renderModalVariants(node);
+
             // Show Modal
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
+
+        function renderModalVariants(node) {
+            const variants = node.variants || [];
+
+            // 1. Initial Price Display
+            let minPrice = 0, maxPrice = 0, currency = 'INR';
+
+            // Get Product Base Price
+            let basePrice = node.pricing?.priceRange?.start?.gross?.amount || 0;
+            currency = node.pricing?.priceRange?.start?.gross?.currency || 'INR';
+            const symbol = currency === 'INR' ? '₹' : '';
+
+            if (variants.length > 0) {
+                const prices = variants.map(v => v.pricing?.price?.gross?.amount || 0).filter(p => p > 0);
+                if (prices.length > 0) {
+                    minPrice = Math.min(...prices);
+                    maxPrice = Math.max(...prices);
+                } else {
+                    minPrice = basePrice;
+                    maxPrice = basePrice;
+                }
+            } else {
+                minPrice = basePrice;
+                maxPrice = basePrice;
+            }
+
+            // Display Logic
+            if (minPrice === 0) {
+                modalPrice.innerHTML = '';
+            } else if (minPrice !== maxPrice) {
+                modalPrice.innerHTML = `${symbol}${minPrice.toFixed(2)} - ${symbol}${maxPrice.toFixed(2)}`;
+            } else {
+                modalPrice.innerHTML = `${symbol}${minPrice.toFixed(2)} ${currency !== 'INR' ? currency : ''}`;
+            }
+
+            // 2. Render Variant Cards
+            if (variants.length > 0) {
+                modalVariants.classList.remove('hidden');
+                modalVariants.innerHTML = variants.map(v => {
+                    const vPrice = v.pricing?.price?.gross?.amount || 0;
+                    const vCurrency = v.pricing?.price?.gross?.currency || 'INR';
+                    const vSymbol = vCurrency === 'INR' ? '₹' : '';
+                    const vImg = (v.media && v.media.length > 0) ? v.media[0].url : (node.thumbnail?.url || FALLBACK_IMG);
+
+                    return `
+                    <div class="bg-gray-800 rounded border border-gray-700 p-2 cursor-pointer hover:border-gold transition flex flex-col gap-1 items-center text-center group"
+                         onclick="selectModalVariant('${v.id}', '${vPrice}', '${vCurrency}', '${vImg}', event)">
+                        <img src="${vImg}" class="w-full h-16 object-cover rounded mb-1">
+                        <span class="text-xs font-bold text-white group-hover:text-white">${v.name}</span>
+                        <span class="text-xs text-white font-bold">${vSymbol}${vPrice.toFixed(2)}</span>
+                    </div>
+                    `;
+                }).join('');
+            } else {
+                modalVariants.classList.add('hidden');
+            }
+        }
+
+        window.selectModalVariant = function (id, price, currency, img, event) {
+            // Update Price
+            const symbol = currency === 'INR' ? '₹' : '';
+            modalPrice.innerHTML = `${symbol}${parseFloat(price).toFixed(2)} ${currency !== 'INR' ? currency : ''}`;
+
+            // Update Image
+            setMainImage(img);
+
+            // Highlight Card
+            const cards = modalVariants.children;
+            for (let card of cards) {
+                card.classList.remove('border-gold', 'bg-gray-700');
+                card.classList.add('border-gray-700', 'bg-gray-800');
+            }
+            event.currentTarget.classList.remove('border-gray-700', 'bg-gray-800');
+            event.currentTarget.classList.add('border-gold', 'bg-gray-700');
+        };
 
         function closeProductModal() {
             modal.classList.add('hidden');

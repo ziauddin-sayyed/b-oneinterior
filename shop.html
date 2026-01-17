@@ -72,7 +72,7 @@
         <li><a href="https://b-oneinterior.com/company">Services</a></li>
         <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
 
-        
+
         <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
         <li><a href="terms.html">Terms and Conditions</a></li>
         <li><a href="privacy.html">Privacy Policy</a></li>
@@ -84,7 +84,7 @@
     <div class="fixedBottom">
       <a href="https://b-oneinterior.com/" class="logoBx"></a>
       <ul>
-        
+
         <li>
           <a href="https://b-oneinterior.com/catalogue">
             <ion-icon name="document-text-outline"></ion-icon>
@@ -92,17 +92,17 @@
           </a>
         </li>
 
-<li>
+        <li>
           <a href="https://b-oneinterior.com/gallery">
             <ion-icon name="images-outline"></ion-icon>
             <div>Gallery</div>
           </a>
         </li>
 
-        
+
         <li></li>
 
-        
+
 
         <li>
           <a href="https://b-oneinterior.com/shop">
@@ -612,8 +612,10 @@ query {
         const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currSymbol}`) : '';
         const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
 
+        const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
+
         return `
-        <a href="product.html?id=${p.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
+        <a href="${linkUrl}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
             <div class="relative">
                 <img src="${imageUrl}" class="w-full h-40 object-cover" alt="${p.name}">
                 ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
@@ -737,8 +739,10 @@ query {
           imageHtml = `<img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-48 object-cover" alt="${p.name}">`;
         }
 
+        const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
+
         return `
-    <a href="product.html?id=${p.id}" class="bg-white shadow rounded-lg relative group overflow-hidden cursor-pointer block">
+    <a href="${linkUrl}" class="bg-white shadow rounded-lg relative group overflow-hidden cursor-pointer block">
       <div class="relative product-image-container">
           ${imageHtml}
           ${customNavHtml}
