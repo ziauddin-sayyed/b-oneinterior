@@ -298,6 +298,10 @@
                 renderTechList(filtered);
             }
 
+            function closeTechModal() {
+                document.getElementById('techModal').classList.add('hidden');
+            }
+
             // Technician Voice Search
             function setupTechVoiceSearch() {
                 const techVoiceBtn = document.getElementById('techVoiceBtn');
