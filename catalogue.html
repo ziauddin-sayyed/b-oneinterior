@@ -38,6 +38,7 @@
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
                 <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
                 <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
@@ -277,8 +278,19 @@ query {
         }
         parent { 
           id 
-          name 
+          name
         } 
+          children(first: 100) {
+            edges {
+              node {
+               backgroundImage {
+                    url
+                }
+                id
+                name
+              }
+            }
+          }
       } 
     } 
   }
@@ -396,7 +408,6 @@ query {
         function getSubcategories(categories, parentId) {
             return categories.filter(c => c.parent?.id === parentId);
         }
-
         function getCategoryIcon(name) {
             const lowerName = name.toLowerCase();
             if (lowerName.includes('wallpaper')) return 'image-outline';
@@ -416,7 +427,6 @@ query {
                 if (p.category?.id) productCategoryIds.add(p.category.id);
                 if (p.category?.parent?.id) productParentCategoryIds.add(p.category.parent.id);
             });
-
             // Get parent categories that have products with catalogues
             const parentCategories = getParentCategories(categories).filter(c => {
                 // Check if this parent has direct products with catalogues
@@ -427,23 +437,22 @@ query {
                 const subcats = getSubcategories(categories, c.id);
                 return subcats.some(sub => productCategoryIds.has(sub.id));
             });
-
             document.getElementById("categoryFilter").className = "grid grid-cols-10 gap-2 min-w-[250vw] md:min-w-0 md:w-full";
             document.getElementById("categoryFilter").innerHTML = `
     <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === 'all' || !selectedParentCategory ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="all" data-is-parent="true">
       <ion-icon name="apps-outline" class="text-3xl mb-2"></ion-icon>
       <span class="text-xs font-semibold text-center leading-tight">All</span>
     </div>
-    ${parentCategories.map(c => {
-                const hasImage = c.backgroundImage?.url;
+    ${parentCategories[0]?.children?.edges?.map(c => {
+                const hasImage = c.node.backgroundImage?.url;
                 const iconHtml = hasImage
-                    ? `<img src="${c.backgroundImage.url}" class="w-12 h-12 object-cover mb-2" alt="${c.name}">`
-                    : `<ion-icon name="${getCategoryIcon(c.name)}" class="text-3xl mb-2"></ion-icon>`;
+                    ? `<img src="${c.node.backgroundImage.url}" class="w-12 h-12 object-cover mb-2" alt="${c.node.name}">`
+                    : `<ion-icon name="${getCategoryIcon(c.node.name)}" class="text-3xl mb-2"></ion-icon>`;
 
                 return `
-      <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === c.id ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="${c.id}" data-is-parent="true">
+      <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === c.node.id ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="${c.node.id}" data-is-parent="true">
         ${iconHtml}
-        <span class="text-xs font-semibold text-center leading-tight line-clamp-2">${c.name}</span>
+        <span class="text-xs font-semibold text-center leading-tight line-clamp-2">${c.node.name}</span>
       </div>`;
             }).join("")}
   `;
@@ -466,7 +475,6 @@ query {
                 const currentPriceObj = p.pricing?.priceRange?.start?.gross;
                 const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
                 const currency = currentPriceObj ? currentPriceObj.currency : "";
-
                 const price = currentPriceVal?.toFixed(2) || "0.00";
                 const currSymbol = currency === 'INR' ? '₹' : (currency || '');
                 const formattedPrice = currency === 'INR' ? `₹${price}` : `${price} ${currSymbol}`;
@@ -639,17 +647,14 @@ query {
         (async () => {
             const data = await fetchSaleor();
             if (!data) return alert("Error fetching Saleor API");
-
             allCategories = data.categories?.edges?.map(e => e.node) || [];
             let products = data.products?.edges?.map(e => e.node) || [];
-
             // Find the hidden category and all its subcategories
             const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
             const hiddenCategoryId = hiddenCategory?.id;
             const hiddenSubcategoryIds = hiddenCategoryId
                 ? allCategories.filter(c => c.parent?.id === hiddenCategoryId).map(c => c.id)
                 : [];
-
             // Filter: only products with catalogue AND not in hidden category
             allProducts = products.filter(p => {
                 const hasCatalogue = getCatalogueLink(p) !== null;
@@ -664,7 +669,6 @@ query {
 
                 return true;
             });
-
             renderCategoryFilters(allCategories, allProducts);
             applyFilters();
             setupFiltering();

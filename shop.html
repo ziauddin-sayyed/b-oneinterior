@@ -36,6 +36,7 @@
         <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
         <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
         <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+        <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
         <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
         <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
         <li id="authLinkDesktop"></li>
@@ -50,13 +51,22 @@
       class="container mx-auto px-4 flex justify-center items-center gap-3 sticky top-0 z-40 bg-black py-4 border-b border-gray-800">
       <div class="relative w-full max-w-md">
         <input type="text" id="searchInput" placeholder="Search products..."
-          class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
+          class="w-full pl-10 pr-12 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
         <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
+        <button id="shopVoiceBtn"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gold transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10v2a7 7 0 01-14 0v-2" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+          </svg>
+        </button>
       </div>
       <button class="md:hidden text-[#D4AF37] flex-shrink-0" onclick="toggleDrawer()">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,6 +197,51 @@
         const token = localStorage.getItem('saleor_auth_token');
         return !!token;
       }
+      // Voice Search for Shop Page
+      const shopVoiceBtn = document.getElementById('shopVoiceBtn');
+      const shopSearchInput = document.getElementById('searchInput');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-IN';
+        recognition.interimResults = false; // मोबाइल पर बेहतर प्रदर्शन के लिए
+        recognition.maxAlternatives = 1;
+
+        shopVoiceBtn.addEventListener('click', (e) => {
+          e.preventDefault(); // मोबाइल पर फॉर्म सबमिशन रोकने के लिए
+          try {
+            recognition.start();
+          } catch (err) {
+            console.log("Recognition already started");
+          }
+        });
+
+        recognition.onstart = () => {
+          shopVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+          shopSearchInput.placeholder = "Listening...";
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          shopSearchInput.value = transcript;
+          shopSearchInput.dispatchEvent(new Event('input'));
+          shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+        };
+
+        recognition.onerror = (event) => {
+          console.error("Speech Error:", event.error);
+          shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+          if (event.error === 'not-allowed') alert("Please allow microphone access");
+        };
+
+        recognition.onend = () => {
+          shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+          shopSearchInput.placeholder = "Search products...";
+        };
+      } else {
+        shopVoiceBtn.style.display = 'none';
+      }
     </script>
   </header>
 
@@ -203,7 +258,23 @@
 
         </div>
       </div>
+      <!-- Price Filter -->
     </aside>
+    <div class="py-2 border-t border-b border-gray-200 flex justify-end items-center">
+      <div class="flex items-center gap-3 px-2">
+        <span class="text-sm font-semibold text-white">Price:</span>
+        <div class="flex items-center gap-2 flex-grow max-w-xs">
+          <input type="number" id="minPriceInput" placeholder="Min" 
+            class="w-full px-3 py-1 text-sm border rounded-full focus:outline-none focus:border-gold">
+          <span class="text-white">-</span>
+          <input type="number" id="maxPriceInput" placeholder="Max" 
+            class="w-full px-3 py-1 text-sm border rounded-full focus:outline-none focus:border-gold">
+        </div>
+        <button onclick="applyFilters()" class="px-4 py-1 bg-gold text-white text-xs font-bold rounded-full hover:opacity-90 transition">
+          Apply
+        </button>
+      </div>
+    </div>
 
     <!-- Mobile: Vertical scroll product list -> Grid 2 cols -->
     <div id="mobileProductList" class="grid grid-cols-2 gap-3 md:hidden px-2"></div>
@@ -220,12 +291,21 @@
 
   <script>
     const API_URL = "https://api.b-oneinterior.com/graphql/";
-    const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
+    const HIDDEN_CATEGORY_NAMES = ["Gallery Image Category", "Catalogue"];
     const FALLBACK_IMG = "images/placeholder.png";
 
     // Updated query to fetch parent category information and product attributes
     function getGraphqlQuery(isStaff) {
-      const variantChannelListings = isStaff ? `
+      const variantChannelListings = `
+          pricing {
+            price {
+                gross {
+                    amount
+                    currency
+                }
+            }
+          }
+          ${isStaff ? `
           channelListings {
             channel {
               name
@@ -239,8 +319,8 @@
               amount
               currency
             }
-          }
-        ` : '';
+          }` : ''}
+        `;
 
       return `
 query {
@@ -301,6 +381,10 @@ query {
           id
           name
           sku
+          media {
+            url
+            type
+          }
           ${variantChannelListings}
         }
         category { 
@@ -402,7 +486,7 @@ query {
     }
 
     function getParentCategories(categories) {
-      return categories.filter(c => !c.parent && c.name !== HIDDEN_CATEGORY_NAME);
+      return categories.filter(c => !c.parent && !HIDDEN_CATEGORY_NAMES.includes(c.name));
     }
 
     function getSubcategories(categories, parentId) {
@@ -611,19 +695,18 @@ query {
         const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currSymbol}`;
         const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currSymbol}`) : '';
         const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
-
-        const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
-
+        const displayName = p.name; // यह 'Product - Variant' होगा जो हमने ऊपर सेट किया है
+        const linkUrl = `product.html?id=${p.id}`; // वेरिएंट की ID इस्तेमाल करें
         return `
         <a href="${linkUrl}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
             <div class="relative">
-                <img src="${imageUrl}" class="w-full h-40 object-cover" alt="${p.name}">
+                <img src="${imageUrl}" class="w-full h-40 object-cover" alt="${displayName}">
                 ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
             </div>
             
             <div class="p-3 flex flex-col flex-grow">
-                <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
-                <div class="mt-auto border-t pt-2 w-full">                    
+                <h3 class="font-semibold text-gray-800 text-sm line-clamp-2 leading-tight mb-2">${p.name}</h3>
+                <div class="mt-auto border-t pt-2 w-full">               
                     ${(loggedIn && costPrice !== null) ? `<span class="text-black font-bold text-base block">${formattedCostPrice}</span>` : `<span class="text-black font-bold text-base block">${formattedSellingPrice}</span>`}
                 </div>
             </div>
@@ -751,8 +834,8 @@ query {
           ${badgeHtml}
       </div>
       
-      <div class="p-3">
-          <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
+           <div class="p-3">
+          <h3 class="font-semibold text-gray-800 text-sm line-clamp-2 leading-tight mb-2">${p.name}</h3>
           
           <div class="flex flex-col-reverse gap-2 mt-auto border-t pt-3 w-full">
               ${priceHtml}
@@ -799,53 +882,134 @@ query {
 
     function applyFilters() {
       const activeSubcat = document.querySelector(".filter-subcategory.bg-gold")?.dataset.subcategory;
-      let filtered = allProducts;
-
-      // Filter by Search Query (product name, description, and variant names)
       const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-      if (searchQuery) {
-        filtered = filtered.filter(p => {
-          // Check product name
-          if (p.name.toLowerCase().includes(searchQuery)) return true;
-          // Check category name
-          if (p.category && p.category.name.toLowerCase().includes(searchQuery)) return true;
-          // Check description
-          if (p.description && p.description.toLowerCase().includes(searchQuery)) return true;
-          // Check variant names
-          if (p.variants && p.variants.length > 0) {
-            const hasMatchingVariant = p.variants.some(v =>
-              v.name && v.name.toLowerCase().includes(searchQuery)
-            );
-            if (hasMatchingVariant) return true;
+      const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
+      const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
+
+      let displayItems = [];
+
+      allProducts.forEach(product => {
+        // १. कैटेगरी फिल्टर चेक करें
+        let categoryMatch = true;
+        if (selectedParentCategory && selectedParentCategory !== "all") {
+          const subcategories = getSubcategories(allCategories, selectedParentCategory);
+          const subcatIds = subcategories.map(s => s.id);
+
+          if (activeSubcat && activeSubcat !== "all") {
+            categoryMatch = product.category?.id === activeSubcat;
+          } else {
+            categoryMatch = product.category?.id === selectedParentCategory || subcatIds.includes(product.category?.id);
           }
-          return false;
-        });
-      }
-
-      if (selectedParentCategory && selectedParentCategory !== "all") {
-        const subcategories = getSubcategories(allCategories, selectedParentCategory);
-        const subcatIds = subcategories.map(s => s.id);
-
-        if (activeSubcat && activeSubcat !== "all") {
-          // Filter by specific subcategory
-          filtered = filtered.filter(p => p.category?.id === activeSubcat);
-        } else {
-          // Filter by parent category or any of its subcategories
-          filtered = filtered.filter(p =>
-            p.category?.id === selectedParentCategory || subcatIds.includes(p.category?.id)
-          );
         }
-      }
+
+        if (!categoryMatch) return;
+
+        // २. प्राइस फिल्टर चेक करें
+        const currentPriceObj = product.pricing?.priceRange?.start?.gross;
+        let price = currentPriceObj ? currentPriceObj.amount : 0;
+        if (price === 0) {
+          const actualPriceStr = getActualPrice(product);
+          if (actualPriceStr) {
+            const parsed = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+            if (!isNaN(parsed)) price = parsed;
+          }
+        }
+        if (price < minPrice || price > maxPrice) return;
+
+        // ३. सर्च लॉजिक (अगर सर्च है तो वेरिएंट्स भी दिखाएं)
+        if (searchQuery) {
+          const productName = product.name.toLowerCase();
+          const productDesc = (product.description || "").toLowerCase();
+          const categoryName = (product.category?.name || "").toLowerCase();
+
+          // अगर प्रोडक्ट मैच होता है
+          if (productName.includes(searchQuery) || productDesc.includes(searchQuery) || categoryName.includes(searchQuery)) {
+            displayItems.push(product);
+          }
+          // वेरिएंट्स चेक करें
+          if (product.variants) {
+            product.variants.forEach(v => {
+              if (v.name.toLowerCase().includes(searchQuery) && !productName.includes(searchQuery)) {
+                const variantItem = {
+                  ...product,
+                  id: v.id, // वेरिएंट की ID
+                  // name: `${product.name} - ${v.name}`,
+                  name: v.name ? v.name : product.name,
+                  thumbnail: (v.media && v.media.length > 0) ? { url: v.media[0].url } : product.thumbnail,
+                  media: (v.media && v.media.length > 0) ? v.media : product.media,
+                };
+                displayItems.push(variantItem);
+              }
+            });
+          }
+        } else {
+          // अगर सर्च नहीं है, तो सामान्य रूप से प्रोडक्ट्स दिखाएं
+          displayItems.push(product);
+        }
+      });
+
       if (window.innerWidth >= 768) {
-        renderDesktopList(filtered);
+        renderDesktopList(displayItems);
       } else {
-        renderMobileList(filtered);
+        renderMobileList(displayItems);
       }
     }
+    const activeSubcat = document.querySelector(".filter-subcategory.bg-gold")?.dataset.subcategory;
+    let filtered = allProducts;
+
+    // Filter by Search Query (product name, description, and variant names)
+    const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    if (searchQuery) {
+      filtered = filtered.filter(p => {
+        // Check product name
+        if (p.name.toLowerCase().includes(searchQuery)) return true;
+        // Check category name
+        if (p.category && p.category.name.toLowerCase().includes(searchQuery)) return true;
+        // Check description
+        if (p.description && p.description.toLowerCase().includes(searchQuery)) return true;
+        // Check variant names
+        if (p.variants && p.variants.length > 0) {
+          const hasMatchingVariant = p.variants.some(v =>
+            v.name && v.name.toLowerCase().includes(searchQuery)
+          );
+          if (hasMatchingVariant) return true;
+        }
+        return false;
+      });
+    }
+
+    if (selectedParentCategory && selectedParentCategory !== "all") {
+      const subcategories = getSubcategories(allCategories, selectedParentCategory);
+      const subcatIds = subcategories.map(s => s.id);
+
+      if (activeSubcat && activeSubcat !== "all") {
+        // Filter by specific subcategory
+        filtered = filtered.filter(p => p.category?.id === activeSubcat);
+      } else {
+        // Filter by parent category or any of its subcategories
+        filtered = filtered.filter(p =>
+          p.category?.id === selectedParentCategory || subcatIds.includes(p.category?.id)
+        );
+      }
+    }
+    if (window.innerWidth >= 768) {
+      renderDesktopList(filtered);
+    } else {
+      renderMobileList(filtered);
+    }
+    // }
 
     function setupFiltering() {
       // Search Input Listener
       document.getElementById("searchInput").addEventListener("input", () => {
+        applyFilters();
+      });
+
+      // Price Input Listeners
+      document.getElementById("minPriceInput").addEventListener("input", () => {
+        applyFilters();
+      });
+      document.getElementById("maxPriceInput").addEventListener("input", () => {
         applyFilters();
       });
 
@@ -989,23 +1153,25 @@ query {
       let products = data.products?.edges?.map(e => e.node) || [];
 
       // Find the hidden category and all its subcategories
-      const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
-      const hiddenCategoryId = hiddenCategory?.id;
-      const hiddenSubcategoryIds = hiddenCategoryId
-        ? allCategories.filter(c => c.parent?.id === hiddenCategoryId).map(c => c.id)
-        : [];
+      // const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
+      // Find the hidden categories and all their subcategories
+      const hiddenCategoryIds = allCategories
+        .filter(c => HIDDEN_CATEGORY_NAMES.includes(c.name))
+        .map(c => c.id);
 
-      // Filter out products from hidden category and its subcategories
+      const hiddenSubcategoryIds = allCategories
+        .filter(c => c.parent && hiddenCategoryIds.includes(c.parent.id))
+        .map(c => c.id);
+
+      // Filter out products from hidden categories and their subcategories
       allProducts = products.filter(p => {
         const categoryId = p.category?.id;
         const parentCategoryId = p.category?.parent?.id;
 
-        // Exclude if product is directly in hidden category
-        if (categoryId === hiddenCategoryId) return false;
-        // Exclude if product is in a subcategory of hidden category
+        // Exclude if product is in any hidden category or their subcategories
+        if (hiddenCategoryIds.includes(categoryId)) return false;
         if (hiddenSubcategoryIds.includes(categoryId)) return false;
-        // Exclude if product's parent category is the hidden category
-        if (parentCategoryId === hiddenCategoryId) return false;
+        if (hiddenCategoryIds.includes(parentCategoryId)) return false;
 
         return true;
       });

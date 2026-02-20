@@ -48,6 +48,7 @@
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
                 <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
                 <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
@@ -56,6 +57,9 @@
         </nav>
 
         <div class="floating-icon">
+            <div class="cursor-pointer" onclick="openTechModal()">
+                <img style="max-width: 40px;height: 40px;" src="images/technician.png" alt="Call">
+            </div>
             <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
                     src="images/call_icon.png" alt="Call" srcset=""></a>
             <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
@@ -80,7 +84,7 @@
                 <li><a href="https://b-oneinterior.com/company">Services</a></li>
                 <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
 
-                
+
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
@@ -92,15 +96,15 @@
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-                
-        <li>
-          <a href="https://b-oneinterior.com/catalogue">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div>Catalogue</div>
-          </a>
-        </li>
 
-<li>
+                <li>
+                    <a href="https://b-oneinterior.com/catalogue">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <div>Catalogue</div>
+                    </a>
+                </li>
+
+                <li>
                     <a href="https://b-oneinterior.com/gallery">
                         <ion-icon name="images-outline"></ion-icon>
                         <div>Gallery</div>
@@ -188,18 +192,193 @@
             }
 
             document.addEventListener('DOMContentLoaded', checkAuth);
+            // Technician Data
+            let technicians = [];
+
+            async function loadTechnicians() {
+                const query = `
+                query {
+                    pages(first: 100) {
+                        edges {
+                            node {
+                                id
+                                title
+                                slug
+                                content
+                                attributes {
+                                    attribute {
+                                        name
+                                    }
+                                    values {
+                                        name
+                                    }
+                                }
+                                metadata {
+                                    key
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+                `;
+
+                try {
+                    const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query })
+                    });
+
+                    const json = await res.json();
+                    const pages = json.data?.pages?.edges || [];
+                    // Filter pages that are technicians (you can use slug or a specific attribute)
+                    // Based on the image, we have 'electriton' and 'plumber'
+                    technicians = pages.map(edge => {
+                        const node = edge.node;
+                        
+                        // Extract metadata from metadata array
+                        const phoneMeta = node.metadata.find(m => m.key === "number");
+                        const chargeMeta = node.metadata.find(m => m.key === "price");
+                        
+                        // Parse content JSON to get the name from EditorJS format
+                        let techName = node.title;
+                        try {
+                            const contentData = JSON.parse(node.content);
+                            if (contentData.blocks && contentData.blocks.length > 0) {
+                                techName = contentData.blocks[0].data.text;
+                            }
+                        } catch (e) {
+                            console.error("Error parsing content JSON", e);
+                        }
+
+                        return {
+                            category: node.title,
+                            name: techName,
+                            address: "Mumbai",
+                            phone: phoneMeta ? phoneMeta.value : "+917738130131",
+                            charge: chargeMeta ? `₹${chargeMeta.value}` : "₹500"
+                        };
+                    });
+                } catch (error) {
+                    console.error("Error loading technicians from content:", error);
+                }
+            }
+
+            function renderTechList(data) {
+                const container = document.getElementById('techListContainer');
+                if (data.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500">No experts found matching your search.</div>`;
+                    return;
+                }
+
+                container.innerHTML = data.map(tech => `
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-gold-500 transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">${tech.category}</span>
+                        <span class="text-gold-600 font-bold">${tech.charge}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">${tech.name}</h3>
+                    <p class="text-gray-500 text-sm flex items-center gap-1 mb-3">
+                        <ion-icon name="location-outline"></ion-icon> ${tech.address}
+                    </p>
+                    <a href="tel:${tech.phone}" class="flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg font-bold hover:bg-gold-600 transition">
+                        <ion-icon name="call-outline"></ion-icon> Call Now
+                    </a>
+                </div>
+            `).join('');
+            }
+
+            function filterTechnicians() {
+                const query = document.getElementById('techSearchInput').value.toLowerCase();
+                const filtered = technicians.filter(tech =>
+                    tech.name.toLowerCase().includes(query) ||
+                    tech.category.toLowerCase().includes(query)
+                );
+                renderTechList(filtered);
+            }
+
+            // Technician Voice Search
+            function setupTechVoiceSearch() {
+                const techVoiceBtn = document.getElementById('techVoiceBtn');
+                const techSearchInput = document.getElementById('techSearchInput');
+                const TechSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                if (TechSpeechRecognition && techVoiceBtn) {
+                    const recognition = new TechSpeechRecognition();
+                    recognition.lang = 'en-IN';
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
+
+                    techVoiceBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        try {
+                            recognition.start();
+                        } catch (err) {
+                            console.log("Recognition already started");
+                        }
+                    };
+
+                    recognition.onstart = () => {
+                        techVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Listening...";
+                    };
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        techSearchInput.value = transcript;
+                        filterTechnicians(); // Trigger filtering
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.error("Speech Error:", event.error);
+                        if (event.error === 'not-allowed') alert("Please allow microphone access");
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onend = () => {
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Search by name or category...";
+                    };
+                } else if (techVoiceBtn) {
+                    techVoiceBtn.style.display = 'none';
+                }
+            }
+
+            function openTechModal() {
+                document.getElementById('techSearchInput').value = ''; // सर्च रिसेट करें
+                (async () => {
+                    await loadTechnicians();
+                    renderTechList(technicians); // पूरी लिस्ट दिखाएं
+                    setupTechVoiceSearch(); // Ensure listeners are attached
+                })();
+                document.getElementById('techModal').classList.remove('hidden');
+            }
         </script>
         <!-- Search Bar -->
         <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
             <div class="relative w-full max-w-md">
                 <input type="text" id="homeSearchInput" placeholder="Fetching products..." disabled autocomplete="off"
-                    class="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-full focus:outline-none focus:border-gold-500 bg-gray-800 text-white shadow-sm placeholder-gray-400 transition-all focus:ring-1 focus:ring-gold-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
                 <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
+                <!-- माइक बटन -->
+                <button id="voiceSearchBtn"
+                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 10v2a7 7 0 01-14 0v-2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                    </svg>
+                </button>
                 <!-- Search Results Dropdown -->
                 <div id="searchDropdown"
                     class="absolute w-full mt-2 bg-white rounded-lg shadow-xl z-50 hidden max-h-96 overflow-y-auto border border-gray-200">
@@ -228,45 +407,62 @@
                 }
 
                 if (window.allProducts && window.allProducts.length > 0) {
-                    const matchedProducts = window.allProducts.filter(p =>
-                        p.node.name.toLowerCase().includes(query)
-                    );
+                    const results = [];
 
-                    renderDropdown(matchedProducts);
+                    window.allProducts.forEach(p => {
+                        const product = p.node;
+                        const productName = product.name.toLowerCase();
+                        // १. प्रोडक्ट का नाम चेक करें
+                        if (productName.includes(query)) {
+                            console.log('productName.includes(query)==============', product)
+                            results.push({
+                                id: product.id,
+                                name: product.name,
+                                thumbnail: product.thumbnail?.url,
+                                price: product.pricing?.priceRange?.start?.gross?.amount,
+                                currency: product.pricing?.priceRange?.start?.gross?.currency
+                            });
+                        }
+
+                        // २. वेरिएंट्स के नाम चेक करें
+                        if (product.variants) {
+                            product.variants.forEach(v => {
+                                if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                    console.log('v.name.toLowerCase().includes(query)==============', v)
+                                    results.push({
+                                        id: v.id, // वेरिएंट की ID
+                                        name: `${v.name}`,
+                                        thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                        price: v.pricing?.price?.gross?.amount,
+                                        currency: v.pricing?.price?.gross?.currency
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    renderDropdown(results);
                 }
             });
 
-            searchInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    const query = this.value.trim();
-                    if (query) {
-                        window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
-                    }
-                }
-            });
-
-            function renderDropdown(products) {
-                if (products.length === 0) {
-                    searchDropdown.innerHTML = `
-                        <div class="p-4 text-center text-gray-500">
-                            No products found
-                        </div>
-                    `;
+            function renderDropdown(items) {
+                if (items.length === 0) {
+                    searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
                     searchDropdown.classList.remove('hidden');
                     return;
                 }
 
-                const html = products.map(p => {
-                    const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
-                    const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
-                    const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+                const html = items.map(item => {
+                    const price = item.price ? item.price.toFixed(2) : "0.00";
+                    const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                    const formattedPrice = item.currency === 'INR' ? `₹${price}` : `${price} ${symbol}`;
 
                     return `
                         <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
-                             onclick="window.location.href='product.html?id=${p.node.id}'">
-                            <img src="${p.node.thumbnail?.url}" class="w-12 h-12 object-cover rounded" alt="${p.node.name}">
+                             onclick="window.location.href='product.html?id=${item.id}'">
+                            <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
                             <div>
-                                <h4 class="text-sm font-semibold text-gray-800">${p.node.name}</h4>
+                                <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
                                 <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
                             </div>
                         </div>
@@ -275,6 +471,56 @@
 
                 searchDropdown.innerHTML = html;
                 searchDropdown.classList.remove('hidden');
+            }
+
+            // Voice Search Logic
+            // Voice Search Logic
+            // Voice Search Logic for Mobile & Desktop
+            const voiceBtn = document.getElementById('voiceSearchBtn');
+            const homeSearchInput = document.getElementById('homeSearchInput');
+
+            // Mobile compatibility check
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.interimResults = false; // मोबाइल पर बेहतर प्रदर्शन के लिए
+                recognition.maxAlternatives = 1;
+
+                voiceBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // मोबाइल पर फॉर्म सबमिशन रोकने के लिए
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.log("Recognition already started");
+                    }
+                });
+
+                recognition.onstart = () => {
+                    voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                    homeSearchInput.placeholder = "Listening...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    homeSearchInput.value = transcript;
+                    homeSearchInput.dispatchEvent(new Event('input'));
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    if (event.error === 'not-allowed') alert("Please allow microphone access");
+                };
+
+                recognition.onend = () => {
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    homeSearchInput.placeholder = "Search products...";
+                };
+            } else {
+                voiceBtn.style.display = 'none';
             }
         </script>
     </header>
@@ -355,7 +601,7 @@
     <!-- Before/After Gallery -->
     <section class="fade-section ">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center golden-text">Our Transformations</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center golden-text my-5">Our Transformations</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="0">
                     <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="After"
@@ -683,6 +929,21 @@
                     category {
                             name
                         }
+                    variants {
+                        id
+                        name
+                        media {
+                            url
+                        }
+                        pricing {
+                            price {
+                                gross {
+                                    amount
+                                    currency
+                                }
+                            }
+                        }
+                    }
                     }
                 }
             }
@@ -699,7 +960,7 @@
                 const json = await res.json();
                 let products = json.data.products.edges;
 
-                products = products.filter(p => p.node.category?.name !== "Gallery Image Category");
+                products = products.filter(p => p.node.category?.name !== "Gallery Image Category" || p.node.category?.name !== "Catalogue");
 
                 // Store for search
                 window.allProducts = products;
@@ -863,6 +1124,50 @@
 
     </script>
     <script src="placeholder.js"></script>
+
+    <!-- Technician List Modal -->
+    <div id="techModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+            <!-- Modal Header -->
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-gray-100 bg-gold-500 text-white">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl font-bold">Our Service Experts</h2>
+                    <button onclick="closeTechModal()" class="text-white hover:text-black transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          
+                    </button>
+                </div>
+                <!-- सर्च इनपुट -->
+                <div class="relative">
+                    <input type="text" id="techSearchInput" oninput="filterTechnicians()"
+                        placeholder="Search by name or category (e.g. Plumbing)..."
+                        class="w-full pl-10 pr-12 py-2 rounded-lg border-none text-gray-800 focus:ring-2 focus:ring-black shadow-inner">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <!-- वॉइस सर्च बटन -->
+                        <button id="techVoiceBtn" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10v2a7 7 0 01-14 0v-2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                            </svg>
+                        </button>
+                </div>
+            </div>
+
+            <!-- Modal Body (Scrollable List) -->
+            <div class="overflow-y-auto p-4 space-y-4 bg-gray-50" id="techListContainer">
+                <!-- List items will be injected here -->
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
