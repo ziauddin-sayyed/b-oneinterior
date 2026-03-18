@@ -96,7 +96,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 8px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .qty-btn {
@@ -182,8 +182,14 @@
         }
 
         /* Hide scrollbar */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 
 </head>
@@ -211,9 +217,11 @@
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -278,9 +286,10 @@
                     <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                                stroke-width="2" />
                             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                          </svg>
+                        </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
                     </a>
                 </li>
@@ -294,7 +303,8 @@
                             </path>
                         </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
-                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
                     </a>
                 </li>
@@ -316,7 +326,8 @@
                 </li>
 
                 <li class="relative">
-                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <a href="https://b-oneinterior.com/cart"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                             <circle cx="9" cy="21" r="1"></circle>
@@ -420,22 +431,25 @@
                 </div>
 
                 <!-- Mobile: Main Image Carousel -->
-                <div id="imageContainerMobile" class="rounded-[32px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-square">
+                <div id="imageContainerMobile"
+                    class="rounded-[32px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-square">
                     <!-- Carousel will be injected here -->
                 </div>
 
                 <!-- Mobile: Details & Actions -->
                 <div class="glass-panel p-8 flex flex-col gap-8">
                     <div id="cartActionContainerMobile"></div>
-                    
+
                     <div>
                         <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Select Variant</h3>
                         <div id="variantContainerMobile" class="grid grid-cols-3 gap-3"></div>
                     </div>
 
                     <div id="colorSelectContainerMobile" class="hidden">
-                        <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Color Options</label>
-                        <select id="colorSelectMobile" class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
+                        <label class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">Color
+                            Options</label>
+                        <select id="colorSelectMobile"
+                            class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
                     </div>
 
                     <div id="catalogueContainerMobile"></div>
@@ -446,7 +460,8 @@
                     </div>
 
                     <div>
-                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details</h3>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details
+                        </h3>
                         <div id="descriptionContainerMobile"></div>
                     </div>
                 </div>
@@ -454,23 +469,27 @@
 
             <!-- Desktop Layout (Creative Split) -->
             <div class="hidden md:grid grid-cols-12 gap-8 items-start">
-                
+
                 <!-- Left Column: Visuals (5/12) -->
                 <div class="col-span-5 flex flex-col gap-8 sticky top-32">
-                    <div id="imageContainer" class="rounded-[40px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-[4/5] relative group">
+                    <div id="imageContainer"
+                        class="rounded-[40px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-[4/5] relative group">
                         <!-- Carousel will be injected here -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none">
+                        </div>
                     </div>
-                    
+
                     <div class="glass-panel p-6">
-                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Available Variants</h3>
-                        <div id="variantContainer" class="grid grid-cols-4 gap-3 hide-scrollbar overflow-x-auto pb-2"></div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Available Variants
+                        </h3>
+                        <div id="variantContainer" class="grid grid-cols-4 gap-3 hide-scrollbar overflow-x-auto pb-2">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Info & Actions (7/12) -->
                 <div class="col-span-7 flex flex-col gap-8">
-                    
+
                     <!-- Header Glass Card -->
                     <div class="glass-panel p-10 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-[80px] rounded-full"></div>
@@ -487,8 +506,10 @@
                         </div>
 
                         <div id="colorSelectContainer" class="mt-8 hidden">
-                            <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Customization</label>
-                            <select id="colorSelect" class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
+                            <label
+                                class="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-3">Customization</label>
+                            <select id="colorSelect"
+                                class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
                         </div>
                     </div>
 
@@ -500,7 +521,8 @@
                         </div>
 
                         <div>
-                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Technical Specifications</h3>
+                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Technical
+                                Specifications</h3>
                             <div id="attributesContainer" class="grid grid-cols-2 gap-x-12"></div>
                         </div>
                     </div>
@@ -949,7 +971,7 @@
                                 <span class="text-xs font-black gold-gradient-text">
                                     ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
                                 </span>
-                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
                                     <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
                                 </div>
                             </div>
@@ -1099,7 +1121,7 @@
                         </div>
                         <div class="p-4 flex items-center justify-between bg-black/40">
                             <span class="text-xs font-black gold-gradient-text">${formattedPrice}</span>
-                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
                                 <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
                             </div>
                         </div>
@@ -1283,7 +1305,7 @@
             let currency = 'INR';
 
             const activeVariant = selectedVariant || (p.variants && p.variants.length > 0 ? p.variants[0] : null);
-            
+
             if (activeVariant?.channelListings?.[0]) {
                 const listing = activeVariant.channelListings[0];
                 sellingPrice = listing.price?.amount || 0;
@@ -1315,7 +1337,7 @@
                             </span>
                         ` : ''}
                     </div>
-                    ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
+                    ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
                 </div>
             `;
             document.getElementById("priceContainer").innerHTML = priceHtml;
@@ -1337,7 +1359,7 @@
                 if (excludeAttrs.includes(attr.attribute.name)) return;
                 const val = attr.values[0];
                 if (!val) return;
-                
+
                 attrsHtml += `
                     <div class="attribute-row">
                         <span class="attribute-label">${attr.attribute.name}</span>
@@ -1396,17 +1418,26 @@
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center gap-3 w-full">
                         <div class="flex-1 qty-pill">
-                            <button onclick="updateQty('${activeId}', -1)" class="qty-btn">−</button>
+                            <button onclick="updateQty('${activeId}', -1)" class="qty-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>    
+                            </button>
                             <div class="flex flex-col items-center justify-center leading-none">
                                 <span class="text-2xl font-black text-white">${inCart.quantity}</span>
                                 <span class="text-[8px] font-black text-gold uppercase tracking-tighter">In Inquiry</span>
                             </div>
-                            <button onclick="updateQty('${activeId}', 1)" class="qty-btn">+</button>
+                            <button onclick="updateQty('${activeId}', 1)" class="qty-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
                         </div>
                       
                     </div>
                     <div class="flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
-                        <span class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Estimated Total</span>
+                        <span class="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">Estimated Total</span>
                         <span class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
                     </div>
                 </div>
@@ -1709,7 +1740,7 @@
             variants.forEach(v => {
                 const imgUrl = v.media?.[0]?.url || currentProduct.thumbnail?.url || FALLBACK_IMG;
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
-                
+
                 let sellingPrice = 0;
                 let currency = 'INR';
                 if (v.channelListings?.[0]) {
@@ -1728,7 +1759,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="mt-2 px-1">
-                            <p class="text-[10px] font-black text-white/40 uppercase tracking-tighter truncate">${v.name}</p>
+                            <p class="text-[10px] font-black text-white/60 uppercase tracking-tighter truncate">${v.name}</p>
                             <p class="text-xs font-black gold-gradient-text">${symbol}${sellingPrice.toFixed(2)}</p>
                         </div>
                         ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}

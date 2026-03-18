@@ -60,11 +60,14 @@
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
-                <li><a href="https://b-oneinterior.com/" class="text-gold-500 underline transition font-bold">Home</a></li>
+                <li><a href="https://b-oneinterior.com/" class="text-gold-500 underline transition font-bold">Home</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -151,9 +154,10 @@
                     <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                                stroke-width="2" />
                             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                          </svg>
+                        </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
                     </a>
                 </li>
@@ -167,7 +171,8 @@
                             </path>
                         </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
-                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
                     </a>
                 </li>
@@ -189,7 +194,8 @@
                 </li>
 
                 <li class="relative">
-                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <a href="https://b-oneinterior.com/cart"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                             <circle cx="9" cy="21" r="1"></circle>
@@ -1209,7 +1215,7 @@
             }
             localStorage.setItem("inquiryList", JSON.stringify(cart));
             updateCartBadge();
-            
+
             // Swap UI for ALL instances
             document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
             document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
@@ -1224,7 +1230,7 @@
             if (item) item.quantity = shopQtys[id];
             localStorage.setItem("inquiryList", JSON.stringify(cart));
             updateCartBadge();
-            
+
             document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[id]);
         }
 
@@ -1251,7 +1257,7 @@
             localStorage.setItem("inquiryList", JSON.stringify(cart));
             delete shopQtys[id];
             updateCartBadge();
-            
+
             document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'flex');
             document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'none');
         }
@@ -1261,7 +1267,7 @@
             cart.forEach(cartItem => {
                 const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
                 shopQtys[cartItem.id] = parseInt(cartItem.quantity) || 1;
-                
+
                 document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
                 document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
                 document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[cartItem.id]);
@@ -1349,21 +1355,21 @@
             const container = document.getElementById("shopCategoryFilter");
 
             container.innerHTML = `
-                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="all">
+                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="all">
                     <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                         <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
                     </div>
-                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter">All</span>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter ${selectedShopParentCategory === 'all' ? 'underline underline-offset-4' : ''}">All</span>
                 </div>
                 ${parents.map(c => `
-                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
+                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
                         <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                             ${c.backgroundImage?.url
                     ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
                     : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
                 }
                         </div>
-                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center">${c.name}</span>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center ${selectedShopParentCategory === c.id ? 'underline underline-offset-4' : ''}">${c.name}</span>
                     </div>
                 `).join("")}
             `;
@@ -1620,10 +1626,19 @@
                                     <!-- Pill Control -->
                                     <div class="flex-1 flex items-center justify-between bg-black/60 border border-[#e8b84b40] rounded-xl overflow-hidden h-10 px-1 shadow-inner">
                                         <button onclick="shopDecQty('${p.id}')"
-                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">−</button>
+                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                            </button>
                                         <span class="qty-val-${safeId} text-white font-bold text-base min-w-[24px] text-center">1</span>
                                         <button onclick="shopIncQty('${p.id}')"
-                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">+</button>
+                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19" />
+                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -176,9 +176,11 @@
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="text-gold-500 underline transition font-bold">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist"
+                        class="text-gold-500 underline transition font-bold">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -259,7 +261,7 @@
         </div>
         <label for="menu-toggle" class="overlay"></label>
 
-      
+
 
         <script>
             function toggleDrawer() {
@@ -700,23 +702,25 @@
                 <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                            stroke-width="2" />
                         <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                      </svg>
+                    </svg>
                     <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
                 </a>
             </li>
             <li class="relative">
                 <a href="https://b-oneinterior.com/wishlist"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                         </path>
                     </svg>
                     <div class="text-[14px] font-black tracking-tighter text-gold">Wishlist</div>
-                    <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                    <span
+                        class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                         style="display:none;"></span>
                 </a>
             </li>
@@ -726,8 +730,8 @@
             <li>
                 <a href="https://b-oneinterior.com/catalogue"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="7" height="7"></rect>
                         <rect x="14" y="3" width="7" height="7"></rect>
                         <rect x="14" y="14" width="7" height="7"></rect>
@@ -738,9 +742,10 @@
             </li>
 
             <li class="relative">
-                <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                <a href="https://b-oneinterior.com/cart"
+                    class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -804,7 +809,7 @@
             }
             localStorage.setItem('inquiryList', JSON.stringify(cart));
             refreshCartBadge();
-            
+
             // Swap button → qty control for ALL instances
             document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
             document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
@@ -819,7 +824,7 @@
             if (item) item.quantity = wlQtys[id];
             localStorage.setItem('inquiryList', JSON.stringify(cart));
             refreshCartBadge();
-            
+
             document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
         }
 
@@ -833,7 +838,7 @@
                 localStorage.setItem('inquiryList', JSON.stringify(cart));
                 delete wlQtys[id];
                 refreshCartBadge();
-                
+
                 document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = '');
                 document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'none');
             } else {
@@ -843,7 +848,7 @@
                 if (item) item.quantity = wlQtys[id];
                 localStorage.setItem('inquiryList', JSON.stringify(cart));
                 refreshCartBadge();
-                
+
                 document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
             }
         }
@@ -853,7 +858,7 @@
             cart.forEach(cartItem => {
                 const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
                 wlQtys[cartItem.id] = parseInt(cartItem.quantity) || 1;
-                
+
                 document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
                 document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
                 document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[cartItem.id]);
@@ -940,16 +945,25 @@
                   <div class="mt-auto flex items-center gap-2" onclick="event.stopPropagation()">
                     <!-- Cart button / Qty control toggle -->
                     <div class="flex-1">
-                      <button class="wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g,'')} wl-cart-btn btn-cart w-full text-center"
+                      <button class="wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g, '')} wl-cart-btn btn-cart w-full text-center"
                         onclick="wlAddItem('${item.id}', '${safeName}', '${safeImg}', ${item.price}, '${item.currency}', '${cat}')">
                         Add to Inquiry Cart
                       </button>
-                      <div class="wl-qty-ctrl-${item.id.replace(/[^a-zA-Z0-9]/g,'')} flex items-center justify-between bg-black/40 border border-[#e8b84b40] rounded-xl overflow-hidden w-full" style="display:none;">
+                      <div class="wl-qty-ctrl-${item.id.replace(/[^a-zA-Z0-9]/g, '')} flex items-center justify-between bg-black/40 border border-[#e8b84b40] rounded-xl overflow-hidden w-full" style="display:none;">
                         <button onclick="wlDecQty('${item.id}')"
-                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">−</button>
-                        <span class="wl-qty-val-${item.id.replace(/[^a-zA-Z0-9]/g,'')} px-2 text-white font-bold text-sm min-w-[24px] text-center">1</span>
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                          </svg>
+                          </button>
+                        <span class="wl-qty-val-${item.id.replace(/[^a-zA-Z0-9]/g, '')} px-2 text-white font-bold text-sm min-w-[24px] text-center">1</span>
                         <button onclick="wlIncQty('${item.id}')"
-                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">+</button>
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                          </button>
                       </div>
                     </div>
                   </div>
