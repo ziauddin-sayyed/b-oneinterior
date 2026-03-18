@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <title>My Wishlist | B-One Interior</title>
+    <script src="assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <style>
+        body {
+            background: #0a0a0a;
+        }
+
+        .wish-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+            border: 1px solid rgba(232, 184, 75, 0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+        }
+
+        .wish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(232, 184, 75, 0.18);
+            border-color: rgba(232, 184, 75, 0.45);
+        }
+
+        .wish-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .wish-card:hover img {
+            transform: scale(1.07);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+        }
+
+        .category-pill {
+            display: inline-block;
+            background: linear-gradient(90deg, #e8b84b22, #e8b84b11);
+            border: 1px solid rgba(232, 184, 75, 0.3);
+            color: #e8b84b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 999px;
+        }
+
+        .btn-remove {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 6px 14px;
+            border-radius: 999px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-remove:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-cart {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 100%);
+            color: #000;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 7px 16px;
+            border-radius: 999px;
+            transition: opacity 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-cart:hover {
+            opacity: 0.85;
+        }
+
+        .category-section-title {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(232, 184, 75, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .empty-state svg path {
+            stroke: #e8b84b;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e8b84b44;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0a0a0a] min-h-screen">
+
+    <!-- ── HEADER ─────────────────────────────────────────── -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar (only visible on mobile) -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <a href="https://b-oneinterior.com/">
+                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500">
+                <a href="https://b-oneinterior.com/">
+                    <img src="logo.png" style="height: 8vh;" alt="">
+                </a>
+            </div>
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="text-gold-500 underline transition font-bold">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+
+
+        </nav>
+
+        <div class="floating-icon">
+            <!-- <div class="cursor-pointer" onclick="openTechModal()">
+                <img style="max-width: 40px;height: 40px;" src="images/technician.png" alt="Call">
+            </div> -->
+            <a target="_blank" href="tel:+917738130131"><img style="max-width: initial;height: 4.5vh;"
+                    src="images/call_icon.png" alt="Call" srcset=""></a>
+            <a target="_blank" href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team"><img
+                    style="max-width: initial;height: 5.5vh;" src="images/whatsapp.png" alt="WhatsApp" srcset=""></a>
+            <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/facebook.png" alt="Facebook" srcset=""></a>
+            <a target="_blank" href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="><img
+                    style="max-width: initial;height: 4.5vh;" src="images/instagram.png" alt="Instagram" srcset=""></a>
+            <a target="_blank" href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
+            <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img
+                    style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
+        </div>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="https://b-oneinterior.com">Home</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
+
+
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
+            </ul>
+
+            <!-- Social Icons at drawer bottom -->
+            <div id="drawer-social">
+                <p
+                    style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                    Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank">
+                        <img src="images/call_icon.png" alt="Call">
+                        <span>Call</span>
+                    </a>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank">
+                        <img src="images/whatsapp.png" alt="WhatsApp">
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                        <img src="images/facebook.png" alt="Facebook">
+                        <span>Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="
+                        target="_blank">
+                        <img src="images/instagram.png" alt="Instagram">
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                        <img src="images/youtube.png" alt="YouTube">
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                        <img src="images/map_marker.png" alt="Location">
+                        <span>Location</span>
+                    </a>
+                    <!-- <a href="javascript:void(0)" onclick="closeMobileDrawer(); openTechModal();" style="color:#D4AF37;">
+                        <img src="images/technician.png" alt="Technician" style="border-color:rgba(212,175,55,0.6);">
+                        <span style="color:#D4AF37;">Technician</span>
+                    </a> -->
+                </div>
+            </div>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+      
+
+        <script>
+            function toggleDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                if (drawer.style.left === "0px") {
+                    drawer.style.left = "-250px";
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                } else {
+                    drawer.style.left = "0px";
+                    overlay.style.opacity = "1";
+                    overlay.style.pointerEvents = "auto";
+                }
+            }
+
+            function closeMobileDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            }
+
+            const overlay = document.querySelector(".overlay");
+            overlay.addEventListener("click", () => {
+                const drawer = document.getElementById("drawer");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            });
+
+            // Auth check and navigation update
+            function checkAuth() {
+                const token = localStorage.getItem('saleor_auth_token');
+                const userEmail = localStorage.getItem('saleor_user_email');
+                const desktopLink = document.getElementById('authLinkDesktop');
+                const drawerLink = document.getElementById('authLinkDrawer');
+
+                if (token && userEmail) {
+                    if (desktopLink) {
+                        desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
+                    }
+                    if (drawerLink) {
+                        drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                    }
+                } else {
+                    if (desktopLink) {
+                        desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                    }
+                    if (drawerLink) {
+                        drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+                    }
+                }
+            }
+
+            function signOut() {
+                localStorage.removeItem('saleor_auth_token');
+                localStorage.removeItem('saleor_refresh_token');
+                localStorage.removeItem('saleor_csrf_token');
+                localStorage.removeItem('saleor_user_email');
+                localStorage.removeItem('saleor_user_name');
+                window.location.reload();
+            }
+
+            document.addEventListener('DOMContentLoaded', checkAuth);
+            // Technician Data
+            let technicians = [];
+
+            async function loadTechnicians() {
+                const query = `
+            query {
+                pages(first: 100) {
+                    edges {
+                        node {
+                            id
+                            title
+                            slug
+                            content
+                            attributes {
+                                attribute {
+                                    name
+                                }
+                                values {
+                                    name
+                                }
+                            }
+                            metadata {
+                                key
+                                value
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+                try {
+                    const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query })
+                    });
+
+                    const json = await res.json();
+                    const pages = json.data?.pages?.edges || [];
+                    // Filter pages that are technicians (you can use slug or a specific attribute)
+                    // Based on the image, we have 'electriton' and 'plumber'
+                    technicians = pages.map(edge => {
+                        const node = edge.node;
+
+                        // Extract metadata from metadata array
+                        const phoneMeta = node.metadata.find(m => m.key === "number");
+                        const chargeMeta = node.metadata.find(m => m.key === "price");
+
+                        // Parse content JSON to get the name from EditorJS format
+                        let techName = node.title;
+                        try {
+                            const contentData = JSON.parse(node.content);
+                            if (contentData.blocks && contentData.blocks.length > 0) {
+                                techName = contentData.blocks[0].data.text;
+                            }
+                        } catch (e) {
+                            console.error("Error parsing content JSON", e);
+                        }
+
+                        return {
+                            category: node.title,
+                            name: techName,
+                            address: "Mumbai",
+                            phone: phoneMeta ? phoneMeta.value : "+917738130131",
+                            charge: chargeMeta ? `₹${chargeMeta.value}` : "₹500"
+                        };
+                    });
+                } catch (error) {
+                    console.error("Error loading technicians from content:", error);
+                }
+            }
+
+            function renderTechList(data) {
+                const container = document.getElementById('techListContainer');
+                if (data.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500">No experts found matching your search.</div>`;
+                    return;
+                }
+
+                container.innerHTML = data.map(tech => `
+            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-gold-500 transition">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">${tech.category}</span>
+                    <span class="text-gold-600 font-bold">${tech.charge}</span>
+                </div>
+                <h3 class="font-bold text-gray-800 text-lg">${tech.name}</h3>
+                <p class="text-gray-500 text-sm flex items-center gap-1 mb-3">
+                    <ion-icon name="location-outline"></ion-icon> ${tech.address}
+                </p>
+                <a href="tel:${tech.phone}" class="flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg font-bold hover:bg-gold-600 transition">
+                    <ion-icon name="call-outline"></ion-icon> Call Now
+                </a>
+            </div>
+        `).join('');
+            }
+
+            function filterTechnicians() {
+                const query = document.getElementById('techSearchInput').value.toLowerCase();
+                const filtered = technicians.filter(tech =>
+                    tech.name.toLowerCase().includes(query) ||
+                    tech.category.toLowerCase().includes(query)
+                );
+                renderTechList(filtered);
+            }
+
+            function closeTechModal() {
+                document.getElementById('techModal').classList.add('hidden');
+            }
+
+            // Technician Voice Search
+            function setupTechVoiceSearch() {
+                const techVoiceBtn = document.getElementById('techVoiceBtn');
+                const techSearchInput = document.getElementById('techSearchInput');
+                const TechSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                if (TechSpeechRecognition && techVoiceBtn) {
+                    const recognition = new TechSpeechRecognition();
+                    recognition.lang = 'en-IN';
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
+
+                    techVoiceBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        try {
+                            recognition.start();
+                        } catch (err) {
+                            console.log("Recognition already started");
+                        }
+                    };
+
+                    recognition.onstart = () => {
+                        techVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Listening...";
+                    };
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        techSearchInput.value = transcript;
+                        filterTechnicians(); // Trigger filtering
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.error("Speech Error:", event.error);
+                        if (event.error === 'not-allowed') alert("Please allow microphone access");
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onend = () => {
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Search by name or category...";
+                    };
+                } else if (techVoiceBtn) {
+                    techVoiceBtn.style.display = 'none';
+                }
+            }
+
+            function openTechModal() {
+                document.getElementById('techSearchInput').value = ''; // सर्च रिसेट करें
+                (async () => {
+                    await loadTechnicians();
+                    renderTechList(technicians); // पूरी लिस्ट दिखाएं
+                    setupTechVoiceSearch(); // Ensure listeners are attached
+                })();
+                document.getElementById('techModal').classList.remove('hidden');
+            }
+        </script>
+        <!-- Search Bar -->
+        <!-- <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
+        <div class="relative w-full max-w-md">
+            <input type="text" id="homeSearchInput" placeholder="Fetching products..." disabled autocomplete="off"
+                class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <button id="voiceSearchBtn"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 10v2a7 7 0 01-14 0v-2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                </svg>
+            </button>
+            <div id="searchDropdown"
+                class="absolute w-full mt-2 bg-white rounded-lg shadow-xl z-50 hidden max-h-96 overflow-y-auto border border-gray-200">
+            </div>
+        </div>
+    </div> -->
+
+        <script>
+            const searchInput = document.getElementById('homeSearchInput');
+            const searchDropdown = document.getElementById('searchDropdown');
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+
+            searchInput.addEventListener('input', function (e) {
+                const query = this.value.trim().toLowerCase();
+
+                if (query.length === 0) {
+                    searchDropdown.classList.add('hidden');
+                    return;
+                }
+
+                if (window.allProducts && window.allProducts.length > 0) {
+                    const results = [];
+
+                    window.allProducts.forEach(p => {
+                        const product = p.node;
+                        const productName = product.name.toLowerCase();
+                        // १. प्रोडक्ट का नाम चेक करें
+                        if (productName.includes(query)) {
+                            results.push({
+                                id: product.id,
+                                name: product.name,
+                                thumbnail: product.thumbnail?.url,
+                                price: product.pricing?.priceRange?.start?.gross?.amount,
+                                currency: product.pricing?.priceRange?.start?.gross?.currency
+                            });
+                        }
+
+                        // २. वेरिएंट्स के नाम चेक करें
+                        if (product.variants) {
+                            product.variants.forEach(v => {
+                                if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                    console.log('v.name.toLowerCase().includes(query)==============', v)
+                                    results.push({
+                                        id: v.id, // वेरिएंट की ID
+                                        name: `${v.name}`,
+                                        thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                        price: v.pricing?.price?.gross?.amount,
+                                        currency: v.pricing?.price?.gross?.currency
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    renderDropdown(results);
+                }
+            });
+
+            function renderDropdown(items) {
+                if (items.length === 0) {
+                    searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
+                    searchDropdown.classList.remove('hidden');
+                    return;
+                }
+
+                const html = items.map(item => {
+                    const price = item.price ? item.price.toFixed(2) : "0.00";
+                    const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                    const formattedPrice = item.currency === 'INR' ? `₹${price}` : `${price} ${symbol}`;
+
+                    return `
+                    <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                         onclick="window.location.href='product.html?id=${item.id}'">
+                        <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.remove('hidden');
+            }
+
+            // Voice Search Logic
+            // Voice Search Logic
+            // Voice Search Logic for Mobile & Desktop
+            const voiceBtn = document.getElementById('voiceSearchBtn');
+            const homeSearchInput = document.getElementById('homeSearchInput');
+
+            // Mobile compatibility check
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.interimResults = false; // मोबाइल पर बेहतर प्रदर्शन के लिए
+                recognition.maxAlternatives = 1;
+
+                voiceBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // मोबाइल पर फॉर्म सबमिशन रोकने के लिए
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.log("Recognition already started");
+                    }
+                });
+
+                recognition.onstart = () => {
+                    voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                    homeSearchInput.placeholder = "Listening...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    homeSearchInput.value = transcript;
+                    homeSearchInput.dispatchEvent(new Event('input'));
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    if (event.error === 'not-allowed') alert("Please allow microphone access");
+                };
+
+                recognition.onend = () => {
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    homeSearchInput.placeholder = "Search products...";
+                };
+            } else {
+                voiceBtn.style.display = 'none';
+            }
+        </script>
+    </header>
+
+    <!-- ── PAGE TITLE ──────────────────────────────────────── -->
+    <div class="container mx-auto px-4 pt-10 pb-4">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-black gold-gradient-text uppercase tracking-widest">My Wishlist
+                </h1>
+                <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest" id="wishCountLabel">0 saved items</p>
+            </div>
+            <button onclick="clearWishlist()" id="clearAllBtn"
+                class="hidden text-gray-500 hover:text-red-500 text-xs font-bold uppercase tracking-widest border border-gray-700 hover:border-red-500 px-4 py-2 rounded-xl transition">
+                Clear All
+            </button>
+        </div>
+    </div>
+
+    <!-- ── EMPTY STATE ─────────────────────────────────────── -->
+    <div id="emptyState" class="hidden flex flex-col items-center justify-center py-28 px-4 text-center">
+        <svg class="w-20 h-20 mb-6 opacity-30" fill="none" stroke="#e8b84b" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+        </svg>
+        <h2 class="text-2xl font-black text-gray-500 uppercase tracking-widest mb-2">Your Wishlist is Empty</h2>
+        <p class="text-gray-600 text-sm mb-8 max-w-xs">Browse products and tap the ♥ heart to save your favourites here.
+        </p>
+        <a href="https://b-oneinterior.com/"
+            class="gold-gradient-bg text-black font-black px-8 py-3 rounded-full text-sm uppercase tracking-widest hover:opacity-90 transition">
+            Explore Products →
+        </a>
+    </div>
+
+    <!-- ── WISHLIST CONTENT ────────────────────────────────── -->
+    <div id="wishlistContent" class="container mx-auto px-4 pb-20" hidden></div>
+
+    <!-- ── FIXED BOTTOM NAV (mobile) ─────────────────────── -->
+    <div class="fixedBottom">
+        <a href="https://b-oneinterior.com/" class="logoBx"></a>
+        <ul>
+            <li>
+                <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                    class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                        <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                      </svg>
+                    <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                </a>
+            </li>
+            <li class="relative">
+                <a href="https://b-oneinterior.com/wishlist"
+                    class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                    <div class="text-[14px] font-black tracking-tighter text-gold">Wishlist</div>
+                    <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                        style="display:none;"></span>
+                </a>
+            </li>
+
+            <li><!-- Center Logo Spacer --></li>
+
+            <li>
+                <a href="https://b-oneinterior.com/catalogue"
+                    class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <div class="text-[14px] font-black tracking-tighter opacity-60">Catalogue</div>
+                </a>
+            </li>
+
+            <li class="relative">
+                <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <div class="text-[14px] font-black tracking-tighter opacity-60">Cart</div>
+                    <span id="cartCountBadge"
+                        class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // ── Drawer helpers ─────────────────────────────────────
+        function closeDrawer() {
+            document.getElementById('drawer').style.left = '-250px';
+        }
+
+        // ── Cart badge ─────────────────────────────────────────
+        function refreshCartBadge() {
+            const count = JSON.parse(localStorage.getItem('inquiryList') || '[]').length;
+            ['cartCountBadge', 'cartCountBadge2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.textContent = count;
+                el.style.display = count > 0 ? 'flex' : 'none';
+            });
+        }
+
+        // ── Wishlist data helpers ─────────────────────────────
+        function getWishlist() {
+            return JSON.parse(localStorage.getItem('wishlist') || '[]');
+        }
+        function saveWishlist(list) {
+            localStorage.setItem('wishlist', JSON.stringify(list));
+        }
+        function removeFromWishlist(id) {
+            const list = getWishlist().filter(w => w.id !== id);
+            saveWishlist(list);
+            renderWishlist();
+        }
+        function clearWishlist() {
+            if (!confirm('Remove all items from wishlist?')) return;
+            saveWishlist([]);
+            renderWishlist();
+        }
+        // Per-card qty state for wishlist page
+        const wlQtys = {};
+
+        function wlAddItem(id, name, image, price, currency, category) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity) || 0) + 1;
+                wlQtys[id] = existing.quantity;
+            } else {
+                cart.push({ id, name, image, price: parseFloat(price) || 0, currency, category, quantity: 1 });
+                wlQtys[id] = 1;
+            }
+            localStorage.setItem('inquiryList', JSON.stringify(cart));
+            refreshCartBadge();
+            
+            // Swap button → qty control for ALL instances
+            document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
+            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+        }
+
+        function wlIncQty(id) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            wlQtys[id] = (wlQtys[id] || 1) + 1;
+            let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+            const item = cart.find(i => i.id === id);
+            if (item) item.quantity = wlQtys[id];
+            localStorage.setItem('inquiryList', JSON.stringify(cart));
+            refreshCartBadge();
+            
+            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+        }
+
+        function wlDecQty(id) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            const current = wlQtys[id] || 1;
+            if (current <= 1) {
+                // Remove from cart → swap back to Add button
+                let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+                cart = cart.filter(i => i.id !== id);
+                localStorage.setItem('inquiryList', JSON.stringify(cart));
+                delete wlQtys[id];
+                refreshCartBadge();
+                
+                document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = '');
+                document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'none');
+            } else {
+                wlQtys[id] = current - 1;
+                let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+                const item = cart.find(i => i.id === id);
+                if (item) item.quantity = wlQtys[id];
+                localStorage.setItem('inquiryList', JSON.stringify(cart));
+                refreshCartBadge();
+                
+                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+            }
+        }
+
+        function initWishlistCardStates() {
+            const cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+            cart.forEach(cartItem => {
+                const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
+                wlQtys[cartItem.id] = parseInt(cartItem.quantity) || 1;
+                
+                document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+                document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[cartItem.id]);
+            });
+        }
+
+        // ── Main render ────────────────────────────────────────
+        function renderWishlist() {
+            const wishlist = getWishlist();
+            const content = document.getElementById('wishlistContent');
+            const empty = document.getElementById('emptyState');
+            const label = document.getElementById('wishCountLabel');
+            const clearBtn = document.getElementById('clearAllBtn');
+
+            label.textContent = `${wishlist.length} saved item${wishlist.length !== 1 ? 's' : ''}`;
+
+            if (wishlist.length === 0) {
+                content.hidden = true;
+                empty.classList.remove('hidden');
+                empty.style.display = 'flex';
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            empty.style.display = 'none';
+            content.hidden = false;
+            clearBtn.classList.remove('hidden');
+
+            // Group by category
+            const grouped = {};
+            wishlist.forEach(item => {
+                const cat = item.category || 'Uncategorised';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(item);
+            });
+
+            content.innerHTML = Object.entries(grouped).map(([cat, items]) => `
+        <div class="mb-12">
+          <!-- Category heading -->
+          <div class="flex items-center gap-4 mb-6">
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-[#e8b84b33] to-transparent"></div>
+            <h2 class="category-section-title gold-gradient-text whitespace-nowrap">${cat}</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-[#e8b84b33] to-transparent"></div>
+          </div>
+
+          <!-- Products grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            ${items.map(item => {
+                const symbol = item.currency === 'INR' ? '₹' : (item.currency + ' ');
+                const priceStr = item.price > 0 ? `${symbol}${item.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on request';
+                const safeName = (item.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeImg = (item.image || '').replace(/'/g, "\\'");
+                const linkUrl = item.linkUrl || `product.html?id=${item.id}`;
+                return `
+              <div class="wish-card flex flex-col">
+                <!-- Image -->
+                <a href="${linkUrl}" class="block relative overflow-hidden" style="aspect-ratio:1/1;">
+                  <img src="${item.image || 'images/placeholder.png'}" alt="${safeName}"
+                    onerror="this.src='images/placeholder.png'">
+                  <!-- Category pill overlay -->
+                  <div class="absolute top-2 left-2">
+                    <span class="category-pill">${cat}</span>
+                  </div>
+                  <!-- Remove heart -->
+                  <button class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition hover:scale-125"
+                    onclick="event.preventDefault(); event.stopPropagation(); removeFromWishlist('${item.id}')"
+                    title="Remove from wishlist">
+                    <svg class="w-4 h-4 pointer-events-none" fill="#e8b84b" stroke="#e8b84b" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                    </svg>
+                  </button>
+                </a>
+
+                <!-- Info -->
+                <div class="p-3 flex flex-col flex-grow bg-black/20">
+                  <a href="${linkUrl}" class="block mb-2">
+                    <h3 class="text-white font-bold text-xs sm:text-sm leading-snug line-clamp-2 hover:text-[#e8b84b] transition">${item.name || 'Product'}</h3>
+                  </a>
+                  <p class="gold-gradient-text font-black text-sm mb-3">${priceStr}</p>
+
+                  <!-- Actions row -->
+                  <div class="mt-auto flex items-center gap-2" onclick="event.stopPropagation()">
+                    <!-- Cart button / Qty control toggle -->
+                    <div class="flex-1">
+                      <button class="wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g,'')} wl-cart-btn btn-cart w-full text-center"
+                        onclick="wlAddItem('${item.id}', '${safeName}', '${safeImg}', ${item.price}, '${item.currency}', '${cat}')">
+                        Add to Inquiry Cart
+                      </button>
+                      <div class="wl-qty-ctrl-${item.id.replace(/[^a-zA-Z0-9]/g,'')} flex items-center justify-between bg-black/40 border border-[#e8b84b40] rounded-xl overflow-hidden w-full" style="display:none;">
+                        <button onclick="wlDecQty('${item.id}')"
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">−</button>
+                        <span class="wl-qty-val-${item.id.replace(/[^a-zA-Z0-9]/g,'')} px-2 text-white font-bold text-sm min-w-[24px] text-center">1</span>
+                        <button onclick="wlIncQty('${item.id}')"
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">+</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+        }
+
+        // ── Init ───────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWishlist();
+            refreshCartBadge();
+            initWishlistCardStates();
+        });
+    </script>
+</body>
+
+</html>

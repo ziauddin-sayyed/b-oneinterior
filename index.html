@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -41,18 +41,34 @@
 
     <!-- Header -->
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar (only visible on mobile) -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <a href="https://b-oneinterior.com/">
+                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-
-            <ul class="hidden md:flex space-x-6 text-gray-300">
-                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="text-gold-500 underline transition font-bold">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
                 <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
-                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
+
 
         </nav>
 
@@ -72,17 +88,15 @@
                     style="max-width: initial;height: 4.5vh;" src="images/youtube.png" alt="YouTube" srcset=""></a>
             <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img
                     style="max-width: initial;height: 4.5vh;" src="images/map_marker.png" alt="Location" srcset=""></a>
-            <div onclick="toggleDrawer()" class="cursor-pointer md:hidden flex items-center justify-center">
-                <ion-icon name="menu-outline" class="text-[#D4AF37]" style="font-size: 40px;"></ion-icon>
-            </div>
         </div>
 
         <div id="drawer">
             <ul>
-                <li><a href="https://b-oneinterior.com/company">Company</a></li>
-                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company">Services</a></li>
-                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com">Home</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
 
 
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
@@ -90,45 +104,101 @@
                 <li><a href="privacy.html">Privacy Policy</a></li>
                 <li id="authLinkDrawer"></li>
             </ul>
+
+            <!-- Social Icons at drawer bottom -->
+            <div id="drawer-social">
+                <p
+                    style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                    Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank">
+                        <img src="images/call_icon.png" alt="Call">
+                        <span>Call</span>
+                    </a>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank">
+                        <img src="images/whatsapp.png" alt="WhatsApp">
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                        <img src="images/facebook.png" alt="Facebook">
+                        <span>Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="
+                        target="_blank">
+                        <img src="images/instagram.png" alt="Instagram">
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                        <img src="images/youtube.png" alt="YouTube">
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                        <img src="images/map_marker.png" alt="Location">
+                        <span>Location</span>
+                    </a>
+                    <!-- <a href="javascript:void(0)" onclick="closeMobileDrawer(); openTechModal();" style="color:#D4AF37;">
+                        <img src="images/technician.png" alt="Technician" style="border-color:rgba(212,175,55,0.6);">
+                        <span style="color:#D4AF37;">Technician</span>
+                    </a> -->
+                </div>
+            </div>
         </div>
         <label for="menu-toggle" class="overlay"></label>
-
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-
                 <li>
-                    <a href="https://b-oneinterior.com/catalogue">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                        <div>Catalogue</div>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                          </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                    </a>
+                </li>
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
+                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
                     </a>
                 </li>
 
+                <li><!-- Center Logo Spacer --></li>
+
                 <li>
-                    <a href="https://b-oneinterior.com/gallery">
-                        <ion-icon name="images-outline"></ion-icon>
-                        <div>Gallery</div>
+                    <a href="https://b-oneinterior.com/catalogue"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Catalogue</div>
                     </a>
                 </li>
 
-                
-                <li></li>
-
-                
-
-                <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline"></ion-icon>
-                        <div>Shop</div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/cart">
-                        <ion-icon name="cart-outline"></ion-icon>
-                        <div>Cart</div>
-                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Cart</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
                         </span>
                     </a>
                 </li>
@@ -148,6 +218,14 @@
                     overlay.style.opacity = "1";
                     overlay.style.pointerEvents = "auto";
                 }
+            }
+
+            function closeMobileDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
             }
 
             const overlay = document.querySelector(".overlay");
@@ -236,11 +314,11 @@
                     // Based on the image, we have 'electriton' and 'plumber'
                     technicians = pages.map(edge => {
                         const node = edge.node;
-                        
+
                         // Extract metadata from metadata array
                         const phoneMeta = node.metadata.find(m => m.key === "number");
                         const chargeMeta = node.metadata.find(m => m.key === "price");
-                        
+
                         // Parse content JSON to get the name from EditorJS format
                         let techName = node.title;
                         try {
@@ -362,7 +440,7 @@
             }
         </script>
         <!-- Search Bar -->
-        <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
+        <!-- <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
             <div class="relative w-full max-w-md">
                 <input type="text" id="homeSearchInput" placeholder="Fetching products..." disabled autocomplete="off"
                     class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
@@ -372,7 +450,6 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <!-- माइक बटन -->
                 <button id="voiceSearchBtn"
                     class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,13 +460,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
                     </svg>
                 </button>
-                <!-- Search Results Dropdown -->
                 <div id="searchDropdown"
                     class="absolute w-full mt-2 bg-white rounded-lg shadow-xl z-50 hidden max-h-96 overflow-y-auto border border-gray-200">
-                    <!-- Results will be injected here -->
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <script>
             const searchInput = document.getElementById('homeSearchInput');
@@ -418,7 +493,6 @@
                         const productName = product.name.toLowerCase();
                         // १. प्रोडक्ट का नाम चेक करें
                         if (productName.includes(query)) {
-                            console.log('productName.includes(query)==============', product)
                             results.push({
                                 id: product.id,
                                 name: product.name,
@@ -530,70 +604,140 @@
     </header>
 
     <!-- Hero Slider -->
-    <section class="fade-section hero-slider w-full">
+    <section class="hero-slider w-full relative overflow-hidden">
         <div class="owl-carousel owl-theme w-full" id="heroCarousel">
 
-            <div class="item relative w-full">
-                <img src="slider1.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Our Store</h1>
-                        <p class="text-xl mb-6">Discover Amazing Products</p>
-                        <button onclick="window.location.href='shop.html'"
-                            class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Shop
-                            Now</button>
+            <!-- Slide 1 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider1.jpg"
+                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Premium
+                            Interiors</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Welcome to<br><span class="gold-gradient-text">Our Store</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Discover Amazing Products</p>
+                        </div>
+                        <!-- <button onclick="window.location.href='shop.html'"
+                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
+                            Shop Now →
+                        </button> -->
                     </div>
                 </div>
             </div>
 
-            <div class="item relative w-full">
-                <img src="slider2.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Quality You Can Trust</h1>
-                        <p class="text-xl mb-6">Premium Products at Great Prices</p>
-                        <button onclick="window.location.href='shop.html'"
-                            class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Learn
-                            More</button>
+            <!-- Slide 2 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider2.jpg"
+                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Trusted
+                            Quality</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Quality You<br><span class="gold-gradient-text">Can Trust</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Premium Products at Great Prices</p>
+                        </div>
+                        <!-- <button onclick="window.location.href='shop.html'"
+                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
+                            Learn More →
+                        </button> -->
                     </div>
                 </div>
             </div>
 
-            <div class="item relative w-full">
-                <img src="slider3.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Special Offers</h1>
-                        <p class="text-xl mb-6">Save Big This Season</p>
-                        <button onclick="window.location.href='shop.html'"
-                            class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">View
-                            Deals</button>
+            <!-- Slide 3 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider3.jpg"
+                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <!-- Top-right badge -->
+                <div
+                    class="absolute top-5 right-5 md:top-8 md:right-10 bg-gold-500/20 border border-gold-500/50 backdrop-blur-sm text-gold-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">
+                    ✦ Special Offer
+                </div>
+                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Exclusive
+                            Deals</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Special<br><span class="gold-gradient-text">Offers</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Save Big This Season</p>
+                        </div>
+                        <!-- <button onclick="window.location.href='shop.html'"
+                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
+                            View Deals →
+                        </button> -->
                     </div>
                 </div>
             </div>
 
-            <div class="item relative w-full">
-                <img src="slider4.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Timeless Elegance</h1>
-                        <p class="text-xl mb-6">Designed for Modern Living</p>
-                        <button onclick="window.location.href='shop.html'"
-                            class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Discover
-                            More</button>
+            <!-- Slide 4 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider4.jpg"
+                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Luxury
+                            Living</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Timeless<br><span class="gold-gradient-text">Elegance</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Designed for Modern Living</p>
+                        </div>
+                        <!-- <button onclick="window.location.href='shop.html'"
+                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
+                            Discover More →
+                        </button> -->
                     </div>
                 </div>
             </div>
 
-            <div class="item relative w-full">
-                <img src="slider5.jpg" class="w-full h-[300px] md:h-[60vh] object-cover">
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div class="text-center text-white px-4">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-4">Comfort Meets Style</h1>
-                        <p class="text-xl mb-6">Experience Luxury at Home</p>
-                        <button onclick="window.location.href='shop.html'"
-                            class="bg-white golden-text px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Shop
-                            Now</button>
+            <!-- Slide 5 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider5.jpg"
+                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Comfort
+                            & Style</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Comfort Meets<br><span class="gold-gradient-text">Style</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Experience Luxury at Home</p>
+                        </div>
+                        <!-- <button onclick="window.location.href='shop.html'"
+                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
+                            Shop Now →
+                        </button> -->
                     </div>
                 </div>
             </div>
@@ -601,59 +745,146 @@
         </div>
     </section>
 
+    <!-- Dynamic Shop Section -->
+    <section class="fade-section py-6 md:py-16 bg-[#0a0a0a]" id="shop-section">
+
+        <!-- Sticky Search Bar (sticks below header on scroll) -->
+        <div id="shopStickyBar"
+            class="sticky z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10 py-3 -mx-0 px-4 md:px-0 transition-shadow duration-300">
+            <div class="container mx-auto">
+                <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
+                    <!-- Search -->
+                    <div class="relative flex-1">
+                        <input type="text" id="shopSearchInput" placeholder="Search products..."
+                            class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <button id="shopVoiceBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 10v2a7 7 0 01-14 0v-2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19v4m-4 0h8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Price Filter -->
+                    <div
+                        class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
+                        <span
+                            class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
+                        <input type="number" id="minPriceInput" placeholder="Min"
+                            class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                        <span class="text-gold-500/40 text-xs flex-shrink-0">–</span>
+                        <input type="number" id="maxPriceInput" placeholder="Max"
+                            class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                        <button onclick="applyShopFilters()"
+                            class="gold-gradient-bg flex-shrink-0 text-black px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase transition hover:opacity-90">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4">
+            <!-- Category Filters -->
+            <div class="creative-card p-4 mt-4 mb-4 md:mb-8">
+                <div class="overflow-x-auto pb-2 hide-scrollbar">
+                    <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
+                </div>
+                <div id="shopSubcategoryFilter" class="flex flex-wrap gap-3 mt-4 hidden"></div>
+            </div>
+
+            <!-- Product Display -->
+            <div id="shopMobileProductList" class="grid grid-cols-2 gap-2 md:hidden"></div>
+            <div id="shopProductGrid" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></div>
+
+            <!-- Loading for Shop -->
+            <div id="shopLoading" class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500 mb-4"></div>
+                <p class="text-gold-500 text-sm font-medium tracking-widest uppercase">Loading Collection...</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Before/After Gallery -->
-    <section class="fade-section ">
+    <section class="fade-section py-12">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center golden-text my-5">Our Transformations</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="0">
+            <h2
+                class="text-4xl md:text-5xl font-extrabold text-center gold-gradient-text mb-12 uppercase tracking-widest">
+                Our Transformations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="0">
                     <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
                         <img src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=800" alt="Before">
                     </div>
                     <div class="slider-handle"></div>
-                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
-                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                    <div
+                        class="absolute top-4 left-4 bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/10 uppercase">
+                        BEFORE</div>
+                    <div
+                        class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
+                        AFTER</div>
                     <a href="gallery.html"
-                        class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold hover:bg-gold bg-[#D4AF37] hover:text-white transition">Gallery</a>
+                        class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="1">
+                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="1">
                     <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
                         <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800" alt="Before">
                     </div>
                     <div class="slider-handle"></div>
-                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
-                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                    <div
+                        class="absolute top-4 left-4 bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/10 uppercase">
+                        BEFORE</div>
+                    <div
+                        class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
+                        AFTER</div>
                     <a href="gallery.html"
-                        class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold hover:bg-gold bg-[#D4AF37] hover:text-white transition">Gallery</a>
+                        class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="2">
+                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="2">
                     <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
                         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" alt="Before">
                     </div>
                     <div class="slider-handle"></div>
-                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
-                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                    <div
+                        class="absolute top-4 left-4 bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/10 uppercase">
+                        BEFORE</div>
+                    <div
+                        class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
+                        AFTER</div>
                     <a href="gallery.html"
-                        class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold hover:bg-gold bg-[#D4AF37] hover:text-white transition">Gallery</a>
+                        class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container rounded-lg overflow-hidden shadow-xl" data-index="3">
+                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="3">
                     <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
                         <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800" alt="Before">
                     </div>
                     <div class="slider-handle"></div>
-                    <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold">BEFORE</div>
-                    <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold">AFTER</div>
+                    <div
+                        class="absolute top-4 left-4 bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/10 uppercase">
+                        BEFORE</div>
+                    <div
+                        class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
+                        AFTER</div>
                     <a href="gallery.html"
-                        class="absolute bottom-4 right-4 bg-white px-3 py-1 rounded text-sm font-semibold hover:bg-gold bg-[#D4AF37] hover:text-white transition">Gallery</a>
+                        class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
             </div>
         </div>
@@ -661,9 +892,11 @@
 
 
     <!-- PRODUCT CAROUSEL SECTION -->
-    <section class="fade-section py-2">
+    <section class="fade-section py-16">
         <div class="container mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold text-center my-3 golden-text">Best Seller</h2>
+            <h2
+                class="text-4xl md:text-5xl font-extrabold text-center mb-12 gold-gradient-text uppercase tracking-widest">
+                Best Seller</h2>
             <div class="owl-carousel owl-theme" id="productCarousel">
                 <div class="item px-2">
                     <div class="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#e8d7a8] shadow-sm">
@@ -686,27 +919,31 @@
 
 
     <!-- Client Logos Slider -->
-    <section class="fade-section py-2">
+    <section class="fade-section py-16">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 golden-text">Trusted By</h2>
+            <h2
+                class="text-4xl md:text-5xl font-extrabold text-center mb-12 gold-gradient-text uppercase tracking-widest">
+                Trusted By</h2>
             <div class="owl-carousel owl-theme" id="clientsCarousel">
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 1</span>
+                <div
+                    class="item flex items-center justify-center h-32 border border-gold-500 rounded-lg shadow p-4 hover:scale-105 transform transition-transform duration-300 hover:border-none ">
+                    <img src="images/trust_logo_1.jpeg" alt="Client 1"
+                        class="max-h-full w-auto object-contain rounded-lg">
                 </div>
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 2</span>
+                <div
+                    class="item flex items-center justify-center h-32 border border-gold-500 rounded-lg shadow p-4 hover:scale-105 transform transition-transform duration-300 hover:border-none ">
+                    <img src="images/trust_logo_2.jpeg" alt="Client 2"
+                        class="max-h-full w-auto object-contain rounded-lg">
                 </div>
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 3</span>
+                <div
+                    class="item flex items-center justify-center h-32 border border-gold-500 rounded-lg shadow p-4 hover:scale-105 transform transition-transform duration-300 hover:border-none ">
+                    <img src="images/trust_logo_3.jpeg" alt="Client 3"
+                        class="max-h-full w-auto object-contain rounded-lg">
                 </div>
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 4</span>
-                </div>
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 5</span>
-                </div>
-                <div class="item flex items-center justify-center h-24 bg-white rounded-lg shadow">
-                    <span class="text-2xl font-bold text-gray-700">CLIENT 6</span>
+                <div
+                    class="item flex items-center justify-center h-32 border border-gold-500 rounded-lg shadow p-4 hover:scale-105 transform transition-transform duration-300 hover:border-none ">
+                    <img src="images/trust_logo_4.jpeg" alt="Client 4"
+                        class="max-h-full w-auto object-contain rounded-lg">
                 </div>
             </div>
         </div>
@@ -837,10 +1074,10 @@
             $("#heroCarousel").owlCarousel({
                 items: 1,
                 loop: true,
-                nav: true,
+                nav: false,
                 dots: true,
                 autoplay: true,
-                autoplayTimeout: 5000,
+                autoplayTimeout: 3000,
                 autoplayHoverPause: true,
                 navText: ["‹", "›"]
             });
@@ -900,6 +1137,525 @@
 
 
 
+
+        // Shop Section Logic
+        const SHOP_API_URL = "https://api.b-oneinterior.com/graphql/";
+        const SHOP_HIDDEN_CATEGORIES = ["Gallery Image Category", "Catalogue"];
+        const SHOP_FALLBACK_IMG = "images/placeholder.png";
+
+        let shopAllCategories = [];
+        let shopAllProducts = [];
+        let selectedShopParentCategory = "all";
+
+        // ---- Wishlist helpers ------------------------------------------------
+        function getWishlist() {
+            return JSON.parse(localStorage.getItem('wishlist') || '[]');
+        }
+        function saveWishlist(list) {
+            localStorage.setItem('wishlist', JSON.stringify(list));
+        }
+        function isWishlisted(id) {
+            return getWishlist().some(w => w.id === id);
+        }
+        function toggleWishlist(id, name, image, price, currency, category, linkUrl) {
+            let list = getWishlist();
+            const idx = list.findIndex(w => w.id === id);
+            if (idx > -1) {
+                list.splice(idx, 1);
+            } else {
+                list.push({ id, name, image, price: parseFloat(price) || 0, currency, category, linkUrl });
+            }
+            saveWishlist(list);
+            refreshWishlistHearts();
+            updateWishlistBadge();
+        }
+        function refreshWishlistHearts() {
+            document.querySelectorAll('.wishlist-btn').forEach(btn => {
+                const id = btn.dataset.wid;
+                const wishlisted = isWishlisted(id);
+                const svg = btn.querySelector('svg');
+                if (wishlisted) {
+                    svg.setAttribute('fill', '#e8b84b');
+                    svg.setAttribute('stroke', '#e8b84b');
+                    btn.classList.add('scale-110');
+                } else {
+                    svg.setAttribute('fill', 'none');
+                    svg.setAttribute('stroke', 'currentColor');
+                    btn.classList.remove('scale-110');
+                }
+            });
+        }
+        function updateWishlistBadge() {
+            const count = getWishlist().length;
+            document.querySelectorAll('.wishlist-badge').forEach(el => {
+                el.textContent = count;
+                el.style.display = count > 0 ? 'flex' : 'none';
+            });
+        }
+
+        // ---- Cart helpers for inline shop section ----
+        const shopQtys = {};
+
+        function shopAddItem(id, name, image, price, currency, category) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity) || 0) + 1;
+                shopQtys[id] = existing.quantity;
+            } else {
+                cart.push({ id, name, image, price: parseFloat(price) || 0, currency, category, quantity: 1 });
+                shopQtys[id] = 1;
+            }
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+            
+            // Swap UI for ALL instances
+            document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[id]);
+        }
+
+        function shopIncQty(id) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            shopQtys[id] = (shopQtys[id] || 1) + 1;
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = cart.find(i => i.id === id);
+            if (item) item.quantity = shopQtys[id];
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+            
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[id]);
+        }
+
+        function shopDecQty(id) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            const current = shopQtys[id] || 1;
+            if (current <= 1) {
+                shopRemoveItem(id);
+            } else {
+                shopQtys[id] = current - 1;
+                let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                const item = cart.find(i => i.id === id);
+                if (item) item.quantity = shopQtys[id];
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                updateCartBadge();
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[id]);
+            }
+        }
+
+        function shopRemoveItem(id) {
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            cart = cart.filter(i => i.id !== id);
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            delete shopQtys[id];
+            updateCartBadge();
+            
+            document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'flex');
+            document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'none');
+        }
+
+        function initShopCardStates() {
+            const cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            cart.forEach(cartItem => {
+                const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
+                shopQtys[cartItem.id] = parseInt(cartItem.quantity) || 1;
+                
+                document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+                document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.textContent = shopQtys[cartItem.id]);
+            });
+        }
+
+        async function fetchShopData() {
+            const query = `
+            query {
+                categories(first: 100) {
+                    edges {
+                        node {
+                            id
+                            name
+                            backgroundImage { url }
+                            parent { id name }
+                        }
+                    }
+                }
+                products(first: 100, channel: "in", filter: { isPublished: true }) {
+                    edges {
+                        node {
+                            id
+                            name
+                            slug
+                            description
+                            thumbnail { url }
+                            media { url type }
+                            category { id name parent { id name } }
+                            pricing {
+                                priceRange {
+                                    start { gross { amount currency } }
+                                    stop { gross { amount currency } }
+                                }
+                            }
+                            attributes {
+                                attribute { name }
+                                values { name file { url } }
+                            }
+                            variants {
+                                id
+                                name
+                                media { url type }
+                                pricing { price { gross { amount currency } } }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const res = await fetch(SHOP_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                const data = json.data;
+
+                shopAllCategories = data.categories.edges.map(e => e.node);
+                const rawProducts = data.products.edges.map(e => e.node);
+
+                // Filter hidden categories
+                const hiddenIds = shopAllCategories
+                    .filter(c => SHOP_HIDDEN_CATEGORIES.includes(c.name))
+                    .map(c => c.id);
+
+                shopAllProducts = rawProducts.filter(p => {
+                    const catId = p.category?.id;
+                    const parentId = p.category?.parent?.id;
+                    return !hiddenIds.includes(catId) && !hiddenIds.includes(parentId);
+                });
+
+                renderShopCategoryFilters();
+                applyShopFilters();
+                document.getElementById("shopLoading").classList.add("hidden");
+            } catch (err) {
+                console.error("Shop fetch error:", err);
+            }
+        }
+
+        function renderShopCategoryFilters() {
+            const parents = shopAllCategories.filter(c => !c.parent && !SHOP_HIDDEN_CATEGORIES.includes(c.name));
+            const container = document.getElementById("shopCategoryFilter");
+
+            container.innerHTML = `
+                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="all">
+                    <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                        <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
+                    </div>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter">All</span>
+                </div>
+                ${parents.map(c => `
+                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                            ${c.backgroundImage?.url
+                    ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
+                    : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
+                }
+                        </div>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center">${c.name}</span>
+                    </div>
+                `).join("")}
+            `;
+
+            // Attach listeners
+            container.querySelectorAll('.shop-filter-item').forEach(item => {
+                item.onclick = () => {
+                    selectedShopParentCategory = item.dataset.category;
+                    renderShopCategoryFilters(); // Refresh active state
+                    if (selectedShopParentCategory === "all") {
+                        document.getElementById("shopSubcategoryFilter").classList.add("hidden");
+                    } else {
+                        renderShopSubcategoryFilters(selectedShopParentCategory);
+                    }
+                    applyShopFilters();
+                };
+            });
+        }
+
+        function renderShopSubcategoryFilters(parentId) {
+            const subs = shopAllCategories.filter(c => c.parent?.id === parentId);
+            const container = document.getElementById("shopSubcategoryFilter");
+
+            if (subs.length === 0) {
+                container.classList.add("hidden");
+                return;
+            }
+
+            container.innerHTML = `
+                <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10 active-sub" data-subcategory="all">
+                    ALL
+                </button>
+                ${subs.map(s => `
+                    <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10" data-subcategory="${s.id}">
+                        ${s.name.toUpperCase()}
+                    </button>
+                `).join("")}
+            `;
+
+            container.classList.remove("hidden");
+            container.querySelectorAll('.shop-sub-filter').forEach(btn => {
+                btn.onclick = () => {
+                    container.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
+                    btn.classList.add('gold-gradient-bg', 'text-black');
+                    applyShopFilters();
+                };
+            });
+        }
+
+        function applyShopFilters() {
+            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
+            const searchQuery = document.getElementById("shopSearchInput").value.toLowerCase().trim();
+            const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
+            const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
+
+            let filtered = shopAllProducts;
+
+            // Category filter
+            if (selectedShopParentCategory !== "all") {
+                const subIds = shopAllCategories.filter(c => c.parent?.id === selectedShopParentCategory).map(s => s.id);
+                if (activeSub !== "all") {
+                    filtered = filtered.filter(p => p.category?.id === activeSub);
+                } else {
+                    filtered = filtered.filter(p => p.category?.id === selectedShopParentCategory || subIds.includes(p.category?.id));
+                }
+            }
+
+            // Price filter
+            filtered = filtered.filter(p => {
+                let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
+                if (price === 0 && p.attributes) {
+                    const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
+                    if (pa && pa.values.length > 0) {
+                        const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) price = parsed;
+                    }
+                }
+                return price >= minPrice && price <= maxPrice;
+            });
+
+            // Search: build displayItems — variant matches show as individual cards with variant name/image/price
+            let displayItems = [];
+            if (searchQuery) {
+                filtered.forEach(product => {
+                    const pName = product.name.toLowerCase();
+                    const pDesc = (product.description || '').toLowerCase();
+                    const pCat = (product.category?.name || '').toLowerCase();
+
+                    // Product-level match → show product card as-is
+                    if (pName.includes(searchQuery) || pDesc.includes(searchQuery) || pCat.includes(searchQuery)) {
+                        displayItems.push(product);
+                        return; // don't also add variant cards for this product
+                    }
+
+                    // Variant-level match → create a dedicated card per matched variant
+                    if (product.variants) {
+                        product.variants.forEach(v => {
+                            if ((v.name || '').toLowerCase().includes(searchQuery)) {
+                                const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || SHOP_FALLBACK_IMG);
+                                const variantMedia = (v.media && v.media.length > 0) ? v.media : product.media;
+                                const variantPrice = v.pricing?.price?.gross;
+                                displayItems.push({
+                                    ...product,
+                                    id: v.id,                              // variant ID → links to product.html?id=variantId
+                                    name: v.name,                          // show variant name
+                                    thumbnail: { url: variantImg },        // variant's first image
+                                    media: variantMedia,                   // variant's all images
+                                    variants: [],                          // clear so linkUrl uses p.id (variant ID)
+                                    _isVariant: true,                      // flag for card label
+                                    pricing: variantPrice ? {
+                                        priceRange: {
+                                            start: { gross: variantPrice },
+                                            stop: { gross: variantPrice }
+                                        }
+                                    } : product.pricing
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                displayItems = filtered;
+            }
+
+            renderShopDesktopList(displayItems);
+            renderShopMobileList(displayItems);
+        }
+
+        function renderShopDesktopList(products) {
+            const container = document.getElementById("shopProductGrid");
+            container.innerHTML = products.length
+                ? products.map(p => renderProductCard(p)).join("")
+                : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No pieces found</div>`;
+            initShopCardStates(); // Restore states immediately
+            initShopCarousels();
+        }
+
+        function renderShopMobileList(products) {
+            const container = document.getElementById("shopMobileProductList");
+            container.innerHTML = products.length
+                ? products.map(p => renderProductCard(p, true)).join("")
+                : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">No pieces found</div>`;
+            initShopCardStates(); // Restore states immediately
+            initShopCarousels();
+        }
+
+        function renderProductCard(p, isMobile = false) {
+            const priceStart = p.pricing?.priceRange?.start?.gross;
+            const priceStop = p.pricing?.priceRange?.stop?.gross;
+            const currency = priceStart?.currency || 'INR';
+            const symbol = currency === 'INR' ? '₹' : (currency + ' ');
+            const minPrice = priceStart?.amount || 0;
+            const maxPrice = priceStop?.amount || 0;
+            const isRange = maxPrice > minPrice;
+
+            // Actual Price (MRP) attribute
+            let actualPriceStr = null;
+            if (p.attributes) {
+                const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
+                if (pa && pa.values.length > 0) actualPriceStr = pa.values[0].name;
+            }
+
+            // Discount badge
+            let badgeHtml = "";
+            if (actualPriceStr && minPrice) {
+                const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
+                if (!isNaN(actualVal) && actualVal > minPrice) {
+                    const disc = Math.round(((actualVal - minPrice) / actualVal) * 100);
+                    if (disc > 0) badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full z-10 shadow">${disc}% OFF</div>`;
+                }
+            }
+
+            // Price HTML
+            let priceHtml = "";
+            if (isRange) {
+                priceHtml = `<span class="gold-gradient-text text-xs font-black">Range ${symbol}${Math.round(minPrice)}&nbsp;–&nbsp;${symbol}${Math.round(maxPrice)}</span>`;
+            } else {
+                if (actualPriceStr) priceHtml += `<span class="line-through text-gray-500 text-[10px] block">${actualPriceStr}</span>`;
+                priceHtml += `<span class="gold-gradient-text text-sm lg:text-base font-black">${symbol}${minPrice.toFixed(2)}</span>`;
+            }
+
+            // Images for carousel
+            const images = (p.media || []).filter(m => m.type === 'IMAGE');
+            const mainImg = images[0]?.url || p.thumbnail?.url || SHOP_FALLBACK_IMG;
+
+            // Unique carousel ID
+            const safeId = p.id.replace(/[^a-zA-Z0-9]/g, '');
+            const carouselId = `sc-${safeId}`;
+
+            let imageHtml = "";
+            let carouselNavHtml = "";
+            if (images.length > 1) {
+                imageHtml = `<div class="owl-carousel shop-product-carousel" id="${carouselId}">
+                    ${images.map(m => `<img src="${m.url}" class="w-full aspect-square object-cover" alt="${p.name}">`).join("")}
+                </div>`;
+                carouselNavHtml = `
+                    <div class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-20 flex items-center gap-1 shop-carousel-nav" onclick="event.stopPropagation()">
+                        <button class="sp-prev hover:text-gold-500 px-1">&lt;</button>
+                        <span class="sp-counter">1 / ${images.length}</span>
+                        <button class="sp-next hover:text-gold-500 px-1">&gt;</button>
+                    </div>`;
+            } else {
+                imageHtml = `<img src="${mainImg}" class="w-full aspect-square object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">`;
+            }
+
+            const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
+            const safeName = p.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+            // Variant badge — shown only on variant search result cards (bottom-left)
+            const variantBadge = p._isVariant
+                ? `<div class="absolute bottom-2 left-2 bg-[#e8b84b]/90 text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Variant</div>`
+                : '';
+
+            // Wishlist heart button (top-right of image)
+            const safeLink = linkUrl.replace(/'/g, "\\'");
+            const safeCategory = (p.category?.name || '').replace(/'/g, "\\'");
+            const wishlistBtn = `
+                <button class="wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
+                    onclick="event.stopPropagation(); toggleWishlist('${p.id}', '${safeName}', '${mainImg}', ${minPrice}, '${currency}', '${safeCategory}', '${safeLink}')"
+                    data-wid="${p.id}" title="Add to Wishlist">
+                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                    </svg>
+                </button>`;
+
+            return `
+                <div class="creative-card flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='${linkUrl}'">
+                    ${badgeHtml}
+                    <div class="relative overflow-hidden aspect-square" id="wrap-${carouselId}">
+                        ${imageHtml}
+                        ${carouselNavHtml}
+                        ${variantBadge}
+                        ${wishlistBtn}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
+                    </div>
+                    <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                        <span class="text-[8px] font-black text-gold-500/70 uppercase tracking-widest mb-1">${p.category?.name || 'Decor'}</span>
+                        <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
+                                                <div class="mt-auto flex flex-col gap-3">
+                            <div class="flex flex-col leading-tight">${priceHtml}</div>
+                            
+                            <div onclick="event.stopPropagation()" class="w-full">
+                                <!-- 1. Add to Cart button (visible by default) -->
+                                <button class="add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg"
+                                    onclick="shopAddItem('${p.id}', '${safeName}', '${mainImg}', ${minPrice}, '${currency}', '${safeCategory}')">
+                                    Add to Inquiry Cart
+                                </button>
+
+                                <!-- 2. Qty control Row (hidden until item is added) -->
+                                <div class="qty-ctrl-row-${safeId} flex items-center gap-2 w-full" style="display:none;">
+                                    <!-- Pill Control -->
+                                    <div class="flex-1 flex items-center justify-between bg-black/60 border border-[#e8b84b40] rounded-xl overflow-hidden h-10 px-1 shadow-inner">
+                                        <button onclick="shopDecQty('${p.id}')"
+                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">−</button>
+                                        <span class="qty-val-${safeId} text-white font-bold text-base min-w-[24px] text-center">1</span>
+                                        <button onclick="shopIncQty('${p.id}')"
+                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize carousels after rendering
+        function initShopCarousels() {
+            setTimeout(() => {
+                $('.shop-product-carousel').each(function () {
+                    if ($(this).hasClass('owl-loaded')) return;
+                    const $c = $(this);
+                    const $wrap = $c.closest('[id^="wrap-"]');
+                    $c.owlCarousel({
+                        items: 1, loop: true, dots: false, nav: false, margin: 0,
+                        onChanged: function (e) {
+                            if (!e.namespace || e.property.name !== 'position') return;
+                            const cur = e.relatedTarget.relative(e.item.index) + 1;
+                            $wrap.find('.sp-counter').text(`${cur} / ${e.item.count}`);
+                        }
+                    });
+                    $wrap.find('.sp-prev').click(function (e) { e.preventDefault(); e.stopPropagation(); $c.trigger('prev.owl.carousel'); });
+                    $wrap.find('.sp-next').click(function (e) { e.preventDefault(); e.stopPropagation(); $c.trigger('next.owl.carousel'); });
+                });
+                // Refresh wishlist heart states after cards are rendered
+                refreshWishlistHearts();
+                updateWishlistBadge();
+            }, 150);
+        }
 
         // Global variable to store products for search
         window.allProducts = [];
@@ -1062,7 +1818,7 @@
                     const sectionHtml = `
                     <section class="fade-section py-2" id="section-${index}">
                         <div class="container mx-auto">
-                            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 golden-text">${col.node.name}</h2>
+                            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 golden-text ">${col.node.name}</h2>
                             <div class="owl-carousel owl-theme" id="${sectionId}"></div>
                         </div>
                     </section>
@@ -1099,22 +1855,26 @@
 
         function createProductItem(p) {
             const item = document.createElement("div");
-            item.className = "item px-1";
+            item.className = "item px-2 py-4";
 
             const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
             const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
             const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
 
             item.innerHTML = `
-                <a href="product.html?id=${p.node.id}" class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden cursor-pointer h-full">
-                    <div class="relative">
-                        <img src="${p.node.thumbnail?.url}" class="w-full h-40 object-cover" alt="${p.node.name}">
+                <a href="product.html?id=${p.node.id}" class="creative-card flex flex-col relative group cursor-pointer h-full">
+                    <div class="relative overflow-hidden">
+                        <img src="${p.node.thumbnail?.url}" class="w-full h-56 object-cover transition duration-500 group-hover:scale-110" alt="${p.node.name}">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
                     </div>
                     
-                    <div class="p-3 flex flex-col flex-grow">
-                        <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.node.name}</h3>
-                        <div class="mt-auto border-t pt-2 w-full">
-                            <span class="text-black font-bold text-base block">${formattedPrice}</span>
+                    <div class="p-5 flex flex-col flex-grow bg-black/40 backdrop-blur-sm">
+                        <h3 class="font-bold text-white text-base truncate mb-3 group-hover:text-gold-500 transition">${p.node.name}</h3>
+                        <div class="mt-auto flex items-center justify-between">
+                            <span class="gold-gradient-text text-lg font-black">${formattedPrice}</span>
+                            <span class="text-gold-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <ion-icon name="arrow-forward-circle-outline" class="text-2xl"></ion-icon>
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -1124,6 +1884,83 @@
 
         loadSearchData();
         loadCollections();
+        fetchShopData();
+
+        // ── Sticky search bar: set top = header height ──────────
+        function updateShopStickyTop() {
+            const header = document.querySelector('header');
+            const bar = document.getElementById('shopStickyBar');
+            if (header && bar) {
+                bar.style.top = header.offsetHeight + 'px';
+            }
+        }
+        updateShopStickyTop();
+        window.addEventListener('resize', updateShopStickyTop);
+        // Add shadow when sticky is active
+        window.addEventListener('scroll', () => {
+            const bar = document.getElementById('shopStickyBar');
+            if (!bar) return;
+            const section = document.getElementById('shop-section');
+            if (!section) return;
+            const sectionTop = section.getBoundingClientRect().top;
+            const headerH = parseInt(bar.style.top || '0');
+            if (sectionTop <= headerH) {
+                bar.classList.add('shadow-lg', 'shadow-black/50');
+            } else {
+                bar.classList.remove('shadow-lg', 'shadow-black/50');
+            }
+        }, { passive: true });
+
+        // ── Shop Search Input listener ───────────────────────────
+        const shopSearchInput = document.getElementById('shopSearchInput');
+        const shopVoiceBtn = document.getElementById('shopVoiceBtn');
+
+        if (shopSearchInput) {
+            shopSearchInput.addEventListener('input', applyShopFilters);
+        }
+
+        // ── Voice Search ─────────────────────────────────────────
+        const ShopSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (ShopSpeechRecognition && shopVoiceBtn) {
+            const recognition = new ShopSpeechRecognition();
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            shopVoiceBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                try { recognition.start(); } catch (err) { console.log('Recognition already active'); }
+            };
+
+            recognition.onstart = () => {
+                shopVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+                if (shopSearchInput) shopSearchInput.placeholder = 'Listening...';
+            };
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                if (shopSearchInput) {
+                    shopSearchInput.value = text;
+                    applyShopFilters();
+                }
+            };
+
+            recognition.onerror = (event) => {
+                shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                if (shopSearchInput) shopSearchInput.placeholder = 'Search products...';
+                if (event.error === 'not-allowed') {
+                    alert('Microphone access denied. Please allow microphone in browser settings.');
+                }
+            };
+
+            recognition.onend = () => {
+                shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                if (shopSearchInput) shopSearchInput.placeholder = 'Search products...';
+            };
+        } else if (shopVoiceBtn) {
+            shopVoiceBtn.style.display = 'none'; // hide if not supported
+        }
 
 
     </script>
@@ -1141,9 +1978,9 @@
                     <button onclick="closeTechModal()" class="text-white hover:text-black transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                          
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+
                     </button>
                 </div>
                 <!-- सर्च इनपुट -->
@@ -1151,18 +1988,22 @@
                     <input type="text" id="techSearchInput" oninput="filterTechnicians()"
                         placeholder="Search by name or category (e.g. Plumbing)..."
                         class="w-full pl-10 pr-12 py-2 rounded-lg border-none text-gray-800 focus:ring-2 focus:ring-black shadow-inner">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl w-5 h-5" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <!-- वॉइस सर्च बटन -->
+                    <button id="techVoiceBtn"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v2a7 7 0 01-14 0v-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
                         </svg>
-                        <!-- वॉइस सर्च बटन -->
-                        <button id="techVoiceBtn" class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10v2a7 7 0 01-14 0v-2" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
-                            </svg>
-                        </button>
+                    </button>
                 </div>
             </div>
 

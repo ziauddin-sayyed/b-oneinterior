@@ -13,6 +13,23 @@
 
     <!-- Tailwind CSS -->
     <script src="assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- jQuery + Owl Carousel -->
     <script src="assets/js/jquery.min.js"></script>
@@ -22,6 +39,152 @@
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 
     <link rel="stylesheet" href="style.css?v=1.1">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
+
+        :root {
+            --gold: #e8b84b;
+            --dark-gold: #b8941f;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(232, 184, 75, 0.15);
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-card {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .premium-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(232, 184, 75, 0.1);
+        }
+
+        /* Swiggy-style Toggle Pill */
+        .qty-pill {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .qty-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 24px;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: rgba(232, 184, 75, 0.1);
+        }
+
+        .remove-btn {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        /* Image Carousel Customization */
+        .product-image-carousel .owl-dots {
+            bottom: 20px !important;
+            position: absolute;
+            width: 100%;
+        }
+
+        .product-image-carousel .owl-dot span {
+            background: rgba(255, 255, 255, 0.2) !important;
+            width: 8px !important;
+            height: 8px !important;
+            transition: all 0.3s !important;
+        }
+
+        .product-image-carousel .owl-dot.active span {
+            background: var(--gold) !important;
+            width: 30px !important;
+        }
+
+        .syncopate {
+            font-family: 'Syncopate', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        .attribute-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .attribute-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .attribute-value {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Hide scrollbar */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 
 </head>
 
@@ -29,34 +192,41 @@
 
     <!-- Header -->
     <header class="bg-black shadow-lg sticky sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <a href="https://b-oneinterior.com/">
+                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-
-            <ul class="hidden md:flex space-x-6 text-gray-300">
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
                 <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
-                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
-            <button class="md:hidden text-gold-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
-            </button>
+
         </nav>
-
-
 
         <div id="drawer">
             <ul>
-                <li><a href="https://b-oneinterior.com/company">Company</a></li>
-                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company">Services</a></li>
-                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
 
 
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
@@ -64,45 +234,98 @@
                 <li><a href="privacy.html">Privacy Policy</a></li>
                 <li id="authLinkDrawer"></li>
             </ul>
+
+            <!-- Social Icons at drawer bottom -->
+            <div id="drawer-social">
+                <p
+                    style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                    Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank">
+                        <img src="images/call_icon.png" alt="Call">
+                        <span>Call</span>
+                    </a>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank">
+                        <img src="images/whatsapp.png" alt="WhatsApp">
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                        <img src="images/facebook.png" alt="Facebook">
+                        <span>Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="
+                        target="_blank">
+                        <img src="images/instagram.png" alt="Instagram">
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                        <img src="images/youtube.png" alt="YouTube">
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                        <img src="images/map_marker.png" alt="Location">
+                        <span>Location</span>
+                    </a>
+                </div>
+            </div>
         </div>
         <label for="menu-toggle" class="overlay"></label>
 
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-
                 <li>
-                    <a href="https://b-oneinterior.com/catalogue">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                        <div>Catalogue</div>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                          </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                    </a>
+                </li>
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
+                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
                     </a>
                 </li>
 
+                <li><!-- Center Logo Spacer --></li>
+
                 <li>
-                    <a href="https://b-oneinterior.com/gallery">
-                        <ion-icon name="images-outline"></ion-icon>
-                        <div>Gallery</div>
+                    <a href="https://b-oneinterior.com/catalogue"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Catalogue</div>
                     </a>
                 </li>
 
-
-                <li></li>
-
-
-
-                <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline"></ion-icon>
-                        <div>Shop</div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/cart">
-                        <ion-icon name="cart-outline"></ion-icon>
-                        <div>Cart</div>
-                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Cart</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
                         </span>
                     </a>
                 </li>
@@ -185,92 +408,101 @@
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
         </div>
 
-        <div id="productDetail" class="hidden">
+        <div id="productDetail" class="hidden max-w-7xl mx-auto">
 
             <!-- Mobile Layout -->
-            <div class="md:hidden flex flex-col gap-4">
-                <!-- Mobile: Name & Price Above Image -->
-                <div>
-                    <div id="metaContainerMobile" class="flex flex-wrap gap-2 mb-3"></div>
-                    <h1 id="productNameMobile" class="text-2xl font-bold text-white mb-2"></h1>
-                    <div id="priceContainerMobile" class="flex items-baseline gap-4 mt-2"></div>
+            <div class="md:hidden flex flex-col gap-6">
+                <!-- Mobile: Header Card -->
+                <div class="glass-panel p-6">
+                    <div id="metaContainerMobile" class="mb-4"></div>
+                    <div id="productNameMobile"></div>
+                    <div id="priceContainerMobile" class="mt-4"></div>
                 </div>
 
-                <!-- Mobile: Main Image -->
-                <div id="imageContainerMobile"
-                    class="rounded-lg overflow-hidden shadow-lg bg-gray-900 border border-gray-800">
+                <!-- Mobile: Main Image Carousel -->
+                <div id="imageContainerMobile" class="rounded-[32px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-square">
                     <!-- Carousel will be injected here -->
                 </div>
 
-                <!-- Mobile: Cart Action Below Image -->
-                <div id="cartActionContainerMobile" class="w-full"></div>
+                <!-- Mobile: Details & Actions -->
+                <div class="glass-panel p-8 flex flex-col gap-8">
+                    <div id="cartActionContainerMobile"></div>
+                    
+                    <div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Select Variant</h3>
+                        <div id="variantContainerMobile" class="grid grid-cols-3 gap-3"></div>
+                    </div>
 
-                <!-- Mobile: Variant Cards -->
-                <div id="variantContainerMobile" class="grid grid-cols-3 gap-3">
-                    <!-- Variants will be injected here -->
+                    <div id="colorSelectContainerMobile" class="hidden">
+                        <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Color Options</label>
+                        <select id="colorSelectMobile" class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
+                    </div>
+
+                    <div id="catalogueContainerMobile"></div>
+
+                    <div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Specifications</h3>
+                        <div id="attributesContainerMobile"></div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details</h3>
+                        <div id="descriptionContainerMobile"></div>
+                    </div>
                 </div>
-
-                <!-- Mobile: Color Select -->
-                <div id="colorSelectContainerMobile" class="hidden">
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
-                    <select id="colorSelectMobile"
-                        class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
-                    </select>
-                </div>
-
-                <!-- Mobile: Catalogue -->
-                <div id="catalogueContainerMobile"></div>
-
-                <!-- Mobile: Description -->
-                <div id="descriptionContainerMobile" class="text-gray-300 leading-relaxed text-sm"></div>
-
-                <!-- Mobile: Attributes -->
-                <div id="attributesContainerMobile" class="space-y-2 pt-4 border-t border-gray-800"></div>
             </div>
 
-            <!-- Desktop Layout (2 columns) -->
-            <div class="hidden md:grid grid-cols-2 gap-12">
-                <!-- Left: Image Section -->
-                <div class="w-full">
-                    <div id="imageContainer"
-                        class="rounded-lg overflow-hidden shadow-lg bg-gray-900 border border-gray-800">
+            <!-- Desktop Layout (Creative Split) -->
+            <div class="hidden md:grid grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Column: Visuals (5/12) -->
+                <div class="col-span-5 flex flex-col gap-8 sticky top-32">
+                    <div id="imageContainer" class="rounded-[40px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-[4/5] relative group">
                         <!-- Carousel will be injected here -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                     </div>
-                    <div id="variantContainer" class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-4">
-                        <!-- Variants will be injected here -->
+                    
+                    <div class="glass-panel p-6">
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Available Variants</h3>
+                        <div id="variantContainer" class="grid grid-cols-4 gap-3 hide-scrollbar overflow-x-auto pb-2"></div>
                     </div>
                 </div>
 
-                <!-- Right: Details Section -->
-                <div class="flex flex-col space-y-6">
+                <!-- Right Column: Info & Actions (7/12) -->
+                <div class="col-span-7 flex flex-col gap-8">
+                    
+                    <!-- Header Glass Card -->
+                    <div class="glass-panel p-10 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-[80px] rounded-full"></div>
+                        <div id="metaContainer" class="mb-6"></div>
+                        <div id="productName"></div>
+                        <div id="priceContainer" class="mt-8"></div>
+                    </div>
 
-                    <!-- Title & Price -->
-                    <div>
-                        <div id="metaContainer" class="flex flex-wrap gap-2 mb-3"></div>
-                        <h1 id="productName" class="text-3xl md:text-4xl font-bold text-white mb-2"></h1>
-                        <div id="priceContainer" class="flex items-baseline gap-4 mt-2"></div>
-                        <!-- Color Select Dropdown -->
-                        <div id="colorSelectContainer" class="mt-4 hidden">
-                            <label class="block text-sm font-medium text-gray-400 mb-2">Color</label>
-                            <select id="colorSelect"
-                                class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-gold focus:border-gold transition cursor-pointer">
-                                <!-- Options will be injected here -->
-                            </select>
+                    <!-- Actions & Cart -->
+                    <div class="glass-panel p-10">
+                        <div class="grid grid-cols-2 gap-8 items-center">
+                            <div id="cartActionContainer"></div>
+                            <div id="catalogueContainer"></div>
+                        </div>
+
+                        <div id="colorSelectContainer" class="mt-8 hidden">
+                            <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Customization</label>
+                            <select id="colorSelect" class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
                         </div>
                     </div>
 
-                    <!-- Catalogue Button -->
-                    <div id="catalogueContainer"></div>
+                    <!-- Details Tabs/Accordion Style -->
+                    <div class="glass-panel p-10">
+                        <div class="mb-10">
+                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Overview</h3>
+                            <div id="descriptionContainer"></div>
+                        </div>
 
-                    <!-- Short Description / Attributes -->
-                    <div id="descriptionContainer" class="text-gray-300 leading-relaxed text-sm md:text-base"></div>
-
-                    <!-- Attributes List -->
-                    <div id="attributesContainer" class="space-y-2 pt-4 border-t"></div>
-
-                    <!-- Add to Cart / Quantity -->
-                    <div class="pt-6 mt-auto">
-                        <div id="cartActionContainer" class="w-full"></div>
+                        <div>
+                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Technical Specifications</h3>
+                            <div id="attributesContainer" class="grid grid-cols-2 gap-x-12"></div>
+                        </div>
                     </div>
 
                 </div>
@@ -702,16 +934,23 @@
                     const loggedIn = isUserLoggedIn(); // Check global auth status
 
                     const item = document.createElement("div");
-                    item.className = "item";
+                    item.className = "item px-2 pb-6";
                     item.innerHTML = `
-                        <a href="product.html?id=${p.node.id}" class="block bg-gray-900 shadow rounded-lg hover:shadow-lg hover:shadow-gold/20 transition flex flex-col relative group overflow-hidden cursor-pointer h-full border border-gray-800">
-                            <div class="relative">
-                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-28 object-cover" alt="${p.node.name}">
+                        <a href="product.html?id=${p.node.id}" class="premium-card block overflow-hidden group">
+                            <div class="relative aspect-[4/5] overflow-hidden">
+                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.node.category?.name || 'Collection'}</span>
+                                    <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.node.name}</h3>
+                                </div>
                             </div>
-                            <div class="p-2 flex flex-col flex-grow">
-                                <h3 class="font-semibold text-gray-200 text-xs truncate leading-tight mb-1">${p.node.name}</h3>
-                                <div class="mt-auto border-t border-gray-800 pt-1 w-full">
-                                    ${(loggedIn && costPrice !== null) ? `<span class="text-gold font-bold text-xs block">${formattedCostPrice}</span>` : `<span class="text-gold font-bold text-xs block">${formattedSellingPrice}</span>`}
+                            <div class="p-4 flex items-center justify-between bg-black/40">
+                                <span class="text-xs font-black gold-gradient-text">
+                                    ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
+                                </span>
+                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                                    <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
                                 </div>
                             </div>
                         </a>
@@ -722,15 +961,16 @@
                 // Init Owl Carousel
                 setTimeout(() => {
                     $('#recommendedCarousel').owlCarousel({
-                        loop: products.length > 5, // Only loop if enough items
-                        margin: 8, // Reduced spacing
+                        loop: products.length > 3,
+                        margin: 20,
                         nav: false,
                         dots: true,
                         autoplay: true,
                         autoplayHoverPause: true,
                         responsive: {
-                            0: { items: 3, margin: 8 },
-                            640: { items: 4, margin: 10 }
+                            0: { items: 2 },
+                            768: { items: 3 },
+                            1024: { items: 5 }
                         }
                     });
                 }, 100);
@@ -829,40 +1069,41 @@
             section.classList.remove("hidden");
 
             const html = products.map(p => {
-                // Variant Pricing Logic for Card
                 let sellingPrice = 0;
                 let costPrice = null;
                 let currency = 'INR';
 
-                if (p.variants && p.variants.length > 0 && p.variants[0].channelListings && p.variants[0].channelListings.length > 0) {
+                if (p.variants?.[0]?.channelListings?.[0]) {
                     const listing = p.variants[0].channelListings[0];
                     sellingPrice = listing.price?.amount || 0;
                     currency = listing.price?.currency || 'INR';
                     costPrice = listing.costPrice?.amount || null;
                 } else {
-                    // Fallback
                     const currentPriceObj = p.pricing?.priceRange?.start?.gross;
                     sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
                     currency = currentPriceObj ? currentPriceObj.currency : 'INR';
                 }
 
-                const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
-                const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
-
-                const loggedIn = isUserLoggedIn();
+                const formattedPrice = currency === 'INR' ? `₹${(isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice).toFixed(2)}` : `${(isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice).toFixed(2)} ${currency}`;
 
                 return `
-                <div class="item">
-                    <div class="bg-gray-900 rounded-lg shadow hover:shadow-lg hover:shadow-gold/20 transition overflow-hidden cursor-pointer border border-gray-800" onclick="window.location.href='product.html?id=${p.id}'">
-                         <div class="relative h-28">
-                             <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover">
-                              ${p.category?.name ? `<span class="absolute bottom-1 left-1 bg-black/80 text-white px-1 py-0.5 text-[10px] font-bold rounded shadow-sm">${p.category.name}</span>` : ''}
-                         </div>
-                         <div class="p-2">
-                             <h3 class="font-bold text-gray-200 text-xs mb-1 truncate">${p.name}</h3>
-                             ${(loggedIn && costPrice !== null) ? `<p class="text-gold font-bold text-xs">${formattedCostPrice}</p>` : `<p class="text-gold font-bold text-xs">${formattedSellingPrice}</p>`}
-                         </div>
-                    </div>
+                <div class="item px-2 pb-6">
+                    <a href="product.html?id=${p.id}" class="premium-card block overflow-hidden group">
+                        <div class="relative aspect-[4/5] overflow-hidden">
+                            <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute bottom-3 left-3">
+                                <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.category?.name || 'Exclusive'}</span>
+                                <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.name}</h3>
+                            </div>
+                        </div>
+                        <div class="p-4 flex items-center justify-between bg-black/40">
+                            <span class="text-xs font-black gold-gradient-text">${formattedPrice}</span>
+                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                                <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
+                            </div>
+                        </div>
+                    </a>
                 </div>
                 `;
             }).join("");
@@ -871,12 +1112,13 @@
 
             $('#collectionCarousel').owlCarousel({
                 loop: false,
-                margin: 8, // Reduced spacing
+                margin: 20,
                 nav: false,
                 dots: true,
                 responsive: {
-                    0: { items: 3, margin: 8 },
-                    640: { items: 4, margin: 10 }
+                    0: { items: 2 },
+                    768: { items: 3 },
+                    1024: { items: 5 }
                 }
             });
         }
@@ -1001,277 +1243,147 @@
         }
 
         function renderProduct(p) {
-            // Meta Badges (Category & Type)
-            console.log("Product Metadata:", p.metadata);
-            const catName = p.category?.name || "Uncategorized";
-            const typeName = p.productType?.name || "Standard";
+            const catName = p.category?.name || "Premium Decor";
+            const typeName = p.productType?.name || "Exclusive";
 
+            // 1. Meta container
             const metaHtml = `
-                <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
-                    <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
-                </span>
-                <span class="inline-flex items-center gap-1 bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
-                    <ion-icon name="pricetag-outline"></ion-icon> ${typeName}
-                </span>
-                <button onclick="shareProduct()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700 ml-auto">
-                    <ion-icon name="share-social-outline" class="text-sm"></ion-icon> Share
-                </button>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-black uppercase tracking-widest">${catName}</span>
+                    <span class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-widest">${typeName}</span>
+                </div>
             `;
             document.getElementById("metaContainer").innerHTML = metaHtml;
+            if (document.getElementById("metaContainerMobile")) {
+                document.getElementById("metaContainerMobile").innerHTML = metaHtml;
+            }
 
-            // Mobile meta with back button
-            const metaHtmlMobile = `
-                <button onclick="window.history.back()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700">
-                    <ion-icon name="arrow-back-outline" class="text-sm"></ion-icon> Back
-                </button>
-                <span class="inline-flex items-center gap-1 bg-gold/10 text-gold text-xs font-bold px-3 py-1 rounded-full border border-gold/20">
-                    <ion-icon name="${getCategoryIcon(catName)}"></ion-icon> ${catName}
-                </span>
-                <button onclick="shareProduct()" class="inline-flex items-center gap-1 bg-gray-800 hover:bg-gold hover:text-white text-gray-300 transition text-xs font-bold px-3 py-1 rounded-full border border-gray-700 ml-auto">
-                    <ion-icon name="share-social-outline" class="text-sm"></ion-icon> Share
-                </button>
-            `;
-            const metaContainerMobile = document.getElementById("metaContainerMobile");
-            if (metaContainerMobile) metaContainerMobile.innerHTML = metaHtmlMobile;
-
-            // Name - highlight variant name as main heading, product name as secondary
+            // 2. Name - Premium Typography
             let nameHtml = "";
             if (selectedVariant && selectedVariant.name) {
-                nameHtml = `${selectedVariant.name} <span class="text-lg font-normal text-gray-400 block mt-1">${p.name}</span>`;
+                nameHtml = `
+                    <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${selectedVariant.name}</h1>
+                    <div class="flex items-center gap-2 opacity-50">
+                        <div class="h-px w-8 bg-gold"></div>
+                        <span class="text-xs font-bold uppercase tracking-[0.2em]">${p.name}</span>
+                    </div>
+                `;
             } else {
-                nameHtml = p.name;
+                nameHtml = `<h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] uppercase">${p.name}</h1>`;
             }
             document.getElementById("productName").innerHTML = nameHtml;
-            const productNameMobile = document.getElementById("productNameMobile");
-            if (productNameMobile) productNameMobile.innerHTML = nameHtml;
+            if (document.getElementById("productNameMobile")) {
+                document.getElementById("productNameMobile").innerHTML = nameHtml;
+            }
 
-            // Price - Show cost price for logged-in users, selling price for non-logged-in users
+            // 3. Price - Sophisticated Layout
             const loggedIn = isUserLoggedIn();
             let sellingPrice = 0;
             let costPrice = null;
             let currency = 'INR';
 
-            // Determine active variant for pricing (selected or default to first)
             const activeVariant = selectedVariant || (p.variants && p.variants.length > 0 ? p.variants[0] : null);
-            let variantPricingFound = false;
-
-            if (activeVariant && activeVariant.channelListings && activeVariant.channelListings.length > 0) {
+            
+            if (activeVariant?.channelListings?.[0]) {
                 const listing = activeVariant.channelListings[0];
                 sellingPrice = listing.price?.amount || 0;
                 currency = listing.price?.currency || 'INR';
                 costPrice = listing.costPrice?.amount || null;
-                variantPricingFound = true;
-            } else if (activeVariant && activeVariant.pricing && activeVariant.pricing.price && activeVariant.pricing.price.gross) {
-                const gross = activeVariant.pricing.price.gross;
-                sellingPrice = gross.amount;
-                currency = gross.currency;
-                variantPricingFound = true;
+            } else {
+                const pPrice = p.pricing?.priceRange?.start?.gross;
+                sellingPrice = pPrice?.amount || 0;
+                currency = pPrice?.currency || 'INR';
             }
 
-            if (!variantPricingFound) {
-                // Fallback to existing logic
-                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-                sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
-                currency = currentPriceObj ? currentPriceObj.currency : 'INR';
-
-                // Get cost price from "Cost Price" attribute if available
-                const costPriceAttr = p.attributes.find(a => a.attribute.name === "Cost Price");
-                const costPriceStr = costPriceAttr?.values[0]?.name;
-                if (costPriceStr) {
-                    const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(parsed)) {
-                        costPrice = parsed;
-                    }
-                }
-            }
-
-            // Debug logging - check console to see attribute names
-            // Debug logging - check console to see attribute names
-            console.log("== Price Debug ==");
-            console.log("Logged In:", loggedIn);
-            console.log("Selected Variant:", selectedVariant);
-            if (selectedVariant && selectedVariant.channelListings) {
-                console.log("Variant Listings:", selectedVariant.channelListings);
-                if (selectedVariant.channelListings.length > 0) {
-                    console.log("First Listing:", selectedVariant.channelListings[0]);
-                    console.log("Listing Cost Price:", selectedVariant.channelListings[0].costPrice);
-                }
-            }
-            console.log("Product Attributes:", p.attributes);
-            console.log("Calculated Cost Price:", costPrice);
-            console.log("Calculated Selling Price:", sellingPrice);
-
-            // Determine which price to display
-            const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
-
-            // Extract "Actual Price" for discount logic (only for non-logged-in users)
-            // Extract "Actual Price" for discount logic (only for non-logged-in users)
             let actualPriceStr = null;
+            const actualPriceAttr = (selectedVariant?.attributes || p.attributes).find(a => a.attribute.name === "Actual Price");
+            if (actualPriceAttr?.values?.[0]) actualPriceStr = actualPriceAttr.values[0].name;
 
-            // Check selected variant first
-            if (selectedVariant && selectedVariant.attributes) {
-                const vAttr = selectedVariant.attributes.find(a => a.attribute.name === "Actual Price");
-                if (vAttr && vAttr.values.length > 0) actualPriceStr = vAttr.values[0].name;
-            }
+            const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
+            const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
-            // Fallback to product
-            if (!actualPriceStr) {
-                const actualPriceAttr = p.attributes.find(a => a.attribute.name === "Actual Price");
-                if (actualPriceAttr && actualPriceAttr.values.length > 0) actualPriceStr = actualPriceAttr.values[0].name;
-            }
-
-            let priceHtml = "";
-            if (loggedIn && costPrice !== null) {
-                // Logged in: show cost price with label
-                const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
-                priceHtml = `<span class="inline-flex items-center gap-2">
-                    <span class="text-xs text-gray-400 uppercase">Cost Price:</span>
-                    <span id="productPrice" class="text-green-500 font-bold text-3xl">${formattedCostPrice}</span>
-                </span>`;
-            } else if (displayPrice) {
-                // Not logged in: show selling price with discount if applicable
-                if (actualPriceStr) {
-                    priceHtml += `<span class="line-through text-gray-400 text-xl">${actualPriceStr}</span>`;
-                }
-                const formattedPrice = currency === 'INR' ? `₹${displayPrice.toFixed(2)}` : `${displayPrice.toFixed(2)} ${currency}`;
-                priceHtml += `<span id="productPrice" class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
-
-                // Discount Badge calculation
-                if (actualPriceStr && displayPrice) {
-                    const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(actualVal) && actualVal > displayPrice) {
-                        const discount = ((actualVal - displayPrice) / actualVal) * 100;
-                        priceHtml += `<span class="ml-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm align-top">${Math.round(discount)}% OFF</span>`;
-                    }
-                }
-            }
-
+            let priceHtml = `
+                <div class="flex flex-col">
+                    ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${actualPriceStr}</span>` : ''}
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl md:text-5xl font-black ${loggedIn && costPrice !== null ? 'text-green-500' : 'gold-gradient-text'}">
+                            ${symbol}${displayPrice.toFixed(2)}
+                        </span>
+                        ${actualPriceStr ? `
+                            <span class="bg-red-600/20 text-red-500 border border-red-500/30 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-tighter shadow-lg shadow-red-600/10">
+                                Save ${Math.round(((parseFloat(actualPriceStr.replace(/[^0-9.]/g, '')) - displayPrice) / parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''))) * 100)}%
+                            </span>
+                        ` : ''}
+                    </div>
+                    ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
+                </div>
+            `;
             document.getElementById("priceContainer").innerHTML = priceHtml;
-            const priceContainerMobile = document.getElementById("priceContainerMobile");
-            if (priceContainerMobile) priceContainerMobile.innerHTML = priceHtml;
+            if (document.getElementById("priceContainerMobile")) {
+                document.getElementById("priceContainerMobile").innerHTML = priceHtml;
+            }
 
-
-            // Description
+            // 4. Description
             const descHtml = parseDescription(p.description);
-            document.getElementById("descriptionContainer").innerHTML = descHtml;
-            const descContainerMobile = document.getElementById("descriptionContainerMobile");
-            if (descContainerMobile) descContainerMobile.innerHTML = descHtml;
+            document.getElementById("descriptionContainer").innerHTML = `<div class="prose prose-invert max-w-none text-white/70 text-sm leading-relaxed">${descHtml}</div>`;
+            if (document.getElementById("descriptionContainerMobile")) {
+                document.getElementById("descriptionContainerMobile").innerHTML = `<div class="prose prose-invert max-w-none text-white/70 text-sm leading-relaxed">${descHtml}</div>`;
+            }
 
-            // Attributes
+            // 5. Attributes - Grid style
             let attrsHtml = "";
-            const excludeAttrs = ["Actual Price", "Catalogue"]; // Don't show these in list
-
+            const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description"];
             p.attributes.forEach(attr => {
                 if (excludeAttrs.includes(attr.attribute.name)) return;
-
                 const val = attr.values[0];
                 if (!val) return;
-
-                let valHtml = val.name;
-
-                // Check if FILE type
-                if (val.file?.url) {
-                    valHtml = `<a href="${val.file.url}" target="_blank" class="text-gold hover:underline flex items-center gap-1">View ${val.name} <ion-icon name="open-outline"></ion-icon></a>`;
-                }
-
+                
                 attrsHtml += `
-                   <div class="flex justify-between py-2 border-b border-gray-100 last:border-0">
-                       <span class="font-medium text-gray-700">${attr.attribute.name}</span>
-                       <span class="text-gray-500">${valHtml}</span>
-                   </div>
+                    <div class="attribute-row">
+                        <span class="attribute-label">${attr.attribute.name}</span>
+                        <span class="attribute-value">${val.name}</span>
+                    </div>
                 `;
             });
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
-            const attrsContainerMobile = document.getElementById("attributesContainerMobile");
-            if (attrsContainerMobile) attrsContainerMobile.innerHTML = attrsHtml;
-
-            // Catalogue Links
-            let catalogueHtml = "";
-
-            // 1. Check for Attribute-based Catalogue
-            const catAttr = p.attributes.find(a => a.attribute.name === "Catalogue");
-            if (catAttr && catAttr.values[0]?.file?.url) {
-                const url = catAttr.values[0].file.url;
-                catalogueHtml += `
-                    <a href="${url}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
-                        Download Catalogue
-                    </a>`;
+            if (document.getElementById("attributesContainerMobile")) {
+                document.getElementById("attributesContainerMobile").innerHTML = attrsHtml;
             }
 
-            // 2. Check for Metadata-based Catalogues (catalogue_x)
-            if (p.metadata) {
-                const BASE_PDF_URL = "https://pdf-serve.themanagemate.com/files/";
-                const catalogues = p.metadata
-                    .filter(m => m.key.startsWith("catalogue_"))
-                    .sort((a, b) => {
-                        const numA = parseInt(a.key.split('_')[1]) || 0;
-                        const numB = parseInt(b.key.split('_')[1]) || 0;
-                        return numA - numB;
-                    });
-
-                catalogues.forEach(cat => {
-                    const filename = cat.value;
-                    // Extract printable name: remove path, remove extension, replace underscores with spaces
-                    const displayName = filename.split('/').pop().replace(/\.[^/.]+$/, "").replace(/_/g, " ");
-
-                    if (filename.startsWith('http')) {
-                        catalogueHtml += `
-                            <a href="${filename}" target="_blank" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
-                                View ${displayName}
-                            </a>
-                        `;
-                    } else {
-                        catalogueHtml += `
-                            <button onclick="openCatalogueViewer('${filename}')" class="block w-full text-center bg-gray-100 text-black font-bold py-3 rounded-lg border border-gold hover:bg-gold transition transform active:scale-95 mb-2">
-                                View ${displayName}
-                            </button>
-                        `;
-                    }
-                });
-            }
-
-            document.getElementById("catalogueContainer").innerHTML = catalogueHtml;
-            const catalogueContainerMobile = document.getElementById("catalogueContainerMobile");
-            if (catalogueContainerMobile) catalogueContainerMobile.innerHTML = catalogueHtml;
-
-            // Images - use selected variant's media if available, otherwise product media
-            if (selectedVariant && selectedVariant.media && selectedVariant.media.length > 0) {
+            // 6. Image Management
+            if (selectedVariant?.media?.length > 0) {
                 renderGallery(selectedVariant.media, p.thumbnail?.url, selectedVariant.name);
             } else {
                 renderGallery(p.media, p.thumbnail?.url, p.name);
             }
 
+            // 7. Variants & Catalogues
+            renderVariants(p.variants);
             renderCartAction();
-
-            // Render Color Select Dropdown
             renderColorSelect(p.variants);
 
-            // Set default variant if available (only if not already pre-selected via URL)
-            if (p.variants && p.variants.length > 0 && !selectedVariant) {
-                selectedVariant = p.variants[0];
-            }
-
-            // Check for Variant Description on the initial selected variant
-            if (selectedVariant) {
-                const variantDescAttr = selectedVariant.attributes?.find(a => a.attribute.name === "Variant Description");
-                if (variantDescAttr && variantDescAttr.values.length > 0) {
-                    const val = variantDescAttr.values[0];
-                    const descContent = val.richText || val.name;
-                    document.getElementById("descriptionContainer").innerHTML = parseDescription(descContent);
-                }
-            }
-
-            renderVariants(p.variants);
-
-            // Fetch Collection Products
-            if (p.collections && p.collections.length > 0) {
-                const collectionId = p.collections[0].id;
-                const collectionTitle = p.collections[0].name;
-                document.getElementById("collectionTitle").innerText = `More from ${collectionTitle}`;
-
-                fetchCollectionProducts(collectionId, p.id).then(products => {
-                    renderCollectionProducts(products);
+            // Catalogue logic...
+            let catHtml = "";
+            if (p.metadata) {
+                p.metadata.filter(m => m.key.startsWith("catalogue_")).forEach(cat => {
+                    const filename = cat.value;
+                    const displayName = filename.split('/').pop().replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+                    catHtml += `
+                        <button onclick="openCatalogueViewer('${filename}')" class="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/10 hover:border-gold/50 transition group mb-3">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold group-hover:scale-110 transition">
+                                    <ion-icon name="document-text" class="text-xl"></ion-icon>
+                                </div>
+                                <span class="text-sm font-bold text-white uppercase tracking-widest">${displayName}</span>
+                            </div>
+                            <ion-icon name="arrow-forward" class="text-white/20 group-hover:text-gold transition"></ion-icon>
+                        </button>
+                    `;
                 });
+            }
+            document.getElementById("catalogueContainer").innerHTML = catHtml;
+            if (document.getElementById("catalogueContainerMobile")) {
+                document.getElementById("catalogueContainerMobile").innerHTML = catHtml;
             }
         }
 
@@ -1280,53 +1392,34 @@
             const cart = getCart();
             const inCart = cart.find(i => i.id === activeId);
 
-            const actionContainer = document.getElementById("cartActionContainer");
-            const actionContainerMobile = document.getElementById("cartActionContainerMobile");
+            const html = inCart ? `
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-3 w-full">
+                        <div class="flex-1 qty-pill">
+                            <button onclick="updateQty('${activeId}', -1)" class="qty-btn">−</button>
+                            <div class="flex flex-col items-center justify-center leading-none">
+                                <span class="text-2xl font-black text-white">${inCart.quantity}</span>
+                                <span class="text-[8px] font-black text-gold uppercase tracking-tighter">In Inquiry</span>
+                            </div>
+                            <button onclick="updateQty('${activeId}', 1)" class="qty-btn">+</button>
+                        </div>
+                      
+                    </div>
+                    <div class="flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
+                        <span class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Estimated Total</span>
+                        <span class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
+                    </div>
+                </div>
+            ` : `
+                <button onclick="addToCart()" class="w-full h-16 gold-gradient-bg rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-3">
+                    Add to Inquiry Cart
+                </button>
+            `;
 
-            let cartHtml = "";
-            if (inCart) {
-                // Calculate Total
-                const total = inCart.quantity * inCart.price;
-                const totalFormatted = inCart.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${inCart.currency}`;
-
-                // Show Quantity Controls and Total Amount
-                cartHtml = `
-                 <div class="flex items-center justify-between bg-gray-100 rounded-full p-1 border border-gold">
-                    <button class="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-500 font-bold text-xl transition" onclick="updateQty('${activeId}', -1)">-</button>
-                    <input type="number" 
-                           id="quantityInput" 
-                           class="w-16 text-center bg-transparent font-bold text-xl text-gray-800 focus:outline-none" 
-                           value="${inCart.quantity}"
-                           min="1"
-                           step="1"
-                           onkeydown="validateQuantityKey(event)"
-                           oninput="handleRealtimeTotal(this, ${inCart.price}, '${inCart.currency}')"
-                           onblur="finalizeQuantity(this, '${activeId}')">
-                    <button class="w-12 h-12 flex items-center justify-center text-gold hover:text-gold-600 font-bold text-xl transition" onclick="updateQty('${activeId}', 1)">+</button>
-                 </div>
-                 
-                 <div class="mt-4 text-center border-t border-gray-800 pt-2">
-                    <span class="text-xs text-gray-400 uppercase tracking-widest block mb-1">Total Amount</span>
-                    <span id="cartItemTotal" class="text-2xl text-gold font-bold">${totalFormatted}</span>
-                 </div>
-
-                 <div class="mt-2 text-center text-xs text-gray-500">Item is in your cart</div>
-                 <button onclick="removeFromCart('${activeId}')" class="w-full mt-3 bg-red-500 text-white font-bold py-3 rounded-full shadow-lg hover:bg-red-600 hover:shadow-xl transition transform active:scale-95 text-sm flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Remove from Cart
-                 </button>
-                `;
-            } else {
-                // Show Add to Cart
-                cartHtml = `
-                    <button onclick="addToCart()" class="w-full bg-gold text-white font-bold py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-opacity-90 transition transform active:scale-95 text-lg">
-                        Add to Inquiry Cart
-                    </button>
-                `;
+            document.getElementById("cartActionContainer").innerHTML = html;
+            if (document.getElementById("cartActionContainerMobile")) {
+                document.getElementById("cartActionContainerMobile").innerHTML = html;
             }
-
-            actionContainer.innerHTML = cartHtml;
-            if (actionContainerMobile) actionContainerMobile.innerHTML = cartHtml;
         }
 
         window.addToCart = function () {
@@ -1613,72 +1706,45 @@
 
             const loggedIn = isUserLoggedIn();
 
-            // Get cost price from product attribute (same for all variants)
-            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
-            const costPriceStr = costPriceAttr?.values[0]?.name;
-            let productCostPrice = null;
-            if (costPriceStr) {
-                const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
-                if (!isNaN(parsed)) productCostPrice = parsed;
-            }
-
             variants.forEach(v => {
-                const imgUrl = v.media && v.media.length > 0 ? v.media[0].url : (currentProduct.media && currentProduct.media.length > 0 ? currentProduct.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG));
-
-                // Variant Pricing Logic
-                let sellingPrice = 0;
-                let costPrice = null;
-                let currency = 'INR';
-
-                if (v.channelListings && v.channelListings.length > 0) {
-                    const listing = v.channelListings[0];
-                    sellingPrice = listing.price?.amount || 0;
-                    currency = listing.price?.currency || 'INR';
-                    costPrice = listing.costPrice?.amount || null;
-                } else {
-                    // Fallback to existing pricing structure if channelListings missing
-                    let sellingPriceObj = v.pricing?.price?.gross;
-                    if (!sellingPriceObj) {
-                        sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
-                    }
-                    sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
-                    currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
-                }
-
-                // Cost Price Fallback from Product Attributes if not in variant
-                if (costPrice === null && productCostPrice !== null) {
-                    costPrice = productCostPrice;
-                }
-
-                const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
-                const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
-
+                const imgUrl = v.media?.[0]?.url || currentProduct.thumbnail?.url || FALLBACK_IMG;
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
-                const borderClass = isSelected ? "border-2 border-[#D4AF37] ring-2 ring-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30" : "border border-gray-700 bg-gray-900 hover:border-[#D4AF37]/50";
+                
+                let sellingPrice = 0;
+                let currency = 'INR';
+                if (v.channelListings?.[0]) {
+                    sellingPrice = v.channelListings[0].price?.amount || 0;
+                    currency = v.channelListings[0].price?.currency || 'INR';
+                } else {
+                    sellingPrice = v.pricing?.price?.gross?.amount || currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
+                }
+
+                const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
                 const cardHtml = `
-                    <div class="aspect-square rounded overflow-hidden bg-gray-800 relative">
-                         <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    </div>
-                    <div class="text-center">
-                        <p class="text-xs font-bold text-gray-300 truncate mb-1">${v.name}</p>
-                        <span class="text-gold font-bold text-sm block">${formattedSellingPrice}</span>
-                        ${(loggedIn && costPrice !== null) ? `<span class="text-gold font-bold text-sm block">${formattedCostPrice}</span>` : ''}
+                    <div class="relative group cursor-pointer">
+                        <div class="aspect-square rounded-2xl overflow-hidden bg-white/5 border ${isSelected ? 'border-gold shadow-lg shadow-gold/20' : 'border-white/10 hover:border-gold/50'} transition-all duration-500">
+                            <img src="${imgUrl}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <div class="mt-2 px-1">
+                            <p class="text-[10px] font-black text-white/40 uppercase tracking-tighter truncate">${v.name}</p>
+                            <p class="text-xs font-black gold-gradient-text">${symbol}${sellingPrice.toFixed(2)}</p>
+                        </div>
+                        ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}
                     </div>
                 `;
 
-                // Create the card as an anchor link to variant page - for desktop
                 const link = document.createElement("a");
                 link.href = `product.html?id=${v.id}`;
-                link.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
+                link.className = "block";
                 link.innerHTML = cardHtml;
                 container.appendChild(link);
 
-                // Create for mobile
                 if (containerMobile) {
                     const linkMobile = document.createElement("a");
                     linkMobile.href = `product.html?id=${v.id}`;
-                    linkMobile.className = `block border ${borderClass} rounded-lg p-2 transition flex flex-col gap-2 group variant-card relative translate-z-0`;
+                    linkMobile.className = "block";
                     linkMobile.innerHTML = cardHtml;
                     containerMobile.appendChild(linkMobile);
                 }

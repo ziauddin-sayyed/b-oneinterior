@@ -267,8 +267,14 @@
             border-radius: 50px !important;
             gap: 10px !important;
             justify-content: center !important;
-            /* background: white !important; */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Hide floating icons bar on mobile – icons moved to drawer */
+        @media (max-width: 768px) {
+            .floating-icon {
+                display: none !important;
+            }
         }
 
         .floating-icon a img {
@@ -277,6 +283,47 @@
             height: 40px !important;
             object-fit: contain !important;
             filter: none !important;
+        }
+
+        /* Drawer flex layout so social section sticks to bottom */
+        #drawer {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        #drawer ul {
+            flex: 1;
+            overflow-y: auto;
+        }
+        #drawer-social {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 16px 20px;
+            background: #111;
+        }
+        #drawer-social .social-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+        #drawer-social .social-grid a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        #drawer-social .social-grid a:hover { color: #D4AF37; }
+        #drawer-social .social-grid a img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 1px solid rgba(212,175,55,0.3);
+            padding: 4px;
+            background: rgba(212,175,55,0.06);
         }
 
         /* Custom Owl Carousel Dots Styling */
@@ -413,4 +460,93 @@
             body {
                 padding-bottom: 20vw;
             }
+        }
+
+        /* Gold Gradient Styles */
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            background-size: 200% auto;
+            transition: 0.5s;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .gold-gradient-bg:hover {
+            background-position: right center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .creative-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .creative-card:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* ── Hero Slider Enhancements ─────────────────────────── */
+        /* Custom bottom dots positioned over image */
+        .hero-slider .owl-dots {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            display: flex !important;
+            flex-direction: row;
+            gap: 6px;
+            margin: 0;
+        }
+        @media (min-width: 768px) {
+            .hero-slider .owl-dots {
+                bottom: 28px;
+                right: 40px;
+            }
+        }
+        .hero-slider .owl-dot span {
+            width: 6px !important;
+            height: 6px !important;
+            background: rgba(255,255,255,0.3) !important;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .hero-slider .owl-dot.active span {
+            background: #D4AF37 !important;
+            width: 22px !important;
+            border-radius: 4px !important;
+        }
+
+        /* Subtle Ken Burns zoom on active slide image */
+        .hero-slider .owl-item.active img {
+            animation: heroZoom 8s ease-out forwards;
+        }
+        @keyframes heroZoom {
+            from { transform: scale(1.06); }
+            to   { transform: scale(1.0); }
         }

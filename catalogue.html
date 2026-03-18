@@ -12,6 +12,23 @@
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
     <!-- Tailwind CSS -->
     <script src="assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- jQuery + Owl Carousel -->
     <script src="assets/js/jquery.min.js"></script>
@@ -22,83 +39,241 @@
 
     <link rel="stylesheet" href="style.css?v=1.1">
 
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .creative-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .creative-card:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+            background: rgba(212, 175, 55, 0.03);
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #shopStickyBar {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
     <!-- PDF.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs" type="module"></script>
 
 </head>
 
-<body class="bg-black min-h-[130vh]">
+<body class="bg-[#0a0a0a] min-h-screen">
 
     <!-- Header -->
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <a href="https://b-oneinterior.com/">
+                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-
-            <ul class="hidden md:flex space-x-6 text-gray-300">
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
-                <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/catalogue" class="text-gold-500 underline transition font-bold">Catalogue</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
-
         </nav>
+
+        <!-- Sticky Search Bar (matches index.html style) -->
+        <div id="shopStickyBar"
+            class="bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10 py-3 px-4 transition-shadow duration-300">
+            <div class="container mx-auto">
+                <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
+                    <!-- Search -->
+                    <div class="relative flex-1">
+                        <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off"
+                            class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <button id="voiceSearchBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 10v2a7 7 0 01-14 0v-2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19v4m-4 0h8" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
         <div id="drawer">
             <ul>
-                <li><a href="https://b-oneinterior.com/company">Company</a></li>
-                <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
-                <li><a href="https://b-oneinterior.com/company">Services</a></li>
-                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+                <li><a href="https://b-oneinterior.com">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
 
-                
+
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
                 <li id="authLinkDrawer"></li>
             </ul>
+
+            <!-- Social Icons at drawer bottom -->
+            <div id="drawer-social">
+                <p
+                    style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                    Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank">
+                        <img src="images/call_icon.png" alt="Call">
+                        <span>Call</span>
+                    </a>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank">
+                        <img src="images/whatsapp.png" alt="WhatsApp">
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                        <img src="images/facebook.png" alt="Facebook">
+                        <span>Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag=="
+                        target="_blank">
+                        <img src="images/instagram.png" alt="Instagram">
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                        <img src="images/youtube.png" alt="YouTube">
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                        <img src="images/map_marker.png" alt="Location">
+                        <span>Location</span>
+                    </a>
+                    <!-- <a href="javascript:void(0)" onclick="closeMobileDrawer(); openTechModal();" style="color:#D4AF37;">
+                        <img src="images/technician.png" alt="Technician" style="border-color:rgba(212,175,55,0.6);">
+                        <span style="color:#D4AF37;">Technician</span>
+                    </a> -->
+                </div>
+            </div>
         </div>
         <label for="menu-toggle" class="overlay"></label>
-
         <div class="fixedBottom">
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
-                
-        <li>
-          <a href="https://b-oneinterior.com/catalogue">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div>Catalogue</div>
-          </a>
-        </li>
-
-<li>
-                    <a href="https://b-oneinterior.com/gallery">
-                        <ion-icon name="images-outline"></ion-icon>
-                        <div>Gallery</div>
+                <li>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                          </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                    </a>
+                </li>
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
+                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
                     </a>
                 </li>
 
-
-                
-                <li></li>
-
-                
+                <li><!-- Center Logo Spacer --></li>
 
                 <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline"></ion-icon>
-                        <div>Shop</div>
+                    <a href="https://b-oneinterior.com/catalogue"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline text-white">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter text-gold">Catalogue</div>
                     </a>
                 </li>
 
-                <li>
-                    <a href="https://b-oneinterior.com/cart">
-                        <ion-icon name="cart-outline"></ion-icon>
-                        <div>Cart</div>
-                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Cart</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
                         </span>
                     </a>
                 </li>
@@ -118,6 +293,14 @@
                     overlay.style.opacity = "1";
                     overlay.style.pointerEvents = "auto";
                 }
+            }
+
+            function closeMobileDrawer() {
+                const drawer = document.getElementById("drawer");
+                const overlay = document.querySelector(".overlay");
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
             }
 
             const overlay = document.querySelector(".overlay");
@@ -162,51 +345,336 @@
             }
 
             document.addEventListener('DOMContentLoaded', checkAuth);
+
+            // Search Logic
+            const searchInput = document.getElementById('searchInput');
+            const searchDropdown = document.getElementById('searchDropdown');
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (searchInput && !searchInput.contains(e.target) && searchDropdown && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function (e) {
+                    const query = this.value.trim().toLowerCase();
+                    
+                    // Also trigger the catalogue filtering
+                    if (typeof applyFilters === 'function') {
+                        applyFilters();
+                    }
+
+                    if (query.length === 0) {
+                        searchDropdown.classList.add('hidden');
+                        return;
+                    }
+
+                    if (window.allProducts && window.allProducts.length > 0) {
+                        const results = [];
+
+                        window.allProducts.forEach(product => {
+                            const productName = product.name.toLowerCase();
+                            // १. प्रोडक्ट का नाम चेक करें
+                            if (productName.includes(query)) {
+                                results.push({
+                                    id: product.id,
+                                    name: product.name,
+                                    thumbnail: product.thumbnail?.url,
+                                    price: product.pricing?.priceRange?.start?.gross?.amount,
+                                    currency: product.pricing?.priceRange?.start?.gross?.currency
+                                });
+                            }
+
+                            // २. वेरिएंट्स के नाम चेक करें
+                            if (product.variants) {
+                                product.variants.forEach(v => {
+                                    if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                        results.push({
+                                            id: v.id, // वेरिएंट की ID
+                                            name: `${v.name}`,
+                                            thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                            price: v.pricing?.price?.gross?.amount,
+                                            currency: v.pricing?.price?.gross?.currency
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        renderDropdown(results);
+                    }
+                });
+            }
+
+            function renderDropdown(items) {
+                if (!searchDropdown) return;
+                if (items.length === 0) {
+                    searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
+                    searchDropdown.classList.remove('hidden');
+                    return;
+                }
+
+                const html = items.map(item => {
+                    const price = item.price ? item.price.toFixed(2) : "0.00";
+                    const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                    const formattedPrice = item.currency === 'INR' ? `₹${price}` : `${price} ${symbol}`;
+
+                    return `
+                        <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                             onclick="window.location.href='product.html?id=${item.id}'">
+                            <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
+                                <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.remove('hidden');
+            }
+
+            // Voice Search Logic
+            const voiceBtn = document.getElementById('voiceSearchBtn');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && voiceBtn && searchInput) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.interimResults = false; 
+                recognition.maxAlternatives = 1;
+
+                voiceBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.log("Recognition already started");
+                    }
+                });
+
+                recognition.onstart = () => {
+                    voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                    searchInput.placeholder = "Listening...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    searchInput.value = transcript;
+                    searchInput.dispatchEvent(new Event('input'));
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    if (event.error === 'not-allowed') alert("Please allow microphone access");
+                };
+
+                recognition.onend = () => {
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    searchInput.placeholder = "Search products...";
+                };
+            } else if (voiceBtn) {
+                voiceBtn.style.display = 'none';
+            }
+
+            // Technician Data
+            let technicians = [];
+
+            async function loadTechnicians() {
+                const query = `
+                query {
+                    pages(first: 100) {
+                        edges {
+                            node {
+                                id
+                                title
+                                slug
+                                content
+                                attributes {
+                                    attribute {
+                                        name
+                                    }
+                                    values {
+                                        name
+                                    }
+                                }
+                                metadata {
+                                    key
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+                `;
+
+                try {
+                    const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query })
+                    });
+
+                    const json = await res.json();
+                    const pages = json.data?.pages?.edges || [];
+                    // Filter pages that are technicians (you can use slug or a specific attribute)
+                    // Based on the image, we have 'electriton' and 'plumber'
+                    technicians = pages.map(edge => {
+                        const node = edge.node;
+
+                        // Extract metadata from metadata array
+                        const phoneMeta = node.metadata.find(m => m.key === "number");
+                        const chargeMeta = node.metadata.find(m => m.key === "price");
+
+                        // Parse content JSON to get the name from EditorJS format
+                        let techName = node.title;
+                        try {
+                            const contentData = JSON.parse(node.content);
+                            if (contentData.blocks && contentData.blocks.length > 0) {
+                                techName = contentData.blocks[0].data.text;
+                            }
+                        } catch (e) {
+                            console.error("Error parsing content JSON", e);
+                        }
+
+                        return {
+                            category: node.title,
+                            name: techName,
+                            address: "Mumbai",
+                            phone: phoneMeta ? phoneMeta.value : "+917738130131",
+                            charge: chargeMeta ? `₹${chargeMeta.value}` : "₹500"
+                        };
+                    });
+                } catch (error) {
+                    console.error("Error loading technicians from content:", error);
+                }
+            }
+
+            function renderTechList(data) {
+                const container = document.getElementById('techListContainer');
+                if (data.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500">No experts found matching your search.</div>`;
+                    return;
+                }
+
+                container.innerHTML = data.map(tech => `
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-gold-500 transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">${tech.category}</span>
+                        <span class="text-gold-600 font-bold">${tech.charge}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">${tech.name}</h3>
+                    <p class="text-gray-500 text-sm flex items-center gap-1 mb-3">
+                        <ion-icon name="location-outline"></ion-icon> ${tech.address}
+                    </p>
+                    <a href="tel:${tech.phone}" class="flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg font-bold hover:bg-gold-600 transition">
+                        <ion-icon name="call-outline"></ion-icon> Call Now
+                    </a>
+                </div>
+            `).join('');
+            }
+
+            function filterTechnicians() {
+                const query = document.getElementById('techSearchInput').value.toLowerCase();
+                const filtered = technicians.filter(tech =>
+                    tech.name.toLowerCase().includes(query) ||
+                    tech.category.toLowerCase().includes(query)
+                );
+                renderTechList(filtered);
+            }
+
+            function closeTechModal() {
+                document.getElementById('techModal').classList.add('hidden');
+            }
+
+            // Technician Voice Search
+            function setupTechVoiceSearch() {
+                const techVoiceBtn = document.getElementById('techVoiceBtn');
+                const techSearchInput = document.getElementById('techSearchInput');
+                const TechSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                if (TechSpeechRecognition && techVoiceBtn) {
+                    const recognition = new TechSpeechRecognition();
+                    recognition.lang = 'en-IN';
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
+
+                    techVoiceBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        try {
+                            recognition.start();
+                        } catch (err) {
+                            console.log("Recognition already started");
+                        }
+                    };
+
+                    recognition.onstart = () => {
+                        techVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Listening...";
+                    };
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        techSearchInput.value = transcript;
+                        filterTechnicians(); // Trigger filtering
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.error("Speech Error:", event.error);
+                        if (event.error === 'not-allowed') alert("Please allow microphone access");
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    };
+
+                    recognition.onend = () => {
+                        techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                        techSearchInput.placeholder = "Search by name or category...";
+                    };
+                } else if (techVoiceBtn) {
+                    techVoiceBtn.style.display = 'none';
+                }
+            }
+
+            function openTechModal() {
+                document.getElementById('techSearchInput').value = ''; // सर्च रिसेट करें
+                (async () => {
+                    await loadTechnicians();
+                    renderTechList(technicians); // पूरी लिस्ट दिखाएं
+                    setupTechVoiceSearch(); // Ensure listeners are attached
+                })();
+                document.getElementById('techModal').classList.remove('hidden');
+            }
         </script>
-
-        <!-- Search Bar -->
-        <div
-            class="container mx-auto px-4 flex justify-center items-center gap-3 sticky top-0 z-40 bg-black py-4 border-b border-gray-800">
-            <div class="relative w-full max-w-md">
-                <input type="text" id="searchInput" placeholder="Search catalogues..."
-                    class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
-                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-            </div>
-            <button class="md:hidden text-[#D4AF37] flex-shrink-0" onclick="toggleDrawer()">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
-            </button>
-        </div>
     </header>
+    <div class="container mx-auto px-4 py-8 space-y-8">
 
-    <div class="container mx-auto p-2 space-y-6">
+        <!-- Category Filters -->
+        <div class="creative-card p-6 bg-black/40 border-white/5 shadow-2xl">
+            <div class="overflow-x-auto pb-4 hide-scrollbar">
+                <div id="categoryFilter" class="flex gap-8 min-w-max px-2 items-center"></div>
+            </div>
+        </div>
 
-        <aside class="bg-gray-100 p-1 shadow rounded-lg space-y-2 top-0 z-40">
-            <div>
-                <h3 class="font-semibold"></h3>
-                <div class="overflow-x-auto pb-2 hide-scrollbar">
-                    <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
+        <div id="loadingSpinner" class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center backdrop-blur-xl">
+            <div class="relative">
+                <div class="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gold-500"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <img src="logo.png" class="w-10 h-10 object-contain opacity-50" alt="">
                 </div>
             </div>
-        </aside>
-
-        <!-- Mobile: Vertical scroll product list -> Grid 2 cols -->
-        <div id="mobileProductList" class="grid grid-cols-2 gap-3 md:hidden px-2"></div>
-
-        <!-- Desktop: Grid layout -->
-        <main id="productGrid" class="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></main>
-
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+            <p class="mt-6 text-gold-500 font-black uppercase tracking-[0.3em] text-[10px] animate-pulse">Loading Collection</p>
         </div>
+
+        <!-- Product Grid -->
+        <main id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8"></main>
+        
+    </div>
 
         <!-- Catalogue Viewer Modal -->
         <div id="catalogueModal"
@@ -427,35 +895,46 @@ query {
                 if (p.category?.id) productCategoryIds.add(p.category.id);
                 if (p.category?.parent?.id) productParentCategoryIds.add(p.category.parent.id);
             });
-            // Get parent categories that have products with catalogues
+            
             const parentCategories = getParentCategories(categories).filter(c => {
-                // Check if this parent has direct products with catalogues
                 if (productCategoryIds.has(c.id)) return true;
-                // Check if this parent has subcategories with products that have catalogues
                 if (productParentCategoryIds.has(c.id)) return true;
-                // Check if any subcategory has products
                 const subcats = getSubcategories(categories, c.id);
                 return subcats.some(sub => productCategoryIds.has(sub.id));
             });
-            document.getElementById("categoryFilter").className = "grid grid-cols-10 gap-2 min-w-[250vw] md:min-w-0 md:w-full";
-            document.getElementById("categoryFilter").innerHTML = `
-    <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === 'all' || !selectedParentCategory ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="all" data-is-parent="true">
-      <ion-icon name="apps-outline" class="text-3xl mb-2"></ion-icon>
-      <span class="text-xs font-semibold text-center leading-tight">All</span>
-    </div>
-    ${parentCategories[0]?.children?.edges?.map(c => {
-                const hasImage = c.node.backgroundImage?.url;
-                const iconHtml = hasImage
-                    ? `<img src="${c.node.backgroundImage.url}" class="w-12 h-12 object-cover mb-2" alt="${c.node.name}">`
-                    : `<ion-icon name="${getCategoryIcon(c.node.name)}" class="text-3xl mb-2"></ion-icon>`;
 
-                return `
-      <div class="filter-category group flex flex-col items-center justify-center cursor-pointer transition ${selectedParentCategory === c.node.id ? 'text-gold' : 'text-gray-500 hover:text-gold'}" data-category="${c.node.id}" data-is-parent="true">
-        ${iconHtml}
-        <span class="text-xs font-semibold text-center leading-tight line-clamp-2">${c.node.name}</span>
-      </div>`;
-            }).join("")}
-  `;
+            let categoriesHtml = "";
+            if (parentCategories.length > 0 && parentCategories[0].children) {
+                categoriesHtml = parentCategories[0].children.edges.map(c => {
+                    const hasImage = c.node.backgroundImage?.url;
+                    const isActive = selectedParentCategory === c.node.id;
+                    const iconHtml = hasImage
+                        ? `<img src="${c.node.backgroundImage.url}" class="w-10 h-10 object-cover rounded-full border ${isActive ? 'border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]' : 'border-white/10'}" alt="${c.node.name}">`
+                        : `<div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border ${isActive ? 'border-gold-500 text-gold-500' : 'border-white/10 text-white/40'}">
+                             <ion-icon name="${getCategoryIcon(c.node.name)}" class="text-xl"></ion-icon>
+                           </div>`;
+
+                    return `
+                    <div class="filter-category flex flex-col items-center justify-center cursor-pointer transition-all duration-300 gap-2 group min-w-[70px]" data-category="${c.node.id}">
+                        <div class="relative">
+                            ${iconHtml}
+                            <div class="absolute inset-0 rounded-full bg-gold-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <span class="text-[9px] font-black uppercase tracking-tighter text-center leading-none ${isActive ? 'text-gold-500' : 'text-white/40 group-hover:text-white'} transition-colors">${c.node.name}</span>
+                    </div>`;
+                }).join("");
+            }
+
+            const isAllActive = selectedParentCategory === 'all' || !selectedParentCategory;
+            document.getElementById("categoryFilter").innerHTML = `
+                <div class="filter-category flex flex-col items-center justify-center cursor-pointer transition-all duration-300 gap-2 group min-w-[70px]" data-category="all">
+                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border ${isAllActive ? 'border-gold-500 text-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]' : 'border-white/10 text-white/40'}">
+                        <ion-icon name="apps-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-tighter text-center leading-none ${isAllActive ? 'text-gold-500' : 'text-white/40 group-hover:text-white'} transition-colors">All</span>
+                </div>
+                ${categoriesHtml}
+            `;
         }
 
         function getActualPrice(product) {
@@ -482,107 +961,59 @@ query {
                 const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
 
                 let buttonHtml = "";
+                console.log(products);
                 if (catalogueVal) {
                     if (catalogueVal.startsWith("http")) {
                         buttonHtml = `
                             <a href="${catalogueVal}" target="_blank"
-                             class="w-full block text-center bg-gray-200 text-black text-md font-bold px-3 py-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
-                             Download Catalogue
+                             class="w-full block text-center bg-gray-200 text-black text-[10px] font-black uppercase tracking-widest px-3 py-2.5 rounded-xl shadow hover:bg-gray-300 transition cursor-pointer">
+                             Download
                             </a>`;
                     } else {
                         buttonHtml = `
                             <button onclick="openCatalogueViewer('${catalogueVal}')"
-                             class="w-full block text-center bg-gold text-white text-md font-bold px-3 py-2 rounded-full shadow hover:bg-opacity-90 transition cursor-pointer">
+                             class="w-full block text-center gold-gradient-bg text-black text-[10px] font-black uppercase tracking-widest px-3 py-2.5 rounded-xl shadow hover:opacity-90 transition cursor-pointer">
                              View Catalogue
                             </button>`;
                     }
                 }
 
                 return `
-        <div class="block bg-white shadow rounded-lg hover:shadow-lg transition flex flex-col relative group overflow-hidden h-full">
-            <a href="product.html?id=${p.id}" class="block">
-              <div class="relative">
-                  <img src="${imageUrl}" class="w-full h-40 object-cover" alt="${p.name}">
-                  ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
-              </div>
-              
-              <div class="p-3 flex flex-col flex-grow">
-                  <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
-                  <div class="mt-auto border-t pt-2 w-full">
-                      <span class="text-black font-bold text-base block">${formattedPrice}</span>
-                  </div>
-              </div>
-            </a>
-            <div class="px-3 pb-3">
-              ${buttonHtml}
-            </div>
-        </div>
-      `;
-            }).join("") : `<p class="col-span-full text-center text-gray-500">No catalogues found.</p>`;
+                <div class="creative-card flex flex-col group h-full">
+                    <div onclick="window.location.href='product.html?id=${p.id}'" class="relative overflow-hidden aspect-[4/5] cursor-pointer">
+                        <img src="${imageUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">
+                        ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-wider z-10 border border-white/10">${p.category.name}</div>` : ''}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col flex-grow bg-black/20">
+                        <h3 class="font-black text-white text-xs uppercase tracking-tight line-clamp-2 mb-3 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
+                        <div class="mt-auto pt-3 border-t border-white/5 space-y-3">
+                            <div class="flex flex-col">
+                                <span class="text-[8px] text-white/40 uppercase font-bold tracking-widest">Starting from</span>
+                                <span class="gold-gradient-text text-base font-black">${formattedPrice}</span>
+                            </div>
+                            ${buttonHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join("") : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No catalogues found</div>`;
         }
 
         function renderMobileList(products) {
-            const mobileList = document.getElementById("mobileProductList");
-
-            mobileList.innerHTML = products.length ? products.map(p => {
-                const catalogueVal = getCatalogueLink(p);
-                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-                const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
-                const currency = currentPriceObj ? currentPriceObj.currency : "";
-
-                let priceHtml = "";
-                if (currentPriceVal) {
-                    const formattedPrice = currency === 'INR' ? `₹${currentPriceVal.toFixed(2)}` : `${currentPriceVal.toFixed(2)} ${currency}`;
-                    priceHtml = `<span class="text-black font-bold text-lg">${formattedPrice}</span>`;
-                }
-
-                const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
-
-                let buttonHtml = "";
-                if (catalogueVal) {
-                    if (catalogueVal.startsWith("http")) {
-                        buttonHtml = `
-                        <a href="${catalogueVal}" target="_blank"
-                          class="w-full flex items-center justify-center bg-gray-200 text-black text-[11px] font-bold px-1 py-2 rounded-full shadow hover:bg-gray-300 transition whitespace-nowrap gap-1 cursor-pointer">
-                          <span>Download</span>
-                        </a>`;
-                    } else {
-                        buttonHtml = `
-                        <button onclick="openCatalogueViewer('${catalogueVal}')"
-                          class="w-full flex items-center justify-center bg-gold text-white text-[11px] font-bold px-1 py-2 rounded-full shadow hover:bg-opacity-90 transition whitespace-nowrap gap-1 cursor-pointer">
-                          <span>View Catalogue</span>
-                        </button>`;
-                    }
-                }
-
-                return `
-    <div class="bg-white shadow rounded-lg relative group overflow-hidden block">
-      <a href="product.html?id=${p.id}" class="block">
-        <div class="relative">
-            <img src="${imageUrl}" class="w-full h-48 object-cover" alt="${p.name}">
-            ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-1 rounded shadow-sm z-10">${p.category.name}</div>` : ''}
-        </div>
-        
-        <div class="p-3">
-            <h3 class="font-semibold text-gray-800 text-sm truncate leading-tight mb-2">${p.name}</h3>
-            
-            <div class="flex flex-col gap-2 mt-auto border-t pt-3 w-full">
-                ${priceHtml}
-            </div>
-        </div>
-      </a>
-      <div class="px-2 pb-3">
-        ${buttonHtml}
-      </div>
-    </div>
-  `}).join("") : `<p class="col-span-full text-center text-gray-500">No catalogues found.</p>`;
+            // We'll use the same grid for mobile now, so just call desktop list
+            renderDesktopList(products);
         }
 
         function applyFilters() {
-            let filtered = allProducts;
+            let filtered = window.allProducts || [];
 
             // Filter by Search Query
-            const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+            const searchInput = document.getElementById("searchInput");
+            const searchQuery = searchInput ? searchInput.value.toLowerCase() : "";
             if (searchQuery) {
                 filtered = filtered.filter(p =>
                     p.name.toLowerCase().includes(searchQuery) ||
@@ -609,9 +1040,12 @@ query {
 
         function setupFiltering() {
             // Search Input Listener
-            document.getElementById("searchInput").addEventListener("input", () => {
-                applyFilters();
-            });
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+                searchInput.addEventListener("input", () => {
+                    applyFilters();
+                });
+            }
 
             document.addEventListener("click", e => {
                 if (e.target.closest(".filter-category")) {
@@ -646,30 +1080,52 @@ query {
 
         (async () => {
             const data = await fetchSaleor();
-            if (!data) return alert("Error fetching Saleor API");
+            if (!data) {
+                document.getElementById("loadingSpinner").classList.add("hidden");
+                return alert("Error fetching Saleor API");
+            }
             allCategories = data.categories?.edges?.map(e => e.node) || [];
             let products = data.products?.edges?.map(e => e.node) || [];
+            
+            // Find the "catalogue" category and all its subcategories
+            const catalogueCategory = allCategories.find(c => c.name?.toLowerCase() === "catalogue");
+            const catalogueCategoryId = catalogueCategory?.id;
+            const catalogueSubcategoryIds = catalogueCategoryId
+                ? allCategories.filter(c => c.parent?.id === catalogueCategoryId).map(c => c.id)
+                : [];
+            
             // Find the hidden category and all its subcategories
             const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
             const hiddenCategoryId = hiddenCategory?.id;
             const hiddenSubcategoryIds = hiddenCategoryId
                 ? allCategories.filter(c => c.parent?.id === hiddenCategoryId).map(c => c.id)
                 : [];
-            // Filter: only products with catalogue AND not in hidden category
-            allProducts = products.filter(p => {
-                const hasCatalogue = getCatalogueLink(p) !== null;
-                if (!hasCatalogue) return false;
+            
+            // Filter: only products with catalogue AND (category name === "catalogue" OR parent is catalogue) AND not in hidden category
+            window.allProducts = products.filter(p => {
+                // const hasCatalogue = getCatalogueLink(p) !== null;
+                // if (!hasCatalogue) return false;
 
                 const categoryId = p.category?.id;
+                const categoryName = p.category?.name?.toLowerCase();
                 const parentCategoryId = p.category?.parent?.id;
+                const parentCategoryName = p.category?.parent?.name?.toLowerCase();
 
+                // Check if product belongs to catalogue category or its subcategories
+                const isCatalogueCategory = categoryName === "catalogue";
+                const isCatalogueSubcategory = catalogueSubcategoryIds.includes(categoryId);
+                const hasCatalogueParent = parentCategoryName === "catalogue" || parentCategoryId === catalogueCategoryId;
+                
+                if (!isCatalogueCategory && !isCatalogueSubcategory && !hasCatalogueParent) return false;
+
+                // Exclude hidden categories
                 if (categoryId === hiddenCategoryId) return false;
                 if (hiddenSubcategoryIds.includes(categoryId)) return false;
                 if (parentCategoryId === hiddenCategoryId) return false;
 
                 return true;
             });
-            renderCategoryFilters(allCategories, allProducts);
+            renderCategoryFilters(allCategories, window.allProducts);
             applyFilters();
             setupFiltering();
             updateCartBadge();

@@ -2,420 +2,892 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:image" content="https://b-oneinterior.com/logo.png">
-  <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
-  <title>Your Shopping Cart - Secure Checkout | B-One Interior</title>
-  <meta property="og:title" content="Your Shopping Cart - Secure Checkout | B-One Interior">
-  <meta property="og:description"
-    content="Review your selected items in the cart. Proceed to inquiry or checkout securely. Complete your purchase of premium home decor and furniture at B-One Interior.">
-  <script src="assets/js/tailwind.min.js"></script>
-  <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-  <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/owl.carousel.min.js"></script>
-  <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
-  <link rel="stylesheet" href="style.css?v=1.1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+    <title>Your Shopping Cart - Secure Checkout | B-One Interior</title>
+    <meta property="og:title" content="Your Shopping Cart - Secure Checkout | B-One Interior">
+    <meta property="og:description"
+        content="Review your selected items in the cart. Proceed to inquiry or checkout securely. Complete your purchase of premium home decor and furniture at B-One Interior.">
+    <script src="assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
+    <style>
+        :root {
+            --gold: #e8b84b;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(232, 184, 75, 0.15);
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(90deg, #e8b84b 0%, #f5d88b 50%, #e8b84b 100%);
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+        }
+
+        .cart-item-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .cart-item-card:hover {
+            border-color: var(--gold);
+            background: rgba(232, 184, 75, 0.03);
+        }
+
+        .qty-pill {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            height: 40px;
+            width: 100px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-weight: 900;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: rgba(232, 184, 75, 0.1);
+        }
+
+        .remove-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .remove-circle:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+    </style>
 
 </head>
 
 
 <body class="bg-black">
-  <!-- Header -->
-  <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
-    <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-      <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+    <!-- Header -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
 
-      <ul class="hidden md:flex space-x-6 text-gray-300">
-        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-        <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li>
-        <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li>
-        <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
-        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
-        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-        <li id="authLinkDesktop"></li>
-      </ul>
-      <button class="md:hidden text-gold-500">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </nav>
-
-
-
-    <div id="drawer">
-      <ul>
-        <li><a href="https://b-oneinterior.com/company">Company</a></li>
-        <li><a href="https://b-oneinterior.com/shop">Shop</a></li>
-        <li><a href="https://b-oneinterior.com/company">Services</a></li>
-        <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
-
-        
-        <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
-        <li><a href="terms.html">Terms and Conditions</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-        <li id="authLinkDrawer"></li>
-      </ul>
-    </div>
-    <label for="menu-toggle" class="overlay"></label>
-
-    <div class="fixedBottom">
-      <a href="https://b-oneinterior.com/" class="logoBx"></a>
-      <ul>
-        
-        <li>
-          <a href="https://b-oneinterior.com/catalogue">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div>Catalogue</div>
-          </a>
-        </li>
-
-<li>
-          <a href="https://b-oneinterior.com/gallery">
-            <ion-icon name="images-outline"></ion-icon>
-            <div>Gallery</div>
-          </a>
-        </li>
-
-        
-        <li></li>
-
-        
-
-        <li>
-          <a href="https://b-oneinterior.com/shop">
-            <ion-icon name="storefront-outline"></ion-icon>
-            <div>Shop</div>
-          </a>
-        </li>
-
-        <li>
-          <a href="https://b-oneinterior.com/cart">
-            <ion-icon name="cart-outline"></ion-icon>
-            <div>Cart</div>
-            <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
-            </span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <script>
-      function toggleDrawer() {
-        const drawer = document.getElementById("drawer");
-        const overlay = document.querySelector(".overlay");
-        if (drawer.style.left === "0px") {
-          drawer.style.left = "-250px";
-          overlay.style.opacity = "0";
-          overlay.style.pointerEvents = "none";
-        } else {
-          drawer.style.left = "0px";
-          overlay.style.opacity = "1";
-          overlay.style.pointerEvents = "auto";
-        }
-      }
-
-      const overlay = document.querySelector(".overlay");
-      overlay.addEventListener("click", () => {
-        const drawer = document.getElementById("drawer");
-        drawer.style.left = "-250px";
-        overlay.style.opacity = "0";
-        overlay.style.pointerEvents = "none";
-      });
-
-      // Auth check and navigation update
-      function checkAuth() {
-        const token = localStorage.getItem('saleor_auth_token');
-        const userEmail = localStorage.getItem('saleor_user_email');
-        const desktopLink = document.getElementById('authLinkDesktop');
-        const drawerLink = document.getElementById('authLinkDrawer');
-
-        if (token && userEmail) {
-          if (desktopLink) {
-            desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
-          }
-          if (drawerLink) {
-            drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
-          }
-        } else {
-          if (desktopLink) {
-            desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
-          }
-          if (drawerLink) {
-            drawerLink.innerHTML = `<a href="login.html">Login</a>`;
-          }
-        }
-      }
-
-      function signOut() {
-        localStorage.removeItem('saleor_auth_token');
-        localStorage.removeItem('saleor_refresh_token');
-        localStorage.removeItem('saleor_csrf_token');
-        localStorage.removeItem('saleor_user_email');
-        localStorage.removeItem('saleor_user_name');
-        window.location.reload();
-      }
-
-      document.addEventListener('DOMContentLoaded', checkAuth);
-    </script>
-  </header>
-
-
-  <div class="container mx-auto p-6 space-y-6">
-
-    <h1 class="text-2xl font-bold mb-4 golden-text">Shopping Cart</h1>
-
-    <div id="cartItems" class="space-y-4"></div>
-
-    <div class="flex justify-end mt-6 space-x-4">
-      <button
-        id="prevOrdersBtn"
-        onclick="showPreviousOrders()"
-        class="hidden px-8 py-3 rounded-full text-sm font-medium bg-gray-700 text-white hover:opacity-90 shadow-lg transition">
-        Previous Orders
-      </button>
-      <button
-        class="inquiry-btn px-8 py-3 rounded-full text-sm font-medium bg-gold text-white hover:opacity-90 shadow-lg transition">Send
-        whatsapp inquiry</button>
-    </div>
-
-  </div>
-
-  <script>
-    function loadCart() {
-      const container = document.getElementById("cartItems");
-      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-
-      if (list.length === 0) {
-        container.innerHTML = `<p class="text-gray-500 text-center py-10">Your cart is empty.</p>`;
-        return;
-      }
-
-      let grandTotal = 0;
-
-      const itemsHtml = list.map(item => {
-        let price = parseFloat(item.price);
-        if (isNaN(price)) price = 0;
-
-        const qty = parseInt(item.quantity || 1);
-        const total = price * qty;
-        grandTotal += total;
-
-        // Handle currency simply
-        const currency = item.currency === 'INR' ? '₹' : (item.currency || '');
-        const totalStr = item.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${item.currency}`;
-
-        return `
-        <tr class="border-b hover:bg-gray-50 align-top">
-            <!-- Product Column -->
-            <td class="p-2 w-1/2">
-                <a href="product.html?id=${item.id}" class="block relative w-full mb-2">
-                    <img src="${item.image}" class="w-full h-auto object-cover rounded-md shadow-sm aspect-[4/3]">
-                    <button class="exclude-btn absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-md transition" data-id="${item.id}" onclick="event.preventDefault();">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </a>
-                <p class="font-semibold text-gray-800 text-sm leading-tight">${item.name}</p>
-            </td>
-            
-            <!-- Qty Column -->
-            <td class="p-2 text-center align-middle">
-                <div class="flex items-center justify-center space-x-2">
-                    <button class="qty-btn bg-gray-200 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-gray-300 transition" onclick="updateQty('${item.id}', -1)">-</button>
-                    <span class="font-bold text-gray-900 bg-gray-100 py-1 px-3 rounded-full text-sm">${qty}</span>
-                    <button class="qty-btn bg-gray-200 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-gray-300 transition" onclick="updateQty('${item.id}', 1)">+</button>
-                </div>
-            </td>
-            
-            <!-- Total Column -->
-            <td class="p-2 text-right align-middle">
-                <span class="font-bold text-gold text-sm whitespace-nowrap">${totalStr}</span>
-            </td>
-        </tr>
-        `;
-      }).join("");
-
-      container.innerHTML = `
-        <div class="overflow-x-auto bg-white shadow rounded-lg">
-            <table class="w-full text-left border-collapse table-auto">
-                <thead>
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
-                        <th class="p-2 w-1/2">Product</th>
-                        <th class="p-2 text-center">Qty</th>
-                        <th class="p-2 text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700 text-sm">
-                    ${itemsHtml}
-                </tbody>
-                <tfoot>
-                    <tr class="bg-gray-50 font-bold text-gray-800">
-                        <td class="p-4 text-right" colspan="2">Grand Total:</td>
-                        <td class="p-4 text-right text-lg text-gold">₹${grandTotal.toFixed(2)}</td>
-                    </tr>
-                </tfoot>
-            </table>
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <a href="https://b-oneinterior.com/">
+                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
         </div>
-      `;
 
-      document.querySelectorAll(".exclude-btn").forEach(btn => {
-        btn.onclick = () => {
-          const id = btn.dataset.id;
-          let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-          list = list.filter(i => i.id !== id);
-          localStorage.setItem("inquiryList", JSON.stringify(list));
-          loadCart(); // Refresh
-          updateCartBadge();
-        };
-      });
-    }
-    function updateCartBadge() {
-      const badge = document.getElementById("cartCountBadge");
-      if (!badge) return; // Badge element may not exist
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
 
-      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      const count = list.length;
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
+                <li><a href="https://b-oneinterior.com/cart"
+                        class="text-gold-500 underline transition font-bold">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+        </nav>
 
-      if (count > 0) {
-        badge.textContent = count;
-        badge.classList.remove("hidden");
-      } else {
-        badge.classList.add("hidden");
-      }
-    }
+        <!-- Floating social icons -->
+        <div class="floating-icon">
+            <div class="cursor-pointer" onclick="openTechModal()">
+                <img style="max-width: 40px;height: 40px;" src="images/technician.png" alt="Expert">
+            </div>
+            <a target="_blank" href="tel:+917738130131"><img src="images/call_icon.png" alt="Call"></a>
+            <a target="_blank" href="https://wa.me/+917738130131"><img src="images/whatsapp.png" alt="WhatsApp"></a>
+            <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img src="images/facebook.png"
+                    alt="FB"></a>
+            <a target="_blank" href="https://www.instagram.com/bone.interior.solution"><img src="images/instagram.png"
+                    alt="IG"></a>
+            <a target="_blank" href="https://youtube.com/@believeone307"><img src="images/youtube.png" alt="YT"></a>
+            <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img src="images/map_marker.png"
+                    alt="Map"></a>
+        </div>
 
-    function updateQty(id, change) {
-      let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      const item = list.find(i => i.id === id);
-      if (item) {
-        item.quantity = (parseInt(item.quantity) || 1) + change;
-        if (item.quantity <= 0) {
-          list = list.filter(i => i.id !== id);
+        <div id="drawer">
+            <ul>
+                <li><a href="https://b-oneinterior.com/">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
+            </ul>
+
+            <div id="drawer-social">
+                <p
+                    style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                    Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank"><img src="images/call_icon.png"
+                            alt=""><span>Call</span></a>
+                    <a href="https://wa.me/+917738130131" target="_blank"><img src="images/whatsapp.png"
+                            alt=""><span>WhatsApp</span></a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank"><img src="images/facebook.png"
+                            alt=""><span>Facebook</span></a>
+                    <a href="https://www.instagram.com/bone.interior.solution" target="_blank"><img
+                            src="images/instagram.png" alt=""><span>Instagram</span></a>
+                    <!-- <a href="javascript:void(0)" onclick="closeMobileDrawer(); openTechModal();" style="color:#D4AF37;">
+                        <img src="images/technician.png" alt="" style="border-color:#D4AF37;">
+                        <span>Expert</span>
+                    </a> -->
+                </div>
+            </div>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li>
+                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                                stroke-width="2" />
+                            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                    </a>
+                </li>
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
+                    </a>
+                </li>
+
+                <li><!-- Center Logo Spacer --></li>
+
+                <li>
+                    <a href="https://b-oneinterior.com/catalogue"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter opacity-60">Catalogue</div>
+                    </a>
+                </li>
+
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/cart"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <div class="text-[14px] font-black tracking-tighter text-gold">Cart</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            function toggleDrawer() {
+                const d = document.getElementById("drawer");
+                const o = document.querySelector(".overlay");
+                if (d.style.left === "0px") { d.style.left = "-250px"; o.style.opacity = "0"; o.style.pointerEvents = "none"; }
+                else { d.style.left = "0px"; o.style.opacity = "1"; o.style.pointerEvents = "auto"; }
+            }
+            function closeMobileDrawer() {
+                document.getElementById("drawer").style.left = "-250px";
+                document.querySelector(".overlay").style.opacity = "0";
+                document.querySelector(".overlay").style.pointerEvents = "none";
+            }
+            document.querySelector(".overlay").addEventListener("click", closeMobileDrawer);
+
+            function checkAuth() {
+                const token = localStorage.getItem('saleor_auth_token');
+                const userEmail = localStorage.getItem('saleor_user_email');
+                const dLink = document.getElementById('authLinkDesktop');
+                const drLink = document.getElementById('authLinkDrawer');
+                if (token && userEmail) {
+                    if (dLink) dLink.innerHTML = `<a href="#" onclick="signOut()" class="text-[10px] font-black uppercase border border-gold/30 px-3 py-1.5 rounded-lg hover:bg-gold hover:text-black transition">Sign Out</a>`;
+                    if (drLink) drLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                } else {
+                    if (dLink) dLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                    if (drLink) drLink.innerHTML = `<a href="login.html">Login</a>`;
+                }
+            }
+            function signOut() {
+                localStorage.removeItem('saleor_auth_token'); localStorage.removeItem('saleor_refresh_token'); localStorage.removeItem('saleor_csrf_token');
+                localStorage.removeItem('saleor_user_email'); localStorage.removeItem('saleor_user_name'); window.location.reload();
+            }
+            document.addEventListener('DOMContentLoaded', checkAuth);
+
+            function updateWishlistBadge() {
+                const b = document.querySelector('.wishlist-badge');
+                if (!b) return;
+                const w = JSON.parse(localStorage.getItem("wishlist") || "{}");
+                let t = 0; Object.values(w).forEach(i => t += i.length);
+                if (t > 0) { b.textContent = t; b.style.display = 'flex'; } else { b.style.display = 'none'; }
+            }
+            updateWishlistBadge();
+
+            let technicians = [];
+            async function loadTechnicians() {
+                const query = `query { pages(first: 100) { edges { node { id title content metadata } } } }`;
+                try {
+                    const res = await fetch("https://api.b-oneinterior.com/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
+                    const json = await res.json();
+                    technicians = (json.data?.pages?.edges || []).map(edge => {
+                        const n = edge.node;
+                        const p = n.metadata.find(m => m.key === "number")?.value || "+917738130131";
+                        const c = n.metadata.find(m => m.key === "price")?.value || "500";
+                        let name = n.title;
+                        try { const cd = JSON.parse(n.content); if (cd.blocks?.[0]?.data?.text) name = cd.blocks[0].data.text; } catch (e) { }
+                        return { category: n.title, name, address: "Mumbai", phone: p, charge: "₹" + c };
+                    });
+                } catch (e) { console.error(e); }
+            }
+            function renderTechList(data) {
+                const c = document.getElementById('techListContainer'); if (!c) return;
+                if (data.length === 0) { c.innerHTML = `<p class="text-center py-10 text-gray-400 font-bold uppercase text-[10px]">No Experts Found</p>`; return; }
+                c.innerHTML = data.map(t => `
+                <div class="bg-black/40 p-5 rounded-2xl border border-white/10 hover:border-gold/50 transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-gold/10 text-gold text-[9px] font-black px-2 py-1 rounded-md uppercase border border-gold/20">${t.category}</span>
+                        <span class="text-gold font-black">${t.charge}</span>
+                    </div>
+                    <h3 class="font-black text-white text-lg uppercase tracking-tight mb-1 group-hover:text-gold transition">${t.name}</h3>
+                    <p class="text-white/40 text-[10px] font-bold flex items-center gap-1 mb-4 uppercase"><ion-icon name="location-outline"></ion-icon> Mumbai</p>
+                    <a href="tel:${t.phone}" class="flex items-center justify-center gap-2 gold-gradient-bg text-black py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:opacity-90 shadow-xl">
+                        <ion-icon name="call" class="text-lg"></ion-icon> Call Expert
+                    </a>
+                </div>
+            `).join('');
+            }
+            function filterTechnicians() {
+                const q = document.getElementById('techSearchInput').value.toLowerCase();
+                renderTechList(technicians.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)));
+            }
+            function openTechModal() {
+                document.getElementById('techModal').classList.remove('hidden');
+                document.getElementById('techSearchInput').value = '';
+                (async () => { await loadTechnicians(); renderTechList(technicians); setupTechVoiceSearch(); })();
+            }
+            function closeTechModal() { document.getElementById('techModal').classList.add('hidden'); }
+            function setupTechVoiceSearch() {
+                const btn = document.getElementById('techVoiceBtn');
+                const rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (rec && btn) {
+                    const r = new rec(); r.lang = 'en-IN';
+                    btn.onclick = (e) => { e.preventDefault(); try { r.start(); } catch (err) { } };
+                    r.onstart = () => { btn.classList.add('text-red-500', 'animate-pulse'); };
+                    r.onresult = (ev) => { document.getElementById('techSearchInput').value = ev.results[0][0].transcript; filterTechnicians(); };
+                    r.onend = () => { btn.classList.remove('text-red-500', 'animate-pulse'); };
+                }
+            }
+        </script>
+    </header>
+    <!-- Search Bar -->
+    <!-- <div class="container mx-auto px-4 pb-4 pt-2 flex justify-center border-t border-gray-800" id="homeSearchBar">
+        <div class="relative w-full max-w-md">
+            <input type="text" id="homeSearchInput" placeholder="Fetching products..." disabled autocomplete="off"
+                class="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:border-gold shadow-sm">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <button id="voiceSearchBtn"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 10v2a7 7 0 01-14 0v-2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                </svg>
+            </button>
+            <div id="searchDropdown"
+                class="absolute w-full mt-2 bg-white rounded-lg shadow-xl z-50 hidden max-h-96 overflow-y-auto border border-gray-200">
+            </div>
+        </div>
+    </div> -->
+
+    <script>
+        const searchInput = document.getElementById('homeSearchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.classList.add('hidden');
+            }
+        });
+
+        searchInput.addEventListener('input', function (e) {
+            const query = this.value.trim().toLowerCase();
+
+            if (query.length === 0) {
+                searchDropdown.classList.add('hidden');
+                return;
+            }
+
+            if (window.allProducts && window.allProducts.length > 0) {
+                const results = [];
+
+                window.allProducts.forEach(p => {
+                    const product = p.node;
+                    const productName = product.name.toLowerCase();
+                    // १. प्रोडक्ट का नाम चेक करें
+                    if (productName.includes(query)) {
+                        results.push({
+                            id: product.id,
+                            name: product.name,
+                            thumbnail: product.thumbnail?.url,
+                            price: product.pricing?.priceRange?.start?.gross?.amount,
+                            currency: product.pricing?.priceRange?.start?.gross?.currency
+                        });
+                    }
+
+                    // २. वेरिएंट्स के नाम चेक करें
+                    if (product.variants) {
+                        product.variants.forEach(v => {
+                            if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                console.log('v.name.toLowerCase().includes(query)==============', v)
+                                results.push({
+                                    id: v.id, // वेरिएंट की ID
+                                    name: `${v.name}`,
+                                    thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                    price: v.pricing?.price?.gross?.amount,
+                                    currency: v.pricing?.price?.gross?.currency
+                                });
+                            }
+                        });
+                    }
+                });
+
+                renderDropdown(results);
+            }
+        });
+
+        function renderDropdown(items) {
+            if (items.length === 0) {
+                searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
+                searchDropdown.classList.remove('hidden');
+                return;
+            }
+
+            const html = items.map(item => {
+                const price = item.price ? item.price.toFixed(2) : "0.00";
+                const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                const formattedPrice = item.currency === 'INR' ? `₹${price}` : `${price} ${symbol}`;
+
+                return `
+                    <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                         onclick="window.location.href='product.html?id=${item.id}'">
+                        <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            searchDropdown.innerHTML = html;
+            searchDropdown.classList.remove('hidden');
         }
-        localStorage.setItem("inquiryList", JSON.stringify(list));
+
+        // Voice Search Logic
+        // Voice Search Logic
+        // Voice Search Logic for Mobile & Desktop
+        const voiceBtn = document.getElementById('voiceSearchBtn');
+        const homeSearchInput = document.getElementById('homeSearchInput');
+
+        // Mobile compatibility check
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false; // मोबाइल पर बेहतर प्रदर्शन के लिए
+            recognition.maxAlternatives = 1;
+
+            voiceBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // मोबाइल पर फॉर्म सबमिशन रोकने के लिए
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.log("Recognition already started");
+                }
+            });
+
+            recognition.onstart = () => {
+                voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                homeSearchInput.placeholder = "Listening...";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                homeSearchInput.value = transcript;
+                homeSearchInput.dispatchEvent(new Event('input'));
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Error:", event.error);
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                if (event.error === 'not-allowed') alert("Please allow microphone access");
+            };
+
+            recognition.onend = () => {
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                homeSearchInput.placeholder = "Search products...";
+            };
+        } else {
+            voiceBtn.style.display = 'none';
+        }
+    </script>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 max-w-4xl min-h-[70vh]">
+
+        <div class="flex items-center justify-between mb-10">
+            <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none">Inquiry <span
+                    class="gold-gradient-text">Cart</span></h1>
+            <button id="prevOrdersBtn" onclick="showPreviousOrders()"
+                class="hidden px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/10 hover:border-gold transition">
+                Order History
+            </button>
+        </div>
+
+        <div id="cartItems" class="space-y-6"></div>
+
+        <div id="cartSummary" class="mt-12 space-y-4"></div>
+
+    </main>
+
+    <!-- Address Modal -->
+    <div id="addressModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAddressModal()"></div>
+        <div class="glass-panel w-full max-w-lg p-8 relative z-10 animate-in fade-in zoom-in duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black uppercase tracking-tight gold-gradient-text">Delivery Address</h2>
+                <button onclick="closeAddressModal()" class="text-white/40 hover:text-white transition">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+
+            <form id="addressForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">First
+                            Name</label>
+                        <input type="text" id="firstName" required
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Last
+                            Name</label>
+                        <input type="text" id="lastName" required
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Mobile
+                        No</label>
+                    <input type="tel" id="mobileNo" required
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Full
+                        Address</label>
+                    <textarea id="fullAddress" required rows="3"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition resize-none"></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full gold-gradient-bg text-black font-black uppercase py-4 rounded-xl tracking-[0.2em] shadow-xl hover:opacity-90 transition transform active:scale-95 mt-4">
+                    Confirm & Send Inquiry
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function loadCart() {
+            const container = document.getElementById("cartItems");
+            const summaryContainer = document.getElementById("cartSummary");
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+
+            if (list.length === 0) {
+                container.innerHTML = `
+          <div class="glass-panel p-5 flex flex-col items-center justify-center text-center">
+            <div class="my-8 rounded-full bg-gold/5 flex items-center justify-center text-gold  animate-pulse">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <path d="M4 5H6L7.5 14H18L20 7H7" stroke="currentColor" strokeWidth="2"/>
+                <circle cx="9" cy="19" r="1.5" stroke="currentColor" strokeWidth="2"/>
+                <circle cx="17" cy="19" r="1.5" stroke="currentColor" strokeWidth="2"/>
+             </svg>
+            </div>
+            <h2 class="text-3xl font-black uppercase tracking-tight mb-2">Cart is empty</h2>
+            <p class="text-white/40 text-xs uppercase tracking-widest mb-8">Ready to start your design journey?</p>
+            <a href="https://b-oneinterior.com/" class="gold-gradient-bg px-10 py-4 rounded-2xl text-black font-black uppercase text-sm tracking-widest hover:opacity-90 transition mb-3">Return to Collection</a>
+          </div>
+        `;
+                summaryContainer.innerHTML = "";
+                return;
+            }
+
+            let grandTotal = 0;
+
+            const itemsHtml = list.map(item => {
+                let price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.quantity || 1);
+                const total = price * qty;
+                grandTotal += total;
+
+                const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                const totalStr = symbol + total.toFixed(2);
+
+                return `
+        <div class="cart-item-card p-4 md:p-6 flex items-center gap-4 md:gap-8 relative overflow-hidden group">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-gold/5 blur-[80px] rounded-full group-hover:bg-gold/10 transition"></div>
+            
+            <a href="product.html?id=${item.id}" class="w-24 h-24 md:w-32 md:h-32 rounded-[20px] overflow-hidden flex-shrink-0 border border-white/10 group-hover:border-gold/30 transition shadow-2xl">
+                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+            </a>
+
+            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex-grow min-w-0">
+                    <p class="text-[10px] font-black text-gold uppercase tracking-[0.2em] mb-1">${item.category || 'Collection'}</p>
+                    <h3 class="text-lg font-black text-white uppercase tracking-tight leading-none mb-1 truncate">${item.name}</h3>
+                    <p class="text-xs font-bold text-white/40 uppercase tracking-widest">${symbol}${price.toFixed(2)} per unit</p>
+                </div>
+
+                <div class="flex items-center gap-6 justify-between md:justify-end">
+                    <div class="qty-pill">
+                        <button onclick="updateQty('${item.id}', -1)" class="qty-btn">−</button>
+                        <span class="text-sm font-black text-white w-8 text-center">${qty}</span>
+                        <button onclick="updateQty('${item.id}', 1)" class="qty-btn">+</button>
+                    </div>
+
+                    <div class="text-right min-w-[100px]">
+                        <p class="text-[9px] font-bold text-white/30 uppercase tracking-widest mb-0.5">Subtotal</p>
+                        <p class="text-xl font-black gold-gradient-text">${totalStr}</p>
+                    </div>
+
+                    <button class="remove-circle flex-shrink-0" onclick="removeFromCart('${item.id}')">
+                        <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+            }).join("");
+
+            container.innerHTML = itemsHtml;
+
+            summaryContainer.innerHTML = `
+        <div class="glass-panel p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 mt-10 shadow-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-gold/[0.02] pointer-events-none"></div>
+            <div>
+                <p class="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-2">Total Inquiry Estimate</p>
+                <p class="text-5xl md:text-6xl font-black gold-gradient-text tracking-tighter leading-none">₹${grandTotal.toFixed(2)}</p>
+            </div>
+            <button onclick="openAddressModal()" 
+                class="w-full md:w-auto h-20 gold-gradient-bg px-12 rounded-[24px] text-black font-black uppercase text-sm tracking-[0.2em] hover:opacity-90 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
+                <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
+                Inquire on Whatsapp
+            </button>
+        </div>
+        <p class="text-center text-white/20 text-[9px] uppercase tracking-widest mt-6">Secure checkout provided by B-One Interior Design Team</p>
+      `;
+        }
+
+        function removeFromCart(id) {
+            let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            list = list.filter(i => i.id !== id);
+            localStorage.setItem("inquiryList", JSON.stringify(list));
+            loadCart();
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById("cartCountBadge");
+            if (!badge) return;
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const count = list.length;
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+
+        function updateQty(id, change) {
+            let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = list.find(i => i.id === id);
+            if (item) {
+                item.quantity = (parseInt(item.quantity) || 1) + change;
+                if (item.quantity <= 0) {
+                    list = list.filter(i => i.id !== id);
+                }
+                localStorage.setItem("inquiryList", JSON.stringify(list));
+                loadCart();
+                updateCartBadge();
+            }
+        }
+
+        function openAddressModal() {
+            const modal = document.getElementById("addressModal");
+            modal.classList.remove("hidden");
+
+            // Prefill from localStorage
+            const savedAddress = JSON.parse(localStorage.getItem("userAddress") || "{}");
+            if (savedAddress.firstName) document.getElementById("firstName").value = savedAddress.firstName;
+            if (savedAddress.lastName) document.getElementById("lastName").value = savedAddress.lastName;
+            if (savedAddress.mobileNo) document.getElementById("mobileNo").value = savedAddress.mobileNo;
+            if (savedAddress.fullAddress) document.getElementById("fullAddress").value = savedAddress.fullAddress;
+        }
+
+        function closeAddressModal() {
+            document.getElementById("addressModal").classList.add("hidden");
+        }
+
+        document.getElementById("addressForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const addressData = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                mobileNo: document.getElementById("mobileNo").value,
+                fullAddress: document.getElementById("fullAddress").value
+            };
+
+            // Store in localStorage
+            localStorage.setItem("userAddress", JSON.stringify(addressData));
+
+            // Close modal and send WhatsApp inquiry
+            closeAddressModal();
+            sendWhatsappInquiry(addressData);
+        });
+
+        function sendWhatsappInquiry(addressData) {
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            if (list.length === 0) return alert("Your cart is empty.");
+
+            let message = "Hi, I am interested in the following products:\n\n";
+            let grandTotal = 0;
+
+            list.forEach((item, index) => {
+                let price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.quantity || 1);
+                const total = price * qty;
+                grandTotal += total;
+
+                const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                const priceStr = symbol + price.toFixed(2);
+                const totalStr = symbol + total.toFixed(2);
+
+                message += `${index + 1}. *${item.name}*\n`;
+                message += `   Qty: ${qty}\n`;
+                message += `   Price: ${priceStr}\n`;
+                message += `   Total: ${totalStr}\n\n`;
+            });
+
+            message += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n\n`;
+
+            if (addressData) {
+                message += `*Delivery Details:*\n`;
+                message += `Name: ${addressData.firstName} ${addressData.lastName}\n`;
+                message += `Mobile: ${addressData.mobileNo}\n`;
+                message += `Address: ${addressData.fullAddress}`;
+            }
+
+            const phoneNumber = "917738130131";
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+
+            // Storing order history with date as requested
+            const oldOrders = JSON.parse(localStorage.getItem("orderList") || "[]");
+            const newOrderEntry = {
+                id: Date.now(),
+                date: new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' }),
+                items: list,
+                grandTotal: grandTotal.toFixed(2),
+                address: addressData
+            };
+
+            oldOrders.unshift(newOrderEntry); // Most recent first
+            localStorage.setItem("orderList", JSON.stringify(oldOrders));
+
+            localStorage.setItem("inquiryList", JSON.stringify([]));
+            loadCart();
+            updateCartBadge();
+            checkPreviousOrders();
+        }
+
+        function showPreviousOrders() {
+            const container = document.getElementById("cartItems");
+            const summaryContainer = document.getElementById("cartSummary");
+            const orders = JSON.parse(localStorage.getItem("orderList") || "[]");
+
+            if (orders.length === 0) {
+                container.innerHTML = `<p class="text-white/40 text-center py-20 uppercase tracking-widest">No previous orders found.</p>`;
+                return;
+            }
+
+            summaryContainer.innerHTML = ""; // Clear summary on history view
+
+            const ordersHtml = orders.map(order => {
+                const itemsList = order.items.map(item => `
+            <div class="flex items-center gap-4 py-2 border-b border-white/5 last:border-0">
+                <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
+                <div class="flex-grow">
+                    <p class="text-xs font-black uppercase text-white tracking-tight">${item.name}</p>
+                    <p class="text-[9px] font-bold text-white/30 uppercase tracking-widest">${item.quantity} units</p>
+                </div>
+                <p class="text-xs font-black gold-gradient-text">${item.currency === 'INR' ? '₹' : ''}${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
+            </div>
+        `).join("");
+
+                return `
+        <div class="glass-panel p-6 mb-6">
+            <div class="flex items-center justify-between mb-4 border-b border-gold/10 pb-4">
+                <div>
+                    <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Inquiry Date</p>
+                    <p class="text-sm font-black text-white uppercase">${order.date}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Total</p>
+                    <p class="text-xl font-black gold-gradient-text tracking-tighter">₹${order.grandTotal}</p>
+                </div>
+            </div>
+            <div class="space-y-1">
+                ${itemsList}
+            </div>
+        </div>
+        `;
+            }).join("");
+
+            container.innerHTML = `
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-xl font-black gold-gradient-text uppercase tracking-widest">Inquiry History</h2>
+            <button onclick="loadCart()" class="text-[10px] font-black uppercase tracking-widest bg-gold/10 text-gold border border-gold/20 px-6 py-2 rounded-xl hover:bg-gold hover:text-black transition">Back to Cart</button>
+        </div>
+        ${ordersHtml}
+      `;
+        }
+
+        function checkPreviousOrders() {
+            const btn = document.getElementById("prevOrdersBtn");
+            const oldOrderList = JSON.parse(localStorage.getItem("orderList") || "[]");
+            if (oldOrderList?.length > 0) {
+                btn.classList.remove("hidden");
+            } else {
+                btn.classList.add("hidden");
+            }
+        }
+
         loadCart();
         updateCartBadge();
-      }
-    }
-
-    function showPreviousOrders() {
-      const container = document.getElementById("cartItems");
-      const list = JSON.parse(localStorage.getItem("orderList") || "[]");
-
-      if (list.length === 0) {
-        container.innerHTML = `<p class="text-gray-500 text-center py-10">No previous orders found.</p>`;
-        return;
-      }
-
-      const itemsHtml = list.map(item => {
-        let price = parseFloat(item.price);
-        if (isNaN(price)) price = 0;
-        const qty = parseInt(item.quantity || 1);
-        const total = price * qty;
-        const totalStr = item.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${item.currency}`;
-
-        return `
-        <tr class="border-b hover:bg-gray-50 align-top">
-            <td class="p-2 w-1/2">
-                <a href="product.html?id=${item.id}" class="block relative w-full mb-2">
-                    <img src="${item.image}" class="w-full h-auto object-cover rounded-md shadow-sm aspect-[4/3]">
-                </a>
-                <p class="font-semibold text-gray-800 text-sm leading-tight">${item.name}</p>
-            </td>
-            <td class="p-2 text-center align-middle">
-                 <span class="font-bold text-gray-900 bg-gray-100 py-1 px-3 rounded-full text-sm">${qty}</span>
-            </td>
-            <td class="p-2 text-right align-middle">
-                <span class="font-bold text-gold text-sm whitespace-nowrap">${totalStr}</span>
-            </td>
-        </tr>
-        `;
-      }).join("");
-
-      container.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-gold">Previous Orders</h2>
-            <button onclick="loadCart()" class="text-sm text-white hover:text-[#D4AF37] transition underline">Back to Cart</button>
-        </div>
-        <div class="overflow-x-auto bg-white shadow rounded-lg">
-            <table class="w-full text-left border-collapse table-auto">
-                <thead>
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
-                        <th class="p-2 w-1/2">Product</th>
-                        <th class="p-2 text-center">Qty</th>
-                        <th class="p-2 text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700 text-sm">
-                    ${itemsHtml}
-                </tbody>
-            </table>
-        </div>
-      `;
-    }
-
-    function checkPreviousOrders() {
-      const btn = document.getElementById("prevOrdersBtn");
-      const oldOrderList = JSON.parse(localStorage.getItem("orderList") || "[]");
-      if (oldOrderList?.length > 0) {
-        btn.classList.remove("hidden");
-      } else {
-        btn.classList.add("hidden");
-      }
-    }
+        checkPreviousOrders();
 
 
+    </script>
 
-    function sendWhatsappInquiry() {
-      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-      const oldOrderList = JSON.parse(localStorage.getItem("orderList") || "[]");
-      const newOrderList = [ ...list, ...oldOrderList];
-      if (list.length === 0) return alert("Your cart is empty.");
-
-      let message = "Hi, I am interested in the following products:\n";
-      let grandTotal = 0;
-
-      list.forEach((item, index) => {
-        let price = parseFloat(item.price);
-        if (isNaN(price)) price = 0;
-        const qty = parseInt(item.quantity || 1);
-        const total = price * qty;
-        grandTotal += total;
-
-        const currency = item.currency === 'INR' ? '₹' : (item.currency || '');
-        const priceStr = item.currency === 'INR' ? `₹${price.toFixed(2)}` : `${price.toFixed(2)} ${item.currency}`;
-        const totalStr = item.currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${item.currency}`;
-
-        message += `${index + 1}. *${item.name}*\n`;
-        message += `   Qty: ${qty}\n`;
-        message += `   Price: ${priceStr}\n`;
-        message += `   Total: ${totalStr}\n\n`;
-      });
-
-      message += `*Grand Total: ₹${grandTotal.toFixed(2)}*`;
-
-      const phoneNumber = "917738130131";
-      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-      localStorage.setItem("orderList", JSON.stringify(newOrderList));
-      localStorage.setItem("inquiryList", JSON.stringify([]));
-      loadCart();
-      updateCartBadge();
-      checkPreviousOrders();
-    }
-
-    document.querySelector('.inquiry-btn').addEventListener('click', sendWhatsappInquiry);
-
-    loadCart();
-    updateCartBadge();
-    checkPreviousOrders();
-
-
-  </script>
-
-  <script src="placeholder.js"></script>
+    <script src="placeholder.js"></script>
 </body>
 
 </html>
