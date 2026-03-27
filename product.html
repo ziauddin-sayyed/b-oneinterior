@@ -1003,7 +1003,7 @@
                                 <span class="text-xs font-black gold-gradient-text">
                                     ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
                                 </span>
-                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
                                     <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
                                 </div>
                             </div>
@@ -1140,7 +1140,7 @@
                         </div>
                         <div class="p-4 flex items-center justify-between bg-black/40">
                             <span class="text-xs font-black gold-gradient-text">${formattedPrice}</span>
-                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:bg-gold group-hover:text-black transition">
+                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
                                 <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
                             </div>
                         </div>
@@ -1382,7 +1382,7 @@
                             </span>
                         ` : ''}
                     </div>
-                    ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
+                    ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
                 </div>
             `;
             document.getElementById("priceContainer").innerHTML = priceHtml;
@@ -1764,7 +1764,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="mt-2 px-1">
-                            <p class="text-[10px] font-black text-white/40 uppercase tracking-tighter truncate">${v.name}</p>
+                            <p class="text-[10px] font-black text-white/60 uppercase tracking-tighter truncate">${v.name}</p>
                             <p class="text-xs font-black gold-gradient-text">${symbol}${sellingPrice.toFixed(2)}</p>
                         </div>
                         ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}

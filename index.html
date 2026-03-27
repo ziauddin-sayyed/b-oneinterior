@@ -1476,21 +1476,21 @@
             const container = document.getElementById("shopCategoryFilter");
 
             container.innerHTML = `
-                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="all">
+                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="all">
                     <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                         <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
                     </div>
-                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter">All</span>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter ${selectedShopParentCategory === 'all' ? 'underline underline-offset-4' : ''}">All</span>
                 </div>
                 ${parents.map(c => `
-                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-110' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
+                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
                         <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                             ${c.backgroundImage?.url
                     ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
                     : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
                 }
                         </div>
-                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center">${c.name}</span>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center ${selectedShopParentCategory === c.id ? 'underline underline-offset-4' : ''}">${c.name}</span>
                     </div>
                 `).join("")}
             `;
