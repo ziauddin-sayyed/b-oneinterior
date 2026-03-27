@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
     <meta charset="UTF-8">
@@ -69,7 +69,7 @@
 
         .category-pill {
             display: inline-block;
-            background: linear-gradient(90deg, #e8b84b22, #e8b84b11);
+            background: white;
             border: 1px solid rgba(232, 184, 75, 0.3);
             color: #e8b84b;
             font-size: 10px;
@@ -144,10 +144,42 @@
             background: #e8b84b44;
             border-radius: 10px;
         }
+
+        /* Fly to Cart Animation Styles */
+        .fly-item {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(232, 184, 75, 0.5);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pulse-gold {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(232, 184, 75, 0.4);
+            }
+
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(232, 184, 75, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(232, 184, 75, 0);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse-gold 0.5s ease-in-out;
+        }
     </style>
 </head>
 
-<body class="bg-[#0a0a0a] min-h-screen">
+<body class="bg-[#0a0a0a] min-h-screen overflow-x-hidden">
 
     <!-- ── HEADER ─────────────────────────────────────────── -->
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
@@ -176,9 +208,11 @@
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="text-gold-500 underline transition font-bold">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist"
+                        class="text-gold-500 underline transition font-bold">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -259,7 +293,7 @@
         </div>
         <label for="menu-toggle" class="overlay"></label>
 
-      
+
 
         <script>
             function toggleDrawer() {
@@ -667,10 +701,22 @@
                 </h1>
                 <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest" id="wishCountLabel">0 saved items</p>
             </div>
-            <button onclick="clearWishlist()" id="clearAllBtn"
-                class="hidden text-gray-500 hover:text-red-500 text-xs font-bold uppercase tracking-widest border border-gray-700 hover:border-red-500 px-4 py-2 rounded-xl transition">
-                Clear All
-            </button>
+            <div class="flex items-center gap-3 ml-auto">
+                <div id="wishlistSearchContainer" class="relative hidden">
+                    <input type="text" id="wishlistSearchInput" placeholder="Search wishlist..."
+                        oninput="filterWishlist(this.value)"
+                        class="pl-9 pr-4 py-2 bg-black border border-[#e8b84b60] rounded-xl text-white text-sm focus:outline-none focus:border-gold-500 transition w-full sm:w-64">
+                    <svg class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <button onclick="clearWishlist()" id="clearAllBtn"
+                    class="hidden text-red-500 hover:text-gold-500 text-xs font-bold uppercase tracking-widest border border-red-500 hover:border-gold-500 px-4 py-2 rounded-xl transition">
+                    Clear All
+                </button>
+            </div>
         </div>
     </div>
 
@@ -700,23 +746,25 @@
                 <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                            stroke-width="2" />
                         <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                      </svg>
+                    </svg>
                     <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
                 </a>
             </li>
             <li class="relative">
                 <a href="https://b-oneinterior.com/wishlist"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                         </path>
                     </svg>
                     <div class="text-[14px] font-black tracking-tighter text-gold">Wishlist</div>
-                    <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                    <span
+                        class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                         style="display:none;"></span>
                 </a>
             </li>
@@ -726,8 +774,8 @@
             <li>
                 <a href="https://b-oneinterior.com/catalogue"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="7" height="7"></rect>
                         <rect x="14" y="3" width="7" height="7"></rect>
                         <rect x="14" y="14" width="7" height="7"></rect>
@@ -738,9 +786,10 @@
             </li>
 
             <li class="relative">
-                <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+                <a href="https://b-oneinterior.com/cart"
+                    class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -791,24 +840,51 @@
         // Per-card qty state for wishlist page
         const wlQtys = {};
 
-        function wlAddItem(id, name, image, price, currency, category) {
+        function wlHandleQtyInput(input, id) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '';
+            input.value = value;
+        }
+
+        function wlFinalizeQty(input, id) {
+            let value = parseInt(input.value, 10);
+            if (isNaN(value) || value <= 0) value = 1;
+            input.value = value;
+
+            wlQtys[id] = value;
+            let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = value;
+                localStorage.setItem('inquiryList', JSON.stringify(cart));
+                refreshCartBadge();
+            }
+        }
+
+        function wlAddItem(btnElement, id, name, image, price, currency, category) {
             const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
             let cart = JSON.parse(localStorage.getItem('inquiryList') || '[]');
             const existing = cart.find(i => i.id === id);
-            if (existing) {
-                existing.quantity = (parseInt(existing.quantity) || 0) + 1;
-                wlQtys[id] = existing.quantity;
-            } else {
+
+            if (!existing) {
                 cart.push({ id, name, image, price: parseFloat(price) || 0, currency, category, quantity: 1 });
                 wlQtys[id] = 1;
+
+                // Trigger fly-to-cart animation on first add
+                const card = btnElement.closest('.wish-card');
+                const img = card ? card.querySelector('img') : null;
+                if (img) flyToCart(img, '#cartCountBadge');
+            } else {
+                existing.quantity = (parseInt(existing.quantity) || 0) + 1;
+                wlQtys[id] = existing.quantity;
             }
             localStorage.setItem('inquiryList', JSON.stringify(cart));
             refreshCartBadge();
-            
+
             // Swap button → qty control for ALL instances
             document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
             document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
-            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.value = wlQtys[id]);
         }
 
         function wlIncQty(id) {
@@ -819,8 +895,11 @@
             if (item) item.quantity = wlQtys[id];
             localStorage.setItem('inquiryList', JSON.stringify(cart));
             refreshCartBadge();
-            
-            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+
+            // Trigger animation on increment
+            flyToCart(null, '#cartCountBadge');
+
+            document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.value = wlQtys[id]);
         }
 
         function wlDecQty(id) {
@@ -833,7 +912,7 @@
                 localStorage.setItem('inquiryList', JSON.stringify(cart));
                 delete wlQtys[id];
                 refreshCartBadge();
-                
+
                 document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = '');
                 document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'none');
             } else {
@@ -843,8 +922,47 @@
                 if (item) item.quantity = wlQtys[id];
                 localStorage.setItem('inquiryList', JSON.stringify(cart));
                 refreshCartBadge();
-                
-                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[id]);
+
+                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.value = wlQtys[id]);
+            }
+        }
+
+        function flyToCart(sourceElement, targetSelector) {
+            const target = document.querySelector(targetSelector);
+            if (!target) return;
+
+            const pulseTarget = target.closest('a') || target;
+            pulseTarget.classList.remove('pulse-animation');
+            void pulseTarget.offsetWidth;
+            pulseTarget.classList.add('pulse-animation');
+
+            // Stars animation
+            const rect = target.getBoundingClientRect();
+            const colors = ['#D4AF37', '#ffffff', '#FFD700', '#F4E5C2'];
+            for (let i = 0; i < 6; i++) {
+                const star = document.createElement('div');
+                star.innerHTML = '✨';
+                star.style.position = 'fixed';
+                star.style.left = (rect.left + rect.width / 2) + 'px';
+                star.style.top = (rect.top + rect.height / 2) + 'px';
+                star.style.pointerEvents = 'none';
+                star.style.zIndex = '99999';
+                star.style.fontSize = Math.floor(Math.random() * 8 + 12) + 'px';
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.transition = 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+                star.style.transform = 'translate(-50%, -50%) scale(0)';
+                document.body.appendChild(star);
+
+                setTimeout(() => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 40 + 20;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance - 20;
+                    star.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1.5) rotate(${Math.random() * 180}deg)`;
+                    star.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => star.remove(), 600);
             }
         }
 
@@ -853,11 +971,17 @@
             cart.forEach(cartItem => {
                 const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
                 wlQtys[cartItem.id] = parseInt(cartItem.quantity) || 1;
-                
+
                 document.querySelectorAll(`.wl-add-btn-${safeId}`).forEach(el => el.style.display = 'none');
                 document.querySelectorAll(`.wl-qty-ctrl-${safeId}`).forEach(el => el.style.display = 'flex');
-                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.textContent = wlQtys[cartItem.id]);
+                document.querySelectorAll(`.wl-qty-val-${safeId}`).forEach(el => el.value = cartItem.quantity);
             });
+        }
+
+        let currentSearchQuery = '';
+        function filterWishlist(query) {
+            currentSearchQuery = query;
+            renderWishlist();
         }
 
         // ── Main render ────────────────────────────────────────
@@ -867,6 +991,7 @@
             const empty = document.getElementById('emptyState');
             const label = document.getElementById('wishCountLabel');
             const clearBtn = document.getElementById('clearAllBtn');
+            const searchContainer = document.getElementById('wishlistSearchContainer');
 
             label.textContent = `${wishlist.length} saved item${wishlist.length !== 1 ? 's' : ''}`;
 
@@ -875,6 +1000,7 @@
                 empty.classList.remove('hidden');
                 empty.style.display = 'flex';
                 clearBtn.classList.add('hidden');
+                if (searchContainer) searchContainer.classList.add('hidden');
                 return;
             }
 
@@ -882,10 +1008,25 @@
             empty.style.display = 'none';
             content.hidden = false;
             clearBtn.classList.remove('hidden');
+            if (searchContainer) searchContainer.classList.remove('hidden');
+
+            let filteredWishlist = wishlist;
+            if (currentSearchQuery) {
+                const query = currentSearchQuery.toLowerCase();
+                filteredWishlist = wishlist.filter(item =>
+                    (item.name || '').toLowerCase().includes(query) ||
+                    (item.category || '').toLowerCase().includes(query)
+                );
+            }
+
+            if (filteredWishlist.length === 0 && currentSearchQuery) {
+                content.innerHTML = `<div class="text-center py-10 text-gray-500">No items match your search.</div>`;
+                return;
+            }
 
             // Group by category
             const grouped = {};
-            wishlist.forEach(item => {
+            filteredWishlist.forEach(item => {
                 const cat = item.category || 'Uncategorised';
                 if (!grouped[cat]) grouped[cat] = [];
                 grouped[cat].push(item);
@@ -901,7 +1042,7 @@
           </div>
 
           <!-- Products grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-2">
             ${items.map(item => {
                 const symbol = item.currency === 'INR' ? '₹' : (item.currency + ' ');
                 const priceStr = item.price > 0 ? `${symbol}${item.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on request';
@@ -919,18 +1060,19 @@
                     <span class="category-pill">${cat}</span>
                   </div>
                   <!-- Remove heart -->
-                  <button class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition hover:scale-125"
+                 <button class="absolute top-2 right-2 bg-white border border-red-500 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition hover:scale-125"
                     onclick="event.preventDefault(); event.stopPropagation(); removeFromWishlist('${item.id}')"
                     title="Remove from wishlist">
-                    <svg class="w-4 h-4 pointer-events-none" fill="#e8b84b" stroke="#e8b84b" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                    
+                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="red" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 6l12 12M6 18L18 6" />
                     </svg>
-                  </button>
+                </button>
                 </a>
 
                 <!-- Info -->
-                <div class="p-3 flex flex-col flex-grow bg-black/20">
+                <div class="p-2 flex flex-col flex-grow bg-black/20">
                   <a href="${linkUrl}" class="block mb-2">
                     <h3 class="text-white font-bold text-xs sm:text-sm leading-snug line-clamp-2 hover:text-[#e8b84b] transition">${item.name || 'Product'}</h3>
                   </a>
@@ -940,16 +1082,29 @@
                   <div class="mt-auto flex items-center gap-2" onclick="event.stopPropagation()">
                     <!-- Cart button / Qty control toggle -->
                     <div class="flex-1">
-                      <button class="wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g,'')} wl-cart-btn btn-cart w-full text-center"
-                        onclick="wlAddItem('${item.id}', '${safeName}', '${safeImg}', ${item.price}, '${item.currency}', '${cat}')">
+                      <button class="wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g, '')} wl-cart-btn btn-cart w-full text-center"
+                        onclick="wlAddItem(this, '${item.id}', '${safeName}', '${safeImg}', ${item.price}, '${item.currency}', '${cat}')">
                         Add to Inquiry Cart
                       </button>
-                      <div class="wl-qty-ctrl-${item.id.replace(/[^a-zA-Z0-9]/g,'')} flex items-center justify-between bg-black/40 border border-[#e8b84b40] rounded-xl overflow-hidden w-full" style="display:none;">
+                      <div class="wl-qty-ctrl-${item.id.replace(/[^a-zA-Z0-9]/g, '')} flex items-center justify-between bg-black/40 border border-[#e8b84b40] rounded-xl overflow-hidden w-full" style="display:none;">
                         <button onclick="wlDecQty('${item.id}')"
-                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">−</button>
-                        <span class="wl-qty-val-${item.id.replace(/[^a-zA-Z0-9]/g,'')} px-2 text-white font-bold text-sm min-w-[24px] text-center">1</span>
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                          </button>
+                        <input type="number" 
+                          class="wl-qty-val-${item.id.replace(/[^a-zA-Z0-9]/g, '')} bg-transparent text-white font-bold text-sm w-[30px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          value="1"
+                          oninput="wlHandleQtyInput(this, '${item.id}')"
+                          onblur="wlFinalizeQty(this, '${item.id}')">
                         <button onclick="wlIncQty('${item.id}')"
-                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">+</button>
+                          class="flex-1 h-8 flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b20] font-bold text-base select-none transition">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                          </button>
                       </div>
                     </div>
                   </div>

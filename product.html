@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
     <meta charset="UTF-8" />
@@ -96,7 +96,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 8px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .qty-btn {
@@ -182,13 +182,51 @@
         }
 
         /* Hide scrollbar */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Fly to Cart Animation Styles */
+        .fly-item {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(232, 184, 75, 0.5);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pulse-gold {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(232, 184, 75, 0.4);
+            }
+
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(232, 184, 75, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(232, 184, 75, 0);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse-gold 0.5s ease-in-out;
+        }
     </style>
 
 </head>
 
-<body class="bg-black min-h-screen flex flex-col text-gray-100">
+<body class="bg-black text-gray-100 font-sans overflow-x-hidden min-h-screen flex flex-col">
 
     <!-- Header -->
     <header class="bg-black shadow-lg sticky sticky top-0 z-50 border-b border-gold-700 pt-1">
@@ -211,9 +249,11 @@
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
                 <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -278,9 +318,10 @@
                     <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                                stroke-width="2" />
                             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                          </svg>
+                        </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
                     </a>
                 </li>
@@ -294,7 +335,8 @@
                             </path>
                         </svg>
                         <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
-                        <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
                     </a>
                 </li>
@@ -316,7 +358,8 @@
                 </li>
 
                 <li class="relative">
-                    <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                    <a href="https://b-oneinterior.com/cart"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                             <circle cx="9" cy="21" r="1"></circle>
@@ -420,22 +463,25 @@
                 </div>
 
                 <!-- Mobile: Main Image Carousel -->
-                <div id="imageContainerMobile" class="rounded-[32px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-square">
+                <div id="imageContainerMobile"
+                    class="rounded-[32px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-square">
                     <!-- Carousel will be injected here -->
                 </div>
 
                 <!-- Mobile: Details & Actions -->
                 <div class="glass-panel p-8 flex flex-col gap-8">
                     <div id="cartActionContainerMobile"></div>
-                    
+
                     <div>
                         <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Select Variant</h3>
                         <div id="variantContainerMobile" class="grid grid-cols-3 gap-3"></div>
                     </div>
 
                     <div id="colorSelectContainerMobile" class="hidden">
-                        <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Color Options</label>
-                        <select id="colorSelectMobile" class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
+                        <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Color
+                            Options</label>
+                        <select id="colorSelectMobile"
+                            class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
                     </div>
 
                     <div id="catalogueContainerMobile"></div>
@@ -446,7 +492,8 @@
                     </div>
 
                     <div>
-                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details</h3>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details
+                        </h3>
                         <div id="descriptionContainerMobile"></div>
                     </div>
                 </div>
@@ -454,23 +501,27 @@
 
             <!-- Desktop Layout (Creative Split) -->
             <div class="hidden md:grid grid-cols-12 gap-8 items-start">
-                
+
                 <!-- Left Column: Visuals (5/12) -->
                 <div class="col-span-5 flex flex-col gap-8 sticky top-32">
-                    <div id="imageContainer" class="rounded-[40px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-[4/5] relative group">
+                    <div id="imageContainer"
+                        class="rounded-[40px] overflow-hidden shadow-2xl bg-black border border-white/10 aspect-[4/5] relative group">
                         <!-- Carousel will be injected here -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none">
+                        </div>
                     </div>
-                    
+
                     <div class="glass-panel p-6">
-                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Available Variants</h3>
-                        <div id="variantContainer" class="grid grid-cols-4 gap-3 hide-scrollbar overflow-x-auto pb-2"></div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Available Variants
+                        </h3>
+                        <div id="variantContainer" class="grid grid-cols-4 gap-3 hide-scrollbar overflow-x-auto pb-2">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Info & Actions (7/12) -->
                 <div class="col-span-7 flex flex-col gap-8">
-                    
+
                     <!-- Header Glass Card -->
                     <div class="glass-panel p-10 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-[80px] rounded-full"></div>
@@ -487,8 +538,10 @@
                         </div>
 
                         <div id="colorSelectContainer" class="mt-8 hidden">
-                            <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Customization</label>
-                            <select id="colorSelect" class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
+                            <label
+                                class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Customization</label>
+                            <select id="colorSelect"
+                                class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
                         </div>
                     </div>
 
@@ -500,7 +553,8 @@
                         </div>
 
                         <div>
-                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Technical Specifications</h3>
+                            <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-6">Technical
+                                Specifications</h3>
                             <div id="attributesContainer" class="grid grid-cols-2 gap-x-12"></div>
                         </div>
                     </div>
@@ -510,7 +564,7 @@
         </div>
 
         <!-- Recommended Products Section -->
-        <div id="recommendedSection" class="hidden mt-12 border-t border-gray-800 pt-8">
+        <div id="recommendedSection" class="hidden mt-4 border-t border-gray-800 pt-4">
             <h2 class="text-2xl font-bold mb-6 text-white">Recommended For You</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
         </div>
@@ -994,19 +1048,6 @@
         let currentProduct = null;
         let selectedVariant = null;
 
-        function selectVariant(variantId) {
-            if (!currentProduct || !currentProduct.variants) return;
-            const variant = currentProduct.variants.find(v => v.id === variantId);
-            if (variant) {
-                selectedVariant = variant;
-                // Update Gallery
-                renderGallery(variant.media, currentProduct.thumbnail?.url, variant.name);
-                // Update Price if needed (optional)
-                // Re-render variants to update selection style
-                renderVariants(currentProduct.variants);
-            }
-        }
-
         async function fetchCollectionProducts(collectionId, currentId) {
             const query = `
             query {
@@ -1248,15 +1289,28 @@
 
             // 1. Meta container
             const metaHtml = `
-                <div class="flex items-center gap-3 flex-wrap">
-                    <span class="px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-black uppercase tracking-widest">${catName}</span>
-                    <span class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-widest">${typeName}</span>
+                <div class="flex items-center justify-between gap-3 flex-wrap w-full">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-black uppercase tracking-widest">${catName}</span>
+                        <span class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-widest">${typeName}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.toggleWishlist()" id="wishlistBtnMain" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300">
+                             <ion-icon name="heart-outline" class="text-xl"></ion-icon>
+                        </button>
+                        <button onclick="window.shareProduct()" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300 shadow-lg">
+                             <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
+                        </button>
+                    </div>
                 </div>
             `;
             document.getElementById("metaContainer").innerHTML = metaHtml;
             if (document.getElementById("metaContainerMobile")) {
                 document.getElementById("metaContainerMobile").innerHTML = metaHtml;
             }
+
+            // Update wishlist icon state
+            updateWishlistIcons();
 
             // 2. Name - Premium Typography
             let nameHtml = "";
@@ -1277,26 +1331,39 @@
             }
 
             // 3. Price - Sophisticated Layout
+            // 3. Price - Sophisticated Layout
             const loggedIn = isUserLoggedIn();
             let sellingPrice = 0;
             let costPrice = null;
             let currency = 'INR';
 
             const activeVariant = selectedVariant || (p.variants && p.variants.length > 0 ? p.variants[0] : null);
-            
+
             if (activeVariant?.channelListings?.[0]) {
                 const listing = activeVariant.channelListings[0];
                 sellingPrice = listing.price?.amount || 0;
                 currency = listing.price?.currency || 'INR';
                 costPrice = listing.costPrice?.amount || null;
             } else {
-                const pPrice = p.pricing?.priceRange?.start?.gross;
-                sellingPrice = pPrice?.amount || 0;
-                currency = pPrice?.currency || 'INR';
+                // FALLBACK for non-staff or missing channel listings
+                let sellingPriceObj = activeVariant?.pricing?.price?.gross;
+                if (!sellingPriceObj) sellingPriceObj = p.pricing?.priceRange?.start?.gross;
+
+                sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+
+                // Try to get cost price from product attribute
+                const costPriceAttr = p.attributes.find(a => a.attribute.name === "Cost Price");
+                if (costPriceAttr && costPriceAttr.values?.[0]?.name) {
+                    const parsed = parseFloat(costPriceAttr.values[0].name.replace(/[^0-9.]/g, ''));
+                    if (!isNaN(parsed)) costPrice = parsed;
+                }
             }
 
             let actualPriceStr = null;
-            const actualPriceAttr = (selectedVariant?.attributes || p.attributes).find(a => a.attribute.name === "Actual Price");
+            const variantActualPrice = activeVariant?.attributes?.find(a => a.attribute.name === "Actual Price");
+            const productActualPrice = p.attributes.find(a => a.attribute.name === "Actual Price");
+            const actualPriceAttr = variantActualPrice || productActualPrice;
             if (actualPriceAttr?.values?.[0]) actualPriceStr = actualPriceAttr.values[0].name;
 
             const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
@@ -1304,7 +1371,7 @@
 
             let priceHtml = `
                 <div class="flex flex-col">
-                    ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${actualPriceStr}</span>` : ''}
+                    ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${symbol}${actualPriceStr}</span>` : ''}
                     <div class="flex items-center gap-4">
                         <span class="text-4xl md:text-5xl font-black ${loggedIn && costPrice !== null ? 'text-green-500' : 'gold-gradient-text'}">
                             ${symbol}${displayPrice.toFixed(2)}
@@ -1337,7 +1404,7 @@
                 if (excludeAttrs.includes(attr.attribute.name)) return;
                 const val = attr.values[0];
                 if (!val) return;
-                
+
                 attrsHtml += `
                     <div class="attribute-row">
                         <span class="attribute-label">${attr.attribute.name}</span>
@@ -1396,18 +1463,30 @@
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center gap-3 w-full">
                         <div class="flex-1 qty-pill">
-                            <button onclick="updateQty('${activeId}', -1)" class="qty-btn">−</button>
-                            <div class="flex flex-col items-center justify-center leading-none">
-                                <span class="text-2xl font-black text-white">${inCart.quantity}</span>
-                                <span class="text-[8px] font-black text-gold uppercase tracking-tighter">In Inquiry</span>
+                            <button onclick="updateQty('${activeId}', -1)" class="qty-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                </button>
+                            <div class="flex flex-col items-center justify-center leading-none w-12">
+                                <input type="number" value="${inCart.quantity}"
+                                    oninput="handleQuantityInput(this, '${activeId}'); handleRealtimeTotal(this, ${inCart.price}, '${inCart.currency}')"
+                                    onblur="finalizeQuantity(this, '${activeId}'); renderCartAction()"
+                                    class="bg-transparent text-lg font-black text-white w-[30px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                <span class="text-[7px] font-black text-gold uppercase tracking-tighter">In Cart</span>
                             </div>
-                            <button onclick="updateQty('${activeId}', 1)" class="qty-btn">+</button>
+                            <button onclick="updateQty('${activeId}', 1)" class="qty-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                </button>
                         </div>
                       
                     </div>
                     <div class="flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
                         <span class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Estimated Total</span>
-                        <span class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
+                        <span id="cartItemTotal" class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
                     </div>
                 </div>
             ` : `
@@ -1421,6 +1500,53 @@
                 document.getElementById("cartActionContainerMobile").innerHTML = html;
             }
         }
+
+        function updateQty(id, change) {
+            let cart = getCart();
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = (parseInt(item.quantity) || 1) + change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+                saveCart(cart);
+                renderCartAction();
+                updateCartBadge();
+                if (change > 0) window.flyToCart(null, '#cartCountBadge');
+            }
+        }
+
+        window.handleQuantityInput = function (input, id) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '';
+            input.value = value;
+        };
+
+        window.finalizeQuantity = function (input, id) {
+            let value = parseInt(input.value, 10);
+            if (isNaN(value) || value <= 0) value = 1;
+            input.value = value;
+
+            let cart = getCart();
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = value;
+                saveCart(cart);
+                updateCartBadge();
+                renderCartAction();
+            }
+        };
+
+        window.handleRealtimeTotal = function (input, price, currency) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '0';
+            const qty = parseInt(value, 10) || 0;
+            const total = qty * price;
+            const totalEl = document.getElementById("cartItemTotal");
+            if (totalEl) {
+                totalEl.textContent = (currency === 'INR' ? '₹' : '') + total.toFixed(2);
+            }
+        };
 
         window.addToCart = function () {
             const cart = getCart();
@@ -1485,18 +1611,31 @@
                 }
             }
 
-            const newItem = {
-                id: id,
-                name: name,
-                category: currentProduct.category?.name || '',
-                type: currentProduct.productType?.name || '',
-                image: image,
-                price: priceVal,
-                currency: currency,
-                quantity: 1
-            };
-            cart.unshift(newItem);
-            saveCart(cart);
+            const inCart = cart.find(item => item.id === id);
+
+            if (!inCart) {
+                const newItem = {
+                    id: id,
+                    name: name,
+                    category: currentProduct.category?.name || '',
+                    type: currentProduct.productType?.name || '',
+                    image: image,
+                    price: priceVal,
+                    currency: currency,
+                    quantity: 1
+                };
+                cart.unshift(newItem);
+                saveCart(cart);
+
+                // Trigger fly-to-cart animation on first add
+                const sourceImg = document.querySelector('.product-image-carousel .owl-item.active img') || document.querySelector('#imageContainer img');
+                if (sourceImg) {
+                    flyToCart(sourceImg, '#cartCountBadge');
+                }
+            } else {
+                // Already in cart, just update qty or show message
+                updateQty(id, 1);
+            }
         };
 
         window.selectVariant = function (variantId) {
@@ -1505,126 +1644,23 @@
 
             selectedVariant = variant;
 
-            // Update Price based on login status
-            const loggedIn = isUserLoggedIn();
+            // Re-render product main parts to ensure consistency
+            renderProduct(currentProduct);
 
-            // Check Price logic
-            let sellingPrice = 0;
-            let costPrice = null;
-            let currency = 'INR';
-
-            if (variant.channelListings && variant.channelListings.length > 0) {
-                const listing = variant.channelListings[0];
-                sellingPrice = listing.price?.amount || 0;
-                currency = listing.price?.currency || 'INR';
-                costPrice = listing.costPrice?.amount || null;
-            } else {
-                let sellingPriceObj = variant.pricing?.price?.gross;
-                if (!sellingPriceObj) sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
-                sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
-                currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
-            }
-
-            // Get cost price from product attribute (same for all variants) if not in variant
-            const costPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Cost Price");
-            let productCostPrice = null;
-            if (costPriceAttr) {
-                const costPriceStr = costPriceAttr.values[0]?.name;
-                if (costPriceStr) {
-                    const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(parsed)) productCostPrice = parsed;
-                }
-            }
-
-            if (costPrice === null && productCostPrice !== null) {
-                costPrice = productCostPrice;
-            }
-
-            // Get "Actual Price" from Variant Attribute first, then fallback to Product Attribute
-            let actualPriceStr = null;
-            if (variant.attributes) {
-                const variantActualPriceAttr = variant.attributes.find(a => a.attribute.name === "Actual Price");
-                if (variantActualPriceAttr && variantActualPriceAttr.values.length > 0) {
-                    actualPriceStr = variantActualPriceAttr.values[0].name;
-                }
-            }
-
-            // Fallback to product attribute if not found on variant
-            if (!actualPriceStr && currentProduct.attributes) {
-                const productActualPriceAttr = currentProduct.attributes.find(a => a.attribute.name === "Actual Price");
-                if (productActualPriceAttr && productActualPriceAttr.values.length > 0) {
-                    actualPriceStr = productActualPriceAttr.values[0].name;
-                }
-            }
-
-            let priceHtml = "";
-            if (loggedIn && costPrice !== null) {
-                // Logged in: show cost price with label
-                const formattedCostPrice = currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`;
-                priceHtml = `<span class="inline-flex items-center gap-2">
-                    <span class="text-xs text-gray-400 uppercase">Cost Price:</span>
-                    <span id="productPrice" class="text-green-500 font-bold text-3xl">${formattedCostPrice}</span>
-                </span>`;
-            } else {
-                // Not logged in: show selling price
-                const finalPrice = sellingPrice;
-
-                // Show Strikethrough "Actual Price" if available
-                if (actualPriceStr) {
-                    priceHtml += `<span class="line-through text-gray-400 text-xl">${actualPriceStr}</span>`;
-                }
-
-                const formattedPrice = currency === 'INR' ? `₹${finalPrice.toFixed(2)}` : `${finalPrice.toFixed(2)} ${currency}`;
-                priceHtml += `<span id="productPrice" class="text-gold font-bold text-3xl">${formattedPrice}</span>`;
-
-                // Discount Badge calculation
-                if (actualPriceStr && finalPrice) {
-                    const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(actualVal) && actualVal > finalPrice) {
-                        const discount = ((actualVal - finalPrice) / actualVal) * 100;
-                        priceHtml += `<span class="ml-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm align-top">${Math.round(discount)}% OFF</span>`;
-                    }
-                }
-            }
-
-            document.getElementById("priceContainer").innerHTML = priceHtml;
-            const priceContainerMobile = document.getElementById("priceContainerMobile");
-            if (priceContainerMobile) priceContainerMobile.innerHTML = priceHtml;
-
-            // Update heading to show variant name as main and product name as secondary
-            if (variant.name) {
-                const nameHtml = `${variant.name} <span class="text-lg font-normal text-gray-400 block mt-1">${currentProduct.name}</span>`;
-                document.getElementById("productName").innerHTML = nameHtml;
-                const productNameMobile = document.getElementById("productNameMobile");
-                if (productNameMobile) productNameMobile.innerHTML = nameHtml;
-            }
-
-            // Sync color dropdown with selected variant
+            // Sync color dropdown with selected variant (if not already synced)
             const colorSelect = document.getElementById("colorSelect");
-            if (colorSelect) {
+            const colorSelectMobile = document.getElementById("colorSelectMobile");
+            if (colorSelect && colorSelect.value !== variantId) {
                 colorSelect.value = variantId;
             }
-
-            // Update Description if "Variant Description" attribute exists
-            const variantDescAttr = variant.attributes?.find(a => a.attribute.name === "Variant Description");
-            if (variantDescAttr && variantDescAttr.values.length > 0) {
-                const val = variantDescAttr.values[0];
-                const descContent = val.richText || val.name;
-                document.getElementById("descriptionContainer").innerHTML = parseDescription(descContent);
-            } else {
-                document.getElementById("descriptionContainer").innerHTML = parseDescription(currentProduct.description);
+            if (colorSelectMobile && colorSelectMobile.value !== variantId) {
+                colorSelectMobile.value = variantId;
             }
 
-            // Update Gallery
-            if (variant.media && variant.media.length > 0) {
-                renderGallery(variant.media, currentProduct.thumbnail?.url, variant.name);
-            }
-
-            // Re-render variants to update selection border
-            renderVariants(currentProduct.variants);
-
-            // Update Cart Action Button (Add to Cart vs Qty)
-            renderCartAction();
+            // Update URL without reloading (optional, helps with refreshes)
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('id', variantId);
+            window.history.replaceState({}, '', newUrl);
         };
 
         function renderColorSelect(variants) {
@@ -1709,7 +1745,7 @@
             variants.forEach(v => {
                 const imgUrl = v.media?.[0]?.url || currentProduct.thumbnail?.url || FALLBACK_IMG;
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
-                
+
                 let sellingPrice = 0;
                 let currency = 'INR';
                 if (v.channelListings?.[0]) {
@@ -1722,7 +1758,7 @@
                 const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
                 const cardHtml = `
-                    <div class="relative group cursor-pointer">
+                    <div class="relative group cursor-pointer" onclick="handleVariantClick(event, '${v.id}')">
                         <div class="aspect-square rounded-2xl overflow-hidden bg-white/5 border ${isSelected ? 'border-gold shadow-lg shadow-gold/20' : 'border-white/10 hover:border-gold/50'} transition-all duration-500">
                             <img src="${imgUrl}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1737,6 +1773,7 @@
 
                 const link = document.createElement("a");
                 link.href = `product.html?id=${v.id}`;
+                link.onclick = (e) => handleVariantClick(e, v.id);
                 link.className = "block";
                 link.innerHTML = cardHtml;
                 container.appendChild(link);
@@ -1744,6 +1781,7 @@
                 if (containerMobile) {
                     const linkMobile = document.createElement("a");
                     linkMobile.href = `product.html?id=${v.id}`;
+                    linkMobile.onclick = (e) => handleVariantClick(e, v.id);
                     linkMobile.className = "block";
                     linkMobile.innerHTML = cardHtml;
                     containerMobile.appendChild(linkMobile);
@@ -1751,23 +1789,22 @@
             });
         }
 
-        window.updateQty = function (id, delta) {
-            let cart = getCart();
-            const item = cart.find(i => i.id === id);
-
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-                saveCart(cart);
+        window.handleVariantClick = function (event, variantId) {
+            // Only handle left clicks without modifiers (Ctrl, Shift, etc.)
+            if (event.button === 0 && !event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey) {
+                event.preventDefault();
+                window.selectVariant(variantId);
+                return false;
             }
+            return true;
         };
 
         window.removeFromCart = function (id) {
             let cart = getCart();
             cart = cart.filter(i => i.id !== id);
             saveCart(cart);
+            renderCartAction();
+            updateCartBadge();
         };
 
         // Cart Badge Logic
@@ -1786,65 +1823,135 @@
         }
         updateCartBadge();
 
-        // Validate key press - only allow numbers, backspace, delete, arrow keys, tab
-        window.validateQuantityKey = function (event) {
-            const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
-            if (allowedKeys.includes(event.key)) return true;
-
-            // Allow numbers 0-9
-            if (/^[0-9]$/.test(event.key)) return true;
-
-            // Prevent everything else (letters, symbols, negative sign, decimal, etc.)
-            event.preventDefault();
-            return false;
+        // Wishlist Helpers
+        window.getWishlist = function () {
+            return JSON.parse(localStorage.getItem('wishlist') || '[]');
         };
 
-        // Handle input - remove any non-numeric characters and enforce minimum
-        // Handle input - remove any non-numeric characters and enforce minimum
-        window.handleQuantityInput = function (input, productId) {
-            // Remove any non-numeric characters
-            let value = input.value.replace(/[^0-9]/g, '');
-
-            // Remove leading zeros but keep at least one digit
-            value = value.replace(/^0+/, '') || '';
-
-            input.value = value;
+        window.saveWishlist = function (list) {
+            localStorage.setItem('wishlist', JSON.stringify(list));
+            updateWishlistBadge();
+            updateWishlistIcons();
         };
 
-        window.handleRealtimeTotal = function (input, price, currency) {
-            // Sanitize input
-            let value = input.value.replace(/[^0-9]/g, '');
-            value = value.replace(/^0+/, '') || '0';
+        window.updateWishlistBadge = function () {
+            const badges = document.querySelectorAll('.wishlist-badge');
+            const list = window.getWishlist();
+            const count = list.length;
+            badges.forEach(badge => {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        };
 
-            const qty = parseInt(value, 10);
-            if (!isNaN(qty) && qty > 0) {
-                const total = qty * price;
-                const totalFormatted = currency === 'INR' ? `₹${total.toFixed(2)}` : `${total.toFixed(2)} ${currency}`;
-                const totalEl = document.getElementById("cartItemTotal");
-                if (totalEl) totalEl.innerText = totalFormatted;
+        window.updateWishlistIcons = function () {
+            const activeId = selectedVariant ? selectedVariant.id : currentProduct?.id;
+            const wishlist = window.getWishlist();
+            const isInWishlist = wishlist.some(item => item.id === activeId);
+
+            const btn = document.getElementById('wishlistBtnMain');
+            if (btn) {
+                const icon = btn.querySelector('ion-icon');
+                if (isInWishlist) {
+                    icon.setAttribute('name', 'heart');
+                    btn.classList.add('text-gold', 'border-gold/50');
+                } else {
+                    icon.setAttribute('name', 'heart-outline');
+                    btn.classList.remove('text-gold', 'border-gold/50');
+                }
             }
         };
 
-        // Finalize quantity on blur - set to 1 if empty or invalid, update cart
-        window.finalizeQuantity = function (input, productId) {
-            let value = parseInt(input.value, 10);
+        window.toggleWishlist = function () {
+            const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
+            let wishlist = window.getWishlist();
+            const index = wishlist.findIndex(item => item.id === activeId);
 
-            // If empty, invalid, zero, or negative, set to 1
-            if (isNaN(value) || value <= 0) {
-                value = 1;
+            if (index > -1) {
+                // Remove
+                wishlist.splice(index, 1);
+            } else {
+                // Add
+                const name = selectedVariant ? `${currentProduct.name} - ${selectedVariant.name}` : currentProduct.name;
+                const image = (selectedVariant?.media?.[0]?.url) || currentProduct.thumbnail?.url || FALLBACK_IMG;
+
+                // Price logic - check logged in
+                const loggedIn = isUserLoggedIn();
+                let sellingPrice = 0;
+                let costPrice = null;
+                let currency = 'INR';
+
+                const target = selectedVariant || (currentProduct.variants?.[0]);
+                if (target?.channelListings?.[0]) {
+                    sellingPrice = target.channelListings[0].price?.amount || 0;
+                    currency = target.channelListings[0].price?.currency || 'INR';
+                    costPrice = target.channelListings[0].costPrice?.amount || null;
+                } else {
+                    sellingPrice = target?.pricing?.price?.gross?.amount || currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
+                    currency = target?.pricing?.price?.gross?.currency || currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
+                }
+
+                const priceVal = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+
+                const newItem = {
+                    id: activeId,
+                    name: name,
+                    category: currentProduct.category?.name || 'Exclusive',
+                    image: image,
+                    price: priceVal,
+                    currency: currency
+                };
+                wishlist.unshift(newItem);
             }
+            window.saveWishlist(wishlist);
+        };
 
-            input.value = value;
+        window.flyToCart = function (sourceElement, targetSelector) {
+            const target = document.querySelector(targetSelector);
+            if (!target) return;
 
-            // Update cart with the new quantity
-            let cart = getCart();
-            const item = cart.find(i => i.id === productId);
+            const pulseTarget = target.closest('a') || target;
+            pulseTarget.classList.remove('pulse-animation');
+            void pulseTarget.offsetWidth;
+            pulseTarget.classList.add('pulse-animation');
 
-            if (item) {
-                item.quantity = value;
-                saveCart(cart);
+            // Stars animation
+            const rect = target.getBoundingClientRect();
+            const colors = ['#D4AF37', '#ffffff', '#FFD700', '#F4E5C2'];
+            for (let i = 0; i < 6; i++) {
+                const star = document.createElement('div');
+                star.innerHTML = '✨';
+                star.style.position = 'fixed';
+                star.style.left = (rect.left + rect.width / 2) + 'px';
+                star.style.top = (rect.top + rect.height / 2) + 'px';
+                star.style.pointerEvents = 'none';
+                star.style.zIndex = '99999';
+                star.style.fontSize = Math.floor(Math.random() * 8 + 12) + 'px';
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.transition = 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+                star.style.transform = 'translate(-50%, -50%) scale(0)';
+                document.body.appendChild(star);
+
+                setTimeout(() => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 40 + 20;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance - 20;
+                    star.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1.5) rotate(${Math.random() * 180}deg)`;
+                    star.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => star.remove(), 600);
             }
         };
+
+        window.updateWishlistBadge();
+
+        // Removed redundant quantity helpers (moved to earlier section)
 
 
         window.shareProduct = async function () {
