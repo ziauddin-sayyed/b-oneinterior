@@ -7,7 +7,7 @@
     <meta property="og:title" content="Product Details - B-One Interior Premium Collection">
     <meta property="og:description"
         content="View detailed product specifications, pricing, and high-quality images. Add to your cart and bring home elegance with B-One Interior's premium furniture selection.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
 
@@ -222,6 +222,21 @@
         .pulse-animation {
             animation: pulse-gold 0.5s ease-in-out;
         }
+
+        .description-preview-collapsed {
+            max-height: 4.75rem;
+            overflow: hidden;
+        }
+
+        .description-preview-fade {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 2.25rem;
+            height: 2rem;
+            /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.95)); */
+            pointer-events: none;
+        }
     </style>
 
 </head>
@@ -231,19 +246,42 @@
     <!-- Header -->
     <header class="bg-black shadow-lg sticky sticky top-0 z-50 border-b border-gold-700 pt-1">
 
-        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
-            <a href="https://b-oneinterior.com/">
-                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
-            </a>
-            <button onclick="toggleDrawer()"
-                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
+        <div class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+                <div class="relative flex-1">
+                    <input type="text" id="productSearchInput" placeholder="Loading products..." disabled autocomplete="off"
+                        class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <button type="button" id="productVoiceBtn" aria-label="Voice search"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v2a7 7 0 01-14 0v-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                        </svg>
+                    </button>
+                </div>
+                <button onclick="toggleDrawer()"
+                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+            <div id="productSearchDropdown"
+                class="hidden mt-3 rounded-2xl border border-gold-500/20 bg-[#050505]/95 backdrop-blur-xl shadow-2xl overflow-hidden max-h-[55vh] overflow-y-auto">
+            </div>
         </div>
+        <div class="md:hidden h-[59px]"></div>
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
@@ -315,7 +353,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                    <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -444,7 +482,7 @@
     </script>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8">
+    <main class="flex-grow container mx-auto px-4 py-4">
 
         <!-- Loading Spinner -->
         <div id="loadingSpinner" class="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
@@ -454,9 +492,9 @@
         <div id="productDetail" class="hidden max-w-7xl mx-auto">
 
             <!-- Mobile Layout -->
-            <div class="md:hidden flex flex-col gap-6">
+            <div class="md:hidden flex flex-col gap-3">
                 <!-- Mobile: Header Card -->
-                <div class="glass-panel p-6">
+                <div class="glass-panel p-3">
                     <div id="metaContainerMobile" class="mb-4"></div>
                     <div id="productNameMobile"></div>
                     <div id="priceContainerMobile" class="mt-4"></div>
@@ -469,9 +507,13 @@
                 </div>
 
                 <!-- Mobile: Details & Actions -->
-                <div class="glass-panel p-8 flex flex-col gap-8">
+                <div class="flex flex-col gap-6">
                     <div id="cartActionContainerMobile"></div>
-
+                    <div>
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details
+                        </h3>
+                        <div id="descriptionContainerMobile"></div>
+                    </div>
                     <div>
                         <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Select Variant</h3>
                         <div id="variantContainerMobile" class="grid grid-cols-3 gap-3"></div>
@@ -491,11 +533,6 @@
                         <div id="attributesContainerMobile"></div>
                     </div>
 
-                    <div>
-                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details
-                        </h3>
-                        <div id="descriptionContainerMobile"></div>
-                    </div>
                 </div>
             </div>
 
@@ -565,12 +602,18 @@
 
         <!-- Recommended Products Section -->
         <div id="recommendedSection" class="hidden mt-4 border-t border-gray-800 pt-4">
-            <h2 class="text-2xl font-bold mb-6 text-white">Recommended For You</h2>
+            <h2 class="text-2xl font-bold mb-3 text-white">Recommended For You</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
+        <!-- 50 products (general catalogue) -->
+        <div id="moreProductsSection" class="hidden mt-8 border-t border-gray-800 pt-8">
+            <h2 class="text-2xl font-bold mb-3 text-white">Explore More Products</h2>
+            <div id="moreProductsGrid" class="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6"></div>
+        </div>
+
         <!-- Collection Products Section -->
-        <div id="collectionSection" class="hidden mt-12 border-t border-gray-800 pt-8">
+        <div id="collectionSection" class="hidden mt-8 border-t border-gray-800 pt-8">
             <h2 id="collectionTitle" class="text-2xl font-bold mb-6 text-white">More from this Collection</h2>
             <div id="collectionCarousel" class="owl-carousel owl-theme"></div>
         </div>
@@ -582,6 +625,61 @@
 
     </main>
 
+    <!-- Buy Now: Address Modal (same flow as cart.html) -->
+    <div id="productBuyNowModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeProductBuyNowModal()"></div>
+        <div class="glass-panel w-full max-w-lg p-8 relative z-10 animate-in fade-in zoom-in duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black uppercase tracking-tight gold-gradient-text">Delivery Address</h2>
+                <button type="button" onclick="closeProductBuyNowModal()" class="text-white/80 hover:text-white transition">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+
+            <form id="productBuyNowForm" class="space-y-4" novalidate>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">First
+                            Name</label>
+                        <input type="text" id="productBuyNowFirstName" required autocomplete="given-name"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Last
+                            Name</label>
+                        <input type="text" id="productBuyNowLastName" required autocomplete="family-name"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile
+                        No</label>
+                    <input type="tel" inputmode="numeric" id="productBuyNowMobile" required maxlength="15" autocomplete="tel"
+                        oninput="productBuyNowMobileInput(this)"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
+                    <p id="productBuyNowMobileHint" class="text-[9px] text-white/60 mt-1 uppercase tracking-widest">Digits only, min 10 digits</p>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Full
+                        Address</label>
+                    <textarea id="productBuyNowAddress" required rows="3" autocomplete="street-address"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition resize-none"></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full gold-gradient-bg text-black font-black uppercase py-4 rounded-xl tracking-[0.2em] shadow-xl hover:opacity-90 transition transform active:scale-95 mt-4">
+                    Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="orderPlacedToast"
+        class="fixed bottom-28 left-1/2 -translate-x-1/2 z-[120] px-6 py-3 rounded-2xl bg-gold text-black font-black text-sm uppercase tracking-widest shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+        Order placed
+    </div>
 
     <!-- Catalogue Viewer Modal -->
     <div id="catalogueModal"
@@ -642,6 +740,9 @@
     <script>
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
+        const PRODUCT_SEARCH_LIMIT = 10;
+        /** Raw product nodes from GraphQL (includes variants for variant search, same idea as index.html shop search). */
+        let headerSearchProductsRaw = [];
 
         async function fetchSaleor(query, retry = true) {
             try {
@@ -988,7 +1089,7 @@
                     const loggedIn = isUserLoggedIn(); // Check global auth status
 
                     const item = document.createElement("div");
-                    item.className = "item px-2 pb-6";
+                    item.className = "min-w-0";
                     item.innerHTML = `
                         <a href="product.html?id=${p.node.id}" class="premium-card block overflow-hidden group">
                             <div class="relative aspect-[4/5] overflow-hidden">
@@ -1019,7 +1120,7 @@
                         margin: 20,
                         nav: false,
                         dots: true,
-                        autoplay: true,
+                        autoplay: false,
                         autoplayHoverPause: true,
                         responsive: {
                             0: { items: 2 },
@@ -1031,6 +1132,114 @@
 
             } catch (e) {
                 console.error("Error drawing recommended:", e);
+            }
+        }
+
+        async function fetchMoreProducts(currentId) {
+            const query = `
+            query {
+                products(first: 50, channel: "in", filter: { isPublished: true }) {
+                    edges {
+                        node {
+                            id
+                            name
+                            thumbnail { url }
+                            pricing {
+                                priceRange {
+                                    start {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                            category { name }
+                            variants {
+                                id
+                                pricing {
+                                    price {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                                ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const data = await fetchSaleor(query);
+                let products = (data?.products?.edges || [])
+                    .map(e => e.node)
+                    .filter(p => p.id !== currentId)
+                    .filter(p => !["Gallery Image Category", "Catalogue"].includes(p.category?.name));
+
+                const grid = document.getElementById("moreProductsGrid");
+                const section = document.getElementById("moreProductsSection");
+                if (!grid || !section) return;
+
+                grid.innerHTML = "";
+
+                if (products.length === 0) {
+                    section.classList.add("hidden");
+                    return;
+                }
+
+                section.classList.remove("hidden");
+
+                products.forEach(p => {
+                    let sellingPrice = 0;
+                    let costPrice = null;
+                    let currency = 'INR';
+
+                    if (p.variants && p.variants.length > 0 && p.variants[0].channelListings && p.variants[0].channelListings.length > 0) {
+                        const listing = p.variants[0].channelListings[0];
+                        sellingPrice = listing.price?.amount || 0;
+                        currency = listing.price?.currency || 'INR';
+                        costPrice = listing.costPrice?.amount || null;
+                    } else {
+                        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                        sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
+                        currency = currentPriceObj ? currentPriceObj.currency : 'INR';
+                    }
+
+                    const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
+                    const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
+
+                    const loggedIn = isUserLoggedIn();
+
+                    const item = document.createElement("div");
+                    item.className = "min-w-0";
+                    item.innerHTML = `
+                        <a href="product.html?id=${p.id}" class="premium-card block overflow-hidden group">
+                            <div class="relative aspect-[4/5] overflow-hidden">
+                                <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.category?.name || 'Collection'}</span>
+                                    <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.name}</h3>
+                                </div>
+                            </div>
+                            <div class="p-4 flex items-center justify-between bg-black/40">
+                                <span class="text-xs font-black gold-gradient-text">
+                                    ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
+                                </span>
+                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
+                                    <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                    grid.appendChild(item);
+                });
+            } catch (e) {
+                console.error("Error drawing more products:", e);
             }
         }
 
@@ -1219,6 +1428,7 @@
             if (currentProduct.category?.name) {
                 fetchRecommendedProducts(currentProduct.category.name, currentProduct.id);
             }
+            fetchMoreProducts(currentProduct.id);
 
             document.getElementById("loadingSpinner").classList.add("hidden");
             document.getElementById("productDetail").classList.remove("hidden");
@@ -1281,6 +1491,307 @@
                 }).join('');
             }
             return descText;
+        }
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderMobileDescription(descHtml) {
+            const container = document.getElementById("descriptionContainerMobile");
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="description-preview-box relative">
+                    <div class="description-preview-content description-preview-collapsed prose prose-invert max-w-none text-white/80 text-sm leading-relaxed">${descHtml}</div>
+                    <div class="description-preview-fade"></div>
+                    <button type="button" data-expanded="false"
+                        class="mt-3 text-gold text-xs font-black uppercase tracking-[0.2em]"
+                        onclick="toggleDescriptionPreview(this)">Show more</button>
+                </div>
+            `;
+
+            requestAnimationFrame(() => {
+                const content = container.querySelector('.description-preview-content');
+                const fade = container.querySelector('.description-preview-fade');
+                const button = container.querySelector('button');
+                if (!content || !fade || !button) return;
+
+                if (content.scrollHeight <= content.clientHeight + 4) {
+                    button.classList.add('hidden');
+                    fade.classList.add('hidden');
+                }
+            });
+        }
+
+        window.toggleDescriptionPreview = function (button) {
+            const wrapper = button.closest('.description-preview-box');
+            const content = wrapper?.querySelector('.description-preview-content');
+            const fade = wrapper?.querySelector('.description-preview-fade');
+            if (!content || !fade) return;
+
+            const isExpanded = button.dataset.expanded === 'true';
+            if (isExpanded) {
+                content.classList.add('description-preview-collapsed');
+                fade.classList.remove('hidden');
+                button.dataset.expanded = 'false';
+                button.textContent = 'Show more';
+            } else {
+                content.classList.remove('description-preview-collapsed');
+                fade.classList.add('hidden');
+                button.dataset.expanded = 'true';
+                button.textContent = 'Show less';
+            }
+        };
+
+        function headerSearchFilteredProducts() {
+            return headerSearchProductsRaw.filter(product =>
+                !["Gallery Image Category", "Catalogue"].includes(product.category?.name)
+            );
+        }
+
+        /**
+         * Product-level match shows one row per product; otherwise variant name matches show separate rows (like index.html).
+         */
+        function getProductSearchDisplayItems(query = '') {
+            const q = query.trim().toLowerCase();
+            const products = headerSearchFilteredProducts();
+            const display = [];
+
+            if (!q) {
+                products.slice(0, PRODUCT_SEARCH_LIMIT).forEach(p => {
+                    const linkId = p.variants?.[0]?.id || p.id;
+                    const gross = p.pricing?.priceRange?.start?.gross;
+                    display.push({
+                        linkId,
+                        displayName: p.name,
+                        subtitle: null,
+                        image: p.thumbnail?.url || FALLBACK_IMG,
+                        price: gross?.amount || 0,
+                        currency: gross?.currency || 'INR',
+                        category: p.category?.name || 'Collection',
+                        isVariant: false
+                    });
+                });
+                return display;
+            }
+
+            products.forEach(product => {
+                const pName = product.name.toLowerCase();
+                const pDesc = (product.description || '').toLowerCase();
+                const pCat = (product.category?.name || '').toLowerCase();
+
+                if (pName.includes(q) || pDesc.includes(q) || pCat.includes(q)) {
+                    const linkId = product.variants?.[0]?.id || product.id;
+                    const gross = product.pricing?.priceRange?.start?.gross;
+                    display.push({
+                        linkId,
+                        displayName: product.name,
+                        subtitle: null,
+                        image: product.thumbnail?.url || FALLBACK_IMG,
+                        price: gross?.amount || 0,
+                        currency: gross?.currency || 'INR',
+                        category: product.category?.name || 'Collection',
+                        isVariant: false
+                    });
+                    return;
+                }
+
+                if (product.variants) {
+                    product.variants.forEach(v => {
+                        if ((v.name || '').toLowerCase().includes(q)) {
+                            const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || FALLBACK_IMG);
+                            const vp = v.pricing?.price?.gross;
+                            const fallbackGross = product.pricing?.priceRange?.start?.gross;
+                            display.push({
+                                linkId: v.id,
+                                displayName: v.name,
+                                subtitle: product.name,
+                                image: variantImg,
+                                price: vp?.amount ?? fallbackGross?.amount ?? 0,
+                                currency: vp?.currency ?? fallbackGross?.currency ?? 'INR',
+                                category: product.category?.name || 'Collection',
+                                isVariant: true
+                            });
+                        }
+                    });
+                }
+            });
+
+            return display.slice(0, PRODUCT_SEARCH_LIMIT);
+        }
+
+        function renderProductSearchResults(query = '') {
+            const dropdown = document.getElementById('productSearchDropdown');
+            if (!dropdown) return;
+
+            const items = getProductSearchDisplayItems(query);
+            if (!items.length) {
+                dropdown.innerHTML = `<div class="px-4 py-5 text-center text-white/50 text-sm">No products found</div>`;
+                dropdown.classList.remove('hidden');
+                return;
+            }
+
+            dropdown.innerHTML = items.map(item => {
+                const amount = Number(item.price || 0);
+                const formattedPrice = item.currency === 'INR'
+                    ? `₹${amount.toFixed(2)}`
+                    : `${amount.toFixed(2)} ${item.currency || ''}`.trim();
+                const variantBadge = item.isVariant
+                    ? `<span class="inline-block mt-1 text-[8px] font-black uppercase tracking-widest text-white/50 border border-white/15 rounded px-1.5 py-0.5">Variant</span>`
+                    : '';
+
+                return `
+                    <a href="product.html?id=${item.linkId}"
+                        class="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-b-0 hover:bg-white/5 transition">
+                        <img src="${item.image || FALLBACK_IMG}" alt="${escapeHtml(item.displayName)}"
+                            class="w-12 h-12 rounded-xl object-cover border border-white/10">
+                        <div class="min-w-0 flex-1">
+                            <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gold/80 mb-1">${escapeHtml(item.category || 'Collection')}</div>
+                            <div class="text-sm font-semibold text-white truncate">${escapeHtml(item.displayName)}</div>
+                            ${item.subtitle ? `<div class="text-[10px] text-white/45 truncate mt-0.5">${escapeHtml(item.subtitle)}</div>` : ''}
+                            ${variantBadge}
+                            <div class="text-xs text-gold mt-1">${formattedPrice}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+
+            dropdown.classList.remove('hidden');
+        }
+
+        function setupProductHeaderSearch() {
+            const input = document.getElementById('productSearchInput');
+            const dropdown = document.getElementById('productSearchDropdown');
+            if (!input || !dropdown) return;
+
+            input.addEventListener('focus', () => {
+                if (headerSearchProductsRaw.length > 0) {
+                    renderProductSearchResults(input.value);
+                }
+            });
+
+            input.addEventListener('input', () => {
+                renderProductSearchResults(input.value);
+            });
+
+            const voiceBtn = document.getElementById('productVoiceBtn');
+            document.addEventListener('click', (event) => {
+                if (!dropdown.contains(event.target) && !input.contains(event.target) &&
+                    !(voiceBtn && voiceBtn.contains(event.target))) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        /** Voice search — same behaviour as index.html shop search (Web Speech API). */
+        function setupProductVoiceSearch() {
+            const input = document.getElementById('productSearchInput');
+            const voiceBtn = document.getElementById('productVoiceBtn');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition && voiceBtn && input) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                voiceBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try { recognition.start(); } catch (err) { console.log('Recognition already active'); }
+                };
+
+                recognition.onstart = () => {
+                    voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                    input.placeholder = 'Listening...';
+                };
+
+                recognition.onresult = (event) => {
+                    const text = event.results[0][0].transcript;
+                    input.value = text;
+                    renderProductSearchResults(text);
+                };
+
+                recognition.onerror = (event) => {
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    input.placeholder = 'Search products...';
+                    if (event.error === 'not-allowed') {
+                        alert('Microphone access denied. Please allow microphone in browser settings.');
+                    }
+                };
+
+                recognition.onend = () => {
+                    voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    input.placeholder = 'Search products...';
+                };
+            } else if (voiceBtn) {
+                voiceBtn.style.display = 'none';
+            }
+        }
+
+        async function loadHeaderSearchProducts() {
+            const input = document.getElementById('productSearchInput');
+            if (!input) return;
+
+            input.disabled = true;
+            input.placeholder = 'Loading products...';
+
+            const query = `
+            query {
+                products(first: 100, channel: "in", filter: { isPublished: true }) {
+                    edges {
+                        node {
+                            id
+                            name
+                            description
+                            thumbnail { url }
+                            category { name }
+                            pricing {
+                                priceRange {
+                                    start {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                            variants {
+                                id
+                                name
+                                media {
+                                    url
+                                    type
+                                }
+                                pricing {
+                                    price {
+                                        gross {
+                                            amount
+                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const data = await fetchSaleor(query);
+                headerSearchProductsRaw = (data?.products?.edges || []).map(edge => edge.node);
+            } catch (error) {
+                console.error('Error loading header search products:', error);
+            } finally {
+                input.disabled = false;
+                input.placeholder = 'Search products...';
+            }
         }
 
         function renderProduct(p) {
@@ -1392,9 +1903,9 @@
 
             // 4. Description
             const descHtml = parseDescription(p.description);
-            document.getElementById("descriptionContainer").innerHTML = `<div class="prose prose-invert max-w-none text-white/70 text-sm leading-relaxed">${descHtml}</div>`;
+            document.getElementById("descriptionContainer").innerHTML = `<div class="prose prose-invert max-w-none text-white/80 text-sm leading-relaxed">${descHtml}</div>`;
             if (document.getElementById("descriptionContainerMobile")) {
-                document.getElementById("descriptionContainerMobile").innerHTML = `<div class="prose prose-invert max-w-none text-white/70 text-sm leading-relaxed">${descHtml}</div>`;
+                renderMobileDescription(descHtml);
             }
 
             // 5. Attributes - Grid style
@@ -1472,7 +1983,7 @@
                                 <input type="number" value="${inCart.quantity}"
                                     oninput="handleQuantityInput(this, '${activeId}'); handleRealtimeTotal(this, ${inCart.price}, '${inCart.currency}')"
                                     onblur="finalizeQuantity(this, '${activeId}'); renderCartAction()"
-                                    class="bg-transparent text-lg font-black text-white w-[30px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    class="bg-transparent text-lg font-black text-white w-[150px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                                 <span class="text-[7px] font-black text-gold uppercase tracking-tighter">In Cart</span>
                             </div>
                             <button onclick="updateQty('${activeId}', 1)" class="qty-btn">
@@ -1485,14 +1996,32 @@
                       
                     </div>
                     <div class="flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/5 shadow-2xl">
-                        <span class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Estimated Total</span>
+                        <span class="text-[10px] font-black text-white/80 uppercase tracking-[0.2em]">Estimated Total</span>
                         <span id="cartItemTotal" class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
                     </div>
+                    <button type="button" onclick="openProductBuyNowModal()"
+                        class="w-full h-14 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <ion-icon name="flash-outline" class="text-xl"></ion-icon>
+                        Buy Now
+                    </button>
                 </div>
             ` : `
-                <button onclick="addToCart()" class="w-full h-16 gold-gradient-bg rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-3">
-                    Add to Inquiry Cart
-                </button>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-3">
+                        Add to Cart
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6" 
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                        <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button type="button" onclick="openProductBuyNowModal()"
+                        class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <ion-icon name="flash-outline" class="text-xl"></ion-icon>
+                        Buy Now
+                    </button>
+                </div>
             `;
 
             document.getElementById("cartActionContainer").innerHTML = html;
@@ -1637,6 +2166,184 @@
                 updateQty(id, 1);
             }
         };
+
+        function getBuyNowQuantity() {
+            if (!currentProduct) return 1;
+            const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
+            const cart = getCart();
+            const line = cart.find(i => i.id === activeId);
+            return line ? Math.max(1, parseInt(line.quantity, 10) || 1) : 1;
+        }
+
+        /** Same price/name/image rules as addToCart — used for WhatsApp inquiry text. */
+        function getCurrentSelectionLineItem() {
+            if (!currentProduct) return null;
+            let id, name, image, priceVal, currency;
+
+            if (selectedVariant) {
+                id = selectedVariant.id;
+                name = `${currentProduct.name} - ${selectedVariant.name}`;
+                image = (selectedVariant.media && selectedVariant.media.length > 0) ? selectedVariant.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
+
+                const loggedIn = isUserLoggedIn();
+                let sellingPrice = 0;
+                let costPrice = null;
+                currency = 'INR';
+
+                if (selectedVariant.channelListings && selectedVariant.channelListings.length > 0) {
+                    const listing = selectedVariant.channelListings[0];
+                    sellingPrice = listing.price?.amount || 0;
+                    currency = listing.price?.currency || 'INR';
+                    costPrice = listing.costPrice?.amount || null;
+                } else {
+                    let sellingPriceObj = selectedVariant.pricing?.price?.gross;
+                    if (!sellingPriceObj) sellingPriceObj = currentProduct.pricing?.priceRange?.start?.gross;
+                    sellingPrice = sellingPriceObj ? sellingPriceObj.amount : 0;
+                    currency = sellingPriceObj ? sellingPriceObj.currency : 'INR';
+                }
+
+                const costPriceAttr = currentProduct.attributes?.find(a => a.attribute.name === "Cost Price");
+                let productCostPrice = null;
+                if (costPriceAttr) {
+                    const costPriceStr = costPriceAttr.values[0]?.name;
+                    if (costPriceStr) {
+                        const parsed = parseFloat(costPriceStr.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) productCostPrice = parsed;
+                    }
+                }
+
+                if (costPrice === null && productCostPrice !== null) {
+                    costPrice = productCostPrice;
+                }
+
+                priceVal = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+            } else {
+                id = currentProduct.id;
+                name = currentProduct.name;
+                image = currentProduct.thumbnail?.url || FALLBACK_IMG;
+                priceVal = currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
+                currency = currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
+
+                if (priceVal === 0 && currentProduct.attributes) {
+                    const priceAttr = currentProduct.attributes?.find(a => a.attribute.name === "Actual Price");
+                    if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
+                        const parsed = parseFloat(priceAttr.values[0].name.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) priceVal = parsed;
+                    }
+                }
+            }
+
+            return {
+                id,
+                name,
+                category: currentProduct.category?.name || '',
+                type: currentProduct.productType?.name || '',
+                image,
+                price: priceVal,
+                currency
+            };
+        }
+
+        window.openProductBuyNowModal = function () {
+            if (!currentProduct) return;
+            const modal = document.getElementById('productBuyNowModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const saved = JSON.parse(localStorage.getItem('userAddress') || '{}');
+            const fn = document.getElementById('productBuyNowFirstName');
+            const ln = document.getElementById('productBuyNowLastName');
+            const mob = document.getElementById('productBuyNowMobile');
+            const addr = document.getElementById('productBuyNowAddress');
+            if (fn && saved.firstName) fn.value = saved.firstName;
+            if (ln && saved.lastName) ln.value = saved.lastName;
+            if (mob && saved.mobileNo) mob.value = String(saved.mobileNo).replace(/\D/g, '');
+            if (addr && saved.fullAddress) addr.value = saved.fullAddress;
+        };
+
+        window.closeProductBuyNowModal = function () {
+            const modal = document.getElementById('productBuyNowModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        window.productBuyNowMobileInput = function (input) {
+            input.value = input.value.replace(/\D/g, '');
+        };
+
+        function showOrderPlacedToast() {
+            const el = document.getElementById('orderPlacedToast');
+            if (!el) return;
+            el.classList.remove('opacity-0');
+            clearTimeout(window._orderPlacedToastTimer);
+            window._orderPlacedToastTimer = setTimeout(() => {
+                el.classList.add('opacity-0');
+            }, 2800);
+        }
+
+        function sendProductBuyNowWhatsapp(addressData) {
+            const qty = getBuyNowQuantity();
+            const item = getCurrentSelectionLineItem();
+            if (!item) return;
+
+            let message = "Hi, I am interested in the following products:\n\n";
+            const price = parseFloat(item.price) || 0;
+            const total = price * qty;
+            const symbol = item.currency === 'INR' ? '₹' : (item.currency + ' ');
+            const priceStr = symbol + price.toFixed(2);
+            const totalStr = symbol + total.toFixed(2);
+
+            message += `1. *${item.name}*\n`;
+            message += `   Qty: ${qty}\n`;
+            message += `   Price: ${priceStr}\n`;
+            message += `   Total: ${totalStr}\n\n`;
+            message += `*Grand Total: ${totalStr}*\n\n`;
+            message += `*Delivery Details:*\n`;
+            message += `Name: ${addressData.firstName} ${addressData.lastName}\n`;
+            message += `Mobile: ${addressData.mobileNo}\n`;
+            message += `Address: ${addressData.fullAddress}`;
+
+            const phoneNumber = "917738130131";
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+            const oldOrders = JSON.parse(localStorage.getItem('orderList') || '[]');
+            oldOrders.unshift({
+                id: Date.now(),
+                date: new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' }),
+                items: [{ ...item, quantity: qty }],
+                grandTotal: total.toFixed(2),
+                address: addressData
+            });
+            localStorage.setItem('orderList', JSON.stringify(oldOrders));
+
+            showOrderPlacedToast();
+        }
+
+        document.getElementById('productBuyNowForm')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!currentProduct) return;
+
+            const firstName = (document.getElementById('productBuyNowFirstName')?.value || '').trim();
+            const lastName = (document.getElementById('productBuyNowLastName')?.value || '').trim();
+            let mobileNo = (document.getElementById('productBuyNowMobile')?.value || '').replace(/\D/g, '');
+            const fullAddress = (document.getElementById('productBuyNowAddress')?.value || '').trim();
+
+            if (!firstName || !lastName || !fullAddress) {
+                alert('Please fill in all name and address fields.');
+                return;
+            }
+            if (mobileNo.length < 10) {
+                alert('Please enter a valid mobile number (at least 10 digits).');
+                return;
+            }
+
+            const addressData = { firstName, lastName, mobileNo, fullAddress };
+            localStorage.setItem('userAddress', JSON.stringify(addressData));
+            closeProductBuyNowModal();
+            sendProductBuyNowWhatsapp(addressData);
+        });
 
         window.selectVariant = function (variantId) {
             const variant = currentProduct.variants.find(v => v.id === variantId);
@@ -1903,7 +2610,9 @@
                     category: currentProduct.category?.name || 'Exclusive',
                     image: image,
                     price: priceVal,
-                    currency: currency
+                    currency: currency,
+                    wishlistType: 'Products',
+                    linkUrl: `product.html?id=${activeId}`
                 };
                 wishlist.unshift(newItem);
             }
@@ -1986,6 +2695,9 @@
             }
         };
 
+        setupProductHeaderSearch();
+        setupProductVoiceSearch();
+        loadHeaderSearchProducts();
         init();
 
     </script>

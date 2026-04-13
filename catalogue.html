@@ -7,7 +7,7 @@
     <meta property="og:title" content="Product Catalogues | B-One Interior Store">
     <meta property="og:description"
         content="Browse and download product catalogues from B-One Interior. Find detailed specifications and designs for our premium furniture and decor collections.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
     <!-- Tailwind CSS -->
@@ -51,21 +51,6 @@
             color: #fff;
         }
 
-        .creative-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .creative-card:hover {
-            border-color: #D4AF37;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
-            transform: translateY(-5px);
-            background: rgba(212, 175, 55, 0.03);
-        }
 
         .gold-gradient-bg {
             background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
@@ -106,38 +91,9 @@
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
 
         <!-- Mobile Top Bar -->
-        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
-            <a href="https://b-oneinterior.com/">
-                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
-            </a>
-            <button onclick="toggleDrawer()"
-                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
-        </div>
-
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
-                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue"
-                        class="text-gold-500 underline transition font-bold">Catalogue</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
-                </li>
-                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
-                <li id="authLinkDesktop"></li>
-            </ul>
-        </nav>
-
-        <!-- Sticky Search Bar (matches index.html style) -->
-        <div id="shopStickyBar"
-            class="bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10 py-3 px-4 transition-shadow duration-300">
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10 gap-4">
+            <div id="shopStickyBar"
+            class="bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10  transition-shadow duration-300 flex-1 ">
             <div class="container mx-auto">
                 <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
                     <!-- Search -->
@@ -165,6 +121,32 @@
                 </div>
             </div>
         </div>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/catalogue"
+                        class="text-gold-500 underline transition font-bold">Catalogue</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
+                <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+        </nav>
+
+        <!-- Sticky Search Bar (matches index.html style) -->
     </header>
 
     <div id="drawer">
@@ -224,7 +206,7 @@
         <a href="https://b-oneinterior.com/" class="logoBx"></a>
         <ul>
             <li>
-                <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -659,8 +641,8 @@
     <div class="container mx-auto px-4 py-8 space-y-8">
 
         <!-- Category Filters -->
-        <div class="creative-card p-6 bg-black/40 border-white/5 shadow-2xl">
-            <div class="overflow-x-auto pb-4 hide-scrollbar">
+        <div class="creative-card-catalogue">
+            <div class="overflow-x-auto hide-scrollbar">
                 <div id="categoryFilter" class="flex gap-8 min-w-max px-2 items-center"></div>
             </div>
         </div>
@@ -826,9 +808,67 @@ query {
 }
 `;
 
+        // Wishlist — items from this page are tagged Catalogue
+        function getWishlist() {
+            return JSON.parse(localStorage.getItem('wishlist') || '[]');
+        }
+        function saveWishlist(list) {
+            localStorage.setItem('wishlist', JSON.stringify(list));
+        }
+        function isWishlisted(id) {
+            return getWishlist().some(w => w.id === id);
+        }
+        function toggleWishlist(id, name, image, price, currency, category, linkUrl) {
+            let list = getWishlist();
+            const idx = list.findIndex(w => w.id === id);
+            if (idx > -1) {
+                list.splice(idx, 1);
+            } else {
+                list.push({
+                    id,
+                    name,
+                    image,
+                    price: parseFloat(price) || 0,
+                    currency: currency || 'INR',
+                    category,
+                    linkUrl,
+                    wishlistType: 'Catalogue'
+                });
+            }
+            saveWishlist(list);
+            refreshWishlistHearts();
+            updateWishlistBadge();
+        }
+        function refreshWishlistHearts() {
+            document.querySelectorAll('.wishlist-btn').forEach(btn => {
+                const wid = btn.dataset.wid;
+                if (!wid) return;
+                const wishlisted = isWishlisted(wid);
+                const svg = btn.querySelector('svg');
+                if (!svg) return;
+                if (wishlisted) {
+                    svg.setAttribute('fill', '#e8b84b');
+                    svg.setAttribute('stroke', '#e8b84b');
+                    btn.classList.add('scale-110');
+                } else {
+                    svg.setAttribute('fill', 'none');
+                    svg.setAttribute('stroke', 'currentColor');
+                    btn.classList.remove('scale-110');
+                }
+            });
+        }
+        function updateWishlistBadge() {
+            const count = getWishlist().length;
+            document.querySelectorAll('.wishlist-badge').forEach(el => {
+                el.textContent = count;
+                el.style.display = count > 0 ? 'flex' : 'none';
+            });
+        }
+
         let allCategories = [];
         let allProducts = [];
         let selectedParentCategory = null;
+        const catalogueQtys = {};
 
         async function fetchSaleor() {
             try {
@@ -911,34 +951,43 @@ query {
             });
 
             let categoriesHtml = "";
-            if (parentCategories.length > 0 && parentCategories[0].children) {
-                categoriesHtml = parentCategories[0].children.edges.map(c => {
-                    const hasImage = c.node.backgroundImage?.url;
-                    const isActive = selectedParentCategory === c.node.id;
+            if (parentCategories.length > 0) {
+                const chips = [];
+                parentCategories.forEach(parent => {
+                    chips.push({ ...parent, isSubcategory: false, parentName: '' });
+                    const subs = getSubcategories(categories, parent.id)
+                        .filter(sub => productCategoryIds.has(sub.id))
+                        .map(sub => ({ ...sub, isSubcategory: true, parentName: parent.name }));
+                    chips.push(...subs);
+                });
+
+                categoriesHtml = chips.map(c => {
+                    const hasImage = c.backgroundImage?.url;
+                    const isActive = selectedParentCategory === c.id;
                     const iconHtml = hasImage
-                        ? `<img src="${c.node.backgroundImage.url}" class="w-10 h-10 object-cover rounded-full border ${isActive ? 'border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]' : 'border-white/10'}" alt="${c.node.name}">`
-                        : `<div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border ${isActive ? 'border-gold-500 text-gold-500' : 'border-white/10 text-white/40'}">
-                             <ion-icon name="${getCategoryIcon(c.node.name)}" class="text-xl"></ion-icon>
+                        ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
+                        : `<div class="w-full h-full flex items-center justify-center">
+                               <ion-icon name="${getCategoryIcon(c.name)}" class="text-3xl text-gold-500"></ion-icon>
                            </div>`;
+                    const label = c.isSubcategory ? `${c.name}` : c.name;
 
                     return `
-                    <div class="filter-category flex flex-col items-center justify-center cursor-pointer transition-all duration-300 gap-2 group min-w-[70px]" data-category="${c.node.id}">
-                        <div class="relative">
+                    <div class="filter-category group flex flex-col items-center cursor-pointer transition-all ${isActive ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="${c.id}">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border ${isActive ? 'border-gold-500 shadow-[0_0_18px_rgba(212,175,55,0.35)]' : 'border-gold-500/20'} group-hover:border-gold-500 transition-colors">
                             ${iconHtml}
-                            <div class="absolute inset-0 rounded-full bg-gold-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
-                        <span class="text-[9px] font-black uppercase tracking-tighter text-center leading-none ${isActive ? 'text-gold-500' : 'text-white/40 group-hover:text-white'} transition-colors">${c.node.name}</span>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center leading-tight ${isActive ? 'underline underline-offset-4' : ''}">${label}</span>
                     </div>`;
                 }).join("");
             }
 
             const isAllActive = selectedParentCategory === 'all' || !selectedParentCategory;
             document.getElementById("categoryFilter").innerHTML = `
-                <div class="filter-category flex flex-col items-center justify-center cursor-pointer transition-all duration-300 gap-2 group min-w-[70px]" data-category="all">
-                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border ${isAllActive ? 'border-gold-500 text-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]' : 'border-white/10 text-white/40'}">
-                        <ion-icon name="apps-outline" class="text-xl"></ion-icon>
+                <div class="filter-category group flex flex-col items-center cursor-pointer transition-all ${isAllActive ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="all">
+                    <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border ${isAllActive ? 'border-gold-500 shadow-[0_0_18px_rgba(212,175,55,0.35)]' : 'border-gold-500/20'} group-hover:border-gold-500 transition-colors">
+                        <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
                     </div>
-                    <span class="text-[9px] font-black uppercase tracking-tighter text-center leading-none ${isAllActive ? 'text-gold-500' : 'text-white/40 group-hover:text-white'} transition-colors">All</span>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center ${isAllActive ? 'underline underline-offset-4' : ''}">All</span>
                 </div>
                 ${categoriesHtml}
             `;
@@ -966,38 +1015,96 @@ query {
                 const formattedPrice = currency === 'INR' ? `₹${price}` : `${price} ${currSymbol}`;
 
                 const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
+                const safeImgUrl = imageUrl.replace(/'/g, "\\'");
+                const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeCat = (p.category?.name || 'Catalogue').replace(/'/g, "\\'");
+                const linkUrl = `product.html?id=${p.id}`;
+                const wishlistBtn = `
+                    <button type="button" class="wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
+                        data-wid="${p.id}"
+                        onclick="event.stopPropagation(); event.preventDefault(); toggleWishlist('${p.id}', '${safeName}', '${safeImgUrl}', ${currentPriceVal || 0}, '${currency || 'INR'}', '${safeCat}', '${linkUrl}')"
+                        title="Add to Wishlist">
+                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                        </svg>
+                    </button>`;
 
-                let buttonHtml = "";
-                console.log(products);
+                const safeId = p.id.replace(/[^a-zA-Z0-9]/g, '');
+                const addToCartBtn = `
+                    <div onclick="event.stopPropagation()" class="w-full">
+                        <button type="button"
+                            class="flex gap-2 items-center add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg justify-center"
+                            onpointerdown="event.stopPropagation()"
+                            onclick="return onCatalogueAddToCart(event, '${p.id}')">
+                            Add to Cart
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                                <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <div class="qty-ctrl-row-${safeId} flex items-center gap-2 w-full" style="display:none;">
+                            <div class="flex-1 flex items-center justify-between bg-black/60 border border-[#e8b84b40] rounded-xl overflow-hidden h-10 px-1 shadow-inner">
+                                <button onpointerdown="event.stopPropagation()" onclick="return catalogueDecQty(event, '${p.id}')"
+                                    class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                                <input type="number"
+                                    class="qty-val-${safeId} bg-transparent text-white font-bold text-base w-[60px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    value="1"
+                                    onpointerdown="event.stopPropagation()"
+                                    oninput="catalogueHandleQtyInput(this, '${p.id}')"
+                                    onblur="catalogueFinalizeQty(this, '${p.id}')"
+                                    onclick="event.stopPropagation()">
+                                <button onpointerdown="event.stopPropagation()" onclick="return catalogueIncQty(event, '${p.id}')"
+                                    class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                let buttonHtml = addToCartBtn;
                 if (catalogueVal) {
                     if (catalogueVal.startsWith("http")) {
-                        buttonHtml = `
+                        buttonHtml += `
                             <a href="${catalogueVal}" target="_blank"
+                             onpointerdown="event.stopPropagation()"
+                             onclick="return onCatalogueDownloadClick(event)"
                              class="w-full block text-center bg-gray-200 text-black text-[10px] font-black uppercase tracking-widest px-3 py-2.5 rounded-xl shadow hover:bg-gray-300 transition cursor-pointer">
                              Download
                             </a>`;
                     } else {
-                        buttonHtml = `
-                            <button onclick="openCatalogueViewer('${catalogueVal}')"
-                             class="w-full block text-center gold-gradient-bg text-black text-[10px] font-black uppercase tracking-widest px-3 py-2.5 rounded-xl shadow hover:opacity-90 transition cursor-pointer">
+                        buttonHtml += `
+                            <button type="button" onpointerdown="event.stopPropagation()" onclick="return onCatalogueViewClick(event, '${catalogueVal}')"
+                             class="mt-2 w-full border border-gold-500/50 text-gold-500 text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-xl hover:bg-gold-500/10 transition">
                              View Catalogue
                             </button>`;
                     }
                 }
 
                 return `
-                <div class="creative-card flex flex-col group h-full">
-                    <div onclick="window.location.href='product.html?id=${p.id}'" class="relative overflow-hidden aspect-[4/5] cursor-pointer">
+                <div class="creative-card flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='product.html?id=${p.id}'">
+                    <div class="relative overflow-hidden aspect-square">
                         <img src="${imageUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">
                         ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-wider z-10 border border-white/10">${p.category.name}</div>` : ''}
+                        ${wishlistBtn}
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
                     </div>
                     
-                    <div class="p-4 flex flex-col flex-grow bg-black/20">
-                        <h3 class="font-black text-white text-xs uppercase tracking-tight line-clamp-2 mb-3 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
-                        <div class="mt-auto pt-3 border-t border-white/5 space-y-3">
+                    <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                        <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${p.category?.name || 'Catalogue'}</span>
+                        <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
+                        <div class="mt-auto pt-1 border-t border-white/5 space-y-3">
                             <div class="flex flex-col">
                                 <span class="text-[8px] text-white/40 uppercase font-bold tracking-widest">Starting from</span>
                                 <span class="gold-gradient-text text-base font-black">${formattedPrice}</span>
@@ -1030,12 +1137,12 @@ query {
             }
 
             if (selectedParentCategory && selectedParentCategory !== "all") {
-                const subcategories = getSubcategories(allCategories, selectedParentCategory);
-                const subcatIds = subcategories.map(s => s.id);
+                const directSubs = getSubcategories(allCategories, selectedParentCategory);
+                const scopeIds = directSubs.length > 0
+                    ? [selectedParentCategory, ...directSubs.map(s => s.id)]
+                    : [selectedParentCategory];
 
-                filtered = filtered.filter(p =>
-                    p.category?.id === selectedParentCategory || subcatIds.includes(p.category?.id)
-                );
+                filtered = filtered.filter(p => scopeIds.includes(p.category?.id));
             }
 
             if (window.innerWidth >= 768) {
@@ -1043,6 +1150,8 @@ query {
             } else {
                 renderMobileList(filtered);
             }
+            refreshWishlistHearts();
+            initCatalogueCardStates();
         }
 
         function setupFiltering() {
@@ -1057,14 +1166,8 @@ query {
             document.addEventListener("click", e => {
                 if (e.target.closest(".filter-category")) {
                     const target = e.target.closest(".filter-category");
-                    document.querySelectorAll(".filter-category").forEach(b => {
-                        b.classList.remove("text-gold");
-                        b.classList.add("text-gray-500");
-                    });
-                    target.classList.remove("text-gray-500");
-                    target.classList.add("text-gold");
-
                     selectedParentCategory = target.dataset.category;
+                    renderCategoryFilters(allCategories, window.allProducts || []);
                     applyFilters();
                 }
             });
@@ -1083,6 +1186,154 @@ query {
             } else {
                 badge.classList.add("hidden");
             }
+        }
+
+        function addCatalogueItemToCart(id, name, image, price, currency, category) {
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity, 10) || 1) + 1;
+                catalogueQtys[id] = existing.quantity;
+            } else {
+                cart.unshift({
+                    id,
+                    name,
+                    image,
+                    price: parseFloat(price) || 0,
+                    currency: currency || 'INR',
+                    category: category || 'Catalogue',
+                    quantity: 1
+                });
+                catalogueQtys[id] = 1;
+            }
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+        }
+
+        function addCatalogueItemToCartById(productId) {
+            const products = window.allProducts || [];
+            const p = products.find(x => x.id === productId);
+            if (!p) return;
+
+            const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+            const price = currentPriceObj?.amount || 0;
+            const currency = currentPriceObj?.currency || 'INR';
+            const image = p.thumbnail?.url || FALLBACK_IMG;
+            const category = p.category?.name || 'Catalogue';
+
+            addCatalogueItemToCart(
+                p.id,
+                p.name || 'Product',
+                image,
+                price,
+                currency,
+                category
+            );
+        }
+
+        function onCatalogueAddToCart(e, productId) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            addCatalogueItemToCartById(productId);
+            return false;
+        }
+
+        function onCatalogueViewClick(e, catalogueVal) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            openCatalogueViewer(catalogueVal);
+            return false;
+        }
+
+        function onCatalogueDownloadClick(e) {
+            if (e) {
+                e.stopPropagation();
+            }
+            return true;
+        }
+
+        function catalogueHandleQtyInput(input, id) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '';
+            input.value = value;
+        }
+
+        function catalogueFinalizeQty(input, id) {
+            let value = parseInt(input.value, 10);
+            if (isNaN(value) || value <= 0) value = 1;
+            input.value = value;
+
+            catalogueQtys[id] = value;
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = value;
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                updateCartBadge();
+            }
+        }
+
+        function catalogueIncQty(e, id) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            catalogueQtys[id] = (catalogueQtys[id] || 1) + 1;
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = cart.find(i => i.id === id);
+            if (item) item.quantity = catalogueQtys[id];
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+            return false;
+        }
+
+        function catalogueDecQty(e, id) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            const current = catalogueQtys[id] || 1;
+            if (current <= 1) {
+                let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                cart = cart.filter(i => i.id !== id);
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                delete catalogueQtys[id];
+                updateCartBadge();
+                document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'none');
+            } else {
+                catalogueQtys[id] = current - 1;
+                let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                const item = cart.find(i => i.id === id);
+                if (item) item.quantity = catalogueQtys[id];
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                updateCartBadge();
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+            }
+            return false;
+        }
+
+        function initCatalogueCardStates() {
+            const cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            cart.forEach(cartItem => {
+                const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
+                catalogueQtys[cartItem.id] = parseInt(cartItem.quantity, 10) || 1;
+                document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+                document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[cartItem.id]);
+            });
         }
 
         (async () => {
@@ -1136,6 +1387,7 @@ query {
             applyFilters();
             setupFiltering();
             updateCartBadge();
+            updateWishlistBadge();
             document.getElementById("loadingSpinner").classList.add("hidden");
         })();
     </script>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
     <title>Your Shopping Cart - Secure Checkout | B-One Interior</title>
@@ -86,7 +86,7 @@
             justify-content: space-between;
             overflow: hidden;
             height: 40px;
-            width: 100px;
+            width: 100%;
         }
 
         .qty-btn {
@@ -219,7 +219,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                    <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -313,11 +313,14 @@
             document.addEventListener('DOMContentLoaded', checkAuth);
 
             function updateWishlistBadge() {
-                const b = document.querySelector('.wishlist-badge');
-                if (!b) return;
-                const w = JSON.parse(localStorage.getItem("wishlist") || "{}");
-                let t = 0; Object.values(w).forEach(i => t += i.length);
-                if (t > 0) { b.textContent = t; b.style.display = 'flex'; } else { b.style.display = 'none'; }
+                const raw = JSON.parse(localStorage.getItem("wishlist") || "[]");
+                const count = Array.isArray(raw) ? raw.length : Object.values(raw || {}).reduce((acc, arr) => {
+                    return acc + (Array.isArray(arr) ? arr.length : 0);
+                }, 0);
+                document.querySelectorAll('.wishlist-badge').forEach(b => {
+                    b.textContent = count;
+                    b.style.display = count > 0 ? 'flex' : 'none';
+                });
             }
             updateWishlistBadge();
 
@@ -601,7 +604,7 @@
 
                 <button type="submit"
                     class="w-full gold-gradient-bg text-black font-black uppercase py-4 rounded-xl tracking-[0.2em] shadow-xl hover:opacity-90 transition transform active:scale-95 mt-4">
-                    Confirm & Send Inquiry
+                    Place Order
                 </button>
             </form>
         </div>
@@ -645,20 +648,19 @@
 
                 return `
         <div class="cart-item-card p-4 md:p-6 flex items-center gap-4 md:gap-8 relative group">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-gold/5 blur-[80px] rounded-full group-hover:bg-gold/10 transition"></div>
             
             <a href="product.html?id=${item.id}" class="w-24 h-24 md:w-32 md:h-32 rounded-[20px] overflow-hidden flex-shrink-0 border border-white/10 group-hover:border-gold/30 transition shadow-2xl">
                 <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
             </a>
 
-            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div class="flex-grow min-w-0">
                     <p class="text-[10px] font-black text-gold uppercase tracking-[0.2em] mb-1">${item.category || 'Collection'}</p>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight leading-none mb-1 truncate">${item.name}</h3>
                     <p class="text-xs font-bold text-white/80 uppercase tracking-widest">${symbol}${price.toFixed(2)} per unit</p>
                 </div>
 
-                <div class="flex items-center gap-6 justify-between md:justify-end">
+                <div class="gap-6 md:flex item-center justify-between md:justify-end">
                     <div class="qty-pill">
                         <button onclick="updateQty('${item.id}', -1)" class="qty-btn">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -668,7 +670,7 @@
                         <input type="number" value="${qty}"
                             oninput="cartHandleQtyInput(this, '${item.id}')"
                             onblur="cartFinalizeQty(this, '${item.id}')"
-                            class="bg-transparent text-sm font-black text-white w-10 text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                            class="bg-transparent text-sm font-black text-white w-[100px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                         <button onclick="updateQty('${item.id}', 1)" class="qty-btn">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -677,13 +679,15 @@
                             </button>
                     </div>
 
-                    <div class="text-right min-w-[100px]">
+                    <div class="text-right min-w-[100px] hidden md:block">
                         <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Subtotal</p>
                         <p class="text-xl font-black gold-gradient-text">${totalStr}</p>
                     </div>
-
-                   
                 </div>
+                <div class="flex items-end gap-4 justify-between md:hidden">
+                        <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Subtotal</p>
+                        <p class="text-xl font-black gold-gradient-text">${totalStr}</p>
+                    </div>
                  <button class="remove-circle flex-shrink-0" onclick="removeFromCart('${item.id}')">
                         <ion-icon name="close-outline" class="text-2xl"></ion-icon>
                     </button>
@@ -869,7 +873,7 @@
 
             summaryContainer.innerHTML = ""; // Clear summary on history view
 
-            const ordersHtml = orders.map(order => {
+            const ordersHtml = orders.map((order, index) => {
                 const itemsList = order.items.map(item => `
             <div class="flex items-center gap-4 py-2 border-b border-white/5 last:border-0">
                 <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
@@ -884,9 +888,15 @@
                 return `
         <div class="glass-panel p-6 mb-6">
             <div class="flex items-center justify-between mb-4 border-b border-gold/10 pb-4">
+                <div class="flex items-center gap-4">
+                <div>
+                    <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] mb-1">Order ID</p>
+                    <p class="text-sm font-black text-white uppercase">${index + 1}</p>
+                </div>
                 <div>
                     <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] mb-1">Inquiry Date</p>
                     <p class="text-sm font-black text-white uppercase">${order.date}</p>
+                </div>
                 </div>
                 <div class="text-right">
                     <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] mb-1">Total</p>

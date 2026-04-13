@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
     <title>B-One Interior - Premium Home Decor & Furniture Store</title>
@@ -76,19 +76,40 @@
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
 
         <!-- Mobile Top Bar (only visible on mobile) -->
-        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
-            <a href="https://b-oneinterior.com/">
-                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
-            </a>
-            <button onclick="toggleDrawer()"
-                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
+        <div id="mobileTopBar"
+            class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
+            <div class="flex items-center justify-between gap-3 min-h-[48px]">
+                <div id="shopSearchStickyWrap" class="relative flex-1">
+                    <input type="text" id="shopSearchInput" placeholder="Search products..."
+                        class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <button id="shopVoiceBtn"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v2a7 7 0 01-14 0v-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                        </svg>
+                    </button>
+                </div>
+                <button onclick="toggleDrawer()" aria-label="Open menu"
+                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
         </div>
+        <div class="md:hidden h-[65px]"></div>
 
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
@@ -185,7 +206,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank"
+                    <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -510,60 +531,60 @@
             const searchInput = document.getElementById('homeSearchInput');
             const searchDropdown = document.getElementById('searchDropdown');
 
-            // Hide dropdown when clicking outside
-            document.addEventListener('click', function (e) {
-                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
-                    searchDropdown.classList.add('hidden');
-                }
-            });
+            if (searchInput && searchDropdown) {
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                        searchDropdown.classList.add('hidden');
+                    }
+                });
 
-            searchInput.addEventListener('input', function (e) {
-                const query = this.value.trim().toLowerCase();
+                searchInput.addEventListener('input', function () {
+                    const query = this.value.trim().toLowerCase();
 
-                if (query.length === 0) {
-                    searchDropdown.classList.add('hidden');
-                    return;
-                }
+                    if (query.length === 0) {
+                        searchDropdown.classList.add('hidden');
+                        return;
+                    }
 
-                if (window.allProducts && window.allProducts.length > 0) {
-                    const results = [];
+                    if (window.allProducts && window.allProducts.length > 0) {
+                        const results = [];
 
-                    window.allProducts.forEach(p => {
-                        const product = p.node;
-                        const productName = product.name.toLowerCase();
-                        // १. प्रोडक्ट का नाम चेक करें
-                        if (productName.includes(query)) {
-                            results.push({
-                                id: product.id,
-                                name: product.name,
-                                thumbnail: product.thumbnail?.url,
-                                price: product.pricing?.priceRange?.start?.gross?.amount,
-                                currency: product.pricing?.priceRange?.start?.gross?.currency
-                            });
-                        }
+                        window.allProducts.forEach(p => {
+                            const product = p.node;
+                            const productName = product.name.toLowerCase();
+                            if (productName.includes(query)) {
+                                results.push({
+                                    id: product.id,
+                                    name: product.name,
+                                    thumbnail: product.thumbnail?.url,
+                                    price: product.pricing?.priceRange?.start?.gross?.amount,
+                                    currency: product.pricing?.priceRange?.start?.gross?.currency
+                                });
+                            }
 
-                        // २. वेरिएंट्स के नाम चेक करें
-                        if (product.variants) {
-                            product.variants.forEach(v => {
-                                if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
-                                    console.log('v.name.toLowerCase().includes(query)==============', v)
-                                    results.push({
-                                        id: v.id, // वेरिएंट की ID
-                                        name: `${v.name}`,
-                                        thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
-                                        price: v.pricing?.price?.gross?.amount,
-                                        currency: v.pricing?.price?.gross?.currency
-                                    });
-                                }
-                            });
-                        }
-                    });
+                            if (product.variants) {
+                                product.variants.forEach(v => {
+                                    if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                        results.push({
+                                            id: v.id,
+                                            name: `${v.name}`,
+                                            thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                            price: v.pricing?.price?.gross?.amount,
+                                            currency: v.pricing?.price?.gross?.currency
+                                        });
+                                    }
+                                });
+                            }
+                        });
 
-                    renderDropdown(results);
-                }
-            });
+                        renderDropdown(results);
+                    }
+                });
+            }
 
             function renderDropdown(items) {
+                if (!searchDropdown) return;
                 if (items.length === 0) {
                     searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
                     searchDropdown.classList.remove('hidden');
@@ -600,7 +621,7 @@
             // Mobile compatibility check
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-            if (SpeechRecognition) {
+            if (SpeechRecognition && voiceBtn && homeSearchInput) {
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'en-IN';
                 recognition.interimResults = false; // मोबाइल पर बेहतर प्रदर्शन के लिए
@@ -637,7 +658,7 @@
                     voiceBtn.classList.remove('text-red-500', 'animate-pulse');
                     homeSearchInput.placeholder = "Search products...";
                 };
-            } else {
+            } else if (voiceBtn) {
                 voiceBtn.style.display = 'none';
             }
         </script>
@@ -650,10 +671,10 @@
             <!-- Slide 1 -->
             <div class="item relative w-full overflow-hidden">
                 <img src="slider1.jpg"
-                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
                     <div class="px-6 md:px-16 max-w-2xl">
                         <span
                             class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Premium
@@ -676,10 +697,10 @@
             <!-- Slide 2 -->
             <div class="item relative w-full overflow-hidden">
                 <img src="slider2.jpg"
-                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
                     <div class="px-6 md:px-16 max-w-2xl">
                         <span
                             class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Trusted
@@ -702,7 +723,7 @@
             <!-- Slide 3 -->
             <div class="item relative w-full overflow-hidden">
                 <img src="slider3.jpg"
-                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
                 <!-- Top-right badge -->
@@ -710,7 +731,7 @@
                     class="absolute top-5 right-5 md:top-8 md:right-10 bg-gold-500/20 border border-gold-500/50 backdrop-blur-sm text-gold-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">
                     ✦ Special Offer
                 </div>
-                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
                     <div class="px-6 md:px-16 max-w-2xl">
                         <span
                             class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Exclusive
@@ -733,10 +754,10 @@
             <!-- Slide 4 -->
             <div class="item relative w-full overflow-hidden">
                 <img src="slider4.jpg"
-                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
                     <div class="px-6 md:px-16 max-w-2xl">
                         <span
                             class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Luxury
@@ -759,10 +780,10 @@
             <!-- Slide 5 -->
             <div class="item relative w-full overflow-hidden">
                 <img src="slider5.jpg"
-                    class="w-full h-[75vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center pb-14 md:pb-0">
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
                     <div class="px-6 md:px-16 max-w-2xl">
                         <span
                             class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Comfort
@@ -786,45 +807,47 @@
     </section>
 
     <!-- Dynamic Shop Section -->
-    <section class="fade-section py-6 md:py-16 bg-[#0a0a0a]" id="shop-section">
+    <section class="fade-section md:py-16 bg-[#0a0a0a]" id="shop-section">
 
         <!-- Sticky Search Bar (sticks below header on scroll) -->
         <div id="shopStickyBar"
-            class="sticky z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10 py-3 -mx-0 px-4 md:px-0 transition-shadow duration-300">
+            class="z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10 py-3 -mx-0 px-4 md:px-0 transition-shadow duration-300">
             <div class="container mx-auto">
-                <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
-                    <!-- Search -->
-                    <div class="relative flex-1">
-                        <input type="text" id="shopSearchInput" placeholder="Search products..."
-                            class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
-                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                <div id="shopSearchStickyRow" class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
+                        <!-- Search -->
+                        <div class="relative flex-1 w-full hidden md:block">
+                            <input type="text" id="shopSearchInput" placeholder="Search products..."
+                                class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <button id="shopVoiceBtn"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 10v2a7 7 0 01-14 0v-2" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19v4m-4 0h8" />
+                                </svg>
+                            </button>
                         </div>
-                        <button id="shopVoiceBtn"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 10v2a7 7 0 01-14 0v-2" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 19v4m-4 0h8" />
-                            </svg>
-                        </button>
-                    </div>
                     <!-- Price Filter -->
                     <div
-                        class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
-                        <span
-                            class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
-                        <input type="number" id="minPriceInput" placeholder="Min"
-                            class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
-                        <span class="text-gold-500/40 text-xs flex-shrink-0">–</span>
-                        <input type="number" id="maxPriceInput" placeholder="Max"
-                            class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                        class="flex items-center justify-between gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
+                            <input type="number" id="minPriceInput" placeholder="Min"
+                                class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                            <span class="text-gold-500/40 text-xs flex-shrink-0">–</span>
+                            <input type="number" id="maxPriceInput" placeholder="Max"
+                                class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                        </div>
                         <button onclick="applyShopFilters()"
                             class="gold-gradient-bg flex-shrink-0 text-black px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase transition hover:opacity-90">
                             Apply
@@ -834,9 +857,9 @@
             </div>
         </div>
 
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto">
             <!-- Category Filters -->
-            <div class="creative-card p-4 mt-4 mb-4 md:mb-8">
+            <div class="p-2 mt-2 md:mb-8">
                 <div class="overflow-x-auto pb-2 hide-scrollbar">
                     <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
                 </div>
@@ -852,6 +875,11 @@
                 <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500 mb-4"></div>
                 <p class="text-gold-500 text-sm font-medium tracking-widest uppercase">Loading Collection...</p>
             </div>
+            <div id="shopPaginationLoader" class="hidden flex-col items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gold-500 mb-3"></div>
+                <p class="text-gold-500/80 text-[11px] font-medium tracking-[0.3em] uppercase">Loading More</p>
+            </div>
+            <div id="shopLoadMoreTrigger" class="h-8"></div>
         </div>
     </section>
 
@@ -1186,6 +1214,10 @@
         let shopAllCategories = [];
         let shopAllProducts = [];
         let selectedShopParentCategory = "all";
+        let shopEndCursor = null;
+        let shopHasNextPage = true;
+        let shopLoadingMore = false;
+        let shopLoadObserver = null;
 
         // ---- Wishlist helpers ------------------------------------------------
         function getWishlist() {
@@ -1203,7 +1235,7 @@
             if (idx > -1) {
                 list.splice(idx, 1);
             } else {
-                list.push({ id, name, image, price: parseFloat(price) || 0, currency, category, linkUrl });
+                list.push({ id, name, image, price: parseFloat(price) || 0, currency, category, linkUrl, wishlistType: 'Products' });
             }
             saveWishlist(list);
             refreshWishlistHearts();
@@ -1395,20 +1427,15 @@
             });
         }
 
-        async function fetchShopData() {
-            const query = `
+        function getShopProductsQuery(afterCursor = null) {
+            const afterClause = afterCursor ? `, after: "${afterCursor}"` : "";
+            return `
             query {
-                categories(first: 100) {
-                    edges {
-                        node {
-                            id
-                            name
-                            backgroundImage { url }
-                            parent { id name }
-                        }
+                products(first: 10, channel: "in", filter: { isPublished: true }${afterClause}) {
+                    pageInfo {
+                        hasNextPage
+                        endCursor
                     }
-                }
-                products(first: 100, channel: "in", filter: { isPublished: true }) {
                     edges {
                         node {
                             id
@@ -1439,6 +1466,106 @@
                 }
             }
             `;
+        }
+
+        function getShopHiddenCategoryIds() {
+            return shopAllCategories
+                .filter(c => SHOP_HIDDEN_CATEGORIES.includes(c.name))
+                .map(c => c.id);
+        }
+
+        function filterVisibleShopProducts(products) {
+            const hiddenIds = getShopHiddenCategoryIds();
+            return products.filter(p => {
+                const catId = p.category?.id;
+                const parentId = p.category?.parent?.id;
+                return !hiddenIds.includes(catId) && !hiddenIds.includes(parentId);
+            });
+        }
+
+        function updateShopPaginationLoader() {
+            const loader = document.getElementById("shopPaginationLoader");
+            if (!loader) return;
+            if (shopLoadingMore) {
+                loader.classList.remove("hidden");
+                loader.classList.add("flex");
+            } else {
+                loader.classList.add("hidden");
+                loader.classList.remove("flex");
+            }
+        }
+
+        function setupShopInfiniteScroll() {
+            const trigger = document.getElementById("shopLoadMoreTrigger");
+            if (!trigger) return;
+            if (shopLoadObserver) shopLoadObserver.disconnect();
+
+            shopLoadObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && shopHasNextPage && !shopLoadingMore) {
+                        loadMoreShopProducts();
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '300px 0px',
+                threshold: 0
+            });
+
+            shopLoadObserver.observe(trigger);
+        }
+
+        async function loadMoreShopProducts() {
+            if (!shopHasNextPage || shopLoadingMore) return;
+            shopLoadingMore = true;
+            updateShopPaginationLoader();
+
+            try {
+                const res = await fetch(SHOP_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: getShopProductsQuery(shopEndCursor) })
+                });
+                const json = await res.json();
+                const productConnection = json.data?.products;
+                const pageInfo = productConnection?.pageInfo;
+                const newProducts = filterVisibleShopProducts(
+                    (productConnection?.edges || []).map(e => e.node)
+                );
+
+                const existingIds = new Set(shopAllProducts.map(product => product.id));
+                newProducts.forEach(product => {
+                    if (!existingIds.has(product.id)) {
+                        shopAllProducts.push(product);
+                    }
+                });
+
+                shopHasNextPage = !!pageInfo?.hasNextPage;
+                shopEndCursor = pageInfo?.endCursor || null;
+                applyShopFilters();
+            } catch (err) {
+                console.error("Shop pagination error:", err);
+            } finally {
+                shopLoadingMore = false;
+                updateShopPaginationLoader();
+            }
+        }
+
+        async function fetchShopData() {
+            const query = `
+            query {
+                categories(first: 100) {
+                    edges {
+                        node {
+                            id
+                            name
+                            backgroundImage { url }
+                            parent { id name }
+                        }
+                    }
+                }
+            }
+            `;
 
             try {
                 const res = await fetch(SHOP_API_URL, {
@@ -1450,21 +1577,9 @@
                 const data = json.data;
 
                 shopAllCategories = data.categories.edges.map(e => e.node);
-                const rawProducts = data.products.edges.map(e => e.node);
-
-                // Filter hidden categories
-                const hiddenIds = shopAllCategories
-                    .filter(c => SHOP_HIDDEN_CATEGORIES.includes(c.name))
-                    .map(c => c.id);
-
-                shopAllProducts = rawProducts.filter(p => {
-                    const catId = p.category?.id;
-                    const parentId = p.category?.parent?.id;
-                    return !hiddenIds.includes(catId) && !hiddenIds.includes(parentId);
-                });
-
                 renderShopCategoryFilters();
-                applyShopFilters();
+                await loadMoreShopProducts();
+                setupShopInfiniteScroll();
                 document.getElementById("shopLoading").classList.add("hidden");
             } catch (err) {
                 console.error("Shop fetch error:", err);
@@ -1476,21 +1591,21 @@
             const container = document.getElementById("shopCategoryFilter");
 
             container.innerHTML = `
-                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="all">
+                <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === 'all' ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="all">
                     <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                         <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
                     </div>
                     <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter ${selectedShopParentCategory === 'all' ? 'underline underline-offset-4' : ''}">All</span>
                 </div>
                 ${parents.map(c => `
-                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-100' : 'opacity-50 hover:opacity-100'}" data-category="${c.id}">
+                    <div class="shop-filter-item group flex flex-col items-center cursor-pointer transition-all ${selectedShopParentCategory === c.id ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="${c.id}">
                         <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                             ${c.backgroundImage?.url
                     ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
                     : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
                 }
                         </div>
-                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter line-clamp-1 w-16 text-center ${selectedShopParentCategory === c.id ? 'underline underline-offset-4' : ''}">${c.name}</span>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center ${selectedShopParentCategory === c.id ? 'underline underline-offset-4' : ''}">${c.name}</span>
                     </div>
                 `).join("")}
             `;
@@ -1737,9 +1852,15 @@
                             
                             <div onclick="event.stopPropagation()" class="w-full">
                                 <!-- 1. Add to Cart button (visible by default) -->
-                                <button class="add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg justify-center"
+                                <button class="flex gap-2 items-center add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg justify-center"
                                     onclick="shopAddItem(this, '${p.id}', '${safeName}', '${mainImg}', ${minPrice}, '${currency}', '${safeCategory}')">
-                                    Add to Inquiry Cart
+                                    Add to Cart
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6" 
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                                    <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+                                    </svg>
                                 </button>
 
                                 <!-- 2. Qty control Row (hidden until item is added) -->
@@ -1753,7 +1874,7 @@
                                             </svg>
                                             </button>
                                         <input type="number" 
-                                            class="qty-val-${safeId} bg-transparent text-white font-bold text-base w-[30px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            class="qty-val-${safeId} bg-transparent text-white font-bold text-base w-[60px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                             value="1"
                                             oninput="shopHandleQtyInput(this, '${p.id}')"
                                             onblur="shopFinalizeQty(this, '${p.id}')">
@@ -2027,30 +2148,7 @@
         loadCollections();
         fetchShopData();
 
-        // ── Sticky search bar: set top = header height ──────────
-        function updateShopStickyTop() {
-            const header = document.querySelector('header');
-            const bar = document.getElementById('shopStickyBar');
-            if (header && bar) {
-                bar.style.top = header.offsetHeight + 'px';
-            }
-        }
-        updateShopStickyTop();
-        window.addEventListener('resize', updateShopStickyTop);
-        // Add shadow when sticky is active
-        window.addEventListener('scroll', () => {
-            const bar = document.getElementById('shopStickyBar');
-            if (!bar) return;
-            const section = document.getElementById('shop-section');
-            if (!section) return;
-            const sectionTop = section.getBoundingClientRect().top;
-            const headerH = parseInt(bar.style.top || '0');
-            if (sectionTop <= headerH) {
-                bar.classList.add('shadow-lg', 'shadow-black/50');
-            } else {
-                bar.classList.remove('shadow-lg', 'shadow-black/50');
-            }
-        }, { passive: true });
+        // Search box is now in fixed mobile top bar.
 
         // ── Shop Search Input listener ───────────────────────────
         const shopSearchInput = document.getElementById('shopSearchInput');
