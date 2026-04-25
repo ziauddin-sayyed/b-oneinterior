@@ -98,6 +98,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
                         </svg>
                     </button>
+                    <div id="shopSearchResultsMobile"
+                        class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto p-2 w-full"></div>
                 </div>
                 <button onclick="toggleDrawer()" aria-label="Open menu"
                     class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 shrink-0">
@@ -816,7 +818,7 @@
                 <div id="shopSearchStickyRow" class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
                     <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
                         <!-- Search -->
-                        <div class="relative flex-1 w-full hidden md:block">
+                        <div id="shopSearchStickyWrapDesktop" class="relative flex-1 w-full hidden md:block">
                             <input type="text" id="shopSearchInput" placeholder="Search products..."
                                 class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
@@ -836,6 +838,8 @@
                                         d="M12 19v4m-4 0h8" />
                                 </svg>
                             </button>
+                            <div id="shopSearchResultsDesktop"
+                                class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto"></div>
                         </div>
                     <!-- Price Filter -->
                     <div
@@ -884,7 +888,7 @@
     </section>
 
     <!-- Before/After Gallery -->
-    <section class="fade-section py-12">
+    <!-- <section class="fade-section py-12">
         <div class="container mx-auto px-4">
             <h2
                 class="text-4xl md:text-5xl font-extrabold text-center gold-gradient-text mb-12 uppercase tracking-widest">
@@ -956,7 +960,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 
     <!-- PRODUCT CAROUSEL SECTION -->
@@ -1483,6 +1487,15 @@
             });
         }
 
+        function shuffleArray(items) {
+            const arr = [...items];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         function updateShopPaginationLoader() {
             const loader = document.getElementById("shopPaginationLoader");
             if (!loader) return;
@@ -1539,6 +1552,8 @@
                         shopAllProducts.push(product);
                     }
                 });
+                // Keep shop feed order fresh while new pages merge in.
+                shopAllProducts = shuffleArray(shopAllProducts);
 
                 shopHasNextPage = !!pageInfo?.hasNextPage;
                 shopEndCursor = pageInfo?.endCursor || null;
@@ -1730,12 +1745,14 @@
                 displayItems = filtered;
             }
 
+            renderShopSearchDropdown(displayItems, searchQuery);
             renderShopDesktopList(displayItems);
             renderShopMobileList(displayItems);
         }
 
         function renderShopDesktopList(products) {
             const container = document.getElementById("shopProductGrid");
+            container.className = "hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8";
             container.innerHTML = products.length
                 ? products.map(p => renderProductCard(p)).join("")
                 : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No pieces found</div>`;
@@ -1745,11 +1762,70 @@
 
         function renderShopMobileList(products) {
             const container = document.getElementById("shopMobileProductList");
+            container.className = "grid grid-cols-2 gap-2 md:hidden";
             container.innerHTML = products.length
                 ? products.map(p => renderProductCard(p, true)).join("")
                 : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">No pieces found</div>`;
             initShopCardStates(); // Restore states immediately
             initShopCarousels();
+        }
+
+        function renderShopSearchDropdown(items, query) {
+            const mobileDropdown = document.getElementById("shopSearchResultsMobile");
+            const desktopDropdown = document.getElementById("shopSearchResultsDesktop");
+            const q = (query || "").trim().toLowerCase();
+
+            if (!mobileDropdown || !desktopDropdown) return;
+
+            if (!q) {
+                mobileDropdown.classList.add('hidden');
+                desktopDropdown.classList.add('hidden');
+                mobileDropdown.innerHTML = '';
+                desktopDropdown.innerHTML = '';
+                return;
+            }
+
+            const topItems = items.slice(0, 20);
+            const html = topItems.length
+                ? topItems.map(p => renderSearchListItem(p)).join("")
+                : `<div class="px-4 py-5 text-center text-gray-400 text-sm">No products found</div>`;
+
+            mobileDropdown.innerHTML = html;
+            desktopDropdown.innerHTML = html;
+            mobileDropdown.classList.remove('hidden');
+            desktopDropdown.classList.remove('hidden');
+        }
+
+        function renderSearchListItem(p) {
+            const priceStart = p.pricing?.priceRange?.start?.gross;
+            const priceStop = p.pricing?.priceRange?.stop?.gross;
+            const currency = priceStart?.currency || 'INR';
+            const symbol = currency === 'INR' ? '₹' : (currency + ' ');
+            const minPrice = priceStart?.amount || 0;
+            const maxPrice = priceStop?.amount || 0;
+            const isRange = maxPrice > minPrice;
+            const imageUrl = (p.media || []).find(m => m.type === 'IMAGE')?.url || p.thumbnail?.url || SHOP_FALLBACK_IMG;
+            const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
+
+            let priceText = '';
+            if (isRange) {
+                priceText = `Range ${symbol}${Math.round(minPrice)} - ${symbol}${Math.round(maxPrice)}`;
+            } else {
+                priceText = `${symbol}${minPrice.toFixed(2)}`;
+            }
+
+            return `
+                <a href="${linkUrl}" class="group flex items-center gap-3 md:gap-4 rounded-2xl border border-gold-500/20 bg-black/40 hover:bg-black/60 transition p-2.5 md:p-3">
+                    <img src="${imageUrl}" alt="${p.name}" class="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover border border-gold-500/20 flex-shrink-0">
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-gold-500/90 mb-1">${p.category?.name || 'Decor'}</div>
+                        <div class="text-white text-xs md:text-sm font-bold leading-snug line-clamp-2 group-hover:text-gold-400 transition">${p.name}</div>
+                        <div class="mt-1.5 text-gold-300 text-xs md:text-sm font-black">${priceText}</div>
+                        ${p._isVariant ? `<div class="mt-1 inline-block text-[9px] font-black uppercase tracking-wide bg-[#e8b84b]/90 text-black px-2 py-0.5 rounded-full">Variant</div>` : ''}
+                    </div>
+                    <div class="text-gold-400 text-[10px] md:text-xs font-black uppercase tracking-wider pr-1">View</div>
+                </a>
+            `;
         }
 
         function renderProductCard(p, isMobile = false) {
@@ -2048,7 +2124,7 @@
                 const carousel = document.getElementById("productCarousel");
 
                 if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {
-                    const products = bestSellerCol.node.products.edges;
+                    const products = shuffleArray(bestSellerCol.node.products.edges);
                     carousel.innerHTML = "";
                     products.forEach(p => carousel.appendChild(createProductItem(p)));
 
@@ -2057,6 +2133,7 @@
                         margin: 10,
                         nav: false,
                         dots: true,
+                        startPosition: Math.floor(Math.random() * products.length),
                         responsive: {
                             0: { items: 2 },
                             640: { items: 3 },
@@ -2069,13 +2146,15 @@
                 }
 
                 // 2. Handle Other Collections
-                const otherCollections = collections.filter(c => c.node.name !== "Best Seller" && c.node.products.edges.length > 0);
+                const otherCollections = shuffleArray(
+                    collections.filter(c => c.node.name !== "Best Seller" && c.node.products.edges.length > 0)
+                );
                 const container = document.getElementById("dynamicCollectionsContainer");
                 container.innerHTML = "";
 
                 otherCollections.forEach((col, index) => {
                     const sectionId = `dynamicCarousel-${index}`;
-                    const products = col.node.products.edges;
+                    const products = shuffleArray(col.node.products.edges);
 
                     const sectionHtml = `
                     <section class="fade-section py-2" id="section-${index}">
@@ -2095,6 +2174,7 @@
                         margin: 10,
                         nav: false,
                         dots: true,
+                        startPosition: Math.floor(Math.random() * products.length),
                         responsive: {
                             0: { items: 2 },
                             640: { items: 3 },
@@ -2157,6 +2237,22 @@
         if (shopSearchInput) {
             shopSearchInput.addEventListener('input', applyShopFilters);
         }
+
+        document.addEventListener('click', (e) => {
+            const mobileWrap = document.getElementById('shopSearchStickyWrap');
+            const desktopWrap = document.getElementById('shopSearchStickyWrapDesktop');
+            const mobileDropdown = document.getElementById('shopSearchResultsMobile');
+            const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
+            const target = e.target;
+
+            const clickedInsideMobile = mobileWrap && mobileWrap.contains(target);
+            const clickedInsideDesktop = desktopWrap && desktopWrap.contains(target);
+
+            if (!clickedInsideMobile && !clickedInsideDesktop) {
+                if (mobileDropdown) mobileDropdown.classList.add('hidden');
+                if (desktopDropdown) desktopDropdown.classList.add('hidden');
+            }
+        });
 
         // ── Voice Search ─────────────────────────────────────────
         const ShopSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

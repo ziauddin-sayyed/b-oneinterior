@@ -1006,6 +1006,134 @@
             }
         }
 
+        function renderIndexStyleProductCard({ id, name, thumbnailUrl, categoryName, priceText, priceValue = 0, currency = 'INR' }) {
+            return `
+                <a href="product.html?id=${id}" class="creative-card related-card-root flex flex-col relative group cursor-pointer h-full"
+                    data-product-id="${id}"
+                    data-product-name="${String(name || '').replace(/"/g, '&quot;')}"
+                    data-product-image="${String(thumbnailUrl || FALLBACK_IMG).replace(/"/g, '&quot;')}"
+                    data-product-category="${String(categoryName || 'Decor').replace(/"/g, '&quot;')}"
+                    data-product-price="${Number(priceValue) || 0}"
+                    data-product-currency="${currency || 'INR'}">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${thumbnailUrl || FALLBACK_IMG}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${name}">
+                        <button type="button"
+                            onclick="toggleRelatedWishlist(event, this)"
+                            class="related-wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
+                            title="Add to Wishlist">
+                            <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                            </svg>
+                        </button>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
+                    </div>
+                    <div class="p-3 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                        <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${categoryName || 'Decor'}</span>
+                        <h3 class="font-bold text-white text-xs leading-tight line-clamp-2 mb-2 group-hover:text-gold-500 transition">${name}</h3>
+                        <div class="mt-auto">
+                            <span class="gold-gradient-text text-sm font-black">${priceText}</span>
+                        </div>
+                        <div class="mt-3" onclick="event.preventDefault(); event.stopPropagation();">
+                            <button type="button"
+                                onclick="addRelatedCardToCart(event, this)"
+                                class="related-cart-btn w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg tracking-wide">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        window.refreshRelatedCardStates = function () {
+            const wishlist = window.getWishlist ? window.getWishlist() : [];
+            const cart = getCart();
+
+            document.querySelectorAll('.related-card-root').forEach(card => {
+                const id = card.dataset.productId;
+                if (!id) return;
+
+                const wishBtn = card.querySelector('.related-wishlist-btn');
+                const inWishlist = wishlist.some(item => item.id === id);
+                if (wishBtn) {
+                    wishBtn.classList.toggle('text-red-500', inWishlist);
+                    wishBtn.classList.toggle('text-white', !inWishlist);
+                    wishBtn.innerHTML = inWishlist
+                        ? `<svg class="w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.23l-7.78-7.78-1.06-1.06a5.5 5.5 0 017.78-7.78L12 5.67l1.06-1.06a5.5 5.5 0 017.78 7.78l-1.06 1.06L12 21.23z"/></svg>`
+                        : `<svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+                }
+
+                const cartBtn = card.querySelector('.related-cart-btn');
+                const inCart = cart.find(i => i.id === id);
+                if (cartBtn) {
+                    if (inCart) {
+                        cartBtn.textContent = `Added (${inCart.quantity || 1})`;
+                        cartBtn.classList.add('opacity-90');
+                    } else {
+                        cartBtn.textContent = 'Add to Cart';
+                        cartBtn.classList.remove('opacity-90');
+                    }
+                }
+            });
+        };
+
+        window.toggleRelatedWishlist = function (event, btn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const card = btn.closest('.related-card-root');
+            if (!card) return;
+
+            const id = card.dataset.productId;
+            const name = card.dataset.productName || 'Product';
+            const image = card.dataset.productImage || FALLBACK_IMG;
+            const category = card.dataset.productCategory || 'Decor';
+            const price = parseFloat(card.dataset.productPrice || '0') || 0;
+            const currency = card.dataset.productCurrency || 'INR';
+            const linkUrl = `product.html?id=${id}`;
+
+            if (!id || !window.getWishlist || !window.saveWishlist) return;
+            let wishlist = window.getWishlist();
+            const index = wishlist.findIndex(item => item.id === id);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+            } else {
+                wishlist.unshift({ id, name, image, price, currency, category, linkUrl, wishlistType: 'Products' });
+            }
+            window.saveWishlist(wishlist);
+            updateWishlistBadge();
+            window.refreshRelatedCardStates();
+            if (typeof updateWishlistButtonState === 'function') updateWishlistButtonState();
+        };
+
+        window.addRelatedCardToCart = function (event, btn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const card = btn.closest('.related-card-root');
+            if (!card) return;
+
+            const id = card.dataset.productId;
+            const name = card.dataset.productName || 'Product';
+            const image = card.dataset.productImage || FALLBACK_IMG;
+            const category = card.dataset.productCategory || 'Decor';
+            const price = parseFloat(card.dataset.productPrice || '0') || 0;
+            const currency = card.dataset.productCurrency || 'INR';
+            if (!id) return;
+
+            const cart = getCart();
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity) || 1) + 1;
+            } else {
+                cart.unshift({ id, name, image, price, currency, category, quantity: 1 });
+            }
+            saveCart(cart);
+            window.refreshRelatedCardStates();
+            flyToCart(null, '#cartCountBadge');
+        };
+
         async function fetchRecommendedProducts(categoryName, currentId) {
             const query = `
             query {
@@ -1090,26 +1218,15 @@
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
-                    item.innerHTML = `
-                        <a href="product.html?id=${p.node.id}" class="premium-card block overflow-hidden group">
-                            <div class="relative aspect-[4/5] overflow-hidden">
-                                <img src="${p.node.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                                <div class="absolute bottom-3 left-3">
-                                    <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.node.category?.name || 'Collection'}</span>
-                                    <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.node.name}</h3>
-                                </div>
-                            </div>
-                            <div class="p-4 flex items-center justify-between bg-black/40">
-                                <span class="text-xs font-black gold-gradient-text">
-                                    ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
-                                </span>
-                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
-                                    <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
-                                </div>
-                            </div>
-                        </a>
-                    `;
+                    item.innerHTML = renderIndexStyleProductCard({
+                        id: p.node.id,
+                        name: p.node.name,
+                        thumbnailUrl: p.node.thumbnail?.url,
+                        categoryName: p.node.category?.name || 'Collection',
+                        priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
+                        priceValue: (loggedIn && costPrice !== null) ? costPrice : sellingPrice,
+                        currency
+                    });
                     carousel.appendChild(item);
                 });
 
@@ -1117,7 +1234,7 @@
                 setTimeout(() => {
                     $('#recommendedCarousel').owlCarousel({
                         loop: products.length > 3,
-                        margin: 20,
+                        margin: 8,
                         nav: false,
                         dots: true,
                         autoplay: false,
@@ -1128,6 +1245,7 @@
                             1024: { items: 5 }
                         }
                     });
+                    window.refreshRelatedCardStates();
                 }, 100);
 
             } catch (e) {
@@ -1216,28 +1334,18 @@
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
-                    item.innerHTML = `
-                        <a href="product.html?id=${p.id}" class="premium-card block overflow-hidden group">
-                            <div class="relative aspect-[4/5] overflow-hidden">
-                                <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                                <div class="absolute bottom-3 left-3">
-                                    <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.category?.name || 'Collection'}</span>
-                                    <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.name}</h3>
-                                </div>
-                            </div>
-                            <div class="p-4 flex items-center justify-between bg-black/40">
-                                <span class="text-xs font-black gold-gradient-text">
-                                    ${(loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice}
-                                </span>
-                                <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
-                                    <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
-                                </div>
-                            </div>
-                        </a>
-                    `;
+                    item.innerHTML = renderIndexStyleProductCard({
+                        id: p.id,
+                        name: p.name,
+                        thumbnailUrl: p.thumbnail?.url,
+                        categoryName: p.category?.name || 'Collection',
+                        priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
+                        priceValue: (loggedIn && costPrice !== null) ? costPrice : sellingPrice,
+                        currency
+                    });
                     grid.appendChild(item);
                 });
+                window.refreshRelatedCardStates();
             } catch (e) {
                 console.error("Error drawing more products:", e);
             }
@@ -1338,22 +1446,15 @@
 
                 return `
                 <div class="item px-2 pb-6">
-                    <a href="product.html?id=${p.id}" class="premium-card block overflow-hidden group">
-                        <div class="relative aspect-[4/5] overflow-hidden">
-                            <img src="${p.thumbnail?.url || FALLBACK_IMG}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="absolute bottom-3 left-3">
-                                <span class="text-[8px] font-black text-gold uppercase tracking-widest">${p.category?.name || 'Exclusive'}</span>
-                                <h3 class="text-[11px] font-black text-white uppercase tracking-tighter leading-none mt-1">${p.name}</h3>
-                            </div>
-                        </div>
-                        <div class="p-4 flex items-center justify-between bg-black/40">
-                            <span class="text-xs font-black gold-gradient-text">${formattedPrice}</span>
-                            <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-gold group-hover:text-black transition">
-                                <ion-icon name="arrow-forward" class="text-xs"></ion-icon>
-                            </div>
-                        </div>
-                    </a>
+                    ${renderIndexStyleProductCard({
+                        id: p.id,
+                        name: p.name,
+                        thumbnailUrl: p.thumbnail?.url,
+                        categoryName: p.category?.name || 'Exclusive',
+                        priceText: formattedPrice,
+                        priceValue: (isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice),
+                        currency
+                    })}
                 </div>
                 `;
             }).join("");
@@ -1371,6 +1472,7 @@
                     1024: { items: 5 }
                 }
             });
+            window.refreshRelatedCardStates();
         }
 
         // Track if a specific variant was requested via URL
@@ -1884,7 +1986,7 @@
                 <div class="flex flex-col">
                     ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${symbol}${actualPriceStr}</span>` : ''}
                     <div class="flex items-center gap-4">
-                        <span class="text-4xl md:text-5xl font-black ${loggedIn && costPrice !== null ? 'text-green-500' : 'gold-gradient-text'}">
+                        <span class="text-4xl md:text-5xl font-black ${'gold-gradient-text'}">
                             ${symbol}${displayPrice.toFixed(2)}
                         </span>
                         ${actualPriceStr ? `
@@ -2027,6 +2129,9 @@
             document.getElementById("cartActionContainer").innerHTML = html;
             if (document.getElementById("cartActionContainerMobile")) {
                 document.getElementById("cartActionContainerMobile").innerHTML = html;
+            }
+            if (typeof window.refreshRelatedCardStates === 'function') {
+                window.refreshRelatedCardStates();
             }
         }
 
@@ -2454,14 +2559,28 @@
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
 
                 let sellingPrice = 0;
+                let costPrice = null;
                 let currency = 'INR';
                 if (v.channelListings?.[0]) {
                     sellingPrice = v.channelListings[0].price?.amount || 0;
                     currency = v.channelListings[0].price?.currency || 'INR';
+                    costPrice = v.channelListings[0].costPrice?.amount || null;
                 } else {
-                    sellingPrice = v.pricing?.price?.gross?.amount || currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
+                    const gross = v.pricing?.price?.gross || currentProduct.pricing?.priceRange?.start?.gross;
+                    sellingPrice = gross?.amount || 0;
+                    currency = gross?.currency || 'INR';
                 }
 
+                if (costPrice === null) {
+                    const costPriceAttr = currentProduct.attributes?.find(a => a.attribute.name === "Cost Price");
+                    const costPriceStr = costPriceAttr?.values?.[0]?.name;
+                    if (costPriceStr) {
+                        const parsed = parseFloat(String(costPriceStr).replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) costPrice = parsed;
+                    }
+                }
+
+                const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
                 const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
                 const cardHtml = `
@@ -2472,7 +2591,7 @@
                         </div>
                         <div class="mt-2 px-1">
                             <p class="text-[10px] font-black text-white/60 uppercase tracking-tighter truncate">${v.name}</p>
-                            <p class="text-xs font-black gold-gradient-text">${symbol}${sellingPrice.toFixed(2)}</p>
+                            <p class="text-xs font-black ${'gold-gradient-text'}">${symbol}${displayPrice.toFixed(2)}</p>
                         </div>
                         ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}
                     </div>
@@ -2617,6 +2736,11 @@
                 wishlist.unshift(newItem);
             }
             window.saveWishlist(wishlist);
+            window.updateWishlistBadge();
+            window.updateWishlistButtonState();
+            if (typeof window.refreshRelatedCardStates === 'function') {
+                window.refreshRelatedCardStates();
+            }
         };
 
         window.flyToCart = function (sourceElement, targetSelector) {
