@@ -8,12 +8,38 @@
     <title>Privacy Policy | B-One Interior</title>
     <script src="assets/js/tailwind.min.js"></script>
     <link rel="stylesheet" href="style.css?v=1.1">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
 </head>
 <body class="bg-black text-white">
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-900 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="text-2xl font-bold text-gold-500"><a href="https://b-oneinterior.com/"><img src="logo.png" style="height: 4vh;" alt="B-One Interior"></a></div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" aria-label="Back to home"
+                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <div class="text-2xl font-bold text-gold-500"><a href="https://b-oneinterior.com/"><img src="logo.png" style="height: 4vh;" alt="B-One Interior"></a></div>
+            </div>
             <ul class="hidden md:flex space-x-6 text-gray-300">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
@@ -161,7 +187,16 @@
 <body class="bg-black text-white">
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;" alt="B-One Interior"></a></div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" aria-label="Back to home"
+                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;" alt="B-One Interior"></a></div>
+            </div>
             <ul class="hidden md:flex space-x-6 text-gray-300">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
                 <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
@@ -393,8 +428,17 @@
     <!-- Header -->
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;"
-                        alt="B-One Interior"></a></div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" aria-label="Back to home"
+                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;"
+                            alt="B-One Interior"></a></div>
+            </div>
 
             <ul class="hidden md:flex space-x-6 text-gray-300">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
@@ -424,47 +468,6 @@
         </div>
         <label for="menu-toggle" class="overlay"></label>
 
-        <div class="fixedBottom">
-            <a href="https://b-oneinterior.com/" class="logoBx"></a>
-            <ul>
-                
-        <li>
-          <a href="https://b-oneinterior.com/catalogue">
-            <ion-icon name="document-text-outline"></ion-icon>
-            <div>Catalogue</div>
-          </a>
-        </li>
-
-<li>
-                    <a href="https://b-oneinterior.com/gallery">
-                        <ion-icon name="images-outline"></ion-icon>
-                        <div>Gallery</div>
-                    </a>
-                </li>
-
-                
-                <li></li>
-
-                
-
-                <li>
-                    <a href="https://b-oneinterior.com/shop">
-                        <ion-icon name="storefront-outline"></ion-icon>
-                        <div>Shop</div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/cart">
-                        <ion-icon name="cart-outline"></ion-icon>
-                        <div>Cart</div>
-                        <span id="cartCountBadge" class="absolute -top-2 -right-3 bg-gold text-black text-xs font-bold 
-                                w-5 h-5 flex items-center justify-center rounded-full hidden">
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
         <script>
             function toggleDrawer() {
                 const drawer = document.getElementById("drawer");

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Product List | B-One Interior</title>
+  <script src="assets/js/tailwind.min.js"></script>
+  <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
+  <link rel="stylesheet" href="style.css?v=1.1">
+  <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'gold': {
+                        300: '#F4E5C2',
+                        400: '#E8D4A0',
+                        500: '#D4AF37',
+                        600: '#C5A028',
+                        700: '#B8941F'
+                    }
+                }
+            }
+        }
+    }
+</script>
+  <style>
+    #pageSearchInput,
+    #pageSearchInputDesktop {
+      border-color: #e8b84b !important;
+      border-width: 1px !important;
+    }
+    #pageSearchInput:focus,
+    #pageSearchInputDesktop:focus {
+      border-color: #e8b84b !important;
+      box-shadow: 0 0 0 1px rgba(232, 184, 75, 0.45) !important;
+    }
+    .fixedBottom a,
+    .fixedBottom a div,
+    .fixedBottom a ion-icon {
+      color: #e8b84b !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .fixedBottom a div {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+    .fixedBottom a ion-icon {
+      font-size: 20px !important;
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+  <header class="bg-black shadow-lg sticky top-0 z-50">
+    <div class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b bg-black/95 backdrop-blur-sm" style="border-color:#e8b84b;">
+      <div class="flex items-center gap-3">
+        <a href="index.html" aria-label="Back to home" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="relative flex-1">
+          <input id="pageSearchInput" type="text" placeholder="Search products..." class="w-full pl-10 pr-16 py-2.5 bg-black/60 border border-gold rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <!-- <button id="pageSearchGoBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button> -->
+        </div>
+        <button onclick="toggleDrawer()" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="md:hidden h-[65px]"></div>
+
+    <nav class="container mx-auto px-4 py-4 hidden md:flex items-center justify-between">
+      <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;" alt="B-One Interior"></a></div>
+      <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+        <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+        <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
+        <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
+      </ul>
+    </nav>
+
+    <div id="drawer">
+      <ul>
+        <li><a href="https://b-oneinterior.com">Home</a></li>
+        <li><a href="https://b-oneinterior.com/catalogue">Catalogue</a></li>
+        <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
+        <li><a href="https://b-oneinterior.com/cart">Cart</a></li>
+        <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+      </ul>
+    </div>
+    <label class="overlay"></label>
+  </header>
+
+  <main class="container mx-auto px-4 pb-8 mb-24">
+    <div class="hidden md:flex items-center gap-3 mb-4">
+      <div class="relative w-full max-w-xl">
+        <input id="pageSearchInputDesktop" type="text" placeholder="Search products..." class="w-full pl-10 pr-16 py-2.5 bg-black/60 border border-gold-500 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <button id="pageSearchGoBtnDesktop" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button>
+      </div>
+    </div>
+
+    <h1 class="text-2xl md:text-4xl font-black gold-gradient-text uppercase tracking-widest mb-2">Product List</h1>
+    <p id="resultMeta" class="text-white/70 text-sm mb-6"></p>
+    <div id="resultGrid" class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6"></div>
+  </main>
+
+  <div class="fixedBottom">
+    <a href="https://b-oneinterior.com/" class="logoBx"></a>
+    <ul>
+      <li>
+        <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+          </svg>
+          <div class="text-[12px] tracking-tighter">Help</div>
+        </a>
+      </li>
+      <li class="relative">
+        <a href="https://b-oneinterior.com/wishlist" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <div class="text-[12px] tracking-tighter">Wishlist</div>
+          <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20" style="display:none;"></span>
+        </a>
+      </li>
+      <li><!-- Center Logo Spacer --></li>
+      <li>
+        <a href="https://b-oneinterior.com/catalogue" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <div class="text-[12px] tracking-tighter">Catalogue</div>
+        </a>
+      </li>
+      <li class="relative">
+        <a id="mobileCartLink" href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <div class="text-[12px] tracking-tighter">Cart</div>
+          <span id="cartCountBadge" class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden"></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    const FALLBACK_IMG = "images/placeholder.png";
+    const API_URL = "https://api.b-oneinterior.com/graphql/";
+
+    function toggleDrawer() {
+      const drawer = document.getElementById("drawer");
+      const overlay = document.querySelector(".overlay");
+      if (drawer.style.left === "0px") {
+        drawer.style.left = "-250px";
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+      } else {
+        drawer.style.left = "0px";
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = "auto";
+      }
+    }
+
+    const overlay = document.querySelector(".overlay");
+    if (overlay) {
+      overlay.addEventListener("click", () => {
+        const drawer = document.getElementById("drawer");
+        drawer.style.left = "-250px";
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+      });
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById("cartCountBadge");
+      if (!badge) return;
+      const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+      const count = list.length;
+      if (count > 0) { badge.textContent = count; badge.classList.remove("hidden"); }
+      else badge.classList.add("hidden");
+    }
+
+    function normalizeLooseSearchText(value) { return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+    function buildLooseSearchKeys(value) {
+      const base = normalizeLooseSearchText(value);
+      if (!base) return [];
+      const keys = new Set([base]);
+      keys.add(base.replace(/ph/g, "f").replace(/[ckq]/g, "k").replace(/z/g, "s").replace(/y/g, "i").replace(/oo/g, "u").replace(/ee/g, "i").replace(/aa/g, "a").replace(/(.)\1+/g, "$1"));
+      keys.add(base.replace(/[aeiou]/g, ""));
+      return [...keys].filter(Boolean);
+    }
+    function looseIncludes(textValue, query) {
+      const textKeys = buildLooseSearchKeys(textValue);
+      const queryKeys = buildLooseSearchKeys(query);
+      if (!textKeys.length || !queryKeys.length) return false;
+      return queryKeys.some(qk => textKeys.some(tk => tk.includes(qk) || qk.includes(tk)));
+    }
+    function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+    function productMatches(product, q) {
+      const name = String(product.name || "").toLowerCase();
+      const desc = typeof product.description === "string" ? product.description.toLowerCase() : JSON.stringify(product.description || {}).toLowerCase();
+      const cat = String(product.category?.name || "").toLowerCase();
+      if (name.includes(q) || desc.includes(q) || cat.includes(q)) return true;
+      if (looseIncludes(product.name, q) || looseIncludes(product.description, q) || looseIncludes(product.category?.name, q)) return true;
+      return (product.variants || []).some(v => String(v.name || "").toLowerCase().includes(q) || looseIncludes(v.name, q));
+    }
+
+    function renderCards(products, query) {
+      const grid = document.getElementById("resultGrid");
+      const meta = document.getElementById("resultMeta");
+      meta.textContent = `Search: "${query}" • ${products.length} result(s)`;
+      if (!products.length) {
+        grid.innerHTML = `<div class="col-span-full text-center text-white/60 py-16">No products found.</div>`;
+        return;
+      }
+      grid.innerHTML = products.map(p => {
+        const gross = p.pricing?.priceRange?.start?.gross;
+        const price = Number(gross?.amount || 0).toFixed(2);
+        const cur = gross?.currency || "INR";
+        const priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
+        const linkId = p.variants?.[0]?.id || p.id;
+        return `
+          <a href="product.html?id=${linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
+            <div class="relative overflow-hidden aspect-square">
+              <img src="${p.thumbnail?.url || FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
+            </div>
+            <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+              <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${escapeHtml(p.category?.name || "Decor")}</span>
+              <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2">${escapeHtml(p.name)}</h3>
+              <div class="mt-auto"><span class="gold-gradient-text text-sm font-black">${priceText}</span></div>
+            </div>
+          </a>`;
+      }).join("");
+    }
+
+    function getQueryFromUrl() { return (new URLSearchParams(window.location.search).get("q") || "").trim().toLowerCase(); }
+    function syncSearchInputs(value) {
+      const m = document.getElementById("pageSearchInput");
+      const d = document.getElementById("pageSearchInputDesktop");
+      if (m) m.value = value;
+      if (d) d.value = value;
+    }
+    function runSearchFromInput() {
+      const m = document.getElementById("pageSearchInput");
+      const d = document.getElementById("pageSearchInputDesktop");
+      const value = (m?.value || d?.value || "").trim();
+      if (!value) return;
+      window.location.href = `prodcut-list.html?q=${encodeURIComponent(value)}`;
+    }
+
+    async function load() {
+      const q = getQueryFromUrl();
+      const meta = document.getElementById("resultMeta");
+      syncSearchInputs(q);
+      if (!q) { meta.textContent = "No search query provided."; return; }
+      meta.textContent = "Loading products...";
+      const query = `
+      query {
+        products(first: 100, channel: "in", filter: { isPublished: true }) {
+          edges {
+            node {
+              id
+              name
+              description
+              thumbnail { url }
+              category { name }
+              pricing { priceRange { start { gross { amount currency } } } }
+              variants { id name }
+            }
+          }
+        }
+      }`;
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query })
+        });
+        const json = await res.json();
+        const all = (json.data?.products?.edges || []).map(e => e.node);
+        const visible = all.filter(p => !["Gallery Image Category", "Catalogue"].includes(p.category?.name));
+        renderCards(visible.filter(p => productMatches(p, q)), q);
+      } catch (e) {
+        meta.textContent = "Failed to load products.";
+      }
+    }
+
+    document.getElementById("pageSearchGoBtn")?.addEventListener("click", runSearchFromInput);
+    document.getElementById("pageSearchGoBtnDesktop")?.addEventListener("click", runSearchFromInput);
+    document.getElementById("pageSearchInput")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
+    document.getElementById("pageSearchInputDesktop")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
+
+    updateCartBadge();
+    load();
+  </script>
+</body>
+</html>

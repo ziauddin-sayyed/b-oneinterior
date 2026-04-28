@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-One Interior - Help</title>
+    <script src="assets/js/tailwind.min.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+        }
+
+        .help-bg {
+            background:
+                radial-gradient(circle at 80% 10%, rgba(212, 175, 55, 0.2), rgba(0, 0, 0, 0) 35%),
+                radial-gradient(circle at 20% 70%, rgba(212, 175, 55, 0.15), rgba(0, 0, 0, 0) 30%),
+                #000;
+        }
+
+        .glass-gold {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 24px rgba(212, 175, 55, 0.15);
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-shell {
+            border-radius: 28px;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            background:
+                radial-gradient(circle at 78% 22%, rgba(212, 175, 55, 0.22), rgba(0, 0, 0, 0) 36%),
+                radial-gradient(circle at 20% 84%, rgba(0, 197, 160, 0.18), rgba(0, 0, 0, 0) 38%),
+                linear-gradient(135deg, #0a0a0a, #121212 45%, #050505);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 36px rgba(212, 175, 55, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-shell::after {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background: conic-gradient(from 90deg, transparent 0deg, rgba(212, 175, 55, 0.1) 60deg, transparent 140deg);
+            animation: spinGlow 18s linear infinite;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .hero-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+            background-size: 26px 26px;
+            mask-image: radial-gradient(circle at 65% 40%, black 30%, transparent 80%);
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            width: 260px;
+            height: 260px;
+            border-radius: 999px;
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            box-shadow: inset 0 0 0 10px rgba(212, 175, 55, 0.05), 0 0 50px rgba(212, 175, 55, 0.22);
+            position: absolute;
+            right: -40px;
+            top: -20px;
+        }
+
+        .expert-pill {
+            border-radius: 999px;
+            border: 1px solid rgba(212, 175, 55, 0.55);
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.22), rgba(212, 175, 55, 0.08));
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 230, 160, 0.12);
+        }
+
+        .stat-chip {
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            border-radius: 999px;
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.15);
+        }
+
+        .services-slider-wrap {
+            position: relative;
+            overflow: hidden;
+            padding: 8px 0 10px;
+        }
+
+        .services-track {
+            display: flex;
+            gap: 14px;
+            transition: transform 0.35s ease;
+            will-change: transform;
+        }
+
+        .service-card {
+            flex: 0 0 72%;
+            border-radius: 18px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            background:
+                radial-gradient(circle at 80% 10%, rgba(212, 175, 55, 0.18), rgba(0, 0, 0, 0) 45%),
+                linear-gradient(180deg, rgba(212, 175, 55, 0.12), rgba(0, 0, 0, 0.7));
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.18), 0 12px 24px rgba(0, 0, 0, 0.45);
+            transform: scale(0.92);
+            opacity: 0.75;
+            transition: transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease, border-color 0.25s ease;
+        }
+
+        .service-card.active {
+            transform: scale(1);
+            opacity: 1;
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.34), 0 0 24px rgba(212, 175, 55, 0.3);
+        }
+
+        .service-card:hover {
+            border-color: rgba(255, 214, 118, 0.85);
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.44), 0 0 26px rgba(212, 175, 55, 0.32);
+        }
+
+        .service-nav-btn {
+            position: absolute;
+            top: 45%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            background: rgba(0, 0, 0, 0.7);
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .service-nav-btn.prev {
+            left: 2px;
+        }
+
+        .service-nav-btn.next {
+            right: 2px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.28);
+            transition: all 0.22s ease;
+        }
+
+        .dot.active {
+            width: 18px;
+            background: #d4af37;
+        }
+
+        .trust-strip {
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            background: rgba(0, 0, 0, 0.65);
+            border-radius: 18px;
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.12);
+        }
+
+        .trust-tile {
+            border: 1px solid rgba(212, 175, 55, 0.24);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 10px 8px;
+        }
+
+        .cta-gradient {
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            background: linear-gradient(115deg, #1d9e47, #13813c 42%, #0c5f56 100%);
+            box-shadow: 0 10px 24px rgba(24, 166, 65, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .service-card {
+                flex-basis: calc((100% - 28px) / 3);
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            .service-nav-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @keyframes spinGlow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .search-dropdown {
+            background: rgba(15, 15, 15, 0.97);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .coming-toast {
+            animation: fadeInOut 1.8s ease forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            15%,
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+    </style>
+</head>
+
+<body class="help-bg min-h-screen overflow-x-hidden">
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-gold-500/30 bg-black/95 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="relative flex-1">
+                    <input id="helpSearchInput" type="text" placeholder="Search products..."
+                        class="w-full bg-black/70 border border-gold-500/35 text-white rounded-xl pl-10 pr-16 py-2.5 text-sm outline-none focus:border-gold-500">
+                    <svg class="w-4 h-4 text-gold-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <button id="helpSearchGoBtn"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-black uppercase tracking-wide text-gold-500 hover:text-gold-400">
+                        Go
+                    </button>
+                    <div id="helpSearchResults"
+                        class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-50 search-dropdown rounded-xl shadow-2xl max-h-[55vh] overflow-y-auto p-2">
+                    </div>
+                </div>
+                <button id="helpMenuToggle" aria-label="Open menu"
+                    class="w-10 h-10 rounded-xl border border-gold-500/35 text-gold-500 flex items-center justify-center hover:bg-gold-500/10 transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <aside id="helpDrawer"
+        class="fixed top-0 right-0 z-[60] h-full w-[85%] max-w-[320px] bg-black border-l border-gold-500/30 translate-x-full transition-transform duration-300">
+        <div class="p-4 border-b border-gold-500/20 flex items-center justify-between">
+            <div class="text-gold-500 font-bold tracking-wide">Menu</div>
+            <button id="helpDrawerClose" class="text-gold-500 text-xl leading-none">&times;</button>
+        </div>
+        <nav class="p-4 space-y-3 text-sm">
+            <a href="index.html" class="block text-white hover:text-gold-500">Home</a>
+            <a href="catalogue.html" class="block text-white hover:text-gold-500">Catalogue</a>
+            <a href="wishlist.html" class="block text-white hover:text-gold-500">Wishlist</a>
+            <a href="cart.html" class="block text-white hover:text-gold-500">Cart</a>
+            <a href="help.html" class="block text-gold-500 font-bold">Help</a>
+        </nav>
+    </aside>
+    <div id="helpOverlay" class="fixed inset-0 z-[55] bg-black/60 hidden"></div>
+
+    <main class="pt-[72px] pb-28">
+        <section class="max-w-[1180px] mx-auto px-3 md:px-6 pt-4 md:pt-8">
+            <div class="hero-shell p-5 md:p-8 min-h-[260px] md:min-h-[360px] flex items-center">
+                <div class="hero-orb hidden md:block"></div>
+                <div class="relative z-10 max-w-2xl">
+                    <p class="text-gold-400 font-black uppercase tracking-[0.28em] text-xs md:text-sm mb-3">B-One Help Center</p>
+                    <h1 class="text-3xl md:text-6xl leading-[0.94] font-black uppercase">
+                        Plan Your <span class="text-gold-400">Dream Space</span> With Confidence
+                    </h1>
+                    <p class="mt-4 text-sm md:text-lg text-gray-200 max-w-xl">
+                        Get design guidance, pricing assistance, and project updates from our interior experts in one place.
+                    </p>
+                    <a href="javascript:void(0)" onclick="openTechModal()"
+                        class="expert-pill mt-5 inline-flex items-center gap-3 px-4 md:px-6 py-2.5 md:py-3">
+                        <span class="w-8 h-8 rounded-full bg-gold-500 text-black grid place-items-center font-black">✦</span>
+                        <span class="font-black uppercase tracking-wider text-gold-300 text-sm md:text-base">Talk To Our Expert</span>
+                        <span class="w-8 h-8 rounded-full bg-gold-500 text-black grid place-items-center font-black">›</span>
+                    </a>
+                    <!-- <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="stat-chip px-3 py-1.5 text-[11px] font-bold text-gold-200 uppercase tracking-wider">24h Support</span>
+                        <span class="stat-chip px-3 py-1.5 text-[11px] font-bold text-gold-200 uppercase tracking-wider">1500+ Projects</span>
+                        <span class="stat-chip px-3 py-1.5 text-[11px] font-bold text-gold-200 uppercase tracking-wider">End-to-End Service</span>
+                    </div> -->
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-[1180px] mx-auto px-3 md:px-6 mt-6">
+            <div class="text-center mb-3 md:mb-4">
+                <h2 class="text-gold-500 text-xl md:text-3xl font-black uppercase tracking-wider">Contractors</h2>
+            </div>
+
+            <div class="services-slider-wrap">
+                <button id="servicePrevBtn" class="service-nav-btn prev" aria-label="Previous service">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <button id="serviceNextBtn" class="service-nav-btn next" aria-label="Next service">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+
+                <div id="servicesTrack" class="services-track">
+                    <button class="service-card active p-3 text-left group" data-service="False Ceiling">
+                        <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#2a1a07] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
+                            <img src="images/false-ceiling.png" alt="False Ceiling" class="w-full h-44 rounded-xl">
+                        </div>
+                        <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">False Ceiling</div>
+                        <div class="text-sm md:text-base text-gold-200 mt-1">Add architectural depth with modern ceiling patterns.</div>
+                    </button>
+                    <button class="service-card p-3 text-left group" data-service="Modular Kitchen">
+                        <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#1f220a] via-[#0f0f0f] to-[#090909] rounded-xl flex flex-col justify-between">
+                            <img src="images/kitchen.png" alt="Modular Kitchen" class="w-full h-44 rounded-xl">
+                        </div>
+                        <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">Modular Kitchen</div>
+                        <div class="text-sm md:text-base text-gold-200 mt-1">Beautiful workflows built for daily convenience.</div>
+                    </button>
+                    <button class="service-card p-3 text-left group" data-service="Wall Paneling">
+                        <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#24120f] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
+                            <img src="images/wall-paneling.png" alt="Wall Paneling" class="w-full h-44 rounded-xl">
+                        </div>
+                        <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">Wall Paneling</div>
+                        <div class="text-sm md:text-base text-gold-200 mt-1">Turn plain walls into signature statement pieces.</div>
+                    </button>
+                    <button class="service-card p-3 text-left group" data-service="Wardrobe Design">
+                        <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#101f24] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
+                            <img src="images/wardrobe.png" alt="Wardrobe Design" class="w-full h-44 rounded-xl">
+                        </div>
+                        <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">Wardrobe Design</div>
+                        <div class="text-sm md:text-base text-gold-200 mt-1">Custom storage systems crafted to fit your lifestyle.</div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="serviceDots" class="flex items-center justify-center gap-2 mt-3 mb-6"></div>
+
+            <div class="trust-strip px-3 py-3 md:px-5 md:py-4 grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 text-center">
+                <div class="trust-tile flex items-center gap-2 justify-center">
+                    <span class="text-gold-500">🛡️</span><span class="text-[10px] md:text-xs font-bold text-gray-100 uppercase">Quality
+                        Materials</span>
+                </div>
+                <div class="trust-tile flex items-center gap-2 justify-center">
+                    <span class="text-gold-500">👥</span><span class="text-[10px] md:text-xs font-bold text-gray-100 uppercase">Expert
+                        Team</span>
+                </div>
+                <div class="trust-tile flex items-center gap-2 justify-center">
+                    <span class="text-gold-500">🕒</span><span class="text-[10px] md:text-xs font-bold text-gray-100 uppercase">On-Time
+                        Delivery</span>
+                </div>
+                <div class="trust-tile flex items-center gap-2 justify-center">
+                    <span class="text-gold-500">✅</span><span class="text-[10px] md:text-xs font-bold text-gray-100 uppercase">Customer
+                        Satisfaction</span>
+                </div>
+            </div>
+
+            <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" class="cta-gradient mt-5 md:mt-6 px-4 md:px-7 py-4 md:py-5 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 md:gap-4">
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white text-[#19a94b] flex items-center justify-center text-3xl font-black">💬</div>
+                    <div>
+                        <div class="text-white text-xl md:text-3xl font-black leading-tight uppercase">Chat with us on WhatsApp</div>
+                        <div class="text-green-100 text-sm md:text-lg">We are here to help you.</div>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-white text-[#14853a] flex items-center justify-center text-2xl font-black">›</div>
+            </a>
+        </section>
+    </main>
+
+    <div class="fixedBottom" style="box-sizing:border-box; width:100%; max-width:100vw;">
+        <a href="index.html" class="logoBx"></a>
+        <ul>
+            <li>
+                <a href="help.html" class="flex flex-col items-center justify-center gap-1 text-gold-500">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
+                            stroke-width="2"></path>
+                        <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                    </svg>
+                    <div class="text-[12px] tracking-tighter">Help</div>
+                </a>
+            </li>
+            <li>
+                <a href="wishlist.html" class="flex flex-col items-center justify-center gap-1">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                    <div class="text-[12px] tracking-tighter">Wishlist</div>
+                </a>
+            </li>
+            <li></li>
+            <li>
+                <a href="catalogue.html" class="flex flex-col items-center justify-center gap-1">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <div class="text-[12px] tracking-tighter">Catalogue</div>
+                </a>
+            </li>
+            <li>
+                <a href="cart.html" class="flex flex-col items-center justify-center gap-1">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+                    </svg>
+                    <div class="text-[12px] tracking-tighter">Cart</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="techModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-3 md:p-4">
+        <div class="w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[84vh] border border-gold-500/35 bg-[#0e0e0e]">
+            <div class="p-4 md:p-5 border-b border-gold-500/25 bg-gradient-to-r from-[#2c220d] via-[#16120a] to-[#0e0e0e] text-white">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl md:text-2xl font-black tracking-wide">Our Service Experts</h2>
+                    <button onclick="closeTechModal()" class="text-gold-300 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-xs md:text-sm text-gold-100/80 mb-3">Search by title, address, or pincode.</p>
+                <div class="relative">
+                    <input type="text" id="techSearchInput" oninput="filterTechnicians()"
+                        placeholder="Search by name or category (e.g. Plumbing)..."
+                        class="w-full pl-10 pr-12 py-2.5 rounded-xl border border-gold-500/30 bg-black/40 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gold-500/40 shadow-inner">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-300 text-xl w-5 h-5" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <button id="techVoiceBtn"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gold-300 hover:text-gold-500 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v2a7 7 0 01-14 0v-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-y-auto p-4 md:p-5 space-y-3 bg-[#111]" id="techListContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const FALLBACK_IMG = "images/placeholder.png";
+        let helpProducts = [];
+        let technicians = [];
+        let userDetectedPincode = "";
+
+        async function loadTechnicians() {
+            const query = `
+                query {
+                    pages(first: 100) {
+                        edges {
+                            node {
+                                id
+                                title
+                                slug
+                                content
+                                attributes {
+                                    attribute { name }
+                                    values { name }
+                                }
+                                metadata {
+                                    key
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+            try {
+                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                const pages = json.data?.pages?.edges || [];
+                technicians = pages.map(edge => {
+                    const node = edge.node;
+                    const phoneMeta = node.metadata.find(m => m.key === "number");
+                    const chargeMeta = node.metadata.find(m => m.key === "price");
+                    const locationMeta = node.metadata.find(m => m.key === "address");
+                    const pincodeMeta = node.metadata.find(m => m.key === "pincode");
+                    const messageMeta = node.metadata.find(m => m.key === "message");
+                    const visitTextMeta = node.metadata.find(m => m.key === "visitText");
+                    let techName = node.title;
+                    try {
+                        const contentData = JSON.parse(node.content);
+                        if (contentData.blocks && contentData.blocks.length > 0) {
+                            techName = contentData.blocks[0].data.text;
+                        }
+                    } catch (e) {
+                        console.error("Error parsing content JSON", e);
+                    }
+                    return {
+                        category: node.title,
+                        name: techName,
+                        address: locationMeta ? locationMeta.value : "Mumbai",
+                        phone: phoneMeta ? phoneMeta.value : "+917738130131",
+                        charge: chargeMeta ? `₹${chargeMeta.value}` : "₹500",
+                        pincode: pincodeMeta ? pincodeMeta.value : "400001",
+                        message: messageMeta ? messageMeta.value : "Hello, I am interested in your services.",
+                        visitText: visitTextMeta ? visitTextMeta.value : ""
+                    };
+                });
+            } catch (error) {
+                console.error("Error loading technicians from content:", error);
+            }
+        }
+
+        function sortTechniciansByNearestPincode(list, userPincode) {
+            if (!Array.isArray(list) || !list.length) return [];
+            const userPinNum = parseInt(String(userPincode || "").replace(/\D/g, ""), 10);
+            if (!Number.isFinite(userPinNum)) return list;
+            return [...list].sort((a, b) => {
+                const aPin = parseInt(String(a.pincode || "").replace(/\D/g, ""), 10);
+                const bPin = parseInt(String(b.pincode || "").replace(/\D/g, ""), 10);
+                const aDist = Number.isFinite(aPin) ? Math.abs(aPin - userPinNum) : Number.MAX_SAFE_INTEGER;
+                const bDist = Number.isFinite(bPin) ? Math.abs(bPin - userPinNum) : Number.MAX_SAFE_INTEGER;
+                return aDist - bDist;
+            });
+        }
+
+        function getCurrentPositionAsync() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error("Geolocation unavailable"));
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: false,
+                    timeout: 10000,
+                    maximumAge: 300000
+                });
+            });
+        }
+
+        async function detectUserPincode() {
+            const pos = await getCurrentPositionAsync();
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const reverseUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`;
+            const res = await fetch(reverseUrl, { headers: { "Accept": "application/json" } });
+            const json = await res.json();
+            return String(json?.address?.postcode || "").trim();
+        }
+
+        function renderTechList(data) {
+            const container = document.getElementById("techListContainer");
+            if (!container) return;
+            if (!data.length) {
+                container.innerHTML = `<div class="text-center py-10 text-gray-400 border border-gold-500/20 rounded-2xl bg-black/30">No experts found matching your search.</div>`;
+                return;
+            }
+            container.innerHTML = data.map(tech => `
+                <div class="p-4 rounded-2xl border border-gold-500/20 bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] shadow-[0_10px_24px_rgba(0,0,0,0.35)] hover:border-gold-500/50 transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-gold-500/15 text-gold-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider border border-gold-500/30">${tech.category}</span>
+                        <span class="text-gray-100">${tech.visitText ? `<span class="text-gray-300 font-semibold">${tech.visitText}</span> | ` : ""}<span class="text-gold-400 font-black">${tech.charge}</span></span>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">${tech.name}</h3>
+                    <p class="text-gray-300 text-sm flex items-center gap-1 mb-2">
+                        <ion-icon name="location-outline"></ion-icon> ${tech.address}
+                    </p>
+                    <p class="text-gray-300 text-sm flex items-center gap-1 mb-3">
+                        <ion-icon name="chatbox-outline"></ion-icon> ${tech.message}
+                    </p>
+                    <div class="flex gap-2">
+                    <a href="tel:${tech.phone}" class="flex-1 flex items-center justify-center gap-2 bg-gold-500 text-black py-2 rounded-xl font-black hover:bg-gold-400 transition">
+                        <ion-icon name="call-outline"></ion-icon> Call Now
+                    </a>
+                    <a href="https://wa.me/${String(tech.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(tech.message || 'Hi B-One Team')}" target="_blank" class="px-3 flex items-center justify-center rounded-xl border border-gold-500/40 text-gold-300 hover:bg-gold-500/10 transition">
+                        <ion-icon name="logo-whatsapp"></ion-icon>
+                    </a>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function filterTechnicians() {
+            const query = (document.getElementById("techSearchInput")?.value || "").toLowerCase();
+            const filtered = technicians.filter(tech =>
+                (tech.name || "").toLowerCase().includes(query) ||
+                (tech.category || "").toLowerCase().includes(query) ||
+                (tech.address || "").toLowerCase().includes(query) ||
+                String(tech.pincode || "").toLowerCase().includes(query)
+            );
+            renderTechList(filtered);
+        }
+
+        function closeTechModal() {
+            document.getElementById("techModal")?.classList.add("hidden");
+        }
+
+        function setupTechVoiceSearch() {
+            const techVoiceBtn = document.getElementById("techVoiceBtn");
+            const techSearchInput = document.getElementById("techSearchInput");
+            const TechSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (TechSpeechRecognition && techVoiceBtn && techSearchInput) {
+                const recognition = new TechSpeechRecognition();
+                recognition.lang = "en-IN";
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                techVoiceBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.log("Recognition already started");
+                    }
+                };
+
+                recognition.onstart = () => {
+                    techVoiceBtn.classList.add("text-red-500", "animate-pulse");
+                    techSearchInput.placeholder = "Listening...";
+                };
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    techSearchInput.value = transcript;
+                    filterTechnicians();
+                    techVoiceBtn.classList.remove("text-red-500", "animate-pulse");
+                };
+                recognition.onerror = () => {
+                    techVoiceBtn.classList.remove("text-red-500", "animate-pulse");
+                };
+                recognition.onend = () => {
+                    techVoiceBtn.classList.remove("text-red-500", "animate-pulse");
+                    techSearchInput.placeholder = "Search by name or category...";
+                };
+            } else if (techVoiceBtn) {
+                techVoiceBtn.style.display = "none";
+            }
+        }
+
+        function openTechModal() {
+            const input = document.getElementById("techSearchInput");
+            if (input) input.value = "";
+            (async () => {
+                try {
+                    userDetectedPincode = await detectUserPincode();
+                } catch (error) {
+                    userDetectedPincode = "";
+                    console.warn("Could not detect user pincode:", error);
+                }
+                await loadTechnicians();
+                technicians = sortTechniciansByNearestPincode(technicians, userDetectedPincode);
+                renderTechList(technicians);
+                setupTechVoiceSearch();
+            })();
+            document.getElementById("techModal")?.classList.remove("hidden");
+        }
+
+        function normalizeLooseSearchText(value) {
+            return String(value || "")
+                .toLowerCase()
+                .replace(/[^\w\s]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function buildLooseSearchKeys(value) {
+            const base = normalizeLooseSearchText(value);
+            if (!base) return [];
+            const keys = new Set([base]);
+            keys.add(base.replace(/ph/g, "f"));
+            keys.add(base.replace(/[cqk]/g, "k"));
+            keys.add(base.replace(/z/g, "s"));
+            keys.add(base.replace(/v/g, "w"));
+            keys.add(base.replace(/[aeiou]/g, ""));
+            return Array.from(keys).filter(Boolean);
+        }
+
+        function looseIncludes(textValue, query) {
+            const text = normalizeLooseSearchText(textValue);
+            if (!text) return false;
+            const queryKeys = buildLooseSearchKeys(query);
+            if (!queryKeys.length) return true;
+            const textKeys = buildLooseSearchKeys(text);
+            return queryKeys.some(k => text.includes(k) || textKeys.some(t => t.includes(k) || k.includes(t)));
+        }
+
+        function escapeHtml(v) {
+            return String(v || "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+        }
+
+        function renderHelpSearchResults(query) {
+            const box = document.getElementById("helpSearchResults");
+            const q = query.trim();
+            if (!q) {
+                box.classList.add("hidden");
+                box.innerHTML = "";
+                return;
+            }
+
+            const filtered = helpProducts.filter(p => {
+                const price = p.pricing?.priceRange?.start?.gross?.amount || 0;
+                const variantText = (p.variants || []).map(v => `${v.name || ""}`).join(" ");
+                return looseIncludes(`${p.name} ${p.category?.name || ""} ${variantText}`, q) && price > 0;
+            }).slice(0, 10);
+
+            if (!filtered.length) {
+                box.innerHTML = `<div class="text-sm text-gray-300 px-3 py-2">No products found</div>`;
+                box.classList.remove("hidden");
+                return;
+            }
+
+            box.innerHTML = filtered.map(p => {
+                const gross = p.pricing?.priceRange?.start?.gross;
+                const amount = gross?.amount || 0;
+                const currency = gross?.currency === "INR" ? "₹" : (gross?.currency || "");
+                const price = gross?.currency === "INR" ? `₹${Number(amount).toFixed(2)}` : `${Number(amount).toFixed(2)} ${currency}`;
+                const img = p.thumbnail?.url || p.media?.[0]?.url || FALLBACK_IMG;
+                return `
+                    <a href="product.html?id=${p.id}" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gold-500/10">
+                        <img src="${img}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-11 h-11 rounded-md object-cover border border-gold-500/20" alt="${escapeHtml(p.name)}">
+                        <div class="min-w-0 flex-1">
+                            <div class="text-sm text-white font-semibold truncate">${escapeHtml(p.name)}</div>
+                            <div class="text-xs text-gold-500">${price}</div>
+                        </div>
+                    </a>
+                `;
+            }).join("");
+            box.classList.remove("hidden");
+        }
+
+        async function loadHelpSearchProducts() {
+            const query = `
+                query {
+                    products(first: 100, channel: "in", filter: { isPublished: true }) {
+                        edges {
+                            node {
+                                id
+                                name
+                                thumbnail { url }
+                                media { url type }
+                                category { name }
+                                pricing { priceRange { start { gross { amount currency } } } }
+                                variants { id name }
+                            }
+                        }
+                    }
+                }
+            `;
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                helpProducts = (json.data?.products?.edges || []).map(e => e.node);
+            } catch (e) {
+                console.error("Help search load failed:", e);
+            }
+        }
+
+        function goToSearchResultsPage() {
+            const q = document.getElementById("helpSearchInput").value.trim();
+            if (!q) return;
+            window.location.href = `prodcut-list.html?q=${encodeURIComponent(q)}`;
+        }
+
+        function showComingSoon(serviceName) {
+            const toast = document.createElement("div");
+            toast.className = "coming-toast fixed left-1/2 -translate-x-1/2 bottom-24 z-[80] bg-gold-500 text-black font-black text-xs md:text-sm px-4 py-2 rounded-full shadow-xl";
+            toast.textContent = `${serviceName}: Coming soon`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1800);
+        }
+
+        document.getElementById("helpSearchInput").addEventListener("input", (e) => renderHelpSearchResults(e.target.value));
+        document.getElementById("helpSearchInput").addEventListener("keydown", (e) => {
+            if (e.key === "Enter") goToSearchResultsPage();
+        });
+        document.getElementById("helpSearchGoBtn").addEventListener("click", goToSearchResultsPage);
+
+        document.addEventListener("click", (e) => {
+            const results = document.getElementById("helpSearchResults");
+            const wrap = results.parentElement;
+            if (!wrap.contains(e.target)) results.classList.add("hidden");
+        });
+
+        document.querySelectorAll("[data-service]").forEach(btn => {
+            btn.addEventListener("click", () => showComingSoon(btn.getAttribute("data-service")));
+        });
+
+        const servicesTrack = document.getElementById("servicesTrack");
+        const serviceCards = Array.from(document.querySelectorAll("#servicesTrack .service-card"));
+        const dotsWrap = document.getElementById("serviceDots");
+        const prevBtn = document.getElementById("servicePrevBtn");
+        const nextBtn = document.getElementById("serviceNextBtn");
+        let activeServiceIndex = 0;
+
+        function renderServiceDots() {
+            dotsWrap.innerHTML = serviceCards.map((_, i) => `<button class="dot ${i === activeServiceIndex ? "active" : ""}" data-dot="${i}" aria-label="Go to slide ${i + 1}"></button>`).join("");
+            dotsWrap.querySelectorAll("[data-dot]").forEach(btn => {
+                btn.addEventListener("click", () => setServiceSlide(Number(btn.getAttribute("data-dot"))));
+            });
+        }
+
+        function setServiceSlide(index) {
+            if (!serviceCards.length) return;
+            activeServiceIndex = (index + serviceCards.length) % serviceCards.length;
+            const trackWidth = servicesTrack.parentElement.clientWidth;
+            const cardWidth = serviceCards[0].offsetWidth;
+            const gap = 14;
+            const isDesktop = window.innerWidth >= 768;
+            let translate = 0;
+            if (isDesktop) {
+                const maxLeft = Math.max(0, serviceCards.length - 3);
+                const leftIndex = Math.min(Math.max(activeServiceIndex - 1, 0), maxLeft);
+                translate = leftIndex * (cardWidth + gap);
+            } else {
+                const centerOffset = Math.max(0, (trackWidth - cardWidth) / 2);
+                translate = (activeServiceIndex * (cardWidth + gap)) - centerOffset;
+                const maxTranslate = Math.max(0, servicesTrack.scrollWidth - trackWidth);
+                translate = Math.min(Math.max(0, translate), maxTranslate);
+            }
+            servicesTrack.style.transform = `translateX(-${translate}px)`;
+            serviceCards.forEach((card, i) => card.classList.toggle("active", i === activeServiceIndex));
+            renderServiceDots();
+        }
+
+        prevBtn.addEventListener("click", () => setServiceSlide(activeServiceIndex - 1));
+        nextBtn.addEventListener("click", () => setServiceSlide(activeServiceIndex + 1));
+        window.addEventListener("resize", () => setServiceSlide(activeServiceIndex));
+
+        const drawer = document.getElementById("helpDrawer");
+        const overlay = document.getElementById("helpOverlay");
+        function openDrawer() {
+            drawer.classList.remove("translate-x-full");
+            overlay.classList.remove("hidden");
+        }
+        function closeDrawer() {
+            drawer.classList.add("translate-x-full");
+            overlay.classList.add("hidden");
+        }
+
+        document.getElementById("helpMenuToggle").addEventListener("click", openDrawer);
+        document.getElementById("helpDrawerClose").addEventListener("click", closeDrawer);
+        overlay.addEventListener("click", closeDrawer);
+
+        setServiceSlide(1);
+        loadHelpSearchProducts();
+    </script>
+</body>
+
+</html>

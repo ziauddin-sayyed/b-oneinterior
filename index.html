@@ -88,8 +88,12 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
+                    <!-- <button id="shopSearchGoBtn"
+                        class="absolute right-11 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500 hover:text-gold-400 transition">
+                        Go
+                    </button> -->
                     <button id="shopVoiceBtn"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500 hover:text-gold-500 hover:scale-110 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
@@ -215,7 +219,7 @@
                                 stroke-width="2" />
                             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
                         </svg>
-                        <div class="text-[14px] font-black tracking-tighter opacity-60">Help</div>
+                        <div class="text-[12px] tracking-tighter">Help</div>
                     </a>
                 </li>
                 <li class="relative">
@@ -227,7 +231,7 @@
                                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                             </path>
                         </svg>
-                        <div class="text-[14px] font-black tracking-tighter opacity-60">Wishlist</div>
+                        <div class="text-[12px] tracking-tighter">Wishlist</div>
                         <span
                             class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
@@ -246,7 +250,7 @@
                             <rect x="14" y="14" width="7" height="7"></rect>
                             <rect x="3" y="14" width="7" height="7"></rect>
                         </svg>
-                        <div class="text-[14px] font-black tracking-tighter opacity-60">Catalogue</div>
+                        <div class="text-[12px] tracking-tighter">Catalogue</div>
                     </a>
                 </li>
 
@@ -259,7 +263,7 @@
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
-                        <div class="text-[14px] font-black tracking-tighter opacity-60">Cart</div>
+                        <div class="text-[12px] tracking-tighter">Cart</div>
                         <span id="cartCountBadge"
                             class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
                         </span>
@@ -827,6 +831,10 @@
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
+                            <button id="shopSearchGoBtn"
+                                class="absolute right-11 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500/80 hover:text-gold-500 transition">
+                                Go
+                            </button>
                             <button id="shopVoiceBtn"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -964,7 +972,7 @@
 
 
     <!-- PRODUCT CAROUSEL SECTION -->
-    <section class="fade-section py-16">
+    <section class="fade-section py-6">
         <div class="container mx-auto">
             <h2
                 class="text-4xl md:text-5xl font-extrabold text-center mb-12 gold-gradient-text uppercase tracking-widest">
@@ -991,7 +999,7 @@
 
 
     <!-- Client Logos Slider -->
-    <section class="fade-section py-16">
+    <section class="fade-section py-8">
         <div class="container mx-auto px-4">
             <h2
                 class="text-4xl md:text-5xl font-extrabold text-center mb-12 gold-gradient-text uppercase tracking-widest">
@@ -1214,9 +1222,11 @@
         const SHOP_API_URL = "https://api.b-oneinterior.com/graphql/";
         const SHOP_HIDDEN_CATEGORIES = ["Gallery Image Category", "Catalogue"];
         const SHOP_FALLBACK_IMG = "images/placeholder.png";
+        const SHOP_SEARCH_LIMIT = 10;
 
         let shopAllCategories = [];
         let shopAllProducts = [];
+        let bestSellerProductIds = new Set();
         let selectedShopParentCategory = "all";
         let shopEndCursor = null;
         let shopHasNextPage = true;
@@ -1464,6 +1474,10 @@
                                 name
                                 media { url type }
                                 pricing { price { gross { amount currency } } }
+                                attributes {
+                                    attribute { name }
+                                    values { name }
+                                }
                             }
                         }
                     }
@@ -1494,6 +1508,207 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function getShopSearchInputs() {
+            return Array.from(document.querySelectorAll('#shopSearchInput'));
+        }
+
+        function getShopSearchQuery() {
+            const inputs = getShopSearchInputs();
+            const nonEmpty = inputs.find(i => (i.value || '').trim().length > 0);
+            const value = nonEmpty ? nonEmpty.value : (inputs[0]?.value || '');
+            return value.toLowerCase().trim();
+        }
+
+        function setShopSearchQuery(value = '') {
+            getShopSearchInputs().forEach(input => {
+                input.value = value;
+            });
+        }
+
+        function normalizeSearchText(value) {
+            if (typeof value === 'string') return value.toLowerCase();
+            if (value == null) return '';
+            try {
+                return JSON.stringify(value).toLowerCase();
+            } catch (err) {
+                return String(value).toLowerCase();
+            }
+        }
+
+        function normalizeLooseSearchText(value) {
+            return String(value || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '');
+        }
+
+        function buildLooseSearchKeys(value) {
+            const base = normalizeLooseSearchText(value);
+            if (!base) return [];
+            const keys = new Set([base]);
+
+            // Common spelling/sound normalizations
+            keys.add(base
+                .replace(/ph/g, 'f')
+                .replace(/[ckq]/g, 'k')
+                .replace(/z/g, 's')
+                .replace(/y/g, 'i')
+                .replace(/oo/g, 'u')
+                .replace(/ee/g, 'i')
+                .replace(/aa/g, 'a')
+                .replace(/(.)\1+/g, '$1'));
+
+            // Vowel-light key for broad matching
+            keys.add(base.replace(/[aeiou]/g, ''));
+
+            return [...keys].filter(Boolean);
+        }
+
+        function looseIncludes(textValue, query) {
+            const textKeys = buildLooseSearchKeys(textValue);
+            const queryKeys = buildLooseSearchKeys(query);
+            if (!textKeys.length || !queryKeys.length) return false;
+            return queryKeys.some(qk => textKeys.some(tk => tk.includes(qk) || qk.includes(tk)));
+        }
+
+        let shopSearchProductsRaw = [];
+
+        function shopSearchFilteredProducts() {
+            return shopSearchProductsRaw.filter(product =>
+                !["Gallery Image Category", "Catalogue"].includes(product.category?.name)
+            );
+        }
+
+        function getSearchablePrice(product) {
+            let price = product.pricing?.priceRange?.start?.gross?.amount || 0;
+            if (price === 0 && product.attributes) {
+                const pa = product.attributes.find(a => a.attribute.name === "Actual Price");
+                if (pa && pa.values.length > 0) {
+                    const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
+                    if (!isNaN(parsed)) price = parsed;
+                }
+            }
+            return price;
+        }
+
+        // Same matching flow as product.html:
+        // product-level match first; else variant-level rows.
+        function getShopSearchDisplayItems(products, query) {
+            const q = (query || '').trim().toLowerCase();
+            if (!q) return products.slice(0, SHOP_SEARCH_LIMIT);
+
+            const display = [];
+            products.forEach(product => {
+                const pName = normalizeSearchText(product.name);
+                const pDesc = normalizeSearchText(product.description);
+                const pCat = normalizeSearchText(product.category?.name);
+
+                if (pName.includes(q) || pDesc.includes(q) || pCat.includes(q) ||
+                    looseIncludes(product.name, q) || looseIncludes(product.description, q) || looseIncludes(product.category?.name, q)) {
+                    display.push(product);
+                    return;
+                }
+
+                if (product.variants) {
+                    product.variants.forEach(v => {
+                        if (normalizeSearchText(v.name).includes(q) || looseIncludes(v.name, q)) {
+                            const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || SHOP_FALLBACK_IMG);
+                            const variantMedia = (v.media && v.media.length > 0) ? v.media : product.media;
+                            const variantPrice = v.pricing?.price?.gross;
+                            display.push({
+                                ...product,
+                                id: v.id,
+                                _parentProductId: product.id,
+                                name: v.name,
+                                thumbnail: { url: variantImg },
+                                media: variantMedia,
+                                variants: [],
+                                _isVariant: true,
+                                pricing: variantPrice ? {
+                                    priceRange: {
+                                        start: { gross: variantPrice },
+                                        stop: { gross: variantPrice }
+                                    }
+                                } : product.pricing
+                            });
+                        }
+                    });
+                }
+            });
+
+            return display.slice(0, SHOP_SEARCH_LIMIT);
+        }
+
+        // Same output model as product.html header search
+        function getShopSearchDropdownItems(query = '') {
+            const q = query.trim().toLowerCase();
+            const products = shopSearchFilteredProducts();
+            const display = [];
+
+            if (!q) {
+                products.slice(0, SHOP_SEARCH_LIMIT).forEach(p => {
+                    const linkId = p.variants?.[0]?.id || p.id;
+                    const gross = p.pricing?.priceRange?.start?.gross;
+                    display.push({
+                        linkId,
+                        displayName: p.name,
+                        subtitle: null,
+                        image: p.thumbnail?.url || SHOP_FALLBACK_IMG,
+                        price: gross?.amount || 0,
+                        currency: gross?.currency || 'INR',
+                        category: p.category?.name || 'Collection',
+                        isVariant: false
+                    });
+                });
+                return display;
+            }
+
+            products.forEach(product => {
+                const pName = normalizeSearchText(product.name);
+                const pDesc = normalizeSearchText(product.description);
+                const pCat = normalizeSearchText(product.category?.name);
+
+                if (pName.includes(q) || pDesc.includes(q) || pCat.includes(q) ||
+                    looseIncludes(product.name, q) || looseIncludes(product.description, q) || looseIncludes(product.category?.name, q)) {
+                    const linkId = product.variants?.[0]?.id || product.id;
+                    const gross = product.pricing?.priceRange?.start?.gross;
+                    display.push({
+                        linkId,
+                        displayName: product.name,
+                        subtitle: null,
+                        image: product.thumbnail?.url || SHOP_FALLBACK_IMG,
+                        price: gross?.amount || 0,
+                        currency: gross?.currency || 'INR',
+                        category: product.category?.name || 'Collection',
+                        isVariant: false
+                    });
+                    return;
+                }
+
+                if (product.variants) {
+                    product.variants.forEach(v => {
+                        if (normalizeSearchText(v.name).includes(q) || looseIncludes(v.name, q)) {
+                            const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || SHOP_FALLBACK_IMG);
+                            const vp = v.pricing?.price?.gross;
+                            const fallbackGross = product.pricing?.priceRange?.start?.gross;
+                            display.push({
+                                linkId: v.id,
+                                displayName: v.name,
+                                subtitle: product.name,
+                                parentProductId: product.id,
+                                image: variantImg,
+                                price: vp?.amount ?? fallbackGross?.amount ?? 0,
+                                currency: vp?.currency ?? fallbackGross?.currency ?? 'INR',
+                                category: product.category?.name || 'Collection',
+                                isVariant: true
+                            });
+                        }
+                    });
+                }
+            });
+
+            return display.slice(0, SHOP_SEARCH_LIMIT);
         }
 
         function updateShopPaginationLoader() {
@@ -1672,7 +1887,7 @@
 
         function applyShopFilters() {
             const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
-            const searchQuery = document.getElementById("shopSearchInput").value.toLowerCase().trim();
+            const searchQuery = getShopSearchQuery();
             const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
             const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
 
@@ -1701,51 +1916,13 @@
                 return price >= minPrice && price <= maxPrice;
             });
 
-            // Search: build displayItems — variant matches show as individual cards with variant name/image/price
-            let displayItems = [];
-            if (searchQuery) {
-                filtered.forEach(product => {
-                    const pName = product.name.toLowerCase();
-                    const pDesc = (product.description || '').toLowerCase();
-                    const pCat = (product.category?.name || '').toLowerCase();
+            const searchable = shopSearchFilteredProducts().filter(p => {
+                const price = getSearchablePrice(p);
+                return price >= minPrice && price <= maxPrice;
+            });
+            const displayItems = searchQuery ? getShopSearchDisplayItems(searchable, searchQuery) : filtered;
 
-                    // Product-level match → show product card as-is
-                    if (pName.includes(searchQuery) || pDesc.includes(searchQuery) || pCat.includes(searchQuery)) {
-                        displayItems.push(product);
-                        return; // don't also add variant cards for this product
-                    }
-
-                    // Variant-level match → create a dedicated card per matched variant
-                    if (product.variants) {
-                        product.variants.forEach(v => {
-                            if ((v.name || '').toLowerCase().includes(searchQuery)) {
-                                const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || SHOP_FALLBACK_IMG);
-                                const variantMedia = (v.media && v.media.length > 0) ? v.media : product.media;
-                                const variantPrice = v.pricing?.price?.gross;
-                                displayItems.push({
-                                    ...product,
-                                    id: v.id,                              // variant ID → links to product.html?id=variantId
-                                    name: v.name,                          // show variant name
-                                    thumbnail: { url: variantImg },        // variant's first image
-                                    media: variantMedia,                   // variant's all images
-                                    variants: [],                          // clear so linkUrl uses p.id (variant ID)
-                                    _isVariant: true,                      // flag for card label
-                                    pricing: variantPrice ? {
-                                        priceRange: {
-                                            start: { gross: variantPrice },
-                                            stop: { gross: variantPrice }
-                                        }
-                                    } : product.pricing
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                displayItems = filtered;
-            }
-
-            renderShopSearchDropdown(displayItems, searchQuery);
+            renderShopSearchDropdown(searchQuery);
             renderShopDesktopList(displayItems);
             renderShopMobileList(displayItems);
         }
@@ -1770,14 +1947,14 @@
             initShopCarousels();
         }
 
-        function renderShopSearchDropdown(items, query) {
+        function renderShopSearchDropdown(query, forceShow = false) {
             const mobileDropdown = document.getElementById("shopSearchResultsMobile");
             const desktopDropdown = document.getElementById("shopSearchResultsDesktop");
             const q = (query || "").trim().toLowerCase();
 
             if (!mobileDropdown || !desktopDropdown) return;
 
-            if (!q) {
+            if (!q && !forceShow) {
                 mobileDropdown.classList.add('hidden');
                 desktopDropdown.classList.add('hidden');
                 mobileDropdown.innerHTML = '';
@@ -1785,9 +1962,9 @@
                 return;
             }
 
-            const topItems = items.slice(0, 20);
-            const html = topItems.length
-                ? topItems.map(p => renderSearchListItem(p)).join("")
+            const items = getShopSearchDropdownItems(query);
+            const html = items.length
+                ? items.map(item => renderShopSearchDropdownItem(item)).join("")
                 : `<div class="px-4 py-5 text-center text-gray-400 text-sm">No products found</div>`;
 
             mobileDropdown.innerHTML = html;
@@ -1796,36 +1973,58 @@
             desktopDropdown.classList.remove('hidden');
         }
 
-        function renderSearchListItem(p) {
-            const priceStart = p.pricing?.priceRange?.start?.gross;
-            const priceStop = p.pricing?.priceRange?.stop?.gross;
-            const currency = priceStart?.currency || 'INR';
-            const symbol = currency === 'INR' ? '₹' : (currency + ' ');
-            const minPrice = priceStart?.amount || 0;
-            const maxPrice = priceStop?.amount || 0;
-            const isRange = maxPrice > minPrice;
-            const imageUrl = (p.media || []).find(m => m.type === 'IMAGE')?.url || p.thumbnail?.url || SHOP_FALLBACK_IMG;
-            const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
-
-            let priceText = '';
-            if (isRange) {
-                priceText = `Range ${symbol}${Math.round(minPrice)} - ${symbol}${Math.round(maxPrice)}`;
-            } else {
-                priceText = `${symbol}${minPrice.toFixed(2)}`;
-            }
+        function renderShopSearchDropdownItem(item) {
+            const amount = Number(item.price || 0);
+            const formattedPrice = item.currency === 'INR'
+                ? `₹${amount.toFixed(2)}`
+                : `${amount.toFixed(2)} ${item.currency || ''}`.trim();
+            const variantBadge = item.isVariant
+                ? `<span class="inline-block mt-1 text-[8px] font-black uppercase tracking-widest text-white/50 border border-white/15 rounded px-1.5 py-0.5">Variant</span>`
+                : '';
 
             return `
-                <a href="${linkUrl}" class="group flex items-center gap-3 md:gap-4 rounded-2xl border border-gold-500/20 bg-black/40 hover:bg-black/60 transition p-2.5 md:p-3">
-                    <img src="${imageUrl}" alt="${p.name}" class="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover border border-gold-500/20 flex-shrink-0">
+                <a href="product.html?id=${item.linkId}" class="group flex items-center gap-3 md:gap-4 rounded-2xl border border-gold-500/20 bg-black/40 hover:bg-black/60 transition p-2.5 md:p-3">
+                    <img src="${item.image || SHOP_FALLBACK_IMG}" alt="${item.displayName}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover border border-gold-500/20 flex-shrink-0">
                     <div class="min-w-0 flex-1">
-                        <div class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-gold-500/90 mb-1">${p.category?.name || 'Decor'}</div>
-                        <div class="text-white text-xs md:text-sm font-bold leading-snug line-clamp-2 group-hover:text-gold-400 transition">${p.name}</div>
-                        <div class="mt-1.5 text-gold-300 text-xs md:text-sm font-black">${priceText}</div>
-                        ${p._isVariant ? `<div class="mt-1 inline-block text-[9px] font-black uppercase tracking-wide bg-[#e8b84b]/90 text-black px-2 py-0.5 rounded-full">Variant</div>` : ''}
+                        <div class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-gold-500/90 mb-1">${item.category || 'Collection'}</div>
+                        <div class="text-white text-xs md:text-sm font-bold leading-snug line-clamp-2 group-hover:text-gold-400 transition">${item.displayName}</div>
+                        ${item.subtitle ? `<div class="text-[10px] text-white/45 truncate mt-0.5">${item.subtitle}</div>` : ''}
+                        ${variantBadge}
+                        <div class="mt-1.5 text-gold-300 text-xs md:text-sm font-black">${formattedPrice}</div>
                     </div>
                     <div class="text-gold-400 text-[10px] md:text-xs font-black uppercase tracking-wider pr-1">View</div>
                 </a>
             `;
+        }
+
+        function parseAmountValue(rawValue) {
+            if (rawValue === null || rawValue === undefined) return NaN;
+            const cleaned = String(rawValue).replace(/[^0-9.]/g, '');
+            return parseFloat(cleaned);
+        }
+
+        function getBestSavingData(product, fallbackSellingPrice = 0) {
+            let best = null;
+
+            const considerCandidate = (actualRaw, sellingRaw) => {
+                const actualVal = parseAmountValue(actualRaw);
+                const sellingVal = parseAmountValue(sellingRaw);
+                if (isNaN(actualVal) || isNaN(sellingVal) || actualVal <= 0 || sellingVal <= 0 || actualVal <= sellingVal) return;
+                const percent = Math.round(((actualVal - sellingVal) / actualVal) * 100);
+                if (percent <= 0) return;
+                if (!best || percent > best.percent) best = { percent, actualRaw: String(actualRaw) };
+            };
+
+            const productActual = product.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+            if (productActual) considerCandidate(productActual, fallbackSellingPrice);
+
+            (product.variants || []).forEach(v => {
+                const variantActual = v.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+                const variantSelling = v.pricing?.price?.gross?.amount ?? fallbackSellingPrice;
+                if (variantActual) considerCandidate(variantActual, variantSelling);
+            });
+
+            return best;
         }
 
         function renderProductCard(p, isMobile = false) {
@@ -1837,21 +2036,13 @@
             const maxPrice = priceStop?.amount || 0;
             const isRange = maxPrice > minPrice;
 
-            // Actual Price (MRP) attribute
-            let actualPriceStr = null;
-            if (p.attributes) {
-                const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
-                if (pa && pa.values.length > 0) actualPriceStr = pa.values[0].name;
-            }
-
-            // Discount badge
+            // Discount badge from highest variant/product saving
             let badgeHtml = "";
-            if (actualPriceStr && minPrice) {
-                const actualVal = parseFloat(actualPriceStr.replace(/[^0-9.]/g, ''));
-                if (!isNaN(actualVal) && actualVal > minPrice) {
-                    const disc = Math.round(((actualVal - minPrice) / actualVal) * 100);
-                    if (disc > 0) badgeHtml = `<div class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full z-10 shadow">${disc}% OFF</div>`;
-                }
+            const bestSaving = getBestSavingData(p, minPrice);
+            const savePercent = bestSaving?.percent || null;
+            const actualPriceStr = bestSaving?.actualRaw || null;
+            if (savePercent) {
+                badgeHtml = `<div class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full z-10 shadow">${savePercent}% OFF</div>`;
             }
 
             // Price HTML
@@ -1859,9 +2050,12 @@
             if (isRange) {
                 priceHtml = `<span class="gold-gradient-text text-xs font-black">Range ${symbol}${Math.round(minPrice)}&nbsp;–&nbsp;${symbol}${Math.round(maxPrice)}</span>`;
             } else {
-                if (actualPriceStr) priceHtml += `<span class="line-through text-gray-500 text-[10px] block">${actualPriceStr}</span>`;
+                if (actualPriceStr) priceHtml += `<span class="line-through text-gray-500 text-[10px] block">${symbol}${actualPriceStr}</span>`;
                 priceHtml += `<span class="gold-gradient-text text-sm lg:text-base font-black">${symbol}${minPrice.toFixed(2)}</span>`;
             }
+            // if (savePercent) {
+            //     priceHtml += `<span class="inline-flex mt-1 w-fit bg-[#4a1018] text-[#ff6b73] border border-[#b62b3a] text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">Save ${savePercent}%</span>`;
+            // }
 
             // Images for carousel
             const images = (p.media || []).filter(m => m.type === 'IMAGE');
@@ -1875,7 +2069,7 @@
             let carouselNavHtml = "";
             if (images.length > 1) {
                 imageHtml = `<div class="owl-carousel shop-product-carousel" id="${carouselId}">
-                    ${images.map(m => `<img src="${m.url}" class="w-full aspect-square object-cover" alt="${p.name}">`).join("")}
+                    ${images.map(m => `<img src="${m.url}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full aspect-square object-cover" alt="${p.name}">`).join("")}
                 </div>`;
                 carouselNavHtml = `
                     <div class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-20 flex items-center gap-1 shop-carousel-nav" onclick="event.stopPropagation()">
@@ -1884,29 +2078,19 @@
                         <button class="sp-next hover:text-gold-500 px-1">&gt;</button>
                     </div>`;
             } else {
-                imageHtml = `<img src="${mainImg}" class="w-full aspect-square object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">`;
+                imageHtml = `<img src="${mainImg}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full aspect-square object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">`;
             }
 
             const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
-            const safeName = p.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
             // Variant badge — shown only on variant search result cards (bottom-left)
             const variantBadge = p._isVariant
                 ? `<div class="absolute bottom-2 left-2 bg-[#e8b84b]/90 text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Variant</div>`
                 : '';
-
-            // Wishlist heart button (top-right of image)
-            const safeLink = linkUrl.replace(/'/g, "\\'");
-            const safeCategory = (p.category?.name || '').replace(/'/g, "\\'");
-            const wishlistBtn = `
-                <button class="wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
-                    onclick="event.stopPropagation(); toggleWishlist('${p.id}', '${safeName}', '${mainImg}', ${minPrice}, '${currency}', '${safeCategory}', '${safeLink}')"
-                    data-wid="${p.id}" title="Add to Wishlist">
-                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                    </svg>
-                </button>`;
+            const bestSellerCheckId = p._parentProductId || p.id;
+            const bestSellerBadge = bestSellerProductIds.has(bestSellerCheckId)
+                ? `<div class="absolute top-2 left-2 gold-gradient-bg text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>`
+                : '';
 
             return `
                 <div class="creative-card flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='${linkUrl}'">
@@ -1915,7 +2099,7 @@
                         ${imageHtml}
                         ${carouselNavHtml}
                         ${variantBadge}
-                        ${wishlistBtn}
+                        ${bestSellerBadge}
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -1923,47 +2107,8 @@
                     <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
                         <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${p.category?.name || 'Decor'}</span>
                         <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
-                                                <div class="mt-auto flex flex-col gap-3">
+                        <div class="mt-auto flex flex-col gap-3">
                             <div class="flex flex-col leading-tight">${priceHtml}</div>
-                            
-                            <div onclick="event.stopPropagation()" class="w-full">
-                                <!-- 1. Add to Cart button (visible by default) -->
-                                <button class="flex gap-2 items-center add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg justify-center"
-                                    onclick="shopAddItem(this, '${p.id}', '${safeName}', '${mainImg}', ${minPrice}, '${currency}', '${safeCategory}')">
-                                    Add to Cart
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6" 
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
-                                    <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
-                                    </svg>
-                                </button>
-
-                                <!-- 2. Qty control Row (hidden until item is added) -->
-                                <div class="qty-ctrl-row-${safeId} flex items-center gap-2 w-full" style="display:none;">
-                                    <!-- Pill Control -->
-                                    <div class="flex-1 flex items-center justify-between bg-black/60 border border-[#e8b84b40] rounded-xl overflow-hidden h-10 px-1 shadow-inner">
-                                        <button onclick="shopDecQty('${p.id}')"
-                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            </svg>
-                                            </button>
-                                        <input type="number" 
-                                            class="qty-val-${safeId} bg-transparent text-white font-bold text-base w-[60px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                            value="1"
-                                            oninput="shopHandleQtyInput(this, '${p.id}')"
-                                            onblur="shopFinalizeQty(this, '${p.id}')">
-                                        <button onclick="shopIncQty('${p.id}')"
-                                            class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            </svg>
-                                            </button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1991,7 +2136,7 @@
                 // Refresh wishlist heart states after cards are rendered
                 refreshWishlistHearts();
                 updateWishlistBadge();
-                initShopCartStates();
+                initShopCardStates();
             }, 150);
         }
 
@@ -2000,19 +2145,26 @@
 
         async function loadSearchData() {
             const searchInput = document.getElementById('homeSearchInput');
-            // Set loading state
-            searchInput.placeholder = "Fetching products...";
-            searchInput.disabled = true;
+            // Optional legacy input (currently commented in markup)
+            if (searchInput) {
+                searchInput.placeholder = "Fetching products...";
+                searchInput.disabled = true;
+            }
 
             const query = `
             query {
-            products(first: 100, channel: "in") {
+            products(first: 100, channel: "in", filter: { isPublished: true }) {
                 edges {
                 node {
                     id
                     name
+                    description
                     thumbnail {
                     url
+                    }
+                    media {
+                        url
+                        type
                     }
                     pricing {
                     priceRange {
@@ -2041,6 +2193,10 @@
                                 }
                             }
                         }
+                        attributes {
+                            attribute { name }
+                            values { name }
+                        }
                     }
                     }
                 }
@@ -2056,19 +2212,21 @@
                 });
 
                 const json = await res.json();
-                let products = json.data.products.edges;
-
-                products = products.filter(p => p.node.category?.name !== "Gallery Image Category" || p.node.category?.name !== "Catalogue");
-
-                // Store for search
+                const products = json.data.products.edges || [];
+                // Keep compatibility for old blocks + set product-style search source.
                 window.allProducts = products;
+                shopSearchProductsRaw = products.map(p => p.node).filter(Boolean);
+
+                // If user has already typed while data was loading, refresh immediately.
+                if (getShopSearchQuery()) applyShopFilters();
 
             } catch (error) {
                 console.error("Error loading products for search:", error);
             } finally {
-                // Reset loading state
-                searchInput.placeholder = "Search products...";
-                searchInput.disabled = false;
+                if (searchInput) {
+                    searchInput.placeholder = "Search products...";
+                    searchInput.disabled = false;
+                }
             }
         }
 
@@ -2086,6 +2244,10 @@
                                         id
                                         name
                                         thumbnail { url }
+                                        attributes {
+                                            attribute { name }
+                                            values { name }
+                                        }
                                         pricing {
                                             priceRange {
                                                 start {
@@ -2094,6 +2256,21 @@
                                                         currency
                                                     }
                                                 }
+                                            }
+                                        }
+                                        variants {
+                                            id
+                                            pricing {
+                                                price {
+                                                    gross {
+                                                        amount
+                                                        currency
+                                                    }
+                                                }
+                                            }
+                                            attributes {
+                                                attribute { name }
+                                                values { name }
                                             }
                                         }
                                         category { name }
@@ -2122,6 +2299,7 @@
                 // 1. Handle Best Seller (Special Position)
                 const bestSellerCol = collections.find(c => c.node.name === "Best Seller");
                 const carousel = document.getElementById("productCarousel");
+                bestSellerProductIds = new Set((bestSellerCol?.node?.products?.edges || []).map(e => e.node.id));
 
                 if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {
                     const products = shuffleArray(bestSellerCol.node.products.edges);
@@ -2197,26 +2375,34 @@
 
         function createProductItem(p) {
             const item = document.createElement("div");
-            item.className = "item px-2 py-4";
+            item.className = "item px-1 py-3";
+            const isBestSellerCard = bestSellerProductIds.has(p.node.id);
 
             const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
             const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
             const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+            let saveHtml = '';
+            const bestSaving = getBestSavingData(p.node, parseFloat(price));
+            // if (bestSaving?.percent) {
+            //     saveHtml = `<span class="inline-flex mt-1 w-fit bg-[#4a1018] text-[#ff6b73] border border-[#b62b3a] text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">Save ${bestSaving.percent}%</span>`;
+            // }
 
             item.innerHTML = `
                 <a href="product.html?id=${p.node.id}" class="creative-card flex flex-col relative group cursor-pointer h-full">
-                    <div class="relative overflow-hidden">
-                        <img src="${p.node.thumbnail?.url}" class="w-full h-56 object-cover transition duration-500 group-hover:scale-110" alt="${p.node.name}">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition duration-300"></div>
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
+                        ${isBestSellerCard ? `<div class="absolute top-2 right-2 bg-gold-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>` : ''}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="gold-gradient-bg text-black px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
                     </div>
                     
-                    <div class="p-5 flex flex-col flex-grow bg-black/40 backdrop-blur-sm">
-                        <h3 class="font-bold text-white text-base truncate mb-3 group-hover:text-gold-500 transition">${p.node.name}</h3>
-                        <div class="mt-auto flex items-center justify-between">
-                            <span class="gold-gradient-text text-lg font-black">${formattedPrice}</span>
-                            <span class="text-gold-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <ion-icon name="arrow-forward-circle-outline" class="text-2xl"></ion-icon>
-                            </span>
+                    <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                        <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${p.node.category?.name || 'Decor'}</span>
+                        <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.node.name}</h3>
+                        <div class="mt-auto">
+                            <span class="gold-gradient-text text-sm lg:text-base font-black">${formattedPrice}</span>
+                            ${saveHtml}
                         </div>
                     </div>
                 </a>
@@ -2231,12 +2417,42 @@
         // Search box is now in fixed mobile top bar.
 
         // ── Shop Search Input listener ───────────────────────────
-        const shopSearchInput = document.getElementById('shopSearchInput');
-        const shopVoiceBtn = document.getElementById('shopVoiceBtn');
+        const shopSearchInputs = getShopSearchInputs();
+        const shopVoiceBtns = Array.from(document.querySelectorAll('#shopVoiceBtn'));
+        const shopGoBtns = Array.from(document.querySelectorAll('#shopSearchGoBtn'));
 
-        if (shopSearchInput) {
-            shopSearchInput.addEventListener('input', applyShopFilters);
+        function goToSearchResultsPage() {
+            const q = getShopSearchQuery();
+            if (!q) return;
+            window.location.href = `prodcut-list.html?q=${encodeURIComponent(q)}`;
         }
+
+        shopSearchInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                setShopSearchQuery(input.value);
+                applyShopFilters();
+            });
+            input.addEventListener('focus', () => {
+                if (shopSearchProductsRaw.length > 0) {
+                    setShopSearchQuery(input.value);
+                    renderShopSearchDropdown(input.value, true);
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    goToSearchResultsPage();
+                }
+            });
+        });
+
+        shopGoBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goToSearchResultsPage();
+            });
+        });
 
         document.addEventListener('click', (e) => {
             const mobileWrap = document.getElementById('shopSearchStickyWrap');
@@ -2256,45 +2472,45 @@
 
         // ── Voice Search ─────────────────────────────────────────
         const ShopSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (ShopSpeechRecognition && shopVoiceBtn) {
+        if (ShopSpeechRecognition && shopVoiceBtns.length > 0) {
             const recognition = new ShopSpeechRecognition();
             recognition.lang = 'en-IN';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            shopVoiceBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                try { recognition.start(); } catch (err) { console.log('Recognition already active'); }
-            };
+            shopVoiceBtns.forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try { recognition.start(); } catch (err) { console.log('Recognition already active'); }
+                };
+            });
 
             recognition.onstart = () => {
-                shopVoiceBtn.classList.add('text-red-500', 'animate-pulse');
-                if (shopSearchInput) shopSearchInput.placeholder = 'Listening...';
+                shopVoiceBtns.forEach(btn => btn.classList.add('text-red-500', 'animate-pulse'));
+                shopSearchInputs.forEach(input => input.placeholder = 'Listening...');
             };
 
             recognition.onresult = (event) => {
                 const text = event.results[0][0].transcript;
-                if (shopSearchInput) {
-                    shopSearchInput.value = text;
-                    applyShopFilters();
-                }
+                setShopSearchQuery(text);
+                applyShopFilters();
             };
 
             recognition.onerror = (event) => {
-                shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
-                if (shopSearchInput) shopSearchInput.placeholder = 'Search products...';
+                shopVoiceBtns.forEach(btn => btn.classList.remove('text-red-500', 'animate-pulse'));
+                shopSearchInputs.forEach(input => input.placeholder = 'Search products...');
                 if (event.error === 'not-allowed') {
                     alert('Microphone access denied. Please allow microphone in browser settings.');
                 }
             };
 
             recognition.onend = () => {
-                shopVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
-                if (shopSearchInput) shopSearchInput.placeholder = 'Search products...';
+                shopVoiceBtns.forEach(btn => btn.classList.remove('text-red-500', 'animate-pulse'));
+                shopSearchInputs.forEach(input => input.placeholder = 'Search products...');
             };
-        } else if (shopVoiceBtn) {
-            shopVoiceBtn.style.display = 'none'; // hide if not supported
+        } else if (shopVoiceBtns.length > 0) {
+            shopVoiceBtns.forEach(btn => btn.style.display = 'none'); // hide if not supported
         }
 
 
