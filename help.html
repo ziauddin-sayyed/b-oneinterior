@@ -143,6 +143,23 @@
             box-shadow: inset 0 0 0 1px rgba(255, 220, 140, 0.44), 0 0 26px rgba(212, 175, 55, 0.32);
         }
 
+        .service-coming-chip {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 6;
+            background: rgba(0, 0, 0, 0.78);
+            color: #f6c455;
+            border: 1px solid rgba(246, 196, 85, 0.55);
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 5px 9px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
         .service-nav-btn {
             position: absolute;
             top: 45%;
@@ -301,7 +318,7 @@
     </aside>
     <div id="helpOverlay" class="fixed inset-0 z-[55] bg-black/60 hidden"></div>
 
-    <main class="pt-[72px] pb-28">
+    <main class="pt-[72px] pb-10">
         <section class="max-w-[1180px] mx-auto px-3 md:px-6 pt-4 md:pt-8">
             <div class="hero-shell p-5 md:p-8 min-h-[260px] md:min-h-[360px] flex items-center">
                 <div class="hero-orb hidden md:block"></div>
@@ -348,28 +365,28 @@
                 </button>
 
                 <div id="servicesTrack" class="services-track">
-                    <button class="service-card active p-3 text-left group" data-service="False Ceiling">
+                    <button class="service-card active p-3 text-left group relative" data-service="False Ceiling">
                         <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#2a1a07] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
                             <img src="images/false-ceiling.png" alt="False Ceiling" class="w-full h-44 rounded-xl">
                         </div>
                         <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">False Ceiling</div>
                         <div class="text-sm md:text-base text-gold-200 mt-1">Add architectural depth with modern ceiling patterns.</div>
                     </button>
-                    <button class="service-card p-3 text-left group" data-service="Modular Kitchen">
+                    <button class="service-card p-3 text-left group relative" data-service="Modular Kitchen">
                         <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#1f220a] via-[#0f0f0f] to-[#090909] rounded-xl flex flex-col justify-between">
                             <img src="images/kitchen.png" alt="Modular Kitchen" class="w-full h-44 rounded-xl">
                         </div>
                         <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">Modular Kitchen</div>
                         <div class="text-sm md:text-base text-gold-200 mt-1">Beautiful workflows built for daily convenience.</div>
                     </button>
-                    <button class="service-card p-3 text-left group" data-service="Wall Paneling">
+                    <button class="service-card p-3 text-left group relative" data-service="Wall Paneling">
                         <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#24120f] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
                             <img src="images/wall-paneling.png" alt="Wall Paneling" class="w-full h-44 rounded-xl">
                         </div>
                         <div class="mt-3 font-black text-white text-[20px] md:text-[30px] leading-[1.06] tracking-tight uppercase">Wall Paneling</div>
                         <div class="text-sm md:text-base text-gold-200 mt-1">Turn plain walls into signature statement pieces.</div>
                     </button>
-                    <button class="service-card p-3 text-left group" data-service="Wardrobe Design">
+                    <button class="service-card p-3 text-left group relative" data-service="Wardrobe Design">
                         <div class="h-44 md:h-56 rounded-xl border border-gold-500/30 bg-gradient-to-br from-[#101f24] via-[#0f0f0f] to-[#090909] p-4 flex flex-col justify-between">
                             <img src="images/wardrobe.png" alt="Wardrobe Design" class="w-full h-44 rounded-xl">
                         </div>
@@ -402,13 +419,19 @@
 
             <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" class="cta-gradient mt-5 md:mt-6 px-4 md:px-7 py-4 md:py-5 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 md:gap-4">
-                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white text-[#19a94b] flex items-center justify-center text-3xl font-black">💬</div>
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white text-[#19a94b] flex items-center justify-center">
+                        <ion-icon name="logo-whatsapp" class="text-3xl md:text-4xl"></ion-icon>
+                    </div>
                     <div>
                         <div class="text-white text-xl md:text-3xl font-black leading-tight uppercase">Chat with us on WhatsApp</div>
                         <div class="text-green-100 text-sm md:text-lg">We are here to help you.</div>
                     </div>
                 </div>
-                <div class="w-12 h-12 rounded-full bg-white text-[#14853a] flex items-center justify-center text-2xl font-black">›</div>
+                <div class="w-12 h-12 min-w-[3rem] min-h-[3rem] rounded-full bg-white text-[#14853a] flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </div>
             </a>
         </section>
     </main>
@@ -827,12 +850,14 @@
             window.location.href = `prodcut-list.html?q=${encodeURIComponent(q)}`;
         }
 
-        function showComingSoon(serviceName) {
-            const toast = document.createElement("div");
-            toast.className = "coming-toast fixed left-1/2 -translate-x-1/2 bottom-24 z-[80] bg-gold-500 text-black font-black text-xs md:text-sm px-4 py-2 rounded-full shadow-xl";
-            toast.textContent = `${serviceName}: Coming soon`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 1800);
+        function showComingSoonOnCard(cardEl) {
+            if (!cardEl) return;
+            cardEl.querySelectorAll(".service-coming-chip").forEach(el => el.remove());
+            const chip = document.createElement("span");
+            chip.className = "service-coming-chip";
+            chip.textContent = "Coming soon";
+            cardEl.appendChild(chip);
+            setTimeout(() => chip.remove(), 1800);
         }
 
         document.getElementById("helpSearchInput").addEventListener("input", (e) => renderHelpSearchResults(e.target.value));
@@ -848,7 +873,7 @@
         });
 
         document.querySelectorAll("[data-service]").forEach(btn => {
-            btn.addEventListener("click", () => showComingSoon(btn.getAttribute("data-service")));
+            btn.addEventListener("click", () => showComingSoonOnCard(btn));
         });
 
         const servicesTrack = document.getElementById("servicesTrack");
