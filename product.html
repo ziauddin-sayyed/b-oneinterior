@@ -249,7 +249,8 @@
         <div
             class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
             <div class="flex items-center gap-3">
-                <a href="index.html" aria-label="Back to home"
+                <a href="https://b-oneinterior.com/" aria-label="Back"
+                    onclick="return handleBackFromProduct(event)"
                     class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -259,13 +260,20 @@
                 <div class="relative flex-1">
                     <input type="text" id="productSearchInput" placeholder="Loading products..." disabled
                         autocomplete="off"
-                        class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                        class="w-full pl-10 pr-20 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
+                    <button type="button" id="productSearchClearBtn" aria-label="Clear search"
+                        class="hidden absolute right-11 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
                     <button type="button" id="productVoiceBtn" aria-label="Voice search"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,7 +370,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
+                    <a href="https://b-oneinterior.com/help"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -1041,18 +1049,11 @@
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
                     </div>
-                    <div class="p-3 flex flex-col flex-grow bg-black/20 backdrop-blur-md min-h-[140px]">
+                    <div class="p-3 flex flex-col flex-grow bg-black/20 backdrop-blur-md min-h-[60px]">
                         <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${categoryName || 'Decor'}</span>
                         <h3 class="font-bold text-white text-xs leading-tight h-8 overflow-hidden mb-2 group-hover:text-gold-500 transition">${name}</h3>
                         <div class="mt-auto">
                             <span class="gold-gradient-text text-sm font-black">${priceText}</span>
-                        </div>
-                        <div class="mt-3" onclick="event.preventDefault(); event.stopPropagation();">
-                            <button type="button"
-                                onclick="addRelatedCardToCart(event, this)"
-                                class="related-cart-btn w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg tracking-wide">
-                                Add to Cart
-                            </button>
                         </div>
                     </div>
                 </a>
@@ -1536,6 +1537,12 @@
             }
 
             renderProduct(currentProduct);
+            const currentUrl = new URL(window.location.href);
+            const initialVariantId = selectedVariant?.id || currentUrl.searchParams.get("id") || null;
+            if (initialVariantId) {
+                currentUrl.searchParams.set("id", initialVariantId);
+                window.history.replaceState({ variantId: initialVariantId, productPage: true }, "", currentUrl);
+            }
 
             // Fetch Recommended
             if (currentProduct.category?.name) {
@@ -1817,25 +1824,44 @@
         function setupProductHeaderSearch() {
             const input = document.getElementById('productSearchInput');
             const dropdown = document.getElementById('productSearchDropdown');
+            const clearBtn = document.getElementById('productSearchClearBtn');
             if (!input || !dropdown) return;
+
+            const updateClearBtn = () => {
+                if (!clearBtn) return;
+                clearBtn.classList.toggle('hidden', !(input.value || '').trim());
+            };
 
             input.addEventListener('focus', () => {
                 if (headerSearchProductsRaw.length > 0) {
                     renderProductSearchResults(input.value);
                 }
+                updateClearBtn();
             });
 
             input.addEventListener('input', () => {
                 renderProductSearchResults(input.value);
+                updateClearBtn();
+            });
+
+            clearBtn?.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                input.value = '';
+                dropdown.classList.add('hidden');
+                updateClearBtn();
+                input.focus();
             });
 
             const voiceBtn = document.getElementById('productVoiceBtn');
             document.addEventListener('click', (event) => {
                 if (!dropdown.contains(event.target) && !input.contains(event.target) &&
-                    !(voiceBtn && voiceBtn.contains(event.target))) {
+                    !(voiceBtn && voiceBtn.contains(event.target)) &&
+                    !(clearBtn && clearBtn.contains(event.target))) {
                     dropdown.classList.add('hidden');
                 }
             });
+            updateClearBtn();
         }
 
         /** Voice search — same behaviour as index.html shop search (Web Speech API). */
@@ -2497,7 +2523,8 @@
             sendProductBuyNowWhatsapp(addressData);
         });
 
-        window.selectVariant = function (variantId) {
+        window.selectVariant = function (variantId, options = {}) {
+            const { fromPopState = false } = options;
             const variant = currentProduct.variants.find(v => v.id === variantId);
             if (!variant) return;
 
@@ -2519,8 +2546,35 @@
             // Update URL without reloading (optional, helps with refreshes)
             const newUrl = new URL(window.location.href);
             newUrl.searchParams.set('id', variantId);
-            window.history.replaceState({}, '', newUrl);
+            const currentUrlId = new URLSearchParams(window.location.search).get('id');
+            if (fromPopState) {
+                window.history.replaceState({ variantId, productPage: true }, '', newUrl);
+            } else if (currentUrlId !== variantId) {
+                window.history.pushState({ variantId, productPage: true }, '', newUrl);
+            }
         };
+
+        window.handleBackFromProduct = function (event) {
+            if (event) event.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = "https://b-oneinterior.com/";
+            }
+            return false;
+        };
+
+        window.addEventListener("popstate", () => {
+            if (!currentProduct || !Array.isArray(currentProduct.variants)) return;
+            const urlVariantId = new URLSearchParams(window.location.search).get("id");
+            if (!urlVariantId) return;
+            const matchingVariant = currentProduct.variants.find(v => v.id === urlVariantId);
+            if (matchingVariant) {
+                window.selectVariant(urlVariantId, { fromPopState: true });
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
 
         function renderColorSelect(variants) {
             const container = document.getElementById("colorSelectContainer");
@@ -2667,6 +2721,7 @@
             if (event.button === 0 && !event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey) {
                 event.preventDefault();
                 window.selectVariant(variantId);
+                window.scrollTo({ top: 0, behavior: "smooth" });
                 return false;
             }
             return true;

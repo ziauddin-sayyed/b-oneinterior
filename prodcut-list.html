@@ -55,16 +55,19 @@
   <header class="bg-black shadow-lg sticky top-0 z-50">
     <div class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b bg-black/95 backdrop-blur-sm" style="border-color:#e8b84b;">
       <div class="flex items-center gap-3">
-        <a href="index.html" aria-label="Back to home" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
+        <a href="https://b-oneinterior.com/" aria-label="Back to home" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
         <div class="relative flex-1">
-          <input id="pageSearchInput" type="text" placeholder="Search products..." class="w-full pl-10 pr-16 py-2.5 bg-black/60 border border-gold rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+          <input id="pageSearchInput" type="text" placeholder="Search products..." class="w-full pl-10 pr-24 py-2.5 bg-black/60 border border-gold rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
+          <button id="pageSearchClearBtn" type="button" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
           <!-- <button id="pageSearchGoBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button> -->
         </div>
         <button onclick="toggleDrawer()" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
@@ -75,7 +78,7 @@
     <div class="md:hidden h-[65px]"></div>
 
     <nav class="container mx-auto px-4 py-4 hidden md:flex items-center justify-between">
-      <div class="text-2xl font-bold text-gold-500"><a href="index.html"><img src="logo.png" style="height: 8vh;" alt="B-One Interior"></a></div>
+      <div class="text-2xl font-bold text-gold-500"><a href="https://b-oneinterior.com/"><img src="logo.png" style="height: 8vh;" alt="B-One Interior"></a></div>
       <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
         <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
         <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
@@ -99,10 +102,13 @@
   <main class="container mx-auto px-4 pb-8 mb-24">
     <div class="hidden md:flex items-center gap-3 mb-4">
       <div class="relative w-full max-w-xl">
-        <input id="pageSearchInputDesktop" type="text" placeholder="Search products..." class="w-full pl-10 pr-16 py-2.5 bg-black/60 border border-gold-500 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+        <input id="pageSearchInputDesktop" type="text" placeholder="Search products..." class="w-full pl-10 pr-24 py-2.5 bg-black/60 border border-gold-500 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
         <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
+        <button id="pageSearchClearBtnDesktop" type="button" aria-label="Clear search" class="hidden absolute right-11 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
         <button id="pageSearchGoBtnDesktop" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button>
       </div>
     </div>
@@ -116,7 +122,7 @@
     <a href="https://b-oneinterior.com/" class="logoBx"></a>
     <ul>
       <li>
-        <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+        <a href="https://b-oneinterior.com/help" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"></circle>
             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
@@ -162,6 +168,7 @@
   <script>
     const FALLBACK_IMG = "images/placeholder.png";
     const API_URL = "https://api.b-oneinterior.com/graphql/";
+    let bestSellerProductIds = new Set();
 
     function toggleDrawer() {
       const drawer = document.getElementById("drawer");
@@ -221,28 +228,103 @@
       return (product.variants || []).some(v => String(v.name || "").toLowerCase().includes(q) || looseIncludes(v.name, q));
     }
 
-    function renderCards(products, query) {
+    function getActualPriceFromAttrs(attrs) {
+      const attr = (attrs || []).find(a => String(a.attribute?.name || "").toLowerCase() === "actual price");
+      return attr?.values?.[0]?.name || null;
+    }
+
+    function getSavePercent(product) {
+      let best = null;
+      const consider = (actualRaw, sellingRaw) => {
+        const actualVal = parseFloat(String(actualRaw || "").replace(/[^0-9.]/g, ""));
+        const sellingVal = Number(sellingRaw || 0);
+        if (!isNaN(actualVal) && actualVal > 0 && sellingVal > 0 && actualVal > sellingVal) {
+          const savePercent = Math.round(((actualVal - sellingVal) / actualVal) * 100);
+          if (savePercent > 0 && (!best || savePercent > best)) best = savePercent;
+        }
+      };
+
+      consider(
+        getActualPriceFromAttrs(product.attributes),
+        product.pricing?.priceRange?.start?.gross?.amount
+      );
+
+      (product.variants || []).forEach(v => {
+        consider(
+          getActualPriceFromAttrs(v.attributes),
+          v.pricing?.price?.gross?.amount || product.pricing?.priceRange?.start?.gross?.amount
+        );
+      });
+
+      return best;
+    }
+
+    function getDisplayItems(products, query) {
+      const q = String(query || "").trim().toLowerCase();
+      const items = [];
+      products.forEach(p => {
+        const name = String(p.name || "").toLowerCase();
+        const desc = typeof p.description === "string" ? p.description.toLowerCase() : JSON.stringify(p.description || {}).toLowerCase();
+        const cat = String(p.category?.name || "").toLowerCase();
+        const productLevelMatch =
+          name.includes(q) ||
+          desc.includes(q) ||
+          cat.includes(q) ||
+          looseIncludes(p.name, q) ||
+          looseIncludes(p.description, q) ||
+          looseIncludes(p.category?.name, q);
+
+        if (productLevelMatch) {
+          items.push({
+            type: "product",
+            product: p,
+            linkId: p.variants?.[0]?.id || p.id,
+            title: p.name
+          });
+          return;
+        }
+
+        (p.variants || []).forEach(v => {
+          const vName = String(v.name || "").toLowerCase();
+          if (vName.includes(q) || looseIncludes(v.name, q)) {
+            items.push({
+              type: "variant",
+              product: p,
+              linkId: v.id || p.id,
+              title: v.name || p.name
+            });
+          }
+        });
+      });
+      return items;
+    }
+
+    function renderCards(items, query) {
       const grid = document.getElementById("resultGrid");
       const meta = document.getElementById("resultMeta");
-      meta.textContent = `Search: "${query}" • ${products.length} result(s)`;
-      if (!products.length) {
+      meta.textContent = `Search: "${query}" • ${items.length} result(s)`;
+      if (!items.length) {
         grid.innerHTML = `<div class="col-span-full text-center text-white/60 py-16">No products found.</div>`;
         return;
       }
-      grid.innerHTML = products.map(p => {
+      grid.innerHTML = items.map(item => {
+        const p = item.product;
         const gross = p.pricing?.priceRange?.start?.gross;
         const price = Number(gross?.amount || 0).toFixed(2);
         const cur = gross?.currency || "INR";
         const priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
-        const linkId = p.variants?.[0]?.id || p.id;
+        const savePercent = getSavePercent(p);
+        const isBestSeller = bestSellerProductIds.has(p.id);
         return `
-          <a href="product.html?id=${linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
+          <a href="product.html?id=${item.linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
               <img src="${p.thumbnail?.url || FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
+              ${isBestSeller ? `<span class="absolute top-2 left-2 bg-gold-500 text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide">Best Seller</span>` : ""}
+              ${savePercent ? `<span class="absolute top-2 right-2 bg-[#dc2626] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">${savePercent}% OFF</span>` : ""}
             </div>
             <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
               <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${escapeHtml(p.category?.name || "Decor")}</span>
-              <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2">${escapeHtml(p.name)}</h3>
+              <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2">${escapeHtml(item.title)}</h3>
               <div class="mt-auto"><span class="gold-gradient-text text-sm font-black">${priceText}</span></div>
             </div>
           </a>`;
@@ -264,10 +346,21 @@
       window.location.href = `prodcut-list.html?q=${encodeURIComponent(value)}`;
     }
 
+    function updateSearchClearButtons() {
+      const mobileInput = document.getElementById("pageSearchInput");
+      const desktopInput = document.getElementById("pageSearchInputDesktop");
+      const clearMobile = document.getElementById("pageSearchClearBtn");
+      const clearDesktop = document.getElementById("pageSearchClearBtnDesktop");
+      const hasValue = ((mobileInput?.value || "").trim().length > 0) || ((desktopInput?.value || "").trim().length > 0);
+      if (clearMobile) clearMobile.classList.toggle("hidden", !hasValue);
+      if (clearDesktop) clearDesktop.classList.toggle("hidden", !hasValue);
+    }
+
     async function load() {
       const q = getQueryFromUrl();
       const meta = document.getElementById("resultMeta");
       syncSearchInputs(q);
+      updateSearchClearButtons();
       if (!q) { meta.textContent = "No search query provided."; return; }
       meta.textContent = "Loading products...";
       const query = `
@@ -280,22 +373,58 @@
               description
               thumbnail { url }
               category { name }
+              attributes {
+                attribute { name }
+                values { name }
+              }
               pricing { priceRange { start { gross { amount currency } } } }
-              variants { id name }
+              variants {
+                id
+                name
+                pricing { price { gross { amount currency } } }
+                attributes {
+                  attribute { name }
+                  values { name }
+                }
+              }
+            }
+          }
+        }
+      }`;
+      const bestSellerQuery = `
+      query {
+        collections(first: 30) {
+          edges {
+            node {
+              name
+              products(first: 100) {
+                edges { node { id } }
+              }
             }
           }
         }
       }`;
       try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query })
-        });
-        const json = await res.json();
+        const [productsRes, bestSellerRes] = await Promise.all([
+          fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query })
+          }),
+          fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: bestSellerQuery })
+          })
+        ]);
+        const json = await productsRes.json();
+        const bestSellerJson = await bestSellerRes.json();
+        const collections = bestSellerJson.data?.collections?.edges || [];
+        const bestSellerCollection = collections.find(c => (c.node?.name || "").toLowerCase() === "best seller");
+        bestSellerProductIds = new Set((bestSellerCollection?.node?.products?.edges || []).map(e => e.node?.id).filter(Boolean));
         const all = (json.data?.products?.edges || []).map(e => e.node);
         const visible = all.filter(p => !["Gallery Image Category", "Catalogue"].includes(p.category?.name));
-        renderCards(visible.filter(p => productMatches(p, q)), q);
+        renderCards(getDisplayItems(visible.filter(p => productMatches(p, q)), q), q);
       } catch (e) {
         meta.textContent = "Failed to load products.";
       }
@@ -303,8 +432,20 @@
 
     document.getElementById("pageSearchGoBtn")?.addEventListener("click", runSearchFromInput);
     document.getElementById("pageSearchGoBtnDesktop")?.addEventListener("click", runSearchFromInput);
+    document.getElementById("pageSearchInput")?.addEventListener("input", () => updateSearchClearButtons());
+    document.getElementById("pageSearchInputDesktop")?.addEventListener("input", () => updateSearchClearButtons());
     document.getElementById("pageSearchInput")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
     document.getElementById("pageSearchInputDesktop")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
+    document.getElementById("pageSearchClearBtn")?.addEventListener("click", () => {
+      syncSearchInputs("");
+      updateSearchClearButtons();
+      document.getElementById("pageSearchInput")?.focus();
+    });
+    document.getElementById("pageSearchClearBtnDesktop")?.addEventListener("click", () => {
+      syncSearchInputs("");
+      updateSearchClearButtons();
+      document.getElementById("pageSearchInputDesktop")?.focus();
+    });
 
     updateCartBadge();
     load();

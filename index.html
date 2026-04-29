@@ -81,13 +81,19 @@
             <div class="flex items-center justify-between gap-3 min-h-[48px]">
                 <div id="shopSearchStickyWrap" class="relative flex-1">
                     <input type="text" id="shopSearchInput" placeholder="Search products..."
-                        class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                        class="w-full pl-10 pr-20 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
+                    <button type="button" class="shopSearchClearBtn hidden absolute right-11 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+                        aria-label="Clear search">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
                     <!-- <button id="shopSearchGoBtn"
                         class="absolute right-11 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500 hover:text-gold-400 transition">
                         Go
@@ -212,7 +218,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://wa.me/+917699977771?text=Hi%20B-One%20Interior%20Team" target="_blank"
+                    <a href="https://b-oneinterior.com/help"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
@@ -824,13 +830,19 @@
                         <!-- Search -->
                         <div id="shopSearchStickyWrapDesktop" class="relative flex-1 w-full hidden md:block">
                             <input type="text" id="shopSearchInput" placeholder="Search products..."
-                                class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                                class="w-full pl-10 pr-28 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
+                            <button type="button" class="shopSearchClearBtn hidden absolute right-20 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+                                aria-label="Clear search">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                </svg>
+                            </button>
                             <button id="shopSearchGoBtn"
                                 class="absolute right-11 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500/80 hover:text-gold-500 transition">
                                 Go
@@ -1510,6 +1522,22 @@
             return arr;
         }
 
+        function keepOnlyFirstMedia(product) {
+            if (!product || typeof product !== "object") return product;
+            const trimmedProductMedia = Array.isArray(product.media) ? product.media.slice(0, 1) : [];
+            const trimmedVariants = Array.isArray(product.variants)
+                ? product.variants.map(v => ({
+                    ...v,
+                    media: Array.isArray(v.media) ? v.media.slice(0, 1) : []
+                }))
+                : [];
+            return {
+                ...product,
+                media: trimmedProductMedia,
+                variants: trimmedVariants
+            };
+        }
+
         function getShopSearchInputs() {
             return Array.from(document.querySelectorAll('#shopSearchInput'));
         }
@@ -1524,6 +1552,14 @@
         function setShopSearchQuery(value = '') {
             getShopSearchInputs().forEach(input => {
                 input.value = value;
+            });
+            updateShopSearchClearButtons();
+        }
+
+        function updateShopSearchClearButtons() {
+            const hasValue = getShopSearchInputs().some(input => (input.value || '').trim().length > 0);
+            document.querySelectorAll('.shopSearchClearBtn').forEach(btn => {
+                btn.classList.toggle('hidden', !hasValue);
             });
         }
 
@@ -1758,7 +1794,7 @@
                 const productConnection = json.data?.products;
                 const pageInfo = productConnection?.pageInfo;
                 const newProducts = filterVisibleShopProducts(
-                    (productConnection?.edges || []).map(e => e.node)
+                    (productConnection?.edges || []).map(e => keepOnlyFirstMedia(e.node))
                 );
 
                 const existingIds = new Set(shopAllProducts.map(product => product.id));
@@ -2214,8 +2250,8 @@
                 const json = await res.json();
                 const products = json.data.products.edges || [];
                 // Keep compatibility for old blocks + set product-style search source.
-                window.allProducts = products;
-                shopSearchProductsRaw = products.map(p => p.node).filter(Boolean);
+                window.allProducts = products.map(p => ({ ...p, node: keepOnlyFirstMedia(p.node) }));
+                shopSearchProductsRaw = products.map(p => keepOnlyFirstMedia(p.node)).filter(Boolean);
 
                 // If user has already typed while data was loading, refresh immediately.
                 if (getShopSearchQuery()) applyShopFilters();
@@ -2292,9 +2328,6 @@
 
                 const json = await res.json();
                 const collections = json.data?.collections?.edges || [];
-
-                console.log(collections);
-
 
                 // 1. Handle Best Seller (Special Position)
                 const bestSellerCol = collections.find(c => c.node.name === "Best Seller");
@@ -2420,6 +2453,7 @@
         const shopSearchInputs = getShopSearchInputs();
         const shopVoiceBtns = Array.from(document.querySelectorAll('#shopVoiceBtn'));
         const shopGoBtns = Array.from(document.querySelectorAll('#shopSearchGoBtn'));
+        const shopClearBtns = Array.from(document.querySelectorAll('.shopSearchClearBtn'));
 
         function goToSearchResultsPage() {
             const q = getShopSearchQuery();
@@ -2443,6 +2477,19 @@
                     e.preventDefault();
                     goToSearchResultsPage();
                 }
+            });
+        });
+
+        shopClearBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShopSearchQuery('');
+                applyShopFilters();
+                const mobileDropdown = document.getElementById('shopSearchResultsMobile');
+                const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
+                if (mobileDropdown) mobileDropdown.classList.add('hidden');
+                if (desktopDropdown) desktopDropdown.classList.add('hidden');
             });
         });
 
@@ -2485,6 +2532,8 @@
                     try { recognition.start(); } catch (err) { console.log('Recognition already active'); }
                 };
             });
+
+        updateShopSearchClearButtons();
 
             recognition.onstart = () => {
                 shopVoiceBtns.forEach(btn => btn.classList.add('text-red-500', 'animate-pulse'));
