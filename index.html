@@ -1474,11 +1474,12 @@
             });
         }
 
-        function getShopProductsQuery(afterCursor = null) {
+        function getShopProductsQuery(afterCursor = null, categoryIds = []) {
             const afterClause = afterCursor ? `, after: "${afterCursor}"` : "";
+            const catFilter = categoryIds && categoryIds.length > 0 ? `, categories: ${JSON.stringify(categoryIds)}` : "";
             return `
             query {
-                products(first: 10, channel: "in", filter: { isPublished: true }, sortBy: { field: CREATED_AT, direction: DESC } ${afterClause}) {
+                products(first: 10, channel: "in", filter: { isPublished: true${catFilter} }, sortBy: { field: CREATED_AT, direction: DESC } ${afterClause}) {
                     pageInfo {
                         hasNextPage
                         endCursor
@@ -1805,11 +1806,21 @@
             shopLoadingMore = true;
             updateShopPaginationLoader();
 
+            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
+            let categoryIds = [];
+            if (selectedShopParentCategory !== "all") {
+                if (activeSub !== "all") {
+                    categoryIds = [activeSub];
+                } else {
+                    categoryIds = [selectedShopParentCategory];
+                }
+            }
+
             try {
                 const res = await fetch(SHOP_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query: getShopProductsQuery(shopEndCursor) })
+                    body: JSON.stringify({ query: getShopProductsQuery(shopEndCursor, categoryIds) })
                 });
                 const json = await res.json();
                 const productConnection = json.data?.products;
@@ -1845,15 +1856,6 @@
             const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
 
             let filtered = newProducts;
-
-            if (selectedShopParentCategory !== "all") {
-                const subIds = shopAllCategories.filter(c => c.parent?.id === selectedShopParentCategory).map(s => s.id);
-                if (activeSub !== "all") {
-                    filtered = filtered.filter(p => p.category?.id === activeSub);
-                } else {
-                    filtered = filtered.filter(p => p.category?.id === selectedShopParentCategory || subIds.includes(p.category?.id));
-                }
-            }
 
             filtered = filtered.filter(p => {
                 let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
@@ -1912,7 +1914,27 @@
                 const data = json.data;
 
                 shopAllCategories = data.categories.edges.map(e => e.node);
+
+                const savedParent = sessionStorage.getItem('shopCategory');
+                if (savedParent) {
+                    selectedShopParentCategory = savedParent;
+                }
+
                 renderShopCategoryFilters();
+
+                if (selectedShopParentCategory !== "all") {
+                    document.getElementById("shopSubcategoryFilter").classList.remove("hidden");
+                    renderShopSubcategoryFilters(selectedShopParentCategory);
+                    const savedSub = sessionStorage.getItem('shopSubCategory');
+                    if (savedSub && savedSub !== "all") {
+                        const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
+                        if (subBtn) {
+                            document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
+                            subBtn.classList.add('gold-gradient-bg', 'text-black');
+                        }
+                    }
+                }
+
                 await loadMoreShopProducts();
                 setupShopInfiniteScroll();
                 document.getElementById("shopLoading").classList.add("hidden");
@@ -1947,15 +1969,29 @@
 
             // Attach listeners
             container.querySelectorAll('.shop-filter-item').forEach(item => {
-                item.onclick = () => {
-                    selectedShopParentCategory = item.dataset.category;
-                    renderShopCategoryFilters(); // Refresh active state
-                    if (selectedShopParentCategory === "all") {
-                        document.getElementById("shopSubcategoryFilter").classList.add("hidden");
-                    } else {
-                        renderShopSubcategoryFilters(selectedShopParentCategory);
+                item.onclick = async () => {
+                    const newCategory = item.dataset.category;
+                    if (selectedShopParentCategory !== newCategory) {
+                        selectedShopParentCategory = newCategory;
+                        sessionStorage.setItem('shopCategory', selectedShopParentCategory);
+                        sessionStorage.removeItem('shopSubCategory');
+                        renderShopCategoryFilters(); // Refresh active state
+                        if (selectedShopParentCategory === "all") {
+                            document.getElementById("shopSubcategoryFilter").classList.add("hidden");
+                            document.querySelector(".shop-sub-filter.gold-gradient-bg")?.classList.remove('gold-gradient-bg');
+                        } else {
+                            renderShopSubcategoryFilters(selectedShopParentCategory);
+                        }
+                        
+                        shopAllProducts = [];
+                        shopHasNextPage = true;
+                        shopEndCursor = null;
+                        document.getElementById("shopProductGrid").innerHTML = '';
+                        const mobileGrid = document.getElementById("shopMobileProductList");
+                        if (mobileGrid) mobileGrid.innerHTML = '';
+                        await loadMoreShopProducts();
+                        applyShopFilters();
                     }
-                    applyShopFilters();
                 };
             });
         }
@@ -1982,10 +2018,23 @@
 
             container.classList.remove("hidden");
             container.querySelectorAll('.shop-sub-filter').forEach(btn => {
-                btn.onclick = () => {
-                    container.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
-                    btn.classList.add('gold-gradient-bg', 'text-black');
-                    applyShopFilters();
+                btn.onclick = async () => {
+                    const currentSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory;
+                    const newSub = btn.dataset.subcategory;
+                    if (currentSub !== newSub) {
+                        sessionStorage.setItem('shopSubCategory', newSub);
+                        container.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
+                        btn.classList.add('gold-gradient-bg', 'text-black');
+                        
+                        shopAllProducts = [];
+                        shopHasNextPage = true;
+                        shopEndCursor = null;
+                        document.getElementById("shopProductGrid").innerHTML = '';
+                        const mobileGrid = document.getElementById("shopMobileProductList");
+                        if (mobileGrid) mobileGrid.innerHTML = '';
+                        await loadMoreShopProducts();
+                        applyShopFilters();
+                    }
                 };
             });
         }
@@ -1997,16 +2046,6 @@
             const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
 
             let filtered = shopAllProducts;
-
-            // Category filter
-            if (selectedShopParentCategory !== "all") {
-                const subIds = shopAllCategories.filter(c => c.parent?.id === selectedShopParentCategory).map(s => s.id);
-                if (activeSub !== "all") {
-                    filtered = filtered.filter(p => p.category?.id === activeSub);
-                } else {
-                    filtered = filtered.filter(p => p.category?.id === selectedShopParentCategory || subIds.includes(p.category?.id));
-                }
-            }
 
             // Price filter
             filtered = filtered.filter(p => {
@@ -2512,9 +2551,86 @@
             return item;
         }
 
-        loadSearchData();
-        loadCollections();
-        fetchShopData();
+        function initShopPage() {
+            const navEntries = performance.getEntriesByType("navigation");
+            const navType = navEntries.length > 0 ? navEntries[0].type : "";
+
+            if (navType === "back_forward") {
+                const savedStateJson = sessionStorage.getItem('shopFullState');
+                if (savedStateJson) {
+                    try {
+                        const state = JSON.parse(savedStateJson);
+                        if (!state || !state.shopAllProducts || state.shopAllProducts.length === 0) {
+                            throw new Error("No products in saved state");
+                        }
+                        shopAllProducts = state.shopAllProducts;
+                        shopAllCategories = state.shopAllCategories || [];
+                        shopEndCursor = state.shopEndCursor || null;
+                        shopHasNextPage = state.shopHasNextPage !== false;
+                        selectedShopParentCategory = state.selectedShopParentCategory || "all";
+
+                        renderShopCategoryFilters();
+
+                        if (selectedShopParentCategory !== "all") {
+                            document.getElementById("shopSubcategoryFilter").classList.remove("hidden");
+                            renderShopSubcategoryFilters(selectedShopParentCategory);
+                            const savedSub = state.activeSubcategory;
+                            if (savedSub && savedSub !== "all") {
+                                const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
+                                if (subBtn) {
+                                    document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
+                                    subBtn.classList.add('gold-gradient-bg', 'text-black');
+                                }
+                            }
+                        }
+
+                        // Delay rendering slightly to ensure DOM state is consistent
+                        setTimeout(() => {
+                            applyShopFilters();
+                            setupShopInfiniteScroll();
+                            document.getElementById("shopLoading").classList.add("hidden");
+                        }, 50);
+
+                        loadSearchData();
+                        loadCollections();
+
+                        if (state.scrollY) {
+                            setTimeout(() => window.scrollTo(0, state.scrollY), 150);
+                        }
+                        return;
+                    } catch (e) {
+                        console.error("Failed to restore shop state", e);
+                    }
+                }
+            }
+
+            sessionStorage.removeItem('shopFullState');
+            loadSearchData();
+            loadCollections();
+            fetchShopData();
+        }
+
+        initShopPage();
+
+        window.addEventListener('pagehide', () => {
+            if (shopAllProducts && shopAllProducts.length > 0) {
+                try {
+                    const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
+                    const state = {
+                        shopAllProducts,
+                        shopAllCategories,
+                        shopEndCursor,
+                        shopHasNextPage,
+                        selectedShopParentCategory,
+                        activeSubcategory: activeSub,
+                        scrollY: window.scrollY
+                    };
+                    sessionStorage.setItem('shopFullState', JSON.stringify(state));
+                } catch (e) {
+                    console.error("Error saving state to sessionStorage", e);
+                }
+            }
+        });
 
         // Search box is now in fixed mobile top bar.
 
