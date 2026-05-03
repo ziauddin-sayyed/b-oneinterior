@@ -1972,10 +1972,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="window.toggleWishlist()" id="wishlistBtnMain" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300">
-<svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                            </svg>
+                             <ion-icon name="heart" class="text-xl"></ion-icon>
                         </button>
                         <button onclick="window.shareProduct()" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300 shadow-lg">
                              <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
@@ -2781,7 +2778,7 @@
                     icon.setAttribute('name', 'heart');
                     btn.classList.add('text-gold', 'border-gold/50');
                 } else {
-                    icon.setAttribute('name', 'heart-outline');
+                    icon.setAttribute('name', 'heart');
                     btn.classList.remove('text-gold', 'border-gold/50');
                 }
             }
