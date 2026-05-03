@@ -911,9 +911,18 @@
                     <div id="shopSubcategoryFilter" class="flex flex-wrap gap-3 mt-4 hidden"></div>
                 </div>
 
-                <!-- Product Display -->
-                <div id="shopMobileProductList" class="grid grid-cols-2 gap-2 md:hidden"></div>
-                <div id="shopProductGrid" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></div>
+                <!-- Product Display Top -->
+                <div id="shopMobileProductListTop" class="grid grid-cols-2 gap-2 md:hidden"></div>
+                <div id="shopProductGridTop" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                </div>
+
+                <!-- Dynamic Collections Section -->
+                <div id="dynamicCollectionsContainer" class="mt-4"></div>
+
+                <!-- Product Display Bottom -->
+                <div id="shopMobileProductListBottom" class="grid grid-cols-2 gap-2 md:hidden mt-4"></div>
+                <div id="shopProductGridBottom"
+                    class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 mt-8"></div>
 
                 <!-- Loading for Shop -->
                 <div id="shopLoading" class="flex flex-col items-center justify-center py-20">
@@ -1026,8 +1035,7 @@
         </div>
     </section>
 
-    <!-- Dynamic Collections Section -->
-    <div id="dynamicCollectionsContainer"></div>
+
 
 
 
@@ -1872,17 +1880,24 @@
             const itemsToAppend = searchQuery ? getShopSearchDisplayItems(filtered, searchQuery) : filtered;
 
             if (itemsToAppend.length > 0) {
-                const desktopContainer = document.getElementById("shopProductGrid");
-                const mobileContainer = document.getElementById("shopMobileProductList");
+                const dt = document.getElementById("shopProductGridTop");
+                const db = document.getElementById("shopProductGridBottom");
+                const mt = document.getElementById("shopMobileProductListTop");
+                const mb = document.getElementById("shopMobileProductListBottom");
 
-                if (desktopContainer && desktopContainer.innerHTML.includes("No pieces found")) desktopContainer.innerHTML = "";
-                if (mobileContainer && mobileContainer.innerHTML.includes("No pieces found")) mobileContainer.innerHTML = "";
+                if (dt && dt.innerHTML.includes("No pieces found")) dt.innerHTML = "";
+                if (mt && mt.innerHTML.includes("No pieces found")) mt.innerHTML = "";
 
-                const desktopHtml = itemsToAppend.map(p => renderProductCard(p)).join("");
-                const mobileHtml = itemsToAppend.map(p => renderProductCard(p, true)).join("");
-
-                if (desktopContainer) desktopContainer.insertAdjacentHTML('beforeend', desktopHtml);
-                if (mobileContainer) mobileContainer.insertAdjacentHTML('beforeend', mobileHtml);
+                itemsToAppend.forEach(p => {
+                    const topCount = dt ? dt.children.length : 0;
+                    if (topCount < 10) {
+                        if (dt) dt.insertAdjacentHTML('beforeend', renderProductCard(p));
+                        if (mt) mt.insertAdjacentHTML('beforeend', renderProductCard(p, true));
+                    } else {
+                        if (db) db.insertAdjacentHTML('beforeend', renderProductCard(p));
+                        if (mb) mb.insertAdjacentHTML('beforeend', renderProductCard(p, true));
+                    }
+                });
 
                 initShopCarousels();
             }
@@ -1982,13 +1997,16 @@
                         } else {
                             renderShopSubcategoryFilters(selectedShopParentCategory);
                         }
-                        
+
                         shopAllProducts = [];
                         shopHasNextPage = true;
                         shopEndCursor = null;
-                        document.getElementById("shopProductGrid").innerHTML = '';
-                        const mobileGrid = document.getElementById("shopMobileProductList");
-                        if (mobileGrid) mobileGrid.innerHTML = '';
+                        document.getElementById("shopProductGridTop").innerHTML = '';
+                        document.getElementById("shopProductGridBottom").innerHTML = '';
+                        const mt = document.getElementById("shopMobileProductListTop");
+                        if (mt) mt.innerHTML = '';
+                        const mb = document.getElementById("shopMobileProductListBottom");
+                        if (mb) mb.innerHTML = '';
                         await loadMoreShopProducts();
                         applyShopFilters();
                     }
@@ -2025,13 +2043,16 @@
                         sessionStorage.setItem('shopSubCategory', newSub);
                         container.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
                         btn.classList.add('gold-gradient-bg', 'text-black');
-                        
+
                         shopAllProducts = [];
                         shopHasNextPage = true;
                         shopEndCursor = null;
-                        document.getElementById("shopProductGrid").innerHTML = '';
-                        const mobileGrid = document.getElementById("shopMobileProductList");
-                        if (mobileGrid) mobileGrid.innerHTML = '';
+                        document.getElementById("shopProductGridTop").innerHTML = '';
+                        document.getElementById("shopProductGridBottom").innerHTML = '';
+                        const mt = document.getElementById("shopMobileProductListTop");
+                        if (mt) mt.innerHTML = '';
+                        const mb = document.getElementById("shopMobileProductListBottom");
+                        if (mb) mb.innerHTML = '';
                         await loadMoreShopProducts();
                         applyShopFilters();
                     }
@@ -2069,25 +2090,46 @@
             renderShopSearchDropdown(searchQuery);
             renderShopDesktopList(displayItems);
             renderShopMobileList(displayItems);
+            loadCollections();
         }
 
         function renderShopDesktopList(products) {
-            const container = document.getElementById("shopProductGrid");
-            container.className = "hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8";
-            container.innerHTML = products.length
-                ? products.map(p => renderProductCard(p)).join("")
-                : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No pieces found</div>`;
-            initShopCardStates(); // Restore states immediately
+            const dt = document.getElementById("shopProductGridTop");
+            const db = document.getElementById("shopProductGridBottom");
+            if (!dt || !db) return;
+
+            if (!products.length) {
+                dt.innerHTML = `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No pieces found</div>`;
+                db.innerHTML = "";
+                return;
+            }
+
+            const topItems = products.slice(0, 10);
+            const bottomItems = products.slice(10);
+
+            dt.innerHTML = topItems.map(p => renderProductCard(p)).join("");
+            db.innerHTML = bottomItems.map(p => renderProductCard(p)).join("");
+            initShopCardStates();
             initShopCarousels();
         }
 
         function renderShopMobileList(products) {
-            const container = document.getElementById("shopMobileProductList");
-            container.className = "grid grid-cols-2 gap-2 md:hidden";
-            container.innerHTML = products.length
-                ? products.map(p => renderProductCard(p, true)).join("")
-                : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">No pieces found</div>`;
-            initShopCardStates(); // Restore states immediately
+            const mt = document.getElementById("shopMobileProductListTop");
+            const mb = document.getElementById("shopMobileProductListBottom");
+            if (!mt || !mb) return;
+
+            if (!products.length) {
+                mt.innerHTML = `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">No pieces found</div>`;
+                mb.innerHTML = "";
+                return;
+            }
+
+            const topItems = products.slice(0, 10);
+            const bottomItems = products.slice(10);
+
+            mt.innerHTML = topItems.map(p => renderProductCard(p, true)).join("");
+            mb.innerHTML = bottomItems.map(p => renderProductCard(p, true)).join("");
+            initShopCardStates();
             initShopCarousels();
         }
 
@@ -2417,7 +2459,7 @@
                                                 values { name }
                                             }
                                         }
-                                        category { name }
+                                        category { id name }
                                     }
                                 }
                             }
@@ -2466,14 +2508,24 @@
 
                 // 2. Handle Other Collections
                 const otherCollections = shuffleArray(
-                    collections.filter(c => c.node.name !== "Best Seller" && c.node.products.edges.length > 0)
+                    collections.filter(c => {
+                        if (c.node.name === "Best Seller") return false;
+                        if (selectedShopParentCategory !== "all") {
+                            return c.node.products.edges.some(p => p.node.category?.id === selectedShopParentCategory);
+                        }
+                        return c.node.products.edges.length > 0;
+                    })
                 );
                 const container = document.getElementById("dynamicCollectionsContainer");
                 container.innerHTML = "";
 
                 otherCollections.forEach((col, index) => {
                     const sectionId = `dynamicCarousel-${index}`;
-                    const products = shuffleArray(col.node.products.edges);
+                    let products = col.node.products.edges;
+                    if (selectedShopParentCategory !== "all") {
+                        products = products.filter(p => p.node.category?.id === selectedShopParentCategory);
+                    }
+                    const shuffledProducts = shuffleArray(products);
 
                     const sectionHtml = `
                     <section class="fade-section py-2" id="section-${index}">
@@ -2486,14 +2538,14 @@
                     container.insertAdjacentHTML('beforeend', sectionHtml);
 
                     const sectionCarousel = document.getElementById(sectionId);
-                    products.forEach(p => sectionCarousel.appendChild(createProductItem(p)));
+                    shuffledProducts.forEach(p => sectionCarousel.appendChild(createProductItem(p)));
 
                     $(`#${sectionId}`).owlCarousel({
-                        loop: true,
+                        loop: false,
                         margin: 10,
                         nav: false,
                         dots: true,
-                        startPosition: Math.floor(Math.random() * products.length),
+                        startPosition: Math.floor(Math.random() * shuffledProducts.length),
                         responsive: {
                             0: { items: 2 },
                             640: { items: 3 },
