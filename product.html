@@ -249,8 +249,7 @@
         <div
             class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
             <div class="flex items-center gap-3">
-                <a href="https://b-oneinterior.com/" aria-label="Back"
-                    onclick="return handleBackFromProduct(event)"
+                <a href="https://b-oneinterior.com/" aria-label="Back" onclick="return handleBackFromProduct(event)"
                     class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -1036,15 +1035,6 @@
                     data-product-currency="${currency || 'INR'}">
                     <div class="relative overflow-hidden aspect-square">
                         <img src="${thumbnailUrl || FALLBACK_IMG}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${name}">
-                        <button type="button"
-                            onclick="toggleRelatedWishlist(event, this)"
-                            class="related-wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
-                            title="Add to Wishlist">
-                            <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                            </svg>
-                        </button>
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -1982,7 +1972,10 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="window.toggleWishlist()" id="wishlistBtnMain" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300">
-                             <ion-icon name="heart-outline" class="text-xl"></ion-icon>
+<svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                            </svg>
                         </button>
                         <button onclick="window.shareProduct()" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-gold hover:border-gold transition-all duration-300 shadow-lg">
                              <ion-icon name="share-social-outline" class="text-xl"></ion-icon>
