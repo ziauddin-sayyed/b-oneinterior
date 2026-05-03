@@ -2775,8 +2775,8 @@
             if (btn) {
                 const icon = btn.querySelector('ion-icon');
                 if (isInWishlist) {
-                    icon.setAttribute('name', 'heart');
-                    btn.classList.add('text-gold', 'border-gold/50');
+                    icon.setAttribute('name', 'heart-outline');
+                    btn.classList.remove('text-gold', 'border-gold/50');
                 } else {
                     icon.setAttribute('name', 'heart');
                     btn.classList.remove('text-gold', 'border-gold/50');
