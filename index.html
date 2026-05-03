@@ -72,6 +72,20 @@
 
 <body class="bg-black overflow-x-hidden w-full">
 
+    <!-- Pull to refresh Indicator -->
+    <div id="ptrIndicator"
+        class="fixed top-0 left-0 right-0 flex justify-center z-[100] pointer-events-none transition-transform duration-200"
+        style="transform: translateY(-100%);">
+        <div
+            class="bg-black/90 border border-gold-500/30 shadow-[0_4px_12px_rgba(212,175,55,0.2)] rounded-full p-2 mt-4 flex items-center justify-center">
+            <svg id="ptrSpinner" class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+            </svg>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
 
@@ -88,10 +102,12 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
-                    <button type="button" class="shopSearchClearBtn hidden absolute right-11 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+                    <button type="button"
+                        class="shopSearchClearBtn hidden absolute right-11 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
                         aria-label="Clear search">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
                         </svg>
                     </button>
                     <!-- <button id="shopSearchGoBtn"
@@ -109,7 +125,8 @@
                         </svg>
                     </button>
                     <div id="shopSearchResultsMobile"
-                        class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto p-2 w-full"></div>
+                        class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto p-2 w-full">
+                    </div>
                 </div>
                 <button onclick="toggleDrawer()" aria-label="Open menu"
                     class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 shrink-0">
@@ -837,10 +854,12 @@
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
-                            <button type="button" class="shopSearchClearBtn hidden absolute right-20 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
+                            <button type="button"
+                                class="shopSearchClearBtn hidden absolute right-20 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition"
                                 aria-label="Clear search">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" />
                                 </svg>
                             </button>
                             <button id="shopSearchGoBtn"
@@ -859,52 +878,54 @@
                                 </svg>
                             </button>
                             <div id="shopSearchResultsDesktop"
-                                class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto"></div>
+                                class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
+                            </div>
                         </div>
-                    <!-- Price Filter -->
-                    <div
-                        class="flex items-center justify-between gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
-                        <div class="flex items-center gap-2">
-                            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
-                            <input type="number" id="minPriceInput" placeholder="Min"
-                                class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
-                            <span class="text-gold-500/40 text-xs flex-shrink-0">–</span>
-                            <input type="number" id="maxPriceInput" placeholder="Max"
-                                class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                        <!-- Price Filter -->
+                        <div
+                            class="flex items-center justify-between gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
+                                <input type="number" id="minPriceInput" placeholder="Min"
+                                    class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                                <span class="text-gold-500/40 text-xs flex-shrink-0">–</span>
+                                <input type="number" id="maxPriceInput" placeholder="Max"
+                                    class="w-16 sm:w-20 px-2 py-1 bg-black border border-gold-500/20 rounded-lg text-xs text-white focus:outline-none focus:border-gold-500">
+                            </div>
+                            <button onclick="applyShopFilters()"
+                                class="gold-gradient-bg flex-shrink-0 text-black px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase transition hover:opacity-90">
+                                Apply
+                            </button>
                         </div>
-                        <button onclick="applyShopFilters()"
-                            class="gold-gradient-bg flex-shrink-0 text-black px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase transition hover:opacity-90">
-                            Apply
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="container mx-auto">
-            <!-- Category Filters -->
-            <div class="p-2 mt-2 md:mb-8">
-                <div class="overflow-x-auto pb-2 hide-scrollbar">
-                    <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
+            <div class="container mx-auto">
+                <!-- Category Filters -->
+                <div class="p-2 mt-2 md:mb-8">
+                    <div class="overflow-x-auto pb-2 hide-scrollbar">
+                        <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
+                    </div>
+                    <div id="shopSubcategoryFilter" class="flex flex-wrap gap-3 mt-4 hidden"></div>
                 </div>
-                <div id="shopSubcategoryFilter" class="flex flex-wrap gap-3 mt-4 hidden"></div>
-            </div>
 
-            <!-- Product Display -->
-            <div id="shopMobileProductList" class="grid grid-cols-2 gap-2 md:hidden"></div>
-            <div id="shopProductGrid" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></div>
+                <!-- Product Display -->
+                <div id="shopMobileProductList" class="grid grid-cols-2 gap-2 md:hidden"></div>
+                <div id="shopProductGrid" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></div>
 
-            <!-- Loading for Shop -->
-            <div id="shopLoading" class="flex flex-col items-center justify-center py-20">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500 mb-4"></div>
-                <p class="text-gold-500 text-sm font-medium tracking-widest uppercase">Loading Collection...</p>
+                <!-- Loading for Shop -->
+                <div id="shopLoading" class="flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500 mb-4"></div>
+                    <p class="text-gold-500 text-sm font-medium tracking-widest uppercase">Loading Collection...</p>
+                </div>
+                <div id="shopPaginationLoader" class="hidden flex-col items-center justify-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gold-500 mb-3"></div>
+                    <p class="text-gold-500/80 text-[11px] font-medium tracking-[0.3em] uppercase">Loading More</p>
+                </div>
+                <div id="shopLoadMoreTrigger" class="h-8"></div>
             </div>
-            <div id="shopPaginationLoader" class="hidden flex-col items-center justify-center py-8">
-                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gold-500 mb-3"></div>
-                <p class="text-gold-500/80 text-[11px] font-medium tracking-[0.3em] uppercase">Loading More</p>
-            </div>
-            <div id="shopLoadMoreTrigger" class="h-8"></div>
-        </div>
     </section>
 
     <!-- Before/After Gallery -->
@@ -1457,7 +1478,7 @@
             const afterClause = afterCursor ? `, after: "${afterCursor}"` : "";
             return `
             query {
-                products(first: 10, channel: "in", filter: { isPublished: true }${afterClause}) {
+                products(first: 10, channel: "in", filter: { isPublished: true }, sortBy: { field: CREATED_AT, direction: DESC } ${afterClause}) {
                     pageInfo {
                         hasNextPage
                         endCursor
@@ -1798,22 +1819,70 @@
                 );
 
                 const existingIds = new Set(shopAllProducts.map(product => product.id));
+                const newlyAdded = [];
                 newProducts.forEach(product => {
                     if (!existingIds.has(product.id)) {
                         shopAllProducts.push(product);
+                        newlyAdded.push(product);
                     }
                 });
-                // Keep shop feed order fresh while new pages merge in.
-                shopAllProducts = shuffleArray(shopAllProducts);
 
                 shopHasNextPage = !!pageInfo?.hasNextPage;
                 shopEndCursor = pageInfo?.endCursor || null;
-                applyShopFilters();
+                appendShopProducts(newlyAdded);
             } catch (err) {
                 console.error("Shop pagination error:", err);
             } finally {
                 shopLoadingMore = false;
                 updateShopPaginationLoader();
+            }
+        }
+
+        function appendShopProducts(newProducts) {
+            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
+            const searchQuery = getShopSearchQuery();
+            const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
+            const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
+
+            let filtered = newProducts;
+
+            if (selectedShopParentCategory !== "all") {
+                const subIds = shopAllCategories.filter(c => c.parent?.id === selectedShopParentCategory).map(s => s.id);
+                if (activeSub !== "all") {
+                    filtered = filtered.filter(p => p.category?.id === activeSub);
+                } else {
+                    filtered = filtered.filter(p => p.category?.id === selectedShopParentCategory || subIds.includes(p.category?.id));
+                }
+            }
+
+            filtered = filtered.filter(p => {
+                let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
+                if (price === 0 && p.attributes) {
+                    const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
+                    if (pa && pa.values.length > 0) {
+                        const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) price = parsed;
+                    }
+                }
+                return price >= minPrice && price <= maxPrice;
+            });
+
+            const itemsToAppend = searchQuery ? getShopSearchDisplayItems(filtered, searchQuery) : filtered;
+
+            if (itemsToAppend.length > 0) {
+                const desktopContainer = document.getElementById("shopProductGrid");
+                const mobileContainer = document.getElementById("shopMobileProductList");
+
+                if (desktopContainer && desktopContainer.innerHTML.includes("No pieces found")) desktopContainer.innerHTML = "";
+                if (mobileContainer && mobileContainer.innerHTML.includes("No pieces found")) mobileContainer.innerHTML = "";
+
+                const desktopHtml = itemsToAppend.map(p => renderProductCard(p)).join("");
+                const mobileHtml = itemsToAppend.map(p => renderProductCard(p, true)).join("");
+
+                if (desktopContainer) desktopContainer.insertAdjacentHTML('beforeend', desktopHtml);
+                if (mobileContainer) mobileContainer.insertAdjacentHTML('beforeend', mobileHtml);
+
+                initShopCarousels();
             }
         }
 
@@ -2533,7 +2602,7 @@
                 };
             });
 
-        updateShopSearchClearButtons();
+            updateShopSearchClearButtons();
 
             recognition.onstart = () => {
                 shopVoiceBtns.forEach(btn => btn.classList.add('text-red-500', 'animate-pulse'));
@@ -2613,6 +2682,77 @@
             </div>
         </div>
     </div>
+
+    <!-- Pull-to-Refresh Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let ptrStartY = 0;
+            let ptrCurrentY = 0;
+            let ptrIsRefreshing = false;
+
+            document.addEventListener('touchstart', (e) => {
+                if (window.scrollY <= 0 && !ptrIsRefreshing) {
+                    ptrStartY = e.touches[0].clientY;
+                } else {
+                    ptrStartY = 0;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', (e) => {
+                if (ptrStartY > 0 && window.scrollY <= 0 && !ptrIsRefreshing) {
+                    ptrCurrentY = e.touches[0].clientY;
+                    const diff = ptrCurrentY - ptrStartY;
+                    const indicator = document.getElementById('ptrIndicator');
+                    const spinner = document.getElementById('ptrSpinner');
+                    if (diff > 0 && indicator && spinner) {
+                        const pullPercent = Math.min(diff / 150, 1);
+                        indicator.style.transform = `translateY(${-100 + (pullPercent * 120)}%)`;
+                        spinner.style.transform = `rotate(${pullPercent * 360}deg)`;
+                    }
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', () => {
+                if (ptrStartY > 0 && ptrCurrentY > 0 && !ptrIsRefreshing) {
+                    const diff = ptrCurrentY - ptrStartY;
+                    const indicator = document.getElementById('ptrIndicator');
+                    const spinner = document.getElementById('ptrSpinner');
+
+                    if (diff > 100 && window.scrollY <= 0) {
+                        ptrIsRefreshing = true;
+                        if (indicator) indicator.style.transform = `translateY(20%)`;
+                        if (spinner) spinner.classList.add('animate-spin');
+
+                        if (typeof shopAllProducts !== 'undefined' && shopAllProducts.length > 0) {
+                            shopAllProducts = shuffleArray(shopAllProducts);
+                            if (typeof applyShopFilters === 'function') applyShopFilters();
+                        }
+                        if (typeof loadCollections === 'function') {
+                            loadCollections().then(() => finishRefresh()).catch(() => finishRefresh());
+                        } else {
+                            finishRefresh();
+                        }
+                    } else {
+                        if (indicator) indicator.style.transform = `translateY(-100%)`;
+                    }
+                }
+                ptrStartY = 0;
+                ptrCurrentY = 0;
+            });
+
+            function finishRefresh() {
+                setTimeout(() => {
+                    const indicator = document.getElementById('ptrIndicator');
+                    const spinner = document.getElementById('ptrSpinner');
+                    if (indicator) indicator.style.transform = `translateY(-100%)`;
+                    setTimeout(() => {
+                        if (spinner) spinner.classList.remove('animate-spin');
+                        ptrIsRefreshing = false;
+                    }, 300);
+                }, 500);
+            }
+        });
+    </script>
 </body>
 
 </html>

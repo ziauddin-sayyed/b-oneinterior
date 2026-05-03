@@ -717,16 +717,19 @@
             <div class="flex items-center justify-between">
                 <div class="flex gap-2 border-b border-gold-500/20 pb-0" style="width: fit-content;">
                     <button type="button" id="wishlistTabProducts" data-wish-tab="Products"
-                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-gold-500/30 bg-gold-500/15 text-gold-400" style="font-size: 0.65rem;">
+                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-gold-500/30 bg-gold-500/15 text-gold-400"
+                        style="font-size: 0.65rem;">
                         Products
                     </button>
                     <button type="button" id="wishlistTabCatalogue" data-wish-tab="Catalogue"
-                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-transparent text-white/50 hover:text-white/80" style="font-size: 0.65rem;">
+                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-transparent text-white/50 hover:text-white/80"
+                        style="font-size: 0.65rem;">
                         Catalogue
                     </button>
                 </div>
                 <button onclick="clearWishlist()" id="clearAllBtn"
-                    class="text-red-500 hover:text-gold-500 font-bold uppercase tracking-widest border border-red-500 hover:border-gold-500 px-4 py-2 rounded-xl transition" style="font-size: 0.65rem;">
+                    class="text-red-500 hover:text-gold-500 font-bold uppercase tracking-widest border border-red-500 hover:border-gold-500 px-4 py-2 rounded-xl transition"
+                    style="font-size: 0.65rem;">
                     Clear All
                 </button>
             </div>
@@ -799,34 +802,41 @@
     <!-- Address modal for Site Visit inquiry -->
     <div id="wishlistAddressModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWishlistAddressModal()"></div>
-        <div class="w-full max-w-lg bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 relative z-10 shadow-2xl">
+        <div
+            class="w-full max-w-lg bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 relative z-10 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl md:text-2xl font-black uppercase tracking-tight gold-gradient-text">Site Visit Details</h2>
-                <button type="button" onclick="closeWishlistAddressModal()" class="text-white/80 hover:text-white transition">
+                <h2 class="text-xl md:text-2xl font-black uppercase tracking-tight gold-gradient-text">Site Visit
+                    Details</h2>
+                <button type="button" onclick="closeWishlistAddressModal()"
+                    class="text-white/80 hover:text-white transition">
                     <ion-icon name="close-outline" class="text-3xl"></ion-icon>
                 </button>
             </div>
             <form id="wishlistAddressForm" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">First Name</label>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">First
+                            Name</label>
                         <input id="wishlistFirstName" type="text" required
                             class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Last Name</label>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Last
+                            Name</label>
                         <input id="wishlistLastName" type="text" required
                             class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile No</label>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile
+                        No</label>
                     <input id="wishlistMobileNo" type="tel" required inputmode="numeric" maxlength="15"
                         oninput="wishlistAddressMobileInput(this)"
                         class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Full Address</label>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Full
+                        Address</label>
                     <textarea id="wishlistFullAddress" rows="3" required
                         class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition resize-none"></textarea>
                 </div>
@@ -1435,7 +1445,7 @@
                   <!-- Actions row -->
                   <div class="mt-auto flex items-center gap-2" onclick="event.stopPropagation()">
                     <!-- Cart button / Qty control toggle -->
-                    <div class="flex-1">
+                    <!-- <div class="flex-1">
                       <button class="flex gap-2 items-center wl-add-btn-${item.id.replace(/[^a-zA-Z0-9]/g, '')} wl-cart-btn btn-cart w-full text-center"
                         onclick="wlAddItem(this, '${item.id}', '${safeName}', '${safeImg}', ${item.price}, '${item.currency}', '${cat}')">
                         Add to Cart
@@ -1466,13 +1476,13 @@
                                             </svg>
                           </button>
                       </div>
-                    </div>
+                    </div>  -->
                   </div>
-                  <button type="button"
+                  <!--<button type="button"
                     onclick="event.preventDefault(); event.stopPropagation(); openWishlistAddressModal('${item.id}')"
                     class="mt-2 w-full border border-gold-500/50 text-gold-500 text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-xl hover:bg-gold-500/10 transition">
                     Site Visit
-                  </button>
+                  </button> -->
                 </div>
               </div>`;
             }).join('')}
