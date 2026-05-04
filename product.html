@@ -2197,9 +2197,25 @@
                     <div class="grid grid-cols-2 gap-2">
                         <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-[11px] uppercase tracking-[0.1em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-2">
                             Add to Cart
+                           <svg xmlns="http://www.w3.org/2000/svg" 
+                            width="20" 
+                            height="20" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            stroke-width="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round">
+
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+
+                        </svg>
                         </button>
                         <button type="button" onclick="openProductBuyNowModal()"
                             class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <ion-icon name="flash-outline" class="text-xl"></ion-icon>
                             Buy Now
                         </button>
                     </div>
@@ -2237,7 +2253,7 @@
 
         function bookInstallation() {
             if (!currentProduct) return;
-            const cat = currentProduct.category?.name || "";
+            const cat = (currentProduct.metadata || []).find(m => m.key.toLowerCase() === 'type')?.value;
             window.location.href = `help.html?openExperts=true&category=${encodeURIComponent(cat)}`;
         }
 
@@ -2825,10 +2841,10 @@
             if (btn) {
                 const icon = btn.querySelector('ion-icon');
                 if (isInWishlist) {
-                    icon.setAttribute('name', 'heart-outline');
+                    icon.setAttribute('name', 'heart');
                     btn.classList.remove('text-gold', 'border-gold/50');
                 } else {
-                    icon.setAttribute('name', 'heart');
+                    icon.setAttribute('name', 'heart-outline');
                     btn.classList.remove('text-gold', 'border-gold/50');
                 }
             }
