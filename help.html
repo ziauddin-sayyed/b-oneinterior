@@ -274,11 +274,16 @@
     <header class="fixed top-0 left-0 right-0 z-50 border-b border-gold-500/30 bg-black/95 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-3 md:px-6 py-2.5">
             <div class="flex items-center justify-between gap-2 md:gap-3">
-                <a href="index.html" class="flex items-center gap-2" aria-label="Go home">
-                    <img src="logo.png" alt="B-One Interior" class="h-8 md:h-10 w-auto">
-                    <span
-                        class="hidden sm:block text-gold-400 text-xs md:text-sm font-black uppercase tracking-[0.2em]">Help</span>
-                </a>
+                <div class="flex items-center gap-2">
+                    <button onclick="history.back()" class="w-10 h-10 rounded-xl border border-gold-500/35 text-gold-500 flex items-center justify-center hover:bg-gold-500/10 transition mr-1">
+                        <ion-icon name="arrow-back-outline" class="text-xl"></ion-icon>
+                    </button>
+                    <a href="index.html" class="flex items-center gap-2" aria-label="Go home">
+                        <img src="logo.png" alt="B-One Interior" class="h-8 md:h-10 w-auto">
+                        <span
+                            class="hidden sm:block text-gold-400 text-xs md:text-sm font-black uppercase tracking-[0.2em]">Help</span>
+                    </a>
+                </div>
                 <div>
                     <button id="helpMenuToggle" aria-label="Open menu" onclick="toggleDrawer()"
                         class="w-10 h-10 rounded-xl border border-gold-500/35 text-gold-500 flex items-center justify-center hover:bg-gold-500/10 transition">
@@ -1029,6 +1034,26 @@
         }
 
         setServiceSlide(1);
+
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('openExperts') === 'true') {
+                const cat = params.get('category');
+                openTechModal();
+                if (cat) {
+                    const checkInterval = setInterval(() => {
+                        const input = document.getElementById("techSearchInput");
+                        if (input && technicians.length > 0) {
+                            input.value = cat;
+                            filterTechnicians();
+                            clearInterval(checkInterval);
+                        }
+                    }, 100);
+                    // Timeout after 5 seconds
+                    setTimeout(() => clearInterval(checkInterval), 5000);
+                }
+            }
+        });
     </script>
 </body>
 

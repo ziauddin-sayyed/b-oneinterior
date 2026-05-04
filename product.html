@@ -2164,28 +2164,65 @@
                         <span class="text-[10px] font-black text-white/80 uppercase tracking-[0.2em]">Estimated Total</span>
                         <span id="cartItemTotal" class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
                     </div>
-                    <button type="button" onclick="openProductBuyNowModal()"
-                        class="w-full h-14 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
-                        <ion-icon name="flash-outline" class="text-xl"></ion-icon>
-                        Buy Now
-                    </button>
+                    <div class="flex flex-col gap-2 mt-3">
+                        <button type="button" onclick="openProductBuyNowModal()"
+                            class="w-full h-14 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <ion-icon name="flash-outline" class="text-xl"></ion-icon>
+                            Buy Now
+                        </button>
+                        
+                        ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
+                        <div class="grid grid-cols-2 gap-2">
+                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? `
+                            <button type="button" onclick="getSample()"
+                                class="w-full h-14 rounded-2xl border-2 border-blue-500 text-blue-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
+                                <ion-icon name="layers-outline" class="text-xl mb-1"></ion-icon>
+                                <span>Get Sample</span>
+                            </button>
+                            ` : ''}
+                            
+                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
+                            <button type="button" onclick="bookInstallation()"
+                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
+                                <ion-icon name="construct-outline" class="text-xl mb-1"></ion-icon>
+                                <span>Book Installation</span>
+                            </button>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+                    </div>
                 </div>
             ` : `
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                    <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-3">
-                        Add to Cart
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6" 
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
-                        <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
-                        </svg>
-                    </button>
-                    <button type="button" onclick="openProductBuyNowModal()"
-                        class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
-                        <ion-icon name="flash-outline" class="text-xl"></ion-icon>
-                        Buy Now
-                    </button>
+                <div class="flex flex-col gap-2 w-full">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-[11px] uppercase tracking-[0.1em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            Add to Cart
+                        </button>
+                        <button type="button" onclick="openProductBuyNowModal()"
+                            class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            Buy Now
+                        </button>
+                    </div>
+                    
+                    ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
+                    <div class="grid grid-cols-2 gap-2">
+                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? `
+                        <button type="button" onclick="getSample()"
+                            class="w-full h-12 rounded-2xl border-2 border-blue-500 text-blue-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <ion-icon name="layers-outline" class="text-lg"></ion-icon>
+                            Get Sample
+                        </button>
+                        ` : ''}
+                        
+                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
+                        <button type="button" onclick="bookInstallation()"
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
+                            <ion-icon name="construct-outline" class="text-lg"></ion-icon>
+                            Book Installation
+                        </button>
+                        ` : ''}
+                    </div>
+                    ` : ''}
                 </div>
             `;
 
@@ -2196,6 +2233,19 @@
             if (typeof window.refreshRelatedCardStates === 'function') {
                 window.refreshRelatedCardStates();
             }
+        }
+
+        function bookInstallation() {
+            if (!currentProduct) return;
+            const cat = currentProduct.category?.name || "";
+            window.location.href = `help.html?openExperts=true&category=${encodeURIComponent(cat)}`;
+        }
+
+        function getSample() {
+            if (!currentProduct) return;
+            const message = `Hi B-One Team, I am interested in getting a sample for the product: ${currentProduct.name} (ID: ${currentProduct.id}). Could you please share the details?`;
+            const whatsappUrl = `https://wa.me/+917738130131?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
         }
 
         function updateQty(id, change) {
