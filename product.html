@@ -2178,13 +2178,28 @@
                         (inCartSample ? `
                             <button type="button" onclick="removeSample()"
                                 class="w-full h-14 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
-                                <ion-icon name="close-circle-outline" class="text-xl mb-1"></ion-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                                <!-- Circle -->
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                
+                                <!-- Cross -->
+                                <path d="M8 8l8 8M16 8l-8 8"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"/>
+                                </svg>
                                 <span>Remove from Sample</span>
                             </button>
                             ` : `
                             <button type="button" onclick="getSample()"
                                 class="w-full h-14 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
-                                <ion-icon name="checkmark-circle" class="text-xl mb-1"></ion-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                                    <!-- Circle -->
+                                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                                    
+                                    <!-- Tick -->
+                                    <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                                 <span>Add to Get Sample</span>
                             </button>
                             `) : ''}
@@ -2234,13 +2249,28 @@
                     (inCartSample ? `
                         <button type="button" onclick="removeSample()"
                             class="w-full h-12 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <ion-icon name="close-circle-outline" class="text-lg"></ion-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                                <!-- Circle -->
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                
+                                <!-- Cross -->
+                                <path d="M8 8l8 8M16 8l-8 8"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"/>
+                            </svg>
                             Remove from Sample
                         </button>
                         ` : `
                         <button type="button" onclick="getSample()"
                             class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <ion-icon name="checkmark-circle" class="text-lg"></ion-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                            <!-- Circle -->
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                            
+                            <!-- Tick -->
+                            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                             Add to Get Sample
                         </button>
                         `) : ''}
