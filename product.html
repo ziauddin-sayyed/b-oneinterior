@@ -2176,16 +2176,16 @@
                         <div class="grid grid-cols-2 gap-2">
                             ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
                         (inCartSample ? `
-                            <button type="button" 
-                                class="w-full h-14 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl flex flex-col items-center justify-center leading-none">
-                                <ion-icon name="checkmark-circle" class="text-xl mb-1"></ion-icon>
-                                <span>Added to Sample</span>
+                            <button type="button" onclick="removeSample()"
+                                class="w-full h-14 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
+                                <ion-icon name="close-circle-outline" class="text-xl mb-1"></ion-icon>
+                                <span>Remove from Sample</span>
                             </button>
                             ` : `
                             <button type="button" onclick="getSample()"
-                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
-                                <ion-icon name="layers-outline" class="text-xl mb-1"></ion-icon>
-                                <span>Get Sample</span>
+                                class="w-full h-14 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
+                                <ion-icon name="checkmark-circle" class="text-xl mb-1"></ion-icon>
+                                <span>Add to Sample</span>
                             </button>
                             `) : ''}
                             
@@ -2232,16 +2232,16 @@
                     <div class="grid grid-cols-2 gap-2">
                         ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
                     (inCartSample ? `
-                        <button type="button" 
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl flex items-center justify-center gap-2">
-                            <ion-icon name="checkmark-circle" class="text-lg"></ion-icon>
-                            Added to Sample
+                        <button type="button" onclick="removeSample()"
+                            class="w-full h-12 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <ion-icon name="close-circle-outline" class="text-lg"></ion-icon>
+                            Remove from Sample
                         </button>
                         ` : `
                         <button type="button" onclick="getSample()"
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <ion-icon name="layers-outline" class="text-lg"></ion-icon>
-                            Get Sample
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <ion-icon name="checkmark-circle" class="text-lg"></ion-icon>
+                            Add to Sample
                         </button>
                         `) : ''}
                         
@@ -2290,6 +2290,15 @@
 
         function getSample() {
             addToCart('get_sample');
+        }
+
+        function removeSample() {
+            const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
+            let cart = getCart();
+            cart = cart.filter(i => !(i.id === activeId && i.cartType === 'get_sample'));
+            saveCart(cart);
+            renderCartAction();
+            updateCartBadge();
         }
 
         function updateQty(id, change, cartType = 'products') {
