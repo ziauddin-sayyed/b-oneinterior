@@ -2481,7 +2481,13 @@
 
                 // 1. Handle Best Seller (Special Position)
                 const bestSellerCol = collections.find(c => c.node.name === "Best Seller");
-                const carousel = document.getElementById("productCarousel");
+                
+                // Clean up carousel for bfcache navigations
+                const oldCarousel = document.getElementById("productCarousel");
+                const carousel = oldCarousel.cloneNode(false);
+                carousel.className = "owl-carousel owl-theme";
+                oldCarousel.parentNode.replaceChild(carousel, oldCarousel);
+
                 bestSellerProductIds = new Set((bestSellerCol?.node?.products?.edges || []).map(e => e.node.id));
 
                 if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {

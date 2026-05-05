@@ -611,13 +611,35 @@
     </div>
 
     <script>
+        window.cartTab = 'products';
+        window.historyCartTab = 'products';
+
+        function setCartTab(tab) {
+            window.cartTab = tab;
+            loadCart();
+        }
+
+        function setHistoryCartTab(tab) {
+            window.historyCartTab = tab;
+            showPreviousOrders();
+        }
+
         function loadCart() {
             const container = document.getElementById("cartItems");
             const summaryContainer = document.getElementById("cartSummary");
-            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const allItemsList = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const list = allItemsList.filter(item => (item.cartType || 'products') === window.cartTab);
+
+            const isSample = window.cartTab === 'get_sample';
+            const tabsHtml = `
+            <div class="flex items-center gap-4 border-b border-white/10 mb-6">
+                <button onclick="setCartTab('products')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.cartTab === 'products' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Products</button>
+                <button onclick="setCartTab('get_sample')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.cartTab === 'get_sample' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Get Sample</button>
+            </div>
+            `;
 
             if (list.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = tabsHtml + `
           <div class="glass-panel p-5 flex flex-col items-center justify-center text-center">
             <div class="my-8 rounded-full bg-gold/5 flex items-center justify-center text-gold  animate-pulse">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
@@ -657,10 +679,11 @@
                 <div class="flex-grow min-w-0">
                     <p class="text-[10px] font-black text-gold uppercase tracking-[0.2em] mb-1">${item.category || 'Collection'}</p>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight leading-none mb-1 truncate">${item.name}</h3>
-                    <p class="text-xs font-bold text-white/80 uppercase tracking-widest">${symbol}${price.toFixed(2)} per unit</p>
+${isSample ? '' : `                    <p class="text-xs font-bold text-white/80 uppercase tracking-widest">${symbol}${price.toFixed(2)} per unit</p>`}
                 </div>
 
                 <div class="gap-6 md:flex item-center justify-between md:justify-end">
+                    ${isSample ? '' : `
                     <div class="qty-pill">
                         <button onclick="updateQty('${item.id}', -1)" class="qty-btn">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -678,17 +701,22 @@
                                             </svg>
                             </button>
                     </div>
+                    `}
 
+                    ${isSample ? '' : `
                     <div class="text-right min-w-[100px] hidden md:block">
                         <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Subtotal</p>
                         <p class="text-xl font-black gold-gradient-text">${totalStr}</p>
                     </div>
+                    `}
                 </div>
+                ${isSample ? '' : `
                 <div class="flex items-end gap-4 justify-between md:hidden">
                         <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Subtotal</p>
                         <p class="text-xl font-black gold-gradient-text">${totalStr}</p>
                     </div>
-                 <button class="remove-circle flex-shrink-0" onclick="removeFromCart('${item.id}')">
+                `}
+                 <button class="remove-circle flex-shrink-0" onclick="removeFromCart('${item.id}', '${item.cartType || 'products'}')">
                         <ion-icon name="close-outline" class="text-2xl"></ion-icon>
                     </button>
             </div>
@@ -696,9 +724,25 @@
         `;
             }).join("");
 
-            container.innerHTML = itemsHtml;
+            container.innerHTML = tabsHtml + itemsHtml;
 
-            summaryContainer.innerHTML = `
+            if (window.cartTab === 'get_sample') {
+                summaryContainer.innerHTML = `
+                <div class="glass-panel p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 mt-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gold/[0.02] pointer-events-none"></div>
+                    <div>
+                        <p class="text-[10px] font-black text-white/60 uppercase tracking-[0.3em] mb-2">Request Samples</p>
+                        <p class="text-3xl md:text-4xl font-black gold-gradient-text tracking-tighter leading-none">${list.length} Items Selected</p>
+                    </div>
+                    <button onclick="openAddressModal()" 
+                        class="w-full md:w-auto h-20 bg-blue-600 px-6 rounded-[24px] text-white font-black uppercase text-sm tracking-[0.2em] hover:opacity-90 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
+                        <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
+                        Get Samples
+                    </button>
+                </div>
+                `;
+            } else {
+                summaryContainer.innerHTML = `
         <div class="glass-panel p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 mt-10 shadow-2xl relative overflow-hidden">
             <div class="absolute inset-0 bg-gold/[0.02] pointer-events-none"></div>
             <div>
@@ -713,11 +757,12 @@
         </div>
         <p class="text-center text-white/40 text-[9px] uppercase tracking-widest mt-6">Secure checkout provided by B-One Interior Design Team</p>
       `;
+            }
         }
 
-        function removeFromCart(id) {
+        function removeFromCart(id, cartType = 'products') {
             let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-            list = list.filter(i => i.id !== id);
+            list = list.filter(i => !(i.id === id && (i.cartType || 'products') === cartType));
             localStorage.setItem("inquiryList", JSON.stringify(list));
             loadCart();
             updateCartBadge();
@@ -736,13 +781,13 @@
             }
         }
 
-        function updateQty(id, change) {
+        function updateQty(id, change, cartType = 'products') {
             let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-            const item = list.find(i => i.id === id);
+            const item = list.find(i => i.id === id && (i.cartType || 'products') === cartType);
             if (item) {
                 item.quantity = (parseInt(item.quantity) || 1) + change;
                 if (item.quantity <= 0) {
-                    list = list.filter(i => i.id !== id);
+                    list = list.filter(i => !(i.id === id && (i.cartType || 'products') === cartType));
                 }
                 localStorage.setItem("inquiryList", JSON.stringify(list));
                 loadCart();
@@ -757,13 +802,13 @@
             // Optional: update subtotal in real-time if needed, but loadCart() is heavy
         }
 
-        function cartFinalizeQty(input, id) {
+        function cartFinalizeQty(input, id, cartType = 'products') {
             let value = parseInt(input.value, 10);
             if (isNaN(value) || value <= 0) value = 1;
             input.value = value;
 
             let list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
-            const item = list.find(i => i.id === id);
+            const item = list.find(i => i.id === id && (i.cartType || 'products') === cartType);
             if (item) {
                 item.quantity = value;
                 localStorage.setItem("inquiryList", JSON.stringify(list));
@@ -807,10 +852,11 @@
         });
 
         function sendWhatsappInquiry(addressData) {
-            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const allItems = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const list = allItems.filter(i => (i.cartType || 'products') === window.cartTab);
             if (list.length === 0) return alert("Your cart is empty.");
 
-            let message = "Hi, I am interested in the following products:\n\n";
+            let message = window.cartTab === 'get_sample' ? "Hi, I am interested in getting samples for the following products:\n\n" : "Hi, I am interested in the following products:\n\n";
             let grandTotal = 0;
 
             list.forEach((item, index) => {
@@ -824,12 +870,18 @@
                 const totalStr = symbol + total.toFixed(2);
 
                 message += `${index + 1}. *${item.name}*\n`;
-                message += `   Qty: ${qty}\n`;
-                message += `   Price: ${priceStr}\n`;
-                message += `   Total: ${totalStr}\n\n`;
+                if (window.cartTab !== 'get_sample') {
+                    message += `   Qty: ${qty}\n`;
+                    message += `   Price: ${priceStr}\n`;
+                    message += `   Total: ${totalStr}\n\n`;
+                } else {
+                    message += `\n`;
+                }
             });
 
-            message += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n\n`;
+            if (window.cartTab !== 'get_sample') {
+                message += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n\n`;
+            }
 
             if (addressData) {
                 message += `*Delivery Details:*\n`;
@@ -846,6 +898,7 @@
             const oldOrders = JSON.parse(localStorage.getItem("orderList") || "[]");
             const newOrderEntry = {
                 id: Date.now(),
+                orderType: window.cartTab,
                 date: new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' }),
                 items: list,
                 grandTotal: grandTotal.toFixed(2),
@@ -855,7 +908,8 @@
             oldOrders.unshift(newOrderEntry); // Most recent first
             localStorage.setItem("orderList", JSON.stringify(oldOrders));
 
-            localStorage.setItem("inquiryList", JSON.stringify([]));
+            const remainingItems = allItems.filter(i => (i.cartType || 'products') !== window.cartTab);
+            localStorage.setItem("inquiryList", JSON.stringify(remainingItems));
             loadCart();
             updateCartBadge();
             checkPreviousOrders();
@@ -864,10 +918,18 @@
         function showPreviousOrders() {
             const container = document.getElementById("cartItems");
             const summaryContainer = document.getElementById("cartSummary");
-            const orders = JSON.parse(localStorage.getItem("orderList") || "[]");
+            const allOrders = JSON.parse(localStorage.getItem("orderList") || "[]");
+            const orders = allOrders.filter(o => (o.orderType || 'products') === window.historyCartTab);
+
+            let tabsHtml = `
+            <div class="flex items-center gap-4 border-b border-white/10 mb-6">
+                <button onclick="setHistoryCartTab('products')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.historyCartTab === 'products' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Products</button>
+                <button onclick="setHistoryCartTab('get_sample')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.historyCartTab === 'get_sample' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Get Sample</button>
+            </div>
+            `;
 
             if (orders.length === 0) {
-                container.innerHTML = `<p class="text-white/80 text-center py-20 uppercase tracking-widest">No previous orders found.</p>`;
+                container.innerHTML = tabsHtml + `<p class="text-white/80 text-center py-20 uppercase tracking-widest">No previous orders found in this tab.</p>`;
                 return;
             }
 
@@ -879,9 +941,9 @@
                 <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
                 <div class="flex-grow">
                     <p class="text-xs font-black uppercase text-white tracking-tight">${item.name}</p>
-                    <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest">${item.quantity} units</p>
+                    ${order.orderType === 'get_sample' ? '' : `<p class="text-[9px] font-bold text-white/60 uppercase tracking-widest">${item.quantity} units</p>`}
                 </div>
-                <p class="text-xs font-black gold-gradient-text">${item.currency === 'INR' ? '₹' : ''}${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
+                ${order.orderType === 'get_sample' ? '' : `<p class="text-xs font-black gold-gradient-text">${item.currency === 'INR' ? '₹' : ''}${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>`}
             </div>
         `).join("");
 
@@ -898,10 +960,12 @@
                     <p class="text-sm font-black text-white uppercase">${order.date}</p>
                 </div>
                 </div>
+                ${order.orderType === 'get_sample' ? '' : `
                 <div class="text-right">
                     <p class="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] mb-1">Total</p>
                     <p class="text-xl font-black gold-gradient-text tracking-tighter">₹${order.grandTotal}</p>
                 </div>
+                `}
             </div>
             <div class="space-y-1">
                 ${itemsList}
@@ -915,6 +979,7 @@
             <h2 class="text-xl font-black gold-gradient-text uppercase tracking-widest">Inquiry History</h2>
             <button onclick="loadCart()" class="text-[10px] font-black uppercase tracking-widest bg-gold/10 text-gold border border-gold/20 px-6 py-2 rounded-xl hover:bg-gold hover:text-gold-500 transition">Back to Cart</button>
         </div>
+        ${tabsHtml}
         ${ordersHtml}
       `;
         }

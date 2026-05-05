@@ -2133,7 +2133,8 @@
         function renderCartAction() {
             const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
             const cart = getCart();
-            const inCart = cart.find(i => i.id === activeId);
+            const inCart = cart.find(i => i.id === activeId && (i.cartType || 'products') === 'products');
+            const inCartSample = cart.find(i => i.id === activeId && i.cartType === 'get_sample');
 
             const html = inCart ? `
                 <div class="flex flex-col gap-4">
@@ -2173,13 +2174,20 @@
                         
                         ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
                         <div class="grid grid-cols-2 gap-2">
-                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? `
+                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
+                        (inCartSample ? `
+                            <button type="button" 
+                                class="w-full h-14 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl flex flex-col items-center justify-center leading-none">
+                                <ion-icon name="checkmark-circle" class="text-xl mb-1"></ion-icon>
+                                <span>Added to Sample</span>
+                            </button>
+                            ` : `
                             <button type="button" onclick="getSample()"
-                                class="w-full h-14 rounded-2xl border-2 border-blue-500 text-blue-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
+                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
                                 <ion-icon name="layers-outline" class="text-xl mb-1"></ion-icon>
                                 <span>Get Sample</span>
                             </button>
-                            ` : ''}
+                            `) : ''}
                             
                             ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
                             <button type="button" onclick="bookInstallation()"
@@ -2195,7 +2203,7 @@
             ` : `
                 <div class="flex flex-col gap-2 w-full">
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-[11px] uppercase tracking-[0.1em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <button type="button" onclick="addToCart()" class="flex gap-2 items-center w-full h-12 gold-gradient-bg rounded-2xl text-black font-black text-[10px] uppercase tracking-[0.1em] shadow-2xl hover:opacity-90 transition transform active:scale-95 flex items-center justify-center gap-2">
                             Add to Cart
                            <svg xmlns="http://www.w3.org/2000/svg" 
                             width="20" 
@@ -2214,7 +2222,7 @@
                         </svg>
                         </button>
                         <button type="button" onclick="openProductBuyNowModal()"
-                            class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <ion-icon name="flash-outline" class="text-xl"></ion-icon>
                             Buy Now
                         </button>
@@ -2222,17 +2230,24 @@
                     
                     ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
                     <div class="grid grid-cols-2 gap-2">
-                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? `
+                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
+                    (inCartSample ? `
+                        <button type="button" 
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl flex items-center justify-center gap-2">
+                            <ion-icon name="checkmark-circle" class="text-lg"></ion-icon>
+                            Added to Sample
+                        </button>
+                        ` : `
                         <button type="button" onclick="getSample()"
-                            class="w-full h-12 rounded-2xl border-2 border-blue-500 text-blue-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <ion-icon name="layers-outline" class="text-lg"></ion-icon>
                             Get Sample
                         </button>
-                        ` : ''}
+                        `) : ''}
                         
                         ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
                         <button type="button" onclick="bookInstallation()"
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
                             <ion-icon name="construct-outline" class="text-lg"></ion-icon>
                             Book Installation
                         </button>
@@ -2257,20 +2272,33 @@
             window.location.href = `help.html?openExperts=true&category=${encodeURIComponent(cat)}`;
         }
 
-        function getSample() {
-            if (!currentProduct) return;
-            const message = `Hi B-One Team, I am interested in getting a sample for the product: ${currentProduct.name} (ID: ${currentProduct.id}). Could you please share the details?`;
-            const whatsappUrl = `https://wa.me/+917738130131?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+        function showCustomToast(msg) {
+            let toast = document.getElementById('customOverlayToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customOverlayToast';
+                toast.className = 'fixed bottom-28 left-1/2 -translate-x-1/2 z-[120] px-6 py-3 rounded-2xl bg-gold text-black font-black text-sm uppercase tracking-widest shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = msg;
+            toast.classList.remove('opacity-0');
+            clearTimeout(window._customToastTimer);
+            window._customToastTimer = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2800);
         }
 
-        function updateQty(id, change) {
+        function getSample() {
+            addToCart('get_sample');
+        }
+
+        function updateQty(id, change, cartType = 'products') {
             let cart = getCart();
-            const item = cart.find(i => i.id === id);
+            const item = cart.find(i => i.id === id && (i.cartType || 'products') === cartType);
             if (item) {
                 item.quantity = (parseInt(item.quantity) || 1) + change;
                 if (item.quantity <= 0) {
-                    cart = cart.filter(i => i.id !== id);
+                    cart = cart.filter(i => !(i.id === id && (i.cartType || 'products') === cartType));
                 }
                 saveCart(cart);
                 renderCartAction();
@@ -2285,13 +2313,13 @@
             input.value = value;
         };
 
-        window.finalizeQuantity = function (input, id) {
+        window.finalizeQuantity = function (input, id, cartType = 'products') {
             let value = parseInt(input.value, 10);
             if (isNaN(value) || value <= 0) value = 1;
             input.value = value;
 
             let cart = getCart();
-            const item = cart.find(i => i.id === id);
+            const item = cart.find(i => i.id === id && (i.cartType || 'products') === cartType);
             if (item) {
                 item.quantity = value;
                 saveCart(cart);
@@ -2311,8 +2339,19 @@
             }
         };
 
-        window.addToCart = function () {
+        window.addToCart = function (forcedType) {
+            const cartType = typeof forcedType === 'string' ? forcedType : 'products';
             const cart = getCart();
+
+            if (cartType === 'get_sample') {
+                const sampleCount = cart.filter(i => i.cartType === 'get_sample').reduce((acc, item) => acc + (parseInt(item.quantity, 10) || 1), 0);
+                if (sampleCount >= 5) {
+                    if (typeof showCustomToast === 'function') {
+                        showCustomToast("Cannot add more than 5 products in get sample");
+                    }
+                    return;
+                }
+            }
 
             let id, name, image, priceVal, currency;
 
@@ -2374,7 +2413,7 @@
                 }
             }
 
-            const inCart = cart.find(item => item.id === id);
+            const inCart = cart.find(item => item.id === id && (item.cartType || 'products') === cartType);
 
             if (!inCart) {
                 const newItem = {
@@ -2382,6 +2421,7 @@
                     name: name,
                     category: currentProduct.category?.name || '',
                     type: currentProduct.productType?.name || '',
+                    cartType: cartType,
                     image: image,
                     price: priceVal,
                     currency: currency,
@@ -2397,7 +2437,7 @@
                 }
             } else {
                 // Already in cart, just update qty or show message
-                updateQty(id, 1);
+                updateQty(id, 1, cartType);
             }
         };
 
@@ -2405,7 +2445,7 @@
             if (!currentProduct) return 1;
             const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
             const cart = getCart();
-            const line = cart.find(i => i.id === activeId);
+            const line = cart.find(i => i.id === activeId && (i.cartType || 'products') === 'products');
             return line ? Math.max(1, parseInt(line.quantity, 10) || 1) : 1;
         }
 
