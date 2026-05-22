@@ -1267,6 +1267,7 @@
 
         let shopAllCategories = [];
         let shopSubCategories = [];
+        let shopCategoryChildrenMap = {};
         let shopAllProducts = [];
         let bestSellerProductIds = new Set();
         let selectedShopParentCategory = "all";
@@ -1815,15 +1816,7 @@
             shopLoadingMore = true;
             updateShopPaginationLoader();
 
-            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
-            let categoryIds = [];
-            if (selectedShopParentCategory !== "all") {
-                if (activeSub !== "all") {
-                    categoryIds = [activeSub];
-                } else {
-                    categoryIds = [selectedShopParentCategory];
-                }
-            }
+            const categoryIds = getShopProductCategoryIds();
 
             try {
                 const res = await fetch(SHOP_API_URL, {
@@ -1859,7 +1852,6 @@
         }
 
         function appendShopProducts(newProducts) {
-            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
             const searchQuery = getShopSearchQuery();
             const applyPrice = selectedShopParentCategory !== "all";
             const minPrice = applyPrice ? (parseFloat(document.getElementById("minPriceInput").value) || 0) : 0;
@@ -1912,9 +1904,23 @@
             return active?.dataset.subcategory || "all";
         }
 
+        function getShopProductCategoryIds() {
+            if (selectedShopParentCategory === "all") return [];
+            const activeSub = getActiveShopSubcategory();
+            if (activeSub !== "all") return [activeSub];
+            const childIds = shopSubCategories.map(s => s.id);
+            return childIds.length > 0
+                ? [selectedShopParentCategory, ...childIds]
+                : [selectedShopParentCategory];
+        }
+
         async function fetchShopSubcategories(parentId) {
             if (!parentId || parentId === "all") {
                 shopSubCategories = [];
+                return;
+            }
+            if (shopCategoryChildrenMap[parentId]?.length) {
+                shopSubCategories = shopCategoryChildrenMap[parentId];
                 return;
             }
             const query = `
@@ -1945,6 +1951,7 @@
                     return;
                 }
                 shopSubCategories = (json.data?.category?.children?.edges || []).map(e => e.node);
+                shopCategoryChildrenMap[parentId] = shopSubCategories;
             } catch (err) {
                 console.error("Shop subcategory fetch error:", err);
                 shopSubCategories = [];
@@ -1960,6 +1967,15 @@
                             id
                             name
                             backgroundImage { url }
+                            children(first: 100) {
+                                edges {
+                                    node {
+                                        id
+                                        name
+                                        parent { id name }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1975,7 +1991,16 @@
                 const json = await res.json();
                 const data = json.data;
 
-                shopAllCategories = data.categories.edges.map(e => e.node);
+                shopCategoryChildrenMap = {};
+                shopAllCategories = data.categories.edges.map(e => {
+                    const node = e.node;
+                    shopCategoryChildrenMap[node.id] = (node.children?.edges || []).map(c => c.node);
+                    return {
+                        id: node.id,
+                        name: node.name,
+                        backgroundImage: node.backgroundImage
+                    };
+                });
 
                 const savedParent = sessionStorage.getItem('shopCategory');
                 if (savedParent) {
@@ -2090,7 +2115,7 @@
             }
 
             container.innerHTML = `
-                <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10 active-sub" data-subcategory="all">
+                <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10" data-subcategory="all">
                     ALL
                 </button>
                 ${subs.map(s => `
@@ -2101,9 +2126,12 @@
             `;
 
             container.classList.remove("hidden");
+            const defaultSubBtn = container.querySelector('.shop-sub-filter[data-subcategory="all"]');
+            if (defaultSubBtn) defaultSubBtn.classList.add('gold-gradient-bg', 'text-black');
+
             container.querySelectorAll('.shop-sub-filter').forEach(btn => {
                 btn.onclick = async () => {
-                    const currentSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory;
+                    const currentSub = getActiveShopSubcategory();
                     const newSub = btn.dataset.subcategory;
                     if (currentSub !== newSub) {
                         sessionStorage.setItem('shopSubCategory', newSub);
@@ -2127,7 +2155,6 @@
         }
 
         function applyShopFilters() {
-            const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
             const searchQuery = getShopSearchQuery();
             const applyPrice = selectedShopParentCategory !== "all";
             const minPrice = applyPrice ? (parseFloat(document.getElementById("minPriceInput").value) || 0) : 0;
@@ -2693,6 +2720,7 @@
                         }
                         shopAllProducts = state.shopAllProducts;
                         shopAllCategories = state.shopAllCategories || [];
+                        shopCategoryChildrenMap = state.shopCategoryChildrenMap || {};
                         shopEndCursor = state.shopEndCursor || null;
                         shopHasNextPage = state.shopHasNextPage !== false;
                         selectedShopParentCategory = state.selectedShopParentCategory || "all";
@@ -2747,10 +2775,11 @@
         window.addEventListener('pagehide', () => {
             if (shopAllProducts && shopAllProducts.length > 0) {
                 try {
-                    const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
+                    const activeSub = getActiveShopSubcategory();
                     const state = {
                         shopAllProducts,
                         shopAllCategories,
+                        shopCategoryChildrenMap,
                         shopEndCursor,
                         shopHasNextPage,
                         selectedShopParentCategory,
