@@ -245,7 +245,7 @@
                     </a>
                 </li>
 
-                <li><!-- Center Logo Spacer --></li>
+                <li class="mt-7"> Home<!-- Center Logo Spacer --></li>
 
                 <li>
                     <a href="https://b-oneinterior.com/catalogue"
@@ -633,8 +633,8 @@
             const isSample = window.cartTab === 'get_sample';
             const tabsHtml = `
             <div class="flex items-center gap-4 border-b border-white/10 mb-6">
-                <button onclick="setCartTab('products')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.cartTab === 'products' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Products</button>
-                <button onclick="setCartTab('get_sample')" class="px-4 py-2 font-black uppercase tracking-widest text-[10px] ${window.cartTab === 'get_sample' ? 'text-gold border-b-2 border-gold' : 'text-white/50 border-b-2 border-transparent hover:text-white transition'}">Get Sample</button>
+                <button onclick="setCartTab('products')" class="px-4 py-2 font-black uppercase tracking-widest text-[12px] ${window.cartTab === 'products' ? 'text-gold-500 border-b-2 border-gold-500' : 'text-white-500 border-b-2 border-transparent hover:text-white transition'}">Products</button>
+                <button onclick="setCartTab('get_sample')" class="px-4 py-2 font-black uppercase tracking-widest text-[12px] ${window.cartTab === 'get_sample' ? 'text-gold-500 border-b-2 border-gold-500' : 'text-white-500 border-b-2 border-transparent hover:text-white transition'}">Get Sample</button>
             </div>
             `;
 

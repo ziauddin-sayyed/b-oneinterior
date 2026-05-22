@@ -261,7 +261,7 @@
                     </a>
                 </li>
 
-                <li><!-- Center Logo Spacer --></li>
+                <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home<!-- Center Logo Spacer --></li>
 
                 <li>
                     <a href="https://b-oneinterior.com/catalogue"
@@ -881,9 +881,9 @@
                                 class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
                             </div>
                         </div>
-                        <!-- Price Filter -->
-                        <div
-                            class="flex items-center justify-between gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
+                        <!-- Price Filter (hidden when category is All) -->
+                        <div id="shopPriceFilter"
+                            class="hidden flex items-center justify-between gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-gold-500/10 flex-shrink-0">
                             <div class="flex items-center gap-2">
                                 <span
                                     class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">₹</span>
@@ -1266,6 +1266,7 @@
         const SHOP_SEARCH_LIMIT = 10;
 
         let shopAllCategories = [];
+        let shopSubCategories = [];
         let shopAllProducts = [];
         let bestSellerProductIds = new Set();
         let selectedShopParentCategory = "all";
@@ -1860,22 +1861,25 @@
         function appendShopProducts(newProducts) {
             const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
             const searchQuery = getShopSearchQuery();
-            const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
-            const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
+            const applyPrice = selectedShopParentCategory !== "all";
+            const minPrice = applyPrice ? (parseFloat(document.getElementById("minPriceInput").value) || 0) : 0;
+            const maxPrice = applyPrice ? (parseFloat(document.getElementById("maxPriceInput").value) || Infinity) : Infinity;
 
             let filtered = newProducts;
 
-            filtered = filtered.filter(p => {
-                let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
-                if (price === 0 && p.attributes) {
-                    const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
-                    if (pa && pa.values.length > 0) {
-                        const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
-                        if (!isNaN(parsed)) price = parsed;
+            if (applyPrice) {
+                filtered = filtered.filter(p => {
+                    let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
+                    if (price === 0 && p.attributes) {
+                        const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
+                        if (pa && pa.values.length > 0) {
+                            const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
+                            if (!isNaN(parsed)) price = parsed;
+                        }
                     }
-                }
-                return price >= minPrice && price <= maxPrice;
-            });
+                    return price >= minPrice && price <= maxPrice;
+                });
+            }
 
             const itemsToAppend = searchQuery ? getShopSearchDisplayItems(filtered, searchQuery) : filtered;
 
@@ -1903,16 +1907,59 @@
             }
         }
 
+        function getActiveShopSubcategory() {
+            const active = document.querySelector(".shop-sub-filter.gold-gradient-bg");
+            return active?.dataset.subcategory || "all";
+        }
+
+        async function fetchShopSubcategories(parentId) {
+            if (!parentId || parentId === "all") {
+                shopSubCategories = [];
+                return;
+            }
+            const query = `
+            query {
+                category(id: "${parentId}") {
+                    children(first: 100) {
+                        edges {
+                            node {
+                                id
+                                name
+                                parent { id name }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+            try {
+                const res = await fetch(SHOP_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                if (json.errors) {
+                    console.error("Shop subcategory GraphQL errors:", json.errors);
+                    shopSubCategories = [];
+                    return;
+                }
+                shopSubCategories = (json.data?.category?.children?.edges || []).map(e => e.node);
+            } catch (err) {
+                console.error("Shop subcategory fetch error:", err);
+                shopSubCategories = [];
+            }
+        }
+
         async function fetchShopData() {
             const query = `
             query {
-                categories(first: 100) {
+                categories(level: 0, first: 100) {
                     edges {
                         node {
                             id
                             name
                             backgroundImage { url }
-                            parent { id name }
                         }
                     }
                 }
@@ -1939,6 +1986,7 @@
 
                 if (selectedShopParentCategory !== "all") {
                     document.getElementById("shopSubcategoryFilter").classList.remove("hidden");
+                    await fetchShopSubcategories(selectedShopParentCategory);
                     renderShopSubcategoryFilters(selectedShopParentCategory);
                     const savedSub = sessionStorage.getItem('shopSubCategory');
                     if (savedSub && savedSub !== "all") {
@@ -1958,8 +2006,21 @@
             }
         }
 
+        function updateShopPriceFilterVisibility() {
+            const priceFilter = document.getElementById("shopPriceFilter");
+            if (!priceFilter) return;
+            const showPrice = selectedShopParentCategory !== "all";
+            priceFilter.classList.toggle("hidden", !showPrice);
+            if (!showPrice) {
+                const minEl = document.getElementById("minPriceInput");
+                const maxEl = document.getElementById("maxPriceInput");
+                if (minEl) minEl.value = "";
+                if (maxEl) maxEl.value = "";
+            }
+        }
+
         function renderShopCategoryFilters() {
-            const parents = shopAllCategories.filter(c => !c.parent && !SHOP_HIDDEN_CATEGORIES.includes(c.name));
+            const parents = shopAllCategories.filter(c => !SHOP_HIDDEN_CATEGORIES.includes(c.name));
             const container = document.getElementById("shopCategoryFilter");
 
             container.innerHTML = `
@@ -1992,9 +2053,11 @@
                         sessionStorage.removeItem('shopSubCategory');
                         renderShopCategoryFilters(); // Refresh active state
                         if (selectedShopParentCategory === "all") {
+                            shopSubCategories = [];
                             document.getElementById("shopSubcategoryFilter").classList.add("hidden");
                             document.querySelector(".shop-sub-filter.gold-gradient-bg")?.classList.remove('gold-gradient-bg');
                         } else {
+                            await fetchShopSubcategories(selectedShopParentCategory);
                             renderShopSubcategoryFilters(selectedShopParentCategory);
                         }
 
@@ -2008,14 +2071,17 @@
                         const mb = document.getElementById("shopMobileProductListBottom");
                         if (mb) mb.innerHTML = '';
                         await loadMoreShopProducts();
+                        updateShopPriceFilterVisibility();
                         applyShopFilters();
                     }
                 };
             });
+
+            updateShopPriceFilterVisibility();
         }
 
         function renderShopSubcategoryFilters(parentId) {
-            const subs = shopAllCategories.filter(c => c.parent?.id === parentId);
+            const subs = shopSubCategories;
             const container = document.getElementById("shopSubcategoryFilter");
 
             if (subs.length === 0) {
@@ -2063,28 +2129,32 @@
         function applyShopFilters() {
             const activeSub = document.querySelector(".shop-sub-filter.gold-gradient-bg")?.dataset.subcategory || "all";
             const searchQuery = getShopSearchQuery();
-            const minPrice = parseFloat(document.getElementById("minPriceInput").value) || 0;
-            const maxPrice = parseFloat(document.getElementById("maxPriceInput").value) || Infinity;
+            const applyPrice = selectedShopParentCategory !== "all";
+            const minPrice = applyPrice ? (parseFloat(document.getElementById("minPriceInput").value) || 0) : 0;
+            const maxPrice = applyPrice ? (parseFloat(document.getElementById("maxPriceInput").value) || Infinity) : Infinity;
 
             let filtered = shopAllProducts;
 
-            // Price filter
-            filtered = filtered.filter(p => {
-                let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
-                if (price === 0 && p.attributes) {
-                    const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
-                    if (pa && pa.values.length > 0) {
-                        const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
-                        if (!isNaN(parsed)) price = parsed;
+            if (applyPrice) {
+                filtered = filtered.filter(p => {
+                    let price = p.pricing?.priceRange?.start?.gross?.amount || 0;
+                    if (price === 0 && p.attributes) {
+                        const pa = p.attributes.find(a => a.attribute.name === "Actual Price");
+                        if (pa && pa.values.length > 0) {
+                            const parsed = parseFloat(pa.values[0].name.replace(/[^0-9.]/g, ''));
+                            if (!isNaN(parsed)) price = parsed;
+                        }
                     }
-                }
-                return price >= minPrice && price <= maxPrice;
-            });
+                    return price >= minPrice && price <= maxPrice;
+                });
+            }
 
-            const searchable = shopSearchFilteredProducts().filter(p => {
-                const price = getSearchablePrice(p);
-                return price >= minPrice && price <= maxPrice;
-            });
+            const searchable = applyPrice
+                ? shopSearchFilteredProducts().filter(p => {
+                    const price = getSearchablePrice(p);
+                    return price >= minPrice && price <= maxPrice;
+                })
+                : shopSearchFilteredProducts();
             const displayItems = searchQuery ? getShopSearchDisplayItems(searchable, searchQuery) : filtered;
 
             renderShopSearchDropdown(searchQuery);
@@ -2631,16 +2701,20 @@
 
                         if (selectedShopParentCategory !== "all") {
                             document.getElementById("shopSubcategoryFilter").classList.remove("hidden");
-                            renderShopSubcategoryFilters(selectedShopParentCategory);
-                            const savedSub = state.activeSubcategory;
-                            if (savedSub && savedSub !== "all") {
-                                const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
-                                if (subBtn) {
-                                    document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
-                                    subBtn.classList.add('gold-gradient-bg', 'text-black');
+                            fetchShopSubcategories(selectedShopParentCategory).then(() => {
+                                renderShopSubcategoryFilters(selectedShopParentCategory);
+                                const savedSub = state.activeSubcategory;
+                                if (savedSub && savedSub !== "all") {
+                                    const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
+                                    if (subBtn) {
+                                        document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
+                                        subBtn.classList.add('gold-gradient-bg', 'text-black');
+                                    }
                                 }
-                            }
+                            });
                         }
+
+                        updateShopPriceFilterVisibility();
 
                         // Delay rendering slightly to ensure DOM state is consistent
                         setTimeout(() => {

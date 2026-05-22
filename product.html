@@ -154,6 +154,32 @@
             width: 10px !important;
         }
 
+        .product-image-carousel img,
+        #imageContainer>img,
+        #imageContainerMobile>img {
+            cursor: zoom-in;
+        }
+
+        #productImageViewerWrap {
+            touch-action: none;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #productImageViewerWrap::-webkit-scrollbar {
+            display: none;
+        }
+
+        #productImageViewerImg {
+            transform-origin: center center;
+            transition: transform 0.15s ease-out;
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
         .syncopate {
             font-family: 'Syncopate', sans-serif;
             text-transform: uppercase;
@@ -395,7 +421,7 @@
                     </a>
                 </li>
 
-                <li><!-- Center Logo Spacer --></li>
+                <li class="mt-7"> Home<!-- Center Logo Spacer --></li>
 
                 <li>
                     <a href="https://b-oneinterior.com/catalogue"
@@ -754,6 +780,45 @@
         </div>
     </div>
 
+    <!-- Product Image Fullscreen Viewer -->
+    <div id="productImageModal"
+        class="hide-scrollbar fixed inset-0 z-[105] hidden flex items-center justify-center bg-black/95 backdrop-blur-sm overflow-hidden">
+        <div class="absolute inset-0" onclick="closeProductImageViewer()" aria-hidden="true"></div>
+
+        <div class="absolute top-6 right-6 flex flex-row items-center gap-2 z-[200]">
+            <!-- <button type="button" onclick="updateProductImageZoom(0.25)" title="Zoom In"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="add-outline" class="text-xl"></ion-icon>
+            </button>
+            <button type="button" onclick="updateProductImageZoom(-0.25)" title="Zoom Out"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="remove-outline" class="text-xl"></ion-icon>
+            </button>
+            <button type="button" onclick="resetProductImageZoom()" title="Reset Zoom"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="scan-outline" class="text-xl"></ion-icon>
+            </button> -->
+            <button type="button" onclick="closeProductImageViewer()" title="Close"
+                class="bg-red-600 text-white rounded-full p-2 shadow-lg hover:bg-red-700 transition transform hover:scale-110 flex items-center justify-center">
+                <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+            </button>
+        </div>
+
+        <button type="button" id="productImagePrevBtn" onclick="changeProductImage(-1)"
+            class="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-2 z-[200] transition transform hover:scale-110 hidden">
+            <ion-icon name="chevron-back-outline" class="text-2xl"></ion-icon>
+        </button>
+        <button type="button" id="productImageNextBtn" onclick="changeProductImage(1)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-2 z-[200] transition transform hover:scale-110 hidden">
+            <ion-icon name="chevron-forward-outline" class="text-2xl"></ion-icon>
+        </button>
+
+        <div id="productImageViewerWrap"
+            class="hide-scrollbar relative z-10 max-w-[95vw] max-h-[90vh] w-full h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing">
+            <img id="productImageViewerImg" src="" alt="" class="shadow-2xl rounded-lg">
+        </div>
+    </div>
+
 
     <script>
         const API_URL = "https://api.b-oneinterior.com/graphql/";
@@ -909,6 +974,189 @@
                 // Hide loader immediately if no carousel
                 setTimeout(() => spinner.classList.add("hidden"), 300);
             }
+        }
+
+        const productImageViewerState = {
+            images: [],
+            index: 0,
+            zoom: 1,
+            panBound: false
+        };
+
+        function getGalleryImagesFromContainer(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return [];
+            const seen = new Set();
+            const images = [];
+            container.querySelectorAll('img').forEach(img => {
+                if (!img.src || seen.has(img.src)) return;
+                seen.add(img.src);
+                images.push({ src: img.src, alt: img.alt || '' });
+            });
+            return images;
+        }
+
+        function applyProductImageZoom() {
+            const img = document.getElementById('productImageViewerImg');
+            const wrap = document.getElementById('productImageViewerWrap');
+            if (!img || !wrap) return;
+            img.style.transform = `scale(${productImageViewerState.zoom})`;
+            if (productImageViewerState.zoom > 1) {
+                wrap.classList.remove('overflow-hidden', 'items-center', 'justify-center');
+                wrap.classList.add('overflow-auto');
+            } else {
+                wrap.classList.add('overflow-hidden', 'items-center', 'justify-center');
+                wrap.classList.remove('overflow-auto');
+                wrap.scrollLeft = 0;
+                wrap.scrollTop = 0;
+            }
+        }
+
+        function updateProductImageNavButtons() {
+            const hasMany = productImageViewerState.images.length > 1;
+            const prevBtn = document.getElementById('productImagePrevBtn');
+            const nextBtn = document.getElementById('productImageNextBtn');
+            if (prevBtn) prevBtn.classList.toggle('hidden', !hasMany);
+            if (nextBtn) nextBtn.classList.toggle('hidden', !hasMany);
+        }
+
+        function showProductImageAtIndex(index) {
+            const { images } = productImageViewerState;
+            if (!images.length) return;
+            productImageViewerState.index = ((index % images.length) + images.length) % images.length;
+            const item = images[productImageViewerState.index];
+            const img = document.getElementById('productImageViewerImg');
+            if (img) {
+                img.src = item.src;
+                img.alt = item.alt;
+            }
+            productImageViewerState.zoom = 1;
+            applyProductImageZoom();
+        }
+
+        function bindProductImageViewerPan() {
+            if (productImageViewerState.panBound) return;
+            const wrap = document.getElementById('productImageViewerWrap');
+            if (!wrap) return;
+            productImageViewerState.panBound = true;
+
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let scrollLeft = 0;
+            let scrollTop = 0;
+
+            wrap.addEventListener('mousedown', (e) => {
+                if (productImageViewerState.zoom <= 1) return;
+                isDragging = true;
+                wrap.classList.add('active');
+                startX = e.pageX - wrap.offsetLeft;
+                startY = e.pageY - wrap.offsetTop;
+                scrollLeft = wrap.scrollLeft;
+                scrollTop = wrap.scrollTop;
+            });
+
+            wrap.addEventListener('mouseleave', () => {
+                isDragging = false;
+                wrap.classList.remove('active');
+            });
+
+            wrap.addEventListener('mouseup', () => {
+                isDragging = false;
+                wrap.classList.remove('active');
+            });
+
+            wrap.addEventListener('mousemove', (e) => {
+                if (!isDragging || productImageViewerState.zoom <= 1) return;
+                e.preventDefault();
+                const x = e.pageX - wrap.offsetLeft;
+                const y = e.pageY - wrap.offsetTop;
+                wrap.scrollLeft = scrollLeft - (x - startX) * 2;
+                wrap.scrollTop = scrollTop - (y - startY) * 2;
+            });
+
+            wrap.addEventListener('wheel', (e) => {
+                if (!document.getElementById('productImageModal')?.classList.contains('hidden')) {
+                    e.preventDefault();
+                    updateProductImageZoom(e.deltaY < 0 ? 0.15 : -0.15);
+                }
+            }, { passive: false });
+        }
+
+        window.openProductImageViewer = function (clickedImg, containerId) {
+            const images = getGalleryImagesFromContainer(containerId);
+            if (!images.length && clickedImg?.src) {
+                images.push({ src: clickedImg.src, alt: clickedImg.alt || '' });
+            }
+            if (!images.length) return;
+
+            let index = images.findIndex(i => i.src === clickedImg?.src);
+            if (index < 0) index = 0;
+
+            productImageViewerState.images = images;
+            productImageViewerState.index = index;
+            productImageViewerState.zoom = 1;
+
+            const modal = document.getElementById('productImageModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            showProductImageAtIndex(index);
+            updateProductImageNavButtons();
+            bindProductImageViewerPan();
+        };
+
+        window.closeProductImageViewer = function () {
+            const modal = document.getElementById('productImageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            productImageViewerState.zoom = 1;
+            applyProductImageZoom();
+        };
+
+        window.updateProductImageZoom = function (delta) {
+            const newZoom = productImageViewerState.zoom + delta;
+            if (newZoom >= 0.5 && newZoom <= 4) {
+                productImageViewerState.zoom = newZoom;
+                applyProductImageZoom();
+            }
+        };
+
+        window.resetProductImageZoom = function () {
+            productImageViewerState.zoom = 1;
+            applyProductImageZoom();
+        };
+
+        window.changeProductImage = function (delta) {
+            if (productImageViewerState.images.length <= 1) return;
+            showProductImageAtIndex(productImageViewerState.index + delta);
+        };
+
+        function setupProductImageViewer() {
+            if (window._productImageViewerSetup) return;
+            window._productImageViewerSetup = true;
+
+            ['imageContainer', 'imageContainerMobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('click', (e) => {
+                    const img = e.target.closest('img');
+                    if (!img) return;
+                    openProductImageViewer(img, id);
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                const modal = document.getElementById('productImageModal');
+                if (!modal || modal.classList.contains('hidden')) return;
+                if (e.key === 'Escape') closeProductImageViewer();
+                else if (e.key === '+' || e.key === '=') updateProductImageZoom(0.25);
+                else if (e.key === '-') updateProductImageZoom(-0.25);
+                else if (e.key === 'ArrowLeft') changeProductImage(-1);
+                else if (e.key === 'ArrowRight') changeProductImage(1);
+            });
         }
 
         async function fetchProductDetails(id) {
@@ -3059,6 +3307,7 @@
         setupProductHeaderSearch();
         setupProductVoiceSearch();
         loadHeaderSearchProducts();
+        setupProductImageViewer();
         init();
 
     </script>
