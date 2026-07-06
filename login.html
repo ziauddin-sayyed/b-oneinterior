@@ -11,7 +11,6 @@
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
     <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
 
-    <!-- Tailwind CSS -->
     <script src="assets/js/tailwind.min.js"></script>
     <script src="assets/js/jquery.min.js"></script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
@@ -70,6 +69,18 @@
             transform: none;
         }
 
+        .login-btn-outline {
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: #D4AF37;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #D4AF37;
+        }
+
         .error-message {
             background: rgba(220, 38, 38, 0.1);
             border: 1px solid rgba(220, 38, 38, 0.3);
@@ -88,10 +99,71 @@
             from {
                 transform: rotate(0deg);
             }
-
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            outline: none;
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .phone-input-wrapper:focus-within {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .phone-input-wrapper .country-code {
+            padding: 0.75rem 0.5rem 0.75rem 1rem;
+            color: #D4AF37;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .phone-input-wrapper input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .phone-input-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -102,13 +174,9 @@
     <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
             <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
-
             <ul class="hidden md:flex space-x-6 text-gray-300">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/shop" class="hover:text-gold-500 transition">Shop</a></li> -->
-                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
                 <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
                 <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/cart" class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
@@ -124,12 +192,7 @@
         <div id="drawer">
             <ul>
                 <li><a href="https://b-oneinterior.com">Home</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
-                <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
                 <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
-
-                
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
                 <li><a href="terms.html">Terms and Conditions</a></li>
                 <li><a href="privacy.html">Privacy Policy</a></li>
@@ -142,11 +205,11 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li>
-                    <a href="https://b-oneinterior.com/help"
+                    <a href="https://b-oneinterior.com/help">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor" stroke-width="2"/>
                             <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
-                          </svg>
+                        </svg>
                         <div class="text-[12px] tracking-tighter">Help</div>
                     </a>
                 </li>
@@ -155,18 +218,14 @@
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                            </path>
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
                         <div class="text-[12px] tracking-tighter">Wishlist</div>
                         <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
                     </a>
                 </li>
-
-                <li class="mt-7"> Home<!-- Center Logo Spacer --></li>
-
+                <li class="mt-7"> Home</li>
                 <li>
                     <a href="https://b-oneinterior.com/catalogue"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
@@ -180,7 +239,6 @@
                         <div class="text-[12px] tracking-tighter">Catalogue</div>
                     </a>
                 </li>
-
                 <li class="relative">
                     <a href="https://b-oneinterior.com/cart" class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -213,7 +271,6 @@
                 overlay.style.pointerEvents = "auto";
             }
         }
-
         const overlay = document.querySelector(".overlay");
         overlay.addEventListener("click", () => {
             const drawer = document.getElementById("drawer");
@@ -230,7 +287,7 @@
             <div class="text-center mb-8">
                 <img src="logo.png" alt="B-One Interior" class="h-20 mx-auto mb-4">
                 <h1 class="text-2xl font-bold text-white">Contractor Login</h1>
-                <p class="text-gray-400 mt-2">Sign in to your account</p>
+                <p class="text-gray-400 mt-2">Sign in with your mobile number</p>
             </div>
 
             <!-- Error Message -->
@@ -242,43 +299,62 @@
                 class="hidden success-message text-green-400 p-4 rounded-lg mb-6 text-sm text-center">
             </div>
 
-            <!-- Login Form -->
-            <form id="loginForm" class="space-y-6">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-                    <input type="email" id="email" name="email" required
-                        class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-500"
-                        placeholder="Enter your email">
+            <!-- Step 1: Phone Number -->
+            <div id="stepPhone">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Mobile Number</label>
+                <div class="phone-input-wrapper">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="phoneInput" maxlength="10" placeholder="Enter 10-digit mobile number"
+                        autocomplete="tel">
                 </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                    <div class="relative">
-                        <input type="password" id="password" name="password" required
-                            class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 pr-12"
-                            placeholder="Enter your password">
-                        <button type="button" onclick="togglePassword()"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gold-500 transition">
-                            <ion-icon name="eye-outline" id="eyeIcon" class="text-xl"></ion-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" id="loginBtn"
-                    class="login-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
-                    <span id="btnText">Sign In</span>
-                    <div id="btnSpinner" class="hidden">
+                <button type="button" id="sendOtpBtn"
+                    class="login-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2 mt-6">
+                    <span id="sendOtpText">Send OTP</span>
+                    <div id="sendOtpSpinner" class="hidden">
                         <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
                 </button>
-            </form>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="stepOtp" class="hidden">
+                <p class="text-sm text-gray-400 mb-2">Enter the OTP sent to <span id="displayPhone" class="text-gold-500 font-bold"></span></p>
+                <div class="flex justify-center gap-3 mb-6">
+                    <input type="text" maxlength="1" class="otp-input" data-index="0">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                <button type="button" id="verifyOtpBtn"
+                    class="login-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
+                    <span id="verifyOtpText">Verify OTP</span>
+                    <div id="verifyOtpSpinner" class="hidden">
+                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
+                <div class="flex items-center justify-between mt-4">
+                    <button type="button" id="changePhoneBtn"
+                        class="login-btn-outline px-4 py-2 rounded-lg text-sm font-medium">
+                        ← Change Number
+                    </button>
+                    <button type="button" id="resendOtpBtn"
+                        class="login-btn-outline px-4 py-2 rounded-lg text-sm font-medium resend-btn" disabled>
+                        Resend OTP (<span id="resendTimer">30</span>s)
+                    </button>
+                </div>
+            </div>
 
             <!-- Footer Links -->
             <div class="mt-8 text-center text-sm text-gray-400">
@@ -295,187 +371,376 @@
     </footer>
 
     <script>
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
-
-        // Toggle password visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.setAttribute('name', 'eye-off-outline');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.setAttribute('name', 'eye-outline');
-            }
-        }
-
-        // Show error message
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
-        }
-
-        // Show success message
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.remove('hidden');
-            document.getElementById('errorMessage').classList.add('hidden');
-        }
-
-        // Set loading state
-        function setLoading(isLoading) {
-            const btn = document.getElementById('loginBtn');
-            const btnText = document.getElementById('btnText');
-            const btnSpinner = document.getElementById('btnSpinner');
-
-            btn.disabled = isLoading;
-            if (isLoading) {
-                btnText.textContent = 'Signing In...';
-                btnSpinner.classList.remove('hidden');
-            } else {
-                btnText.textContent = 'Sign In';
-                btnSpinner.classList.add('hidden');
-            }
-        }
-
-        // Login function
-        async function login(email, password) {
-            const mutation = `
-                mutation TokenCreate($email: String!, $password: String!) {
-                    tokenCreate(email: $email, password: $password) {
-                        token
-                        refreshToken
-                        csrfToken
-                        errors {
-                            field
-                            message
-                        }
-                        user {
-                            email
-                            firstName
-                            lastName
-                            isStaff
-                        }
-                    }
+        // ─── MSG91 SDK Load & Init ────────────────────────────────
+        (function() {
+            window.msg91Config = {
+                widgetId: "3666416d5868313933373531",
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                exposeMethods: true,
+                success: function(data) {
+                    console.log('MSG91 client success callback', data);
+                },
+                failure: function(error) {
+                    console.log('MSG91 client failure callback', error);
                 }
-            `;
+            };
 
+            function initMsg91() {
+                if (typeof window.initSendOTP === 'function') {
+                    try {
+                        window.initSendOTP(window.msg91Config);
+                        console.log('MSG91 widget initialized');
+                    } catch (err) {
+                        console.error('Error during initSendOTP:', err);
+                    }
+                } else {
+                    console.warn('initSendOTP not ready yet, retrying...');
+                    setTimeout(initMsg91, 500);
+                }
+            }
+
+            if (typeof window.initSendOTP === 'function') {
+                initMsg91();
+            } else {
+                var script = document.createElement('script');
+                script.src = 'https://verify.msg91.com/otp-provider.js';
+                script.async = true;
+                script.onload = initMsg91;
+                script.onerror = function() {
+                    console.error('Failed to load MSG91 SDK');
+                };
+                document.body.appendChild(script);
+            }
+        })();
+
+        // ─── Configuration ─────────────────────────────────────────
+        const DJANGO_API_URL = 'http://localhost:8000/api/verify-access-token/';
+
+        let verifiedMobile = '';
+        let resendCooldown = 30;
+        let resendTimer = null;
+
+        // ─── DOM refs ──────────────────────────────────────────────
+        const stepPhone = document.getElementById('stepPhone');
+        const stepOtp = document.getElementById('stepOtp');
+        const phoneInput = document.getElementById('phoneInput');
+        const displayPhone = document.getElementById('displayPhone');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const sendOtpText = document.getElementById('sendOtpText');
+        const sendOtpSpinner = document.getElementById('sendOtpSpinner');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const verifyOtpText = document.getElementById('verifyOtpText');
+        const verifyOtpSpinner = document.getElementById('verifyOtpSpinner');
+        const changePhoneBtn = document.getElementById('changePhoneBtn');
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        const resendTimerEl = document.getElementById('resendTimer');
+        const errorEl = document.getElementById('errorMessage');
+        const successEl = document.getElementById('successMessage');
+        const otpInputs = document.querySelectorAll('.otp-input');
+
+        // ─── Helpers ───────────────────────────────────────────────
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+            successEl.classList.add('hidden');
+        }
+
+        function showSuccess(msg) {
+            successEl.textContent = msg;
+            successEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+        }
+
+        function hideMessages() {
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+        }
+
+        function setSendOtpLoading(loading) {
+            sendOtpBtn.disabled = loading;
+            sendOtpText.textContent = loading ? 'Sending OTP...' : 'Send OTP';
+            sendOtpSpinner.classList.toggle('hidden', !loading);
+        }
+
+        function setVerifyOtpLoading(loading) {
+            verifyOtpBtn.disabled = loading;
+            verifyOtpText.textContent = loading ? 'Verifying OTP...' : 'Verify OTP';
+            verifyOtpSpinner.classList.toggle('hidden', !loading);
+        }
+
+        function startResendTimer() {
+            resendCooldown = 30;
+            resendOtpBtn.disabled = true;
+            resendTimerEl.textContent = resendCooldown;
+            if (resendTimer) clearInterval(resendTimer);
+            resendTimer = setInterval(() => {
+                resendCooldown--;
+                resendTimerEl.textContent = resendCooldown;
+                if (resendCooldown <= 0) {
+                    clearInterval(resendTimer);
+                    resendTimer = null;
+                    resendOtpBtn.disabled = false;
+                    resendOtpBtn.innerHTML = 'Resend OTP';
+                }
+            }, 1000);
+        }
+
+        function getOtpValue() {
+            let val = '';
+            otpInputs.forEach(inp => val += inp.value);
+            return val;
+        }
+
+        function clearOtpInputs() {
+            otpInputs.forEach(inp => inp.value = '');
+            if (otpInputs[0]) otpInputs[0].focus();
+        }
+
+        // ─── Wait for MSG91 methods ──────────────────────────────
+        function waitForMsg91Method(methodName, callback, maxRetries) {
+            if (maxRetries === undefined) maxRetries = 20;
+            var attempts = 0;
+            var check = function() {
+                if (typeof window[methodName] === 'function') {
+                    callback(true);
+                } else if (attempts < maxRetries) {
+                    attempts++;
+                    setTimeout(check, 250);
+                } else {
+                    console.warn(methodName + ' not found after ' + maxRetries + ' tries');
+                    callback(false);
+                }
+            };
+            check();
+        }
+
+        // ─── Extract token from MSG91 verify response ─────────────
+        function extractMsg91Token(data) {
+            if (!data) return null;
+            if (typeof data === 'string') return data;
+            if (typeof data === 'object') {
+                return data.token || data.message || data['access-token'] || data.accessToken || (typeof data.data === 'string' ? data.data : null);
+            }
+            return null;
+        }
+
+        // ─── Send access token to Django backend ────────────────────
+        async function sendToDjango(accessToken, phone) {
             try {
-                const response = await fetch(API_URL, {
+                var res = await fetch(DJANGO_API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        query: mutation,
-                        variables: { email, password }
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accessToken: accessToken })
                 });
 
-                const result = await response.json();
-
-                if (result.errors) {
-                    throw new Error(result.errors[0].message);
+                if (!res.ok) {
+                    var errText = await res.text();
+                    throw new Error(errText || 'Authentication failed');
                 }
 
-                const { tokenCreate } = result.data;
+                var data = await res.json();
 
-                if (tokenCreate.errors && tokenCreate.errors.length > 0) {
-                    throw new Error(tokenCreate.errors[0].message);
-                }
+                localStorage.setItem('saleor_auth_token', data.token || data.access || '');
+                localStorage.setItem('saleor_refresh_token', data.refreshToken || data.refresh || '');
+                localStorage.setItem('saleor_csrf_token', data.csrfToken || '');
 
-                // Check if user is staff - REMOVED per user request
-                // if (tokenCreate.user && !tokenCreate.user.isStaff) {
-                //    throw new Error('Access denied. Only staff members can login here.');
-                // }
-
-                // Store tokens in localStorage
-                localStorage.setItem('saleor_auth_token', tokenCreate.token);
-                localStorage.setItem('saleor_refresh_token', tokenCreate.refreshToken);
-                localStorage.setItem('saleor_csrf_token', tokenCreate.csrfToken);
-
-                // Store user info
-                if (tokenCreate.user) {
-                    localStorage.setItem('saleor_user_email', tokenCreate.user.email);
+                if (data.user) {
+                    localStorage.setItem('saleor_user_email', data.user.email || '');
                     localStorage.setItem('saleor_user_name',
-                        (tokenCreate.user.firstName || '') + ' ' + (tokenCreate.user.lastName || '').trim() || tokenCreate.user.email
+                        (data.user.firstName || '') + ' ' + (data.user.lastName || '').trim() || data.user.email || ''
                     );
-                    localStorage.setItem('saleor_user_is_staff', tokenCreate.user.isStaff);
+                    localStorage.setItem('saleor_user_is_staff', data.user.isStaff || false);
                 }
 
-                return { success: true };
-            } catch (error) {
-                return { success: false, error: error.message };
+                showSuccess('Login successful! Redirecting...');
+                setTimeout(function() {
+                    window.location.href = 'https://b-oneinterior.com/';
+                }, 1500);
+
+            } catch (err) {
+                setVerifyOtpLoading(false);
+                showError(err.message || 'Authentication failed. Please try again.');
             }
         }
 
-        // Handle form submission
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // ─── OTP input auto‑advance ────────────────────────────────
+        otpInputs.forEach(function(inp, idx) {
+            inp.addEventListener('input', function() {
+                if (inp.value && idx < otpInputs.length - 1) {
+                    otpInputs[idx + 1].focus();
+                }
+            });
+            inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !inp.value && idx > 0) {
+                    otpInputs[idx - 1].focus();
+                }
+                if (e.key === 'Enter') {
+                    document.getElementById('verifyOtpBtn').click();
+                }
+            });
+        });
 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-
-            if (!email || !password) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            setLoading(true);
-            document.getElementById('errorMessage').classList.add('hidden');
-
-            const result = await login(email, password);
-
-            if (result.success) {
-                showSuccess('Login successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = 'https://b-oneinterior.com/';
-                }, 1500);
-            } else {
-                setLoading(false);
-                showError(result.error || 'Invalid email or password');
+        phoneInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('sendOtpBtn').click();
             }
         });
 
-        // Check if already logged in
-        function checkAuth() {
-            const token = localStorage.getItem('saleor_auth_token');
-            const userEmail = localStorage.getItem('saleor_user_email');
+        // ─── Step 1: Send OTP ──────────────────────────────────────
+        sendOtpBtn.addEventListener('click', function() {
+            var mobile = phoneInput.value.trim();
+            if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) {
+                showError('Please enter a valid 10-digit mobile number');
+                return;
+            }
 
-            // Update desktop nav
-            const desktopLink = document.getElementById('authLinkDesktop');
-            // Update drawer
-            const drawerLink = document.getElementById('authLinkDrawer');
+            hideMessages();
+            setSendOtpLoading(true);
+
+            waitForMsg91Method('sendOtp', function(ready) {
+                if (!ready) {
+                    showError('Verification service is initializing. Please try again in a moment.');
+                    setSendOtpLoading(false);
+                    return;
+                }
+
+                var phoneForMsg91 = '91' + mobile; // no + prefix
+
+                window.sendOtp(phoneForMsg91,
+                    function(data) {
+                        console.log('OTP sent successfully:', data);
+                        verifiedMobile = mobile;
+                        displayPhone.textContent = '+91 ' + mobile;
+                        stepPhone.classList.add('hidden');
+                        stepOtp.classList.remove('hidden');
+                        clearOtpInputs();
+                        startResendTimer();
+                        hideMessages();
+                        setSendOtpLoading(false);
+                    },
+                    function(errorData) {
+                        console.error('MSG91 sendOtp error:', errorData);
+                        showError(errorData?.message || 'Failed to send OTP. Please check your number.');
+                        setSendOtpLoading(false);
+                    }
+                );
+            });
+        });
+
+        // ─── Change phone number ──────────────────────────────────
+        changePhoneBtn.addEventListener('click', function() {
+            stepOtp.classList.add('hidden');
+            stepPhone.classList.remove('hidden');
+            if (resendTimer) {
+                clearInterval(resendTimer);
+                resendTimer = null;
+            }
+            hideMessages();
+        });
+
+        // ─── Resend OTP ────────────────────────────────────────────
+        resendOtpBtn.addEventListener('click', function() {
+            if (resendOtpBtn.disabled) return;
+            hideMessages();
+
+            waitForMsg91Method('retryOtp', function(ready) {
+                if (!ready) {
+                    showError('Verification service is not ready.');
+                    return;
+                }
+
+                setSendOtpLoading(true);
+                window.retryOtp('11',
+                    function(data) {
+                        console.log('OTP resent successfully:', data);
+                        startResendTimer();
+                        clearOtpInputs();
+                        setSendOtpLoading(false);
+                    },
+                    function(errorData) {
+                        console.error('MSG91 retryOtp error:', errorData);
+                        showError(errorData?.message || 'Failed to resend OTP.');
+                        setSendOtpLoading(false);
+                    }
+                );
+            });
+        });
+
+        // ─── Step 2: Verify OTP ────────────────────────────────────
+        verifyOtpBtn.addEventListener('click', function() {
+            var otp = getOtpValue();
+            if (otp.length !== 6) {
+                showError('Please enter the complete 6-digit OTP');
+                return;
+            }
+
+            hideMessages();
+            setVerifyOtpLoading(true);
+
+            waitForMsg91Method('verifyOtp', function(ready) {
+                if (!ready) {
+                    showError('Verification service is not ready. Please try again.');
+                    setVerifyOtpLoading(false);
+                    return;
+                }
+
+                var otpNum = parseInt(otp, 10);
+                if (isNaN(otpNum)) {
+                    showError('Please enter a valid numeric OTP.');
+                    setVerifyOtpLoading(false);
+                    return;
+                }
+
+                window.verifyOtp(otpNum,
+                    function(data) {
+                        console.log('OTP verified successfully, token data:', data);
+
+                        var token = extractMsg91Token(data);
+                        if (!token) {
+                            console.error('Failed to extract token from MSG91 response:', data);
+                            showError('Failed to process verification token from MSG91.');
+                            setVerifyOtpLoading(false);
+                            return;
+                        }
+
+                        var phoneWithPlus = '+91' + verifiedMobile;
+                        sendToDjango(token, phoneWithPlus);
+                    },
+                    function(errorData) {
+                        console.error('MSG91 verifyOtp error:', errorData);
+                        showError(errorData?.message || 'Invalid or expired OTP.');
+                        setVerifyOtpLoading(false);
+                    }
+                );
+            });
+        });
+
+        // ─── Auth UI (header) ──────────────────────────────────────
+        function checkAuth() {
+            var token = localStorage.getItem('saleor_auth_token');
+            var userEmail = localStorage.getItem('saleor_user_email');
+            var desktopLink = document.getElementById('authLinkDesktop');
+            var drawerLink = document.getElementById('authLinkDrawer');
 
             if (token && userEmail) {
-                // User is logged in - show signout
                 if (desktopLink) {
-                    desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition flex items-center gap-1">
-                        <ion-icon name="log-out-outline"></ion-icon> Sign Out
-                    </a>`;
+                    desktopLink.innerHTML = '<a href="#" onclick="signOut()" class="hover:text-gold-500 transition flex items-center gap-1">' +
+                        '<ion-icon name="log-out-outline"></ion-icon> Sign Out</a>';
                 }
                 if (drawerLink) {
-                    drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                    drawerLink.innerHTML = '<a href="#" onclick="signOut()">Sign Out (' + userEmail + ')</a>';
                 }
             } else {
-                // Not logged in - show login
                 if (desktopLink) {
-                    desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition flex items-center gap-1">
-                        <ion-icon name="person-outline"></ion-icon> Login
-                    </a>`;
+                    desktopLink.innerHTML = '<a href="login.html" class="hover:text-gold-500 transition flex items-center gap-1">' +
+                        '<ion-icon name="person-outline"></ion-icon> Login</a>';
                 }
                 if (drawerLink) {
-                    drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+                    drawerLink.innerHTML = '<a href="login.html">Login</a>';
                 }
             }
         }
 
-        // Sign out function
         function signOut() {
             localStorage.removeItem('saleor_auth_token');
             localStorage.removeItem('saleor_refresh_token');
@@ -485,7 +750,6 @@
             window.location.reload();
         }
 
-        // Run on page load
         document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>

@@ -393,7 +393,7 @@
       }`;
       const bestSellerQuery = `
       query {
-        collections(first: 30) {
+        collections(first: 30, channel: "in") {
           edges {
             node {
               name

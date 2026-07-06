@@ -187,6 +187,12 @@
         <!-- Mobile Top Bar (only visible on mobile) -->
         <div
             class="md:hidden flex items-center gap-3 fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
             <div id="wishlistMobileSearchWrap" class="relative flex-1 min-w-0">
                 <input type="text" id="wishlistSearchInputMobile" placeholder="Search wishlist..." autocomplete="off"
                     class="w-full pl-9 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
@@ -710,23 +716,10 @@
         </script>
     </header>
 
-    <!-- Fixed below top bar (mobile search bar / desktop header) -->
     <div id="wishlistTabsBar"
         class="hidden fixed left-0 right-0 z-[60] top-[59px] md:top-auto md:static bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/15 shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
         <div class="container mx-auto px-4 pt-2 pb-3 flex flex-col gap-3">
-            <div class="flex items-center justify-between">
-                <div class="flex gap-2 border-b border-gold-500/20 pb-0" style="width: fit-content;">
-                    <button type="button" id="wishlistTabProducts" data-wish-tab="Products"
-                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-gold-500/30 bg-gold-500/15 text-gold-400"
-                        style="font-size: 0.65rem;">
-                        Products
-                    </button>
-                    <button type="button" id="wishlistTabCatalogue" data-wish-tab="Catalogue"
-                        class="wishlist-tab px-5 py-2.5 rounded-t-xl font-black uppercase tracking-widest border border-b-0 border-transparent text-white/50 hover:text-white/80"
-                        style="font-size: 0.65rem;">
-                        Catalogue
-                    </button>
-                </div>
+            <div class="flex justify-end">
                 <button onclick="clearWishlist()" id="clearAllBtn"
                     class="text-red-500 hover:text-gold-500 font-bold uppercase tracking-widest border border-red-500 hover:border-gold-500 px-4 py-2 rounded-xl transition"
                     style="font-size: 0.65rem;">
@@ -1104,7 +1097,6 @@
         }
 
         let currentSearchQuery = '';
-        let activeWishlistTab = 'Products';
         let selectedWishlistCategory = 'all';
         let pendingSiteVisitItemId = null;
 
@@ -1175,10 +1167,6 @@
             input.value = input.value.replace(/\D/g, '');
         };
 
-        function getWishlistType(item) {
-            return item.wishlistType || 'Products';
-        }
-
         function syncWishlistSearchInputs(value) {
             const m = document.getElementById('wishlistSearchInputMobile');
             const d = document.getElementById('wishlistSearchInputDesktop');
@@ -1192,25 +1180,9 @@
             renderWishlist();
         }
 
-        function updateWishlistTabStyles() {
-            const p = document.getElementById('wishlistTabProducts');
-            const c = document.getElementById('wishlistTabCatalogue');
-            if (!p || !c) return;
-            const active = 'wishlist-tab px-5 py-2.5 rounded-t-xl text-xs font-black uppercase tracking-widest border border-b-0 border-gold-500/30 bg-gold-500/15 text-gold-400';
-            const inactive = 'wishlist-tab px-5 py-2.5 rounded-t-xl text-xs font-black uppercase tracking-widest border border-b-0 border-transparent text-white/50 hover:text-white/80';
-            if (activeWishlistTab === 'Products') {
-                p.className = active;
-                c.className = inactive;
-            } else {
-                c.className = active;
-                p.className = inactive;
-            }
-        }
-
         function renderWishlistCategoryChips() {
             const wishlist = getWishlist();
-            const tabItems = wishlist.filter(w => getWishlistType(w) === activeWishlistTab);
-            const cats = [...new Set(tabItems.map(i => i.category || 'Uncategorised'))].sort((a, b) => a.localeCompare(b));
+            const cats = [...new Set(wishlist.map(i => i.category || 'Uncategorised'))].sort((a, b) => a.localeCompare(b));
             const container = document.getElementById('wishlistCategoryFilter');
             if (!container) return;
 
@@ -1231,31 +1203,6 @@
                     renderWishlist();
                 };
             });
-        }
-
-        function setupWishlistTabs() {
-            const p = document.getElementById('wishlistTabProducts');
-            const c = document.getElementById('wishlistTabCatalogue');
-            if (p) {
-                p.onclick = () => {
-                    if (activeWishlistTab === 'Products') return;
-                    activeWishlistTab = 'Products';
-                    selectedWishlistCategory = 'all';
-                    currentSearchQuery = '';
-                    syncWishlistSearchInputs('');
-                    renderWishlist();
-                };
-            }
-            if (c) {
-                c.onclick = () => {
-                    if (activeWishlistTab === 'Catalogue') return;
-                    activeWishlistTab = 'Catalogue';
-                    selectedWishlistCategory = 'all';
-                    currentSearchQuery = '';
-                    syncWishlistSearchInputs('');
-                    renderWishlist();
-                };
-            }
         }
 
         function setupWishlistSearchInputs() {
@@ -1344,24 +1291,21 @@
             if (tabBar) tabBar.classList.remove('hidden');
             if (tabSpacer) tabSpacer.classList.remove('hidden');
 
-            updateWishlistTabStyles();
+            label.textContent = `${wishlist.length} saved items`;
 
-            const tabItems = wishlist.filter(w => getWishlistType(w) === activeWishlistTab);
-            label.textContent = `${tabItems.length} in ${activeWishlistTab} · ${wishlist.length} total`;
-
-            const catSet = new Set(tabItems.map(i => i.category || 'Uncategorised'));
+            const catSet = new Set(wishlist.map(i => i.category || 'Uncategorised'));
             if (selectedWishlistCategory !== 'all' && !catSet.has(selectedWishlistCategory)) {
                 selectedWishlistCategory = 'all';
             }
 
             renderWishlistCategoryChips();
 
-            if (tabItems.length === 0) {
-                content.innerHTML = `<div class="text-center py-12 text-gray-500 text-sm">Nothing saved under ${activeWishlistTab} yet.</div>`;
+            if (wishlist.length === 0) {
+                content.innerHTML = `<div class="text-center py-12 text-gray-500 text-sm">Your wishlist is empty.</div>`;
                 return;
             }
 
-            let filteredWishlist = tabItems;
+            let filteredWishlist = wishlist;
             if (currentSearchQuery) {
                 const query = currentSearchQuery.toLowerCase();
                 filteredWishlist = tabItems.filter(item =>
@@ -1494,7 +1438,6 @@
 
         // ── Init ───────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            setupWishlistTabs();
             setupWishlistSearchInputs();
             setupWishlistVoiceSearch();
             document.getElementById('wishlistAddressForm')?.addEventListener('submit', function (e) {

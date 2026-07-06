@@ -135,9 +135,12 @@
 
         <!-- Mobile Top Bar -->
         <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
-            <a href="https://b-oneinterior.com/">
-                <img src="logo.png" style="height:7vh;max-height:44px;" alt="B-One Interior">
-            </a>
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
             <button onclick="toggleDrawer()"
                 class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -149,7 +152,12 @@
         </div>
 
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
-            <div class="text-2xl font-bold text-gold-500"><img src="logo.png" style="height: 8vh;" alt=""></div>
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
 
             <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
                 <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
@@ -216,7 +224,11 @@
         <label for="menu-toggle" class="overlay"></label>
 
         <div class="fixedBottom">
-            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <button onclick="history.back()" class="logoBx" style="background:none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
             <ul>
                 <li>
                     <a href="https://b-oneinterior.com/help"

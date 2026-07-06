@@ -472,6 +472,14 @@
             }
         }
 
+        function bookInstallation() {
+            window.location.href = "https://b-oneinterior.com/help";
+        }
+
+        function getSample() {
+            window.location.href = "https://b-oneinterior.com/help";
+        }
+
         const overlay = document.querySelector(".overlay");
         overlay.addEventListener("click", () => {
             const drawer = document.getElementById("drawer");
@@ -643,24 +651,24 @@
         </div>
 
         <!-- Recommended Products Section -->
-        <div id="recommendedSection" class="hidden mt-4 border-t border-gray-800 pt-4">
+        <div id="recommendedSection" class="hidden mt-2 border-t border-gray-800 pt-2">
             <h2 class="text-2xl font-bold mb-3 text-white">Recommended For You</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
         <!-- 50 products (general catalogue) -->
-        <div id="moreProductsSection" class="hidden mt-8 border-t border-gray-800 pt-8">
+        <div id="moreProductsSection" class="hidden mt-2 border-t border-gray-800 pt-2">
             <h2 class="text-2xl font-bold mb-3 text-white">Explore More Products</h2>
             <div id="moreProductsGrid" class="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6"></div>
         </div>
 
         <!-- Collection Products Section -->
-        <div id="collectionSection" class="hidden mt-8 border-t border-gray-800 pt-8">
+        <div id="collectionSection" class="hidden mt-2 border-t border-gray-800 pt-2">
             <h2 id="collectionTitle" class="text-2xl font-bold mb-6 text-white">More from this Collection</h2>
             <div id="collectionCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
-        <div id="errorContainer" class="hidden text-center py-20">
+        <div id="errorContainer" class="hidden text-center py-10">
             <h2 class="text-2xl font-bold text-gray-400">Product not found</h2>
             <a href="shop.html" class="text-gold hover:underline mt-4 inline-block">Return to Shop</a>
         </div>
@@ -1869,7 +1877,7 @@
                     <div class="description-preview-content description-preview-collapsed prose prose-invert max-w-none text-white/80 text-sm leading-relaxed">${descHtml}</div>
                     <div class="description-preview-fade"></div>
                     <button type="button" data-expanded="false"
-                        class="mt-3 text-gold text-xs font-black uppercase tracking-[0.2em]"
+                        class="mt-3 golden-text text-xs font-black uppercase tracking-[0.2em]"
                         onclick="toggleDescriptionPreview(this)">Show more</button>
                 </div>
             `;
@@ -2293,10 +2301,14 @@
             const displayPrice = loggedIn && costPrice !== null ? costPrice : sellingPrice;
             const symbol = currency === 'INR' ? '₹' : (currency + ' ');
 
+            const unitAttr = p.attributes.find(a => a.attribute.name === "Unit");
+            const unitStr = unitAttr?.values?.[0]?.name || '';
+
             let priceHtml = `
                 <div class="flex flex-col">
                     ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${symbol}${actualPriceStr}</span>` : ''}
                     <div class="flex items-center gap-4">
+                        <span> ${unitStr ? `${unitStr} ` : ''} </span>
                         <span class="text-4xl md:text-5xl font-black ${'gold-gradient-text'}">
                             ${symbol}${displayPrice.toFixed(2)}
                         </span>
@@ -2323,9 +2335,15 @@
 
             // 5. Attributes - Grid style
             let attrsHtml = "";
-            const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description"];
+            const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description", "Book Installation", "Get Sample"];
+            let showBookInstallation = false;
+            let showGetSample = false;
             p.attributes.forEach(attr => {
-                if (excludeAttrs.includes(attr.attribute.name)) return;
+                if (excludeAttrs.includes(attr.attribute.name)) {
+                    if (attr.attribute.name === "Book Installation" && attr.values?.[0]?.name === "Yes") showBookInstallation = true;
+                    if (attr.attribute.name === "Get Sample" && attr.values?.[0]?.name === "Yes") showGetSample = true;
+                    return;
+                }
                 const val = attr.values[0];
                 if (!val) return;
 
@@ -2336,9 +2354,49 @@
                     </div>
                 `;
             });
+
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
             if (document.getElementById("attributesContainerMobile")) {
                 document.getElementById("attributesContainerMobile").innerHTML = attrsHtml;
+            }
+
+            // Action buttons above attributes
+            let actionBtnsHtml = '';
+            if (showBookInstallation) {
+                actionBtnsHtml += `
+
+                            <button type="button" onclick="bookInstallation()"
+                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 leading-none ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
+                                <span><ion-icon name="construct-outline" class="text-xl"></ion-icon></span>
+                                <span>Book Installation</span>
+                            </button>
+                
+                `;
+            }
+            if (showGetSample) {
+                actionBtnsHtml += `
+
+                        <button type="button" onclick="getSample()"
+                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+                            <!-- Circle -->
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                            
+                            <!-- Tick -->
+                            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Add to Get Sample
+                        </button>                
+
+                `;
+            }
+            if (actionBtnsHtml) {
+                const container = document.getElementById("cartActionContainerMobile");
+                container.insertAdjacentHTML('beforebegin', `<div class="flex gap-3 mb-2">${actionBtnsHtml}</div>`);
+                const mobileContainer = document.getElementById("cartActionContainerMobile");
+                if (mobileContainer) {
+                    mobileContainer.insertAdjacentHTML('afterbegin', `<div class="grid grid-cols-2 gap-2">${actionBtnsHtml}</div>`);
+                }
             }
 
             // 6. Image Management
@@ -3074,7 +3132,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="mt-2 px-1">
-                            <p class="text-[10px] font-black text-white/60 uppercase tracking-tighter truncate">${v.name}</p>
+                            <p class="text-[10px] font-black text-white uppercase tracking-tighter truncate">${v.name}</p>
                             <p class="text-xs font-black ${'gold-gradient-text'}">${symbol}${displayPrice.toFixed(2)}</p>
                         </div>
                         ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}

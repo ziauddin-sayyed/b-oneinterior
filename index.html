@@ -67,6 +67,26 @@
         .pulse-animation {
             animation: pulse-gold 0.5s ease-in-out;
         }
+
+        @media (orientation: landscape) and (max-width: 1023px) {
+            #trendingCarousel .item {
+                max-height: 30vh;
+                overflow: hidden;
+            }
+        }
+
+        #trendingCarousel .item .aspect-square,
+        #lotItemsCarousel .item .aspect-square {
+            aspect-ratio: 30/9 !important;
+        }
+        #trendingCarousel .item .aspect-square img,
+        #lotItemsCarousel .item .aspect-square img {
+            object-fit: contain !important;
+        }
+
+        .owl-dots {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -693,147 +713,51 @@
         </script>
     </header>
 
-    <!-- Hero Slider -->
-    <section class="hero-slider w-full relative overflow-hidden">
-        <div class="owl-carousel owl-theme w-full" id="heroCarousel">
-
-            <!-- Slide 1 -->
-            <div class="item relative w-full overflow-hidden">
-                <img src="slider1.jpg"
-                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
-                    <div class="px-6 md:px-16 max-w-2xl">
-                        <span
-                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Premium
-                            Interiors</span>
-                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
-                            Welcome to<br><span class="gold-gradient-text">Our Store</span>
-                        </h1>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
-                            <p class="text-gray-300 text-xs md:text-base">Discover Amazing Products</p>
-                        </div>
-                        <!-- <button onclick="window.location.href='shop.html'"
-                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
-                            Shop Now →
-                        </button> -->
-                    </div>
+    <!-- Trending Collection Slider (cloned for LOT Items) -->
+    <section class="py-3">
+        <div class="container mx-auto px-2">
+            <div class="trending-wrapper" style="background:#3c2e1b;border:1px solid #D4AF37;border-radius:8px;padding:8px">
+                <h2 class="font-extrabold text-center golden-text uppercase tracking-widest">LOT Items</h2>
+                <div class="overflow-x-auto pb-2 hide-scrollbar">
+                    <div id="lotItemsCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
                 </div>
+                <div class="owl-carousel owl-theme" id="lotItemsCarousel"></div>
             </div>
-
-            <!-- Slide 2 -->
-            <div class="item relative w-full overflow-hidden">
-                <img src="slider2.jpg"
-                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
-                    <div class="px-6 md:px-16 max-w-2xl">
-                        <span
-                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Trusted
-                            Quality</span>
-                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
-                            Quality You<br><span class="gold-gradient-text">Can Trust</span>
-                        </h1>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
-                            <p class="text-gray-300 text-xs md:text-base">Premium Products at Great Prices</p>
-                        </div>
-                        <!-- <button onclick="window.location.href='shop.html'"
-                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
-                            Learn More →
-                        </button> -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="item relative w-full overflow-hidden">
-                <img src="slider3.jpg"
-                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <!-- Top-right badge -->
-                <div
-                    class="absolute top-5 right-5 md:top-8 md:right-10 bg-gold-500/20 border border-gold-500/50 backdrop-blur-sm text-gold-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">
-                    ✦ Special Offer
-                </div>
-                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
-                    <div class="px-6 md:px-16 max-w-2xl">
-                        <span
-                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Exclusive
-                            Deals</span>
-                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
-                            Special<br><span class="gold-gradient-text">Offers</span>
-                        </h1>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
-                            <p class="text-gray-300 text-xs md:text-base">Save Big This Season</p>
-                        </div>
-                        <!-- <button onclick="window.location.href='shop.html'"
-                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
-                            View Deals →
-                        </button> -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 4 -->
-            <div class="item relative w-full overflow-hidden">
-                <img src="slider4.jpg"
-                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
-                    <div class="px-6 md:px-16 max-w-2xl">
-                        <span
-                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Luxury
-                            Living</span>
-                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
-                            Timeless<br><span class="gold-gradient-text">Elegance</span>
-                        </h1>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
-                            <p class="text-gray-300 text-xs md:text-base">Designed for Modern Living</p>
-                        </div>
-                        <!-- <button onclick="window.location.href='shop.html'"
-                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
-                            Discover More →
-                        </button> -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 5 -->
-            <div class="item relative w-full overflow-hidden">
-                <img src="slider5.jpg"
-                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
-                    <div class="px-6 md:px-16 max-w-2xl">
-                        <span
-                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Comfort
-                            & Style</span>
-                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
-                            Comfort Meets<br><span class="gold-gradient-text">Style</span>
-                        </h1>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
-                            <p class="text-gray-300 text-xs md:text-base">Experience Luxury at Home</p>
-                        </div>
-                        <!-- <button onclick="window.location.href='shop.html'"
-                            class="gold-gradient-bg text-black px-7 py-3 rounded-full font-black text-sm shadow-2xl transform hover:-translate-y-0.5 transition duration-300">
-                            Shop Now →
-                        </button> -->
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
+
+    <!-- Trending Collection Slider -->
+    <section class="py-3">
+        <div class="container mx-auto px-2">
+            <div class="trending-wrapper" style="border:1px solid #D4AF37;border-radius:8px;padding:8px">
+                <h2 class="font-extrabold text-center golden-text uppercase tracking-widest">Trending</h2>
+                <div class="owl-carousel owl-theme" id="trendingCarousel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT CAROUSEL SECTION (hidden)
+    <section class="py-6">
+        <div class="container mx-auto px-2 md:px-0">
+            <h2
+                class="md:text-2xl font-extrabold text-center mb-12 golden-text uppercase tracking-widest">
+                Best Seller</h2>
+            <div class="owl-carousel owl-theme md:hidden" id="productCarousel">
+                <div class="item px-2">
+                    <div class="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#e8d7a8] shadow-sm">
+                        <img src="" class="w-full h-48 object-cover product-image">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-white product-name"></h3>
+                            <p class="text-gray-300 text-sm product-price"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hidden md:grid grid-cols-8 gap-3" id="productGrid"></div>
+        </div>
+    </section>
+    -->
+
 
     <!-- Dynamic Shop Section -->
     <section class="fade-section md:py-16 bg-[#0a0a0a]" id="shop-section">
@@ -1013,27 +937,7 @@
     </section> -->
 
 
-    <!-- PRODUCT CAROUSEL SECTION -->
-    <section class="fade-section py-6">
-        <div class="container mx-auto">
-            <h2
-                class="text-4xl md:text-5xl font-extrabold text-center mb-12 gold-gradient-text uppercase tracking-widest">
-                Best Seller</h2>
-            <div class="owl-carousel owl-theme" id="productCarousel">
-                <div class="item px-2">
-                    <div class="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#e8d7a8] shadow-sm">
-                        <img src="" class="w-full h-48 object-cover product-image">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-white product-name"></h3>
-                            <p class="text-gray-300 text-sm product-price"></p>
-                        </div>
-                    </div>
-                </div>
-                <!-- /LOOP -->
-            </div>
 
-        </div>
-    </section>
 
 
 
@@ -2516,7 +2420,7 @@
         async function loadCollections() {
             const query = `
             query {
-                collections(first: 20) {
+                collections(first: 20, channel: "in") {
                     edges {
                         node {
                             id
@@ -2578,41 +2482,114 @@
 
                 // 1. Handle Best Seller (Special Position)
                 const bestSellerCol = collections.find(c => c.node.name === "Best Seller");
-                
-                // Clean up carousel for bfcache navigations
-                const oldCarousel = document.getElementById("productCarousel");
-                const carousel = oldCarousel.cloneNode(false);
-                carousel.className = "owl-carousel owl-theme";
-                oldCarousel.parentNode.replaceChild(carousel, oldCarousel);
-
                 bestSellerProductIds = new Set((bestSellerCol?.node?.products?.edges || []).map(e => e.node.id));
 
-                if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {
-                    const products = shuffleArray(bestSellerCol.node.products.edges);
-                    carousel.innerHTML = "";
-                    products.forEach(p => carousel.appendChild(createProductItem(p)));
+                const oldCarousel = document.getElementById("productCarousel");
+                if (oldCarousel) {
+                    const carousel = oldCarousel.cloneNode(false);
+                    carousel.className = "owl-carousel owl-theme md:hidden";
+                    oldCarousel.parentNode.replaceChild(carousel, oldCarousel);
 
-                    $("#productCarousel").owlCarousel({
-                        loop: true,
-                        margin: 10,
-                        nav: false,
-                        dots: true,
-                        startPosition: Math.floor(Math.random() * products.length),
-                        responsive: {
-                            0: { items: 2 },
-                            640: { items: 3 },
-                            768: { items: 4 },
-                            1024: { items: 4 }
-                        }
-                    });
-                } else {
-                    carousel.innerHTML = "<p class='text-center text-white'>No best sellers found.</p>";
+                    const grid = document.getElementById("productGrid");
+                    if (grid) grid.innerHTML = "";
+
+                    if (bestSellerCol && bestSellerCol.node.products.edges.length > 0) {
+                        const products = shuffleArray(bestSellerCol.node.products.edges);
+                        carousel.innerHTML = "";
+                        products.forEach(p => carousel.appendChild(createProductItem(p)));
+
+                        products.forEach(p => {
+                            const img = p.node.thumbnail?.url || SHOP_FALLBACK_IMG;
+                            const price = p.node.pricing?.priceRange?.start?.gross?.amount?.toFixed(2) || "0.00";
+                            const currency = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? '₹' : (p.node.pricing?.priceRange?.start?.gross?.currency || '');
+                            const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
+                            const badge = bestSellerProductIds.has(p.node.id) ? `<div class="absolute top-1 right-1 bg-gold-500 text-black text-[6px] font-black px-1 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>` : '';
+                            const div = document.createElement("div");
+                            div.className = "creative-card flex flex-col relative group cursor-pointer h-full";
+                            div.innerHTML = `
+                                <a href="product.html?id=${p.node.id}" class="block h-full">
+                                    <div class="relative overflow-hidden aspect-square">
+                                        <img src="${img}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
+                                        ${badge}
+                                    </div>
+                                    <div class="p-1.5 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                                        <span class="gold-gradient-text text-[8px] font-black uppercase tracking-widest truncate">${p.node.category?.name || 'Decor'}</span>
+                                        <h3 class="font-bold text-white text-[10px] leading-tight line-clamp-2 group-hover:text-gold-500 transition">${p.node.name}</h3>
+                                        <span class="gold-gradient-text text-[10px] font-black mt-auto">${formattedPrice}</span>
+                                    </div>
+                                </a>
+                            `;
+                            if (grid) grid.appendChild(div);
+                        });
+
+                        $("#productCarousel").owlCarousel({
+                            loop: true,
+                            margin: 8,
+                            nav: false,
+                            dots: true,
+                            startPosition: Math.floor(Math.random() * products.length),
+                            responsive: {
+                                0: { items: 4 },
+                                640: { items: 4 }
+                            }
+                        });
+                    } else {
+                        carousel.innerHTML = "<p class='text-center text-white'>No best sellers found.</p>";
+                        if (grid) grid.innerHTML = "<p class='text-center text-white col-span-8'>No best sellers found.</p>";
+                    }
+                }
+
+                // 1b. Handle LOT Items Collection
+                const lotItemsCol = collections.find(c => c.node.name === "LOT Items");
+                const lotCarousel = document.getElementById("lotItemsCarousel");
+                if (lotCarousel) {
+                    const lotCarouselClone = lotCarousel.cloneNode(false);
+                    lotCarousel.parentNode.replaceChild(lotCarouselClone, lotCarousel);
+                    if (lotItemsCol && lotItemsCol.node.products.edges.length > 0) {
+                        const lotProducts = shuffleArray(lotItemsCol.node.products.edges);
+                        lotProducts.forEach(p => lotCarouselClone.appendChild(createSimpleProductItem(p)));
+                        $(lotCarouselClone).owlCarousel({
+                            loop: true,
+                            margin: 4,
+                            nav: false,
+                            dots: true,
+                            responsive: {
+                                0: { items: 3 },
+                                640: { items: 3 },
+                                768: { items: 4 },
+                                1024: { items: 5 }
+                            }
+                        });
+                    }
+                }
+
+                // 1c. Handle Trending Collection
+                const trendingCol = collections.find(c => c.node.name === "Trending");
+                const trendCarousel = document.getElementById("trendingCarousel");
+                if (trendCarousel) {
+                    const trendCarouselClone = trendCarousel.cloneNode(false);
+                    trendCarousel.parentNode.replaceChild(trendCarouselClone, trendCarousel);
+                    if (trendingCol && trendingCol.node.products.edges.length > 0) {
+                        const trendProducts = shuffleArray(trendingCol.node.products.edges);
+                        trendProducts.forEach(p => trendCarouselClone.appendChild(createSimpleProductItem(p)));
+                        $(trendCarouselClone).owlCarousel({
+                            loop: true,
+                            margin: 4,
+                            nav: false,
+                            dots: true,
+                            responsive: {
+                                0: { items: 1 },
+                                640: { items: 2 },
+                                1024: { items: 4 }
+                            }
+                        });
+                    }
                 }
 
                 // 2. Handle Other Collections
                 const otherCollections = shuffleArray(
                     collections.filter(c => {
-                        if (c.node.name === "Best Seller") return false;
+                        if (c.node.name === "Best Seller" || c.node.name === "LOT Items" || c.node.name === "Trending") return false;
                         if (selectedShopParentCategory !== "all") {
                             return c.node.products.edges.some(p => p.node.category?.id === selectedShopParentCategory);
                         }
@@ -2700,6 +2677,25 @@
                             <span class="gold-gradient-text text-sm lg:text-base font-black">${formattedPrice}</span>
                             ${saveHtml}
                         </div>
+                    </div>
+                </a>
+            `;
+            return item;
+        }
+
+        function createSimpleProductItem(p) {
+            const item = document.createElement("div");
+            item.className = "item px-1";
+            item.innerHTML = `
+                <a href="product.html?id=${p.node.id}" class="creative-card flex flex-col relative group cursor-pointer h-full">
+                    <div class="relative overflow-hidden aspect-square rounded-lg">
+                        <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                            <span class="gold-gradient-bg text-black px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
+                    </div>
+                    <div class="pt-1.5 pb-0.5">
+                        <h3 class="font-bold text-white text-[11px] leading-tight text-center line-clamp-2 group-hover:text-gold-500 transition">${p.node.name}</h3>
                     </div>
                 </a>
             `;
@@ -2807,10 +2803,89 @@
             window.location.href = `prodcut-list.html?q=${encodeURIComponent(q)}`;
         }
 
+        let searchDebounceTimer = null;
+
+        async function searchProductsAPI(query) {
+            const gqlQuery = `
+            query SearchProducts($search: String!) {
+                products(first: 20, filter: { search: $search }, channel: "in") {
+                    edges {
+                        node {
+                            id
+                            name
+                            slug
+                            description
+                            thumbnail { url }
+                            media { url type }
+                            pricing {
+                                priceRange {
+                                    start { gross { amount currency } }
+                                    stop { gross { amount currency } }
+                                }
+                            }
+                            category { id name }
+                            variants {
+                                id
+                                name
+                                media { url type }
+                                pricing { price { gross { amount currency } } }
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+            try {
+                const res = await fetch(SHOP_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: gqlQuery, variables: { search: query } })
+                });
+                const json = await res.json();
+                const products = (json.data?.products?.edges || []).map(e => e.node);
+
+                // Update dropdown
+                const dropdownItems = products.map(p => ({
+                    linkId: p.variants?.[0]?.id || p.id,
+                    displayName: p.name,
+                    subtitle: null,
+                    image: p.thumbnail?.url || SHOP_FALLBACK_IMG,
+                    price: p.pricing?.priceRange?.start?.gross?.amount || 0,
+                    currency: p.pricing?.priceRange?.start?.gross?.currency || 'INR',
+                    category: p.category?.name || 'Collection',
+                    isVariant: false
+                }));
+                const html = dropdownItems.length
+                    ? dropdownItems.map(item => renderShopSearchDropdownItem(item)).join("")
+                    : `<div class="px-4 py-5 text-center text-gray-400 text-sm">No products found</div>`;
+                const mobileDropdown = document.getElementById("shopSearchResultsMobile");
+                const desktopDropdown = document.getElementById("shopSearchResultsDesktop");
+                if (mobileDropdown) { mobileDropdown.innerHTML = html; mobileDropdown.classList.remove('hidden'); }
+                if (desktopDropdown) { desktopDropdown.innerHTML = html; desktopDropdown.classList.remove('hidden'); }
+
+                // Update grid
+                renderShopDesktopList(products);
+                renderShopMobileList(products);
+            } catch (err) {
+                console.error("Search error:", err);
+            }
+        }
+
         shopSearchInputs.forEach(input => {
             input.addEventListener('input', () => {
-                setShopSearchQuery(input.value);
-                applyShopFilters();
+                const q = input.value.trim();
+                setShopSearchQuery(q);
+                if (q.length > 0) {
+                    clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = setTimeout(() => searchProductsAPI(q), 300);
+                } else {
+                    clearTimeout(searchDebounceTimer);
+                    applyShopFilters();
+                    const mobileDropdown = document.getElementById('shopSearchResultsMobile');
+                    const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
+                    if (mobileDropdown) mobileDropdown.classList.add('hidden');
+                    if (desktopDropdown) desktopDropdown.classList.add('hidden');
+                }
             });
             input.addEventListener('focus', () => {
                 if (shopSearchProductsRaw.length > 0) {
