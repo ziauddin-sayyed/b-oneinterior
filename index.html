@@ -832,7 +832,9 @@
                     <div class="overflow-x-auto pb-2 hide-scrollbar">
                         <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
                     </div>
-                    <div id="shopSubcategoryFilter" class="flex flex-wrap gap-3 mt-4 hidden"></div>
+                    <div id="shopSubcategoryFilter" class="overflow-x-auto pb-2 hide-scrollbar mt-4 hidden">
+                        <div class="flex gap-6 min-w-max px-2"></div>
+                    </div>
                 </div>
 
                 <!-- Product Display Top -->
@@ -1804,13 +1806,17 @@
         }
 
         function getActiveShopSubcategory() {
-            const active = document.querySelector(".shop-sub-filter.gold-gradient-bg");
-            return active?.dataset.subcategory || "all";
+            // const active = document.querySelector('.shop-sub-filter.opacity-100.scale-100');
+            // const active = sessionStorage.getItem('shopSubCategory') || "all";
+            // console.log(active,"-----------------");
+            // if (active) return active.dataset.subcategory;
+            return sessionStorage.getItem('shopSubCategory') || "all";
         }
 
         function getShopProductCategoryIds() {
             if (selectedShopParentCategory === "all") return [];
             const activeSub = getActiveShopSubcategory();
+            
             if (activeSub !== "all") return [activeSub];
             const childIds = shopSubCategories.map(s => s.id);
             return childIds.length > 0
@@ -1835,6 +1841,7 @@
                             node {
                                 id
                                 name
+                                backgroundImage { url }
                                 parent { id name }
                             }
                         }
@@ -1919,11 +1926,7 @@
                     renderShopSubcategoryFilters(selectedShopParentCategory);
                     const savedSub = sessionStorage.getItem('shopSubCategory');
                     if (savedSub && savedSub !== "all") {
-                        const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
-                        if (subBtn) {
-                            document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
-                            subBtn.classList.add('gold-gradient-bg', 'text-black');
-                        }
+                        sessionStorage.setItem('shopSubCategory', savedSub);
                     }
                 }
 
@@ -1984,7 +1987,6 @@
                         if (selectedShopParentCategory === "all") {
                             shopSubCategories = [];
                             document.getElementById("shopSubcategoryFilter").classList.add("hidden");
-                            document.querySelector(".shop-sub-filter.gold-gradient-bg")?.classList.remove('gold-gradient-bg');
                         } else {
                             await fetchShopSubcategories(selectedShopParentCategory);
                             renderShopSubcategoryFilters(selectedShopParentCategory);
@@ -2012,35 +2014,44 @@
         function renderShopSubcategoryFilters(parentId) {
             const subs = shopSubCategories;
             const container = document.getElementById("shopSubcategoryFilter");
+            const inner = container.querySelector("div");
 
             if (subs.length === 0) {
                 container.classList.add("hidden");
                 return;
             }
 
-            container.innerHTML = `
-                <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10" data-subcategory="all">
-                    ALL
-                </button>
+            const activeSub = getActiveShopSubcategory();
+            inner.innerHTML = `
+                <div class="shop-sub-filter group flex flex-col items-center cursor-pointer transition-all ${activeSub === 'all' ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-subcategory="all">
+                    <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                        <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
+                    </div>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter ${activeSub === 'all' ? 'underline underline-offset-4' : ''}">All</span>
+                </div>
                 ${subs.map(s => `
-                    <button class="shop-sub-filter px-6 py-2 rounded-full border border-gold-500/30 text-xs font-bold text-white transition hover:bg-gold-500/10" data-subcategory="${s.id}">
-                        ${s.name.toUpperCase()}
-                    </button>
+                    <div class="shop-sub-filter group flex flex-col items-center cursor-pointer transition-all ${activeSub === s.id ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-subcategory="${s.id}">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                            ${s.backgroundImage?.url
+                    ? `<img src="${s.backgroundImage.url}" class="w-full h-full object-cover">`
+                    : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
+                }
+                        </div>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center ${activeSub === s.id ? 'underline underline-offset-4' : ''}">${s.name}</span>
+                    </div>
                 `).join("")}
             `;
 
             container.classList.remove("hidden");
-            const defaultSubBtn = container.querySelector('.shop-sub-filter[data-subcategory="all"]');
-            if (defaultSubBtn) defaultSubBtn.classList.add('gold-gradient-bg', 'text-black');
 
             container.querySelectorAll('.shop-sub-filter').forEach(btn => {
                 btn.onclick = async () => {
                     const currentSub = getActiveShopSubcategory();
                     const newSub = btn.dataset.subcategory;
+                    // const currentSub = sessionStorage.getItem('shopSubCategory') || "all";
                     if (currentSub !== newSub) {
                         sessionStorage.setItem('shopSubCategory', newSub);
-                        container.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
-                        btn.classList.add('gold-gradient-bg', 'text-black');
+                        renderShopSubcategoryFilters(parentId);
 
                         shopAllProducts = [];
                         shopHasNextPage = true;
@@ -2053,6 +2064,13 @@
                         if (mb) mb.innerHTML = '';
                         await loadMoreShopProducts();
                         applyShopFilters();
+                        const scrollTarget = window.innerWidth < 768
+                            ? document.getElementById("shopMobileProductListTop")
+                            : document.getElementById("shop-section");
+                        if (scrollTarget) {
+                            const top = scrollTarget.getBoundingClientRect().top + window.scrollY - 110;
+                            window.scrollTo({ top, behavior: "smooth" });
+                        }
                     }
                 };
             });
@@ -2729,11 +2747,8 @@
                                 renderShopSubcategoryFilters(selectedShopParentCategory);
                                 const savedSub = state.activeSubcategory;
                                 if (savedSub && savedSub !== "all") {
-                                    const subBtn = document.querySelector(`.shop-sub-filter[data-subcategory="${savedSub}"]`);
-                                    if (subBtn) {
-                                        document.querySelectorAll('.shop-sub-filter').forEach(b => b.classList.remove('gold-gradient-bg', 'text-black'));
-                                        subBtn.classList.add('gold-gradient-bg', 'text-black');
-                                    }
+                                    sessionStorage.setItem('shopSubCategory', savedSub);
+                                    renderShopSubcategoryFilters(selectedShopParentCategory);
                                 }
                             });
                         }

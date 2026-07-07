@@ -68,7 +68,7 @@
           <button id="pageSearchClearBtn" type="button" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
-          <!-- <button id="pageSearchGoBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button> -->
+          <div id="searchHistoryMobile" class="hidden absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gold-500/30 rounded-xl overflow-hidden z-50 shadow-2xl"></div>
         </div>
         <button onclick="toggleDrawer()" class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -110,6 +110,7 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
         <button id="pageSearchGoBtnDesktop" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-wider text-gold-500">Go</button>
+        <div id="searchHistoryDesktop" class="hidden absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gold-500/30 rounded-xl overflow-hidden z-50 shadow-2xl"></div>
       </div>
     </div>
 
@@ -168,8 +169,6 @@
   <script>
     const FALLBACK_IMG = "images/placeholder.png";
     const API_URL = "https://api.b-oneinterior.com/graphql/";
-    let bestSellerProductIds = new Set();
-
     function toggleDrawer() {
       const drawer = document.getElementById("drawer");
       const overlay = document.querySelector(".overlay");
@@ -203,30 +202,7 @@
       else badge.classList.add("hidden");
     }
 
-    function normalizeLooseSearchText(value) { return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
-    function buildLooseSearchKeys(value) {
-      const base = normalizeLooseSearchText(value);
-      if (!base) return [];
-      const keys = new Set([base]);
-      keys.add(base.replace(/ph/g, "f").replace(/[ckq]/g, "k").replace(/z/g, "s").replace(/y/g, "i").replace(/oo/g, "u").replace(/ee/g, "i").replace(/aa/g, "a").replace(/(.)\1+/g, "$1"));
-      keys.add(base.replace(/[aeiou]/g, ""));
-      return [...keys].filter(Boolean);
-    }
-    function looseIncludes(textValue, query) {
-      const textKeys = buildLooseSearchKeys(textValue);
-      const queryKeys = buildLooseSearchKeys(query);
-      if (!textKeys.length || !queryKeys.length) return false;
-      return queryKeys.some(qk => textKeys.some(tk => tk.includes(qk) || qk.includes(tk)));
-    }
     function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
-    function productMatches(product, q) {
-      const name = String(product.name || "").toLowerCase();
-      const desc = typeof product.description === "string" ? product.description.toLowerCase() : JSON.stringify(product.description || {}).toLowerCase();
-      const cat = String(product.category?.name || "").toLowerCase();
-      if (name.includes(q) || desc.includes(q) || cat.includes(q)) return true;
-      if (looseIncludes(product.name, q) || looseIncludes(product.description, q) || looseIncludes(product.category?.name, q)) return true;
-      return (product.variants || []).some(v => String(v.name || "").toLowerCase().includes(q) || looseIncludes(v.name, q));
-    }
 
     function getActualPriceFromAttrs(attrs) {
       const attr = (attrs || []).find(a => String(a.attribute?.name || "").toLowerCase() === "actual price");
@@ -259,44 +235,13 @@
       return best;
     }
 
-    function getDisplayItems(products, query) {
-      const q = String(query || "").trim().toLowerCase();
-      const items = [];
-      products.forEach(p => {
-        const name = String(p.name || "").toLowerCase();
-        const desc = typeof p.description === "string" ? p.description.toLowerCase() : JSON.stringify(p.description || {}).toLowerCase();
-        const cat = String(p.category?.name || "").toLowerCase();
-        const productLevelMatch =
-          name.includes(q) ||
-          desc.includes(q) ||
-          cat.includes(q) ||
-          looseIncludes(p.name, q) ||
-          looseIncludes(p.description, q) ||
-          looseIncludes(p.category?.name, q);
-
-        if (productLevelMatch) {
-          items.push({
-            type: "product",
-            product: p,
-            linkId: p.variants?.[0]?.id || p.id,
-            title: p.name
-          });
-          return;
-        }
-
-        (p.variants || []).forEach(v => {
-          const vName = String(v.name || "").toLowerCase();
-          if (vName.includes(q) || looseIncludes(v.name, q)) {
-            items.push({
-              type: "variant",
-              product: p,
-              linkId: v.id || p.id,
-              title: v.name || p.name
-            });
-          }
-        });
-      });
-      return items;
+    function getDisplayItems(products) {
+      return products.map(p => ({
+        type: "product",
+        product: p,
+        linkId: p.variants?.[0]?.id || p.id,
+        title: p.name
+      }));
     }
 
     function renderCards(items, query) {
@@ -314,12 +259,10 @@
         const cur = gross?.currency || "INR";
         const priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
         const savePercent = getSavePercent(p);
-        const isBestSeller = bestSellerProductIds.has(p.id);
         return `
           <a href="product.html?id=${item.linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
               <img src="${p.thumbnail?.url || FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
-              ${isBestSeller ? `<span class="absolute top-2 left-2 bg-gold-500 text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide">Best Seller</span>` : ""}
               ${savePercent ? `<span class="absolute top-2 right-2 bg-[#dc2626] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">${savePercent}% OFF</span>` : ""}
             </div>
             <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
@@ -341,9 +284,54 @@
     function runSearchFromInput() {
       const m = document.getElementById("pageSearchInput");
       const d = document.getElementById("pageSearchInputDesktop");
-      const value = (m?.value || d?.value || "").trim();
+      const active = document.activeElement;
+      let value = "";
+      if (active === d) value = d?.value ?? "";
+      else if (active === m) value = m?.value ?? "";
+      else value = d?.value || m?.value || "";
+      value = value.trim();
       if (!value) return;
+      saveSearchHistory(value);
       window.location.href = `prodcut-list.html?q=${encodeURIComponent(value)}`;
+    }
+
+    function getSearchHistory() {
+      try { return JSON.parse(localStorage.getItem("searchHistory") || "[]"); }
+      catch { return []; }
+    }
+
+    function saveSearchHistory(term) {
+      const history = getSearchHistory().filter(t => t !== term);
+      history.unshift(term);
+      localStorage.setItem("searchHistory", JSON.stringify(history.slice(0, 5)));
+    }
+
+    function renderSearchHistory(forInput) {
+      const container = document.getElementById(forInput === "pageSearchInput" ? "searchHistoryMobile" : "searchHistoryDesktop");
+      if (!container) return;
+      const history = getSearchHistory();
+      if (!history.length) { container.classList.add("hidden"); return; }
+      container.innerHTML = history.map(t => `
+        <button type="button" class="w-full text-left px-4 py-2.5 text-white/80 hover:text-gold-500 hover:bg-gold-500/10 text-sm flex items-center gap-3 transition" data-term="${escapeHtml(t)}">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="truncate">${escapeHtml(t)}</span>
+        </button>
+      `).join("");
+      container.classList.remove("hidden");
+      container.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const term = btn.dataset.term;
+          syncSearchInputs(term);
+          updateSearchClearButtons();
+          saveSearchHistory(term);
+          window.location.href = `prodcut-list.html?q=${encodeURIComponent(term)}`;
+        });
+      });
+    }
+
+    function hideSearchHistory() {
+      document.getElementById("searchHistoryMobile")?.classList.add("hidden");
+      document.getElementById("searchHistoryDesktop")?.classList.add("hidden");
     }
 
     function updateSearchClearButtons() {
@@ -362,69 +350,45 @@
       syncSearchInputs(q);
       updateSearchClearButtons();
       if (!q) { meta.textContent = "No search query provided."; return; }
+      saveSearchHistory(q);
       meta.textContent = "Loading products...";
       const query = `
-      query {
-        products(first: 100, channel: "in", filter: { isPublished: true }) {
-          edges {
-            node {
-              id
-              name
-              description
-              thumbnail { url }
-              category { name }
-              attributes {
-                attribute { name }
-                values { name }
-              }
-              pricing { priceRange { start { gross { amount currency } } } }
-              variants {
+        query SearchProducts($search: String!) {
+          products(first: 20, filter: { search: $search }, channel: "in") {
+            edges {
+              node {
                 id
                 name
-                pricing { price { gross { amount currency } } }
-                attributes {
-                  attribute { name }
-                  values { name }
+                slug
+                description
+                thumbnail { url }
+                media { url type }
+                pricing {
+                  priceRange {
+                    start { gross { amount currency } }
+                    stop { gross { amount currency } }
+                  }
+                }
+                category { id name }
+                variants {
+                  id
+                  name
+                  media { url type }
+                  pricing { price { gross { amount currency } } }
                 }
               }
             }
           }
-        }
-      }`;
-      const bestSellerQuery = `
-      query {
-        collections(first: 30, channel: "in") {
-          edges {
-            node {
-              name
-              products(first: 100) {
-                edges { node { id } }
-              }
-            }
-          }
-        }
-      }`;
+        }`;
       try {
-        const [productsRes, bestSellerRes] = await Promise.all([
-          fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query })
-          }),
-          fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: bestSellerQuery })
-          })
-        ]);
+        const productsRes = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, variables: { search: q } })
+        });
         const json = await productsRes.json();
-        const bestSellerJson = await bestSellerRes.json();
-        const collections = bestSellerJson.data?.collections?.edges || [];
-        const bestSellerCollection = collections.find(c => (c.node?.name || "").toLowerCase() === "best seller");
-        bestSellerProductIds = new Set((bestSellerCollection?.node?.products?.edges || []).map(e => e.node?.id).filter(Boolean));
-        const all = (json.data?.products?.edges || []).map(e => e.node);
-        const visible = all.filter(p => !["Gallery Image Category", "Catalogue"].includes(p.category?.name));
-        renderCards(getDisplayItems(visible.filter(p => productMatches(p, q)), q), q);
+        const edges = json.data?.products?.edges || [];
+        renderCards(getDisplayItems(edges.map(e => e.node)), q);
       } catch (e) {
         meta.textContent = "Failed to load products.";
       }
@@ -436,6 +400,10 @@
     document.getElementById("pageSearchInputDesktop")?.addEventListener("input", () => updateSearchClearButtons());
     document.getElementById("pageSearchInput")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
     document.getElementById("pageSearchInputDesktop")?.addEventListener("keydown", e => { if (e.key === "Enter") runSearchFromInput(); });
+    document.getElementById("pageSearchInput")?.addEventListener("focus", () => { renderSearchHistory("pageSearchInput"); });
+    document.getElementById("pageSearchInputDesktop")?.addEventListener("focus", () => { renderSearchHistory("pageSearchInputDesktop"); });
+    document.getElementById("pageSearchInput")?.addEventListener("blur", () => setTimeout(hideSearchHistory, 200));
+    document.getElementById("pageSearchInputDesktop")?.addEventListener("blur", () => setTimeout(hideSearchHistory, 200));
     document.getElementById("pageSearchClearBtn")?.addEventListener("click", () => {
       syncSearchInputs("");
       updateSearchClearButtons();
