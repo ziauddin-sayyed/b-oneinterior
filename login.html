@@ -379,6 +379,10 @@
                 exposeMethods: true,
                 success: function(data) {
                     console.log('MSG91 client success callback', data);
+                    if (data && typeof data === 'object') {
+                        var r = data.reqId || data.requestId || data.req_id || (data.data && (data.data.reqId || data.data.requestId || data.data.req_id));
+                        if (r) msg91ReqId = r;
+                    }
                 },
                 failure: function(error) {
                     console.log('MSG91 client failure callback', error);
@@ -414,9 +418,11 @@
         })();
 
         // ─── Configuration ─────────────────────────────────────────
-        const DJANGO_API_URL = 'http://localhost:8000/api/verify-access-token/';
+        // const DJANGO_API_URL = 'http://localhost:8000/api/verify-otp/';
+        const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
 
         let verifiedMobile = '';
+        let msg91ReqId = '';
         let resendCooldown = 30;
         let resendTimer = null;
 
@@ -514,55 +520,6 @@
             check();
         }
 
-        // ─── Extract token from MSG91 verify response ─────────────
-        function extractMsg91Token(data) {
-            if (!data) return null;
-            if (typeof data === 'string') return data;
-            if (typeof data === 'object') {
-                return data.token || data.message || data['access-token'] || data.accessToken || (typeof data.data === 'string' ? data.data : null);
-            }
-            return null;
-        }
-
-        // ─── Send access token to Django backend ────────────────────
-        async function sendToDjango(accessToken, phone) {
-            try {
-                var res = await fetch(DJANGO_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accessToken: accessToken })
-                });
-
-                if (!res.ok) {
-                    var errText = await res.text();
-                    throw new Error(errText || 'Authentication failed');
-                }
-
-                var data = await res.json();
-
-                localStorage.setItem('saleor_auth_token', data.token || data.access || '');
-                localStorage.setItem('saleor_refresh_token', data.refreshToken || data.refresh || '');
-                localStorage.setItem('saleor_csrf_token', data.csrfToken || '');
-
-                if (data.user) {
-                    localStorage.setItem('saleor_user_email', data.user.email || '');
-                    localStorage.setItem('saleor_user_name',
-                        (data.user.firstName || '') + ' ' + (data.user.lastName || '').trim() || data.user.email || ''
-                    );
-                    localStorage.setItem('saleor_user_is_staff', data.user.isStaff || false);
-                }
-
-                showSuccess('Login successful! Redirecting...');
-                setTimeout(function() {
-                    window.location.href = 'https://b-oneinterior.com/';
-                }, 1500);
-
-            } catch (err) {
-                setVerifyOtpLoading(false);
-                showError(err.message || 'Authentication failed. Please try again.');
-            }
-        }
-
         // ─── OTP input auto‑advance ────────────────────────────────
         otpInputs.forEach(function(inp, idx) {
             inp.addEventListener('input', function() {
@@ -596,6 +553,7 @@
 
             hideMessages();
             setSendOtpLoading(true);
+            var sendOtpTimeout = setTimeout(function() { setSendOtpLoading(false); }, 15000);
 
             waitForMsg91Method('sendOtp', function(ready) {
                 if (!ready) {
@@ -604,26 +562,42 @@
                     return;
                 }
 
-                var phoneForMsg91 = '91' + mobile; // no + prefix
+                var phoneForMsg91 = '91' + mobile;
 
-                window.sendOtp(phoneForMsg91,
-                    function(data) {
-                        console.log('OTP sent successfully:', data);
-                        verifiedMobile = mobile;
-                        displayPhone.textContent = '+91 ' + mobile;
-                        stepPhone.classList.add('hidden');
-                        stepOtp.classList.remove('hidden');
-                        clearOtpInputs();
-                        startResendTimer();
-                        hideMessages();
-                        setSendOtpLoading(false);
-                    },
-                    function(errorData) {
-                        console.error('MSG91 sendOtp error:', errorData);
-                        showError(errorData?.message || 'Failed to send OTP. Please check your number.');
-                        setSendOtpLoading(false);
-                    }
-                );
+                try {
+                    window.sendOtp(phoneForMsg91,
+                        function(data) {
+                            clearTimeout(sendOtpTimeout);
+                            console.log('OTP sent successfully:', data);
+                            try {
+                                if (typeof data === 'object' && data) {
+                                // if (data.type == "success") {
+                                    msg91ReqId = data.reqId || data.requestId || data.req_id || data.message || '';
+                                    console.log('Captured msg91ReqId:', msg91ReqId);
+                                }
+                            } catch(e) { console.warn('reqId extraction error:', e); }
+                            verifiedMobile = mobile;
+                            displayPhone.textContent = '+91 ' + mobile;
+                            stepPhone.classList.add('hidden');
+                            stepOtp.classList.remove('hidden');
+                            clearOtpInputs();
+                            startResendTimer();
+                            hideMessages();
+                            setSendOtpLoading(false);
+                        },
+                        function(errorData) {
+                            clearTimeout(sendOtpTimeout);
+                            console.error('MSG91 sendOtp error:', errorData);
+                            showError(errorData?.message || 'Failed to send OTP. Please check your number.');
+                            setSendOtpLoading(false);
+                        }
+                    );
+                } catch(e) {
+                    clearTimeout(sendOtpTimeout);
+                    console.error('sendOtp call error:', e);
+                    showError('Failed to send OTP. Please try again.');
+                    setSendOtpLoading(false);
+                }
             });
         });
 
@@ -650,9 +624,12 @@
                 }
 
                 setSendOtpLoading(true);
-                window.retryOtp('11',
+                window.retryOtp(msg91ReqId || '11',
                     function(data) {
                         console.log('OTP resent successfully:', data);
+                        if (typeof data === 'object' && data) {
+                            msg91ReqId = data.reqId || data.requestId || data.req_id || msg91ReqId;
+                        }
                         startResendTimer();
                         clearOtpInputs();
                         setSendOtpLoading(false);
@@ -677,41 +654,56 @@
             hideMessages();
             setVerifyOtpLoading(true);
 
-            waitForMsg91Method('verifyOtp', function(ready) {
-                if (!ready) {
-                    showError('Verification service is not ready. Please try again.');
-                    setVerifyOtpLoading(false);
-                    return;
+            if (!msg91ReqId) {
+                showError('Session expired. Please request a new OTP.');
+                setVerifyOtpLoading(false);
+                return;
+            }
+            var mobile = phoneInput.value.trim();
+            var payload = {
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                otp: otp,
+                identifier:mobile,
+                widgetId: "3666416d5868313933373531",
+                reqId: msg91ReqId
+            };
+
+            fetch(DJANGO_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.text().then(function(t) { throw new Error(t || 'Verification failed'); });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                localStorage.setItem('saleor_auth_token', data.token || data.access || '');
+                localStorage.setItem('saleor_refresh_token', data.refreshToken || data.refresh || '');
+                localStorage.setItem('saleor_csrf_token', data.csrfToken || '');
+
+                if (data.user) {
+                    localStorage.setItem('saleor_user_email', data.user.email || '');
+                    localStorage.setItem('saleor_user_name',
+                        (data.user.firstName || '') + ' ' + (data.user.lastName || '').trim() || data.user.email || ''
+                    );
+                    localStorage.setItem('saleor_user_is_staff', data.user.isStaff || false);
                 }
 
-                var otpNum = parseInt(otp, 10);
-                if (isNaN(otpNum)) {
-                    showError('Please enter a valid numeric OTP.');
-                    setVerifyOtpLoading(false);
-                    return;
-                }
+                showSuccess('Login successful! Redirecting...');
 
-                window.verifyOtp(otpNum,
-                    function(data) {
-                        console.log('OTP verified successfully, token data:', data);
-
-                        var token = extractMsg91Token(data);
-                        if (!token) {
-                            console.error('Failed to extract token from MSG91 response:', data);
-                            showError('Failed to process verification token from MSG91.');
-                            setVerifyOtpLoading(false);
-                            return;
-                        }
-
-                        var phoneWithPlus = '+91' + verifiedMobile;
-                        sendToDjango(token, phoneWithPlus);
-                    },
-                    function(errorData) {
-                        console.error('MSG91 verifyOtp error:', errorData);
-                        showError(errorData?.message || 'Invalid or expired OTP.');
-                        setVerifyOtpLoading(false);
-                    }
-                );
+                // setTimeout(function() {
+                //     window.location.href = 'https://b-oneinterior.com/';
+                // }, 1500);
+            })
+            .catch(function(err) {
+                console.error('Verify OTP error:', err);
+                showError(err.message || 'Invalid or expired OTP.');
+                setVerifyOtpLoading(false);
             });
         });
 
