@@ -1879,6 +1879,10 @@
                                     node {
                                         id
                                         name
+                                        backgroundImage {
+                                            url
+                                            alt
+                                        }
                                         parent { id name }
                                     }
                                 }
@@ -2879,11 +2883,14 @@
             input.addEventListener('input', () => {
                 const q = input.value.trim();
                 setShopSearchQuery(q);
-                if (q.split(/\s+/).filter(Boolean).length >= 4) {
-                    clearTimeout(searchDebounceTimer);
-                    searchDebounceTimer = setTimeout(() => searchProductsAPI(q), 300);
+                
+                if (q.length > 3) {
+                    searchProductsAPI(q);                    
+                    console.log("----------inside");
+                    // clearTimeout(searchDebounceTimer);
+                    // searchDebounceTimer = setTimeout(() => searchProductsAPI(q), 300);
                 } else {
-                    clearTimeout(searchDebounceTimer);
+                    // clearTimeout(searchDebounceTimer);
                     applyShopFilters();
                 }
             });
