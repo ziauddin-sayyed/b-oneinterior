@@ -114,7 +114,7 @@
             class="md:hidden fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
             <div class="flex items-center justify-between gap-3 min-h-[48px]">
                 <div id="shopSearchStickyWrap" class="relative flex-1">
-                    <input type="text" id="shopSearchInput" placeholder="Search products..."
+                    <input type="text" id="shopSearchInput" placeholder="Search products..." autocomplete="off"
                         class="w-full pl-10 pr-20 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,9 +144,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
                         </svg>
                     </button>
-                    <div id="shopSearchResultsMobile"
-                        class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto p-2 w-full">
-                    </div>
                 </div>
                 <button onclick="toggleDrawer()" aria-label="Open menu"
                     class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 shrink-0">
@@ -386,7 +383,7 @@
             async function loadTechnicians() {
                 const query = `
                 query {
-                    pages(first: 100) {
+                    pages(first: 10) {
                         edges {
                             node {
                                 id
@@ -770,7 +767,7 @@
                     <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
                         <!-- Search -->
                         <div id="shopSearchStickyWrapDesktop" class="relative flex-1 w-full hidden md:block">
-                            <input type="text" id="shopSearchInput" placeholder="Search products..."
+                    <input type="text" id="shopSearchInput" placeholder="Search products..." autocomplete="off"
                                 class="w-full pl-10 pr-28 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
                             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -801,9 +798,6 @@
                                         d="M12 19v4m-4 0h8" />
                                 </svg>
                             </button>
-                            <div id="shopSearchResultsDesktop"
-                                class="hidden absolute left-0 right-0 top-[calc(100%+8px)] z-[90] bg-[#111]/95 backdrop-blur-md border border-gold-500/20 rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
-                            </div>
                         </div>
                         <!-- Price Filter (hidden when category is All) -->
                         <div id="shopPriceFilter"
@@ -1705,7 +1699,8 @@
 
             shopLoadObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && shopHasNextPage && !shopLoadingMore) {
+                    const searchQ = getShopSearchQuery();
+                    if (entry.isIntersecting && shopHasNextPage && !shopLoadingMore && searchQ.split(/\s+/).filter(Boolean).length < 4) {
                         loadMoreShopProducts();
                     }
                 });
@@ -2107,10 +2102,8 @@
                 : shopSearchFilteredProducts();
             const displayItems = searchQuery ? getShopSearchDisplayItems(searchable, searchQuery) : filtered;
 
-            renderShopSearchDropdown(searchQuery);
             renderShopDesktopList(displayItems);
             renderShopMobileList(displayItems);
-            loadCollections();
         }
 
         function renderShopDesktopList(products) {
@@ -2151,32 +2144,6 @@
             mb.innerHTML = bottomItems.map(p => renderProductCard(p, true)).join("");
             initShopCardStates();
             initShopCarousels();
-        }
-
-        function renderShopSearchDropdown(query, forceShow = false) {
-            const mobileDropdown = document.getElementById("shopSearchResultsMobile");
-            const desktopDropdown = document.getElementById("shopSearchResultsDesktop");
-            const q = (query || "").trim().toLowerCase();
-
-            if (!mobileDropdown || !desktopDropdown) return;
-
-            if (!q && !forceShow) {
-                mobileDropdown.classList.add('hidden');
-                desktopDropdown.classList.add('hidden');
-                mobileDropdown.innerHTML = '';
-                desktopDropdown.innerHTML = '';
-                return;
-            }
-
-            const items = getShopSearchDropdownItems(query);
-            const html = items.length
-                ? items.map(item => renderShopSearchDropdownItem(item)).join("")
-                : `<div class="px-4 py-5 text-center text-gray-400 text-sm">No products found</div>`;
-
-            mobileDropdown.innerHTML = html;
-            desktopDropdown.innerHTML = html;
-            mobileDropdown.classList.remove('hidden');
-            desktopDropdown.classList.remove('hidden');
         }
 
         function renderShopSearchDropdownItem(item) {
@@ -2368,7 +2335,7 @@
 
             const query = `
             query {
-            products(first: 100, channel: "in", filter: { isPublished: true }) {
+            products(first: 10, channel: "in", filter: { isPublished: true }) {
                 edges {
                 node {
                     id
@@ -2449,7 +2416,7 @@
         async function loadLotAndTrending() {
             const query = `
             query {
-                collections(first: 20, channel: "in") {
+                collections(first: 10, channel: "in") {
                     edges {
                         node {
                             name
@@ -2506,12 +2473,12 @@
         async function loadCollections() {
             const query = `
             query {
-                collections(first: 20, channel: "in") {
+                collections(first: 10, channel: "in") {
                     edges {
                         node {
                             id
                             name
-                            products(first: 20) {
+                            products(first: 10) {
                                 edges {
                                     node {
                                         id
@@ -2899,10 +2866,6 @@
                 const html = dropdownItems.length
                     ? dropdownItems.map(item => renderShopSearchDropdownItem(item)).join("")
                     : `<div class="px-4 py-5 text-center text-gray-400 text-sm">No products found</div>`;
-                const mobileDropdown = document.getElementById("shopSearchResultsMobile");
-                const desktopDropdown = document.getElementById("shopSearchResultsDesktop");
-                if (mobileDropdown) { mobileDropdown.innerHTML = html; mobileDropdown.classList.remove('hidden'); }
-                if (desktopDropdown) { desktopDropdown.innerHTML = html; desktopDropdown.classList.remove('hidden'); }
 
                 // Update grid
                 renderShopDesktopList(products);
@@ -2916,22 +2879,17 @@
             input.addEventListener('input', () => {
                 const q = input.value.trim();
                 setShopSearchQuery(q);
-                if (q.length > 0) {
+                if (q.split(/\s+/).filter(Boolean).length >= 4) {
                     clearTimeout(searchDebounceTimer);
                     searchDebounceTimer = setTimeout(() => searchProductsAPI(q), 300);
                 } else {
                     clearTimeout(searchDebounceTimer);
                     applyShopFilters();
-                    const mobileDropdown = document.getElementById('shopSearchResultsMobile');
-                    const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
-                    if (mobileDropdown) mobileDropdown.classList.add('hidden');
-                    if (desktopDropdown) desktopDropdown.classList.add('hidden');
                 }
             });
             input.addEventListener('focus', () => {
                 if (shopSearchProductsRaw.length > 0) {
                     setShopSearchQuery(input.value);
-                    renderShopSearchDropdown(input.value, true);
                 }
             });
             input.addEventListener('keydown', (e) => {
@@ -2948,10 +2906,6 @@
                 e.stopPropagation();
                 setShopSearchQuery('');
                 applyShopFilters();
-                const mobileDropdown = document.getElementById('shopSearchResultsMobile');
-                const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
-                if (mobileDropdown) mobileDropdown.classList.add('hidden');
-                if (desktopDropdown) desktopDropdown.classList.add('hidden');
             });
         });
 
@@ -2963,21 +2917,6 @@
             });
         });
 
-        document.addEventListener('click', (e) => {
-            const mobileWrap = document.getElementById('shopSearchStickyWrap');
-            const desktopWrap = document.getElementById('shopSearchStickyWrapDesktop');
-            const mobileDropdown = document.getElementById('shopSearchResultsMobile');
-            const desktopDropdown = document.getElementById('shopSearchResultsDesktop');
-            const target = e.target;
-
-            const clickedInsideMobile = mobileWrap && mobileWrap.contains(target);
-            const clickedInsideDesktop = desktopWrap && desktopWrap.contains(target);
-
-            if (!clickedInsideMobile && !clickedInsideDesktop) {
-                if (mobileDropdown) mobileDropdown.classList.add('hidden');
-                if (desktopDropdown) desktopDropdown.classList.add('hidden');
-            }
-        });
 
         // ── Voice Search ─────────────────────────────────────────
         const ShopSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
