@@ -716,7 +716,7 @@
     <!-- Trending Collection Slider (cloned for LOT Items) -->
     <section class="py-3">
         <div class="container mx-auto px-2">
-            <div class="trending-wrapper" style="background:#3c2e1b;border:1px solid #D4AF37;border-radius:8px;padding:8px">
+            <div class="trending-wrapper" style="background:#3c2e1b;border-radius:8px;padding:8px">
                 <h2 class="font-extrabold text-center golden-text uppercase tracking-widest">LOT Items</h2>
                 <div class="overflow-x-auto pb-2 hide-scrollbar">
                     <div id="lotItemsCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
@@ -870,7 +870,7 @@
                 class="text-4xl md:text-5xl font-extrabold text-center gold-gradient-text mb-12 uppercase tracking-widest">
                 Our Transformations</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="0">
+                <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="0">
                     <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
@@ -886,7 +886,7 @@
                     <a href="gallery.html"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="1">
+                <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="1">
                     <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
@@ -902,7 +902,7 @@
                     <a href="gallery.html"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="2">
+                <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="2">
                     <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
@@ -918,7 +918,7 @@
                     <a href="gallery.html"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
-                <div class="before-after-container creative-card overflow-hidden shadow-2xl" data-index="3">
+                <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="3">
                     <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800" alt="After"
                         class="after-img">
                     <div class="after-image">
@@ -1274,7 +1274,7 @@
                 updateCartBadge();
 
                 // Trigger fly-to-cart animation on first add
-                const card = btnElement.closest('.creative-card');
+                const card = btnElement.closest('.creative-card1');
                 const img = card ? card.querySelector('img') : null;
                 if (img) flyToCart(img, '#cartCountBadge');
             } else {
@@ -1422,6 +1422,7 @@
                             variants {
                                 id
                                 name
+                                quantityAvailable
                                 media { url type }
                                 pricing { price { gross { amount currency } } }
                                 attributes {
@@ -2232,7 +2233,14 @@
             return best;
         }
 
+        function isProductOutOfStock(p) {
+            const variants = p.variants || [];
+            if (!variants.length) return false;
+            return variants.every(v => (v.quantityAvailable || 0) <= 0);
+        }
+
         function renderProductCard(p, isMobile = false) {
+            const outOfStock = isProductOutOfStock(p);
             const priceStart = p.pricing?.priceRange?.start?.gross;
             const priceStop = p.pricing?.priceRange?.stop?.gross;
             const currency = priceStart?.currency || 'INR';
@@ -2296,15 +2304,17 @@
             const bestSellerBadge = bestSellerProductIds.has(bestSellerCheckId)
                 ? `<div class="absolute top-2 left-2 gold-gradient-bg text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>`
                 : '';
+            const oosClass = outOfStock ? "grayscale opacity-50" : "";
 
             return `
-                <div class="creative-card flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='${linkUrl}'">
+                <div class="creative-card1 flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='${linkUrl}'">
                     ${badgeHtml}
-                    <div class="relative overflow-hidden aspect-square" id="wrap-${carouselId}">
+                    <div class="relative overflow-hidden aspect-square ${oosClass}" id="wrap-${carouselId}">
                         ${imageHtml}
                         ${carouselNavHtml}
                         ${variantBadge}
                         ${bestSellerBadge}
+                        ${outOfStock ? `<div class="absolute inset-0 flex items-center justify-center z-20"><span class="bg-black/80 text-white/80 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Out of Stock</span></div>` : ""}
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -2387,6 +2397,7 @@
                     variants {
                         id
                         name
+                        quantityAvailable
                         media {
                             url
                         }
@@ -2435,6 +2446,63 @@
             }
         }
 
+        async function loadLotAndTrending() {
+            const query = `
+            query {
+                collections(first: 20, channel: "in") {
+                    edges {
+                        node {
+                            name
+                            products(first: 10) {
+                                edges { node { id name thumbnail { url } } }
+                            }
+                        }
+                    }
+                }
+            }`;
+            try {
+                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const json = await res.json();
+                const collections = json.data?.collections?.edges || [];
+
+                const renderCol = (colName, carouselId, opts = {}) => {
+                    const col = collections.find(c => c.node.name === colName);
+                    if (!col) return;
+                    const carousel = document.getElementById(carouselId);
+                    if (!carousel) return;
+                    const clone = carousel.cloneNode(false);
+                    carousel.parentNode.replaceChild(clone, carousel);
+                    const products = col.node.products?.edges || [];
+                    if (!products.length) return;
+                    shuffleArray(products).forEach(p => clone.appendChild(createSimpleProductItem(p)));
+                    $(clone).owlCarousel({
+                        loop: true, margin: 4, nav: false, dots: true,
+                        responsive: opts.responsive || {
+                            0: { items: 3 },
+                            640: { items: 3 },
+                            768: { items: 4 },
+                            1024: { items: 5 }
+                        }
+                    });
+                };
+
+                renderCol("LOT Items", "lotItemsCarousel");
+                renderCol("Trending", "trendingCarousel", {
+                    responsive: {
+                        0: { items: 1 },
+                        640: { items: 2 },
+                        1024: { items: 4 }
+                    }
+                });
+            } catch (e) {
+                console.error("Failed to load LOT/Trending:", e);
+            }
+        }
+
         async function loadCollections() {
             const query = `
             query {
@@ -2465,6 +2533,7 @@
                                         }
                                         variants {
                                             id
+                                            quantityAvailable
                                             pricing {
                                                 price {
                                                     gross {
@@ -2523,7 +2592,7 @@
                             const formattedPrice = p.node.pricing?.priceRange?.start?.gross?.currency === 'INR' ? `₹${price}` : `${price} ${currency}`;
                             const badge = bestSellerProductIds.has(p.node.id) ? `<div class="absolute top-1 right-1 bg-gold-500 text-black text-[6px] font-black px-1 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>` : '';
                             const div = document.createElement("div");
-                            div.className = "creative-card flex flex-col relative group cursor-pointer h-full";
+                            div.className = "creative-card1 flex flex-col relative group cursor-pointer h-full";
                             div.innerHTML = `
                                 <a href="product.html?id=${p.node.id}" class="block h-full">
                                     <div class="relative overflow-hidden aspect-square">
@@ -2554,53 +2623,6 @@
                     } else {
                         carousel.innerHTML = "<p class='text-center text-white'>No best sellers found.</p>";
                         if (grid) grid.innerHTML = "<p class='text-center text-white col-span-8'>No best sellers found.</p>";
-                    }
-                }
-
-                // 1b. Handle LOT Items Collection
-                const lotItemsCol = collections.find(c => c.node.name === "LOT Items");
-                const lotCarousel = document.getElementById("lotItemsCarousel");
-                if (lotCarousel) {
-                    const lotCarouselClone = lotCarousel.cloneNode(false);
-                    lotCarousel.parentNode.replaceChild(lotCarouselClone, lotCarousel);
-                    if (lotItemsCol && lotItemsCol.node.products.edges.length > 0) {
-                        const lotProducts = shuffleArray(lotItemsCol.node.products.edges);
-                        lotProducts.forEach(p => lotCarouselClone.appendChild(createSimpleProductItem(p)));
-                        $(lotCarouselClone).owlCarousel({
-                            loop: true,
-                            margin: 4,
-                            nav: false,
-                            dots: true,
-                            responsive: {
-                                0: { items: 3 },
-                                640: { items: 3 },
-                                768: { items: 4 },
-                                1024: { items: 5 }
-                            }
-                        });
-                    }
-                }
-
-                // 1c. Handle Trending Collection
-                const trendingCol = collections.find(c => c.node.name === "Trending");
-                const trendCarousel = document.getElementById("trendingCarousel");
-                if (trendCarousel) {
-                    const trendCarouselClone = trendCarousel.cloneNode(false);
-                    trendCarousel.parentNode.replaceChild(trendCarouselClone, trendCarousel);
-                    if (trendingCol && trendingCol.node.products.edges.length > 0) {
-                        const trendProducts = shuffleArray(trendingCol.node.products.edges);
-                        trendProducts.forEach(p => trendCarouselClone.appendChild(createSimpleProductItem(p)));
-                        $(trendCarouselClone).owlCarousel({
-                            loop: true,
-                            margin: 4,
-                            nav: false,
-                            dots: true,
-                            responsive: {
-                                0: { items: 1 },
-                                640: { items: 2 },
-                                1024: { items: 4 }
-                            }
-                        });
                     }
                 }
 
@@ -2679,7 +2701,7 @@
             // }
 
             item.innerHTML = `
-                <a href="product.html?id=${p.node.id}" class="creative-card flex flex-col relative group cursor-pointer h-full">
+                <a href="product.html?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
                     <div class="relative overflow-hidden aspect-square">
                         <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
                         ${isBestSellerCard ? `<div class="absolute top-2 right-2 bg-gold-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>` : ''}
@@ -2705,7 +2727,7 @@
             const item = document.createElement("div");
             item.className = "item px-1";
             item.innerHTML = `
-                <a href="product.html?id=${p.node.id}" class="creative-card flex flex-col relative group cursor-pointer h-full">
+                <a href="product.html?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
                     <div class="relative overflow-hidden aspect-square rounded-lg">
                         <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
@@ -2763,7 +2785,9 @@
                         }, 50);
 
                         loadSearchData();
-                        loadCollections();
+                        loadLotAndTrending();
+            loadLotAndTrending();
+            loadCollections();
 
                         if (state.scrollY) {
                             setTimeout(() => window.scrollTo(0, state.scrollY), 150);
@@ -2777,6 +2801,7 @@
 
             sessionStorage.removeItem('shopFullState');
             loadSearchData();
+            loadLotAndTrending();
             loadCollections();
             fetchShopData();
         }
@@ -2842,6 +2867,7 @@
                             variants {
                                 id
                                 name
+                                quantityAvailable
                                 media { url type }
                                 pricing { price { gross { amount currency } } }
                             }
@@ -3095,6 +3121,7 @@
                             if (typeof applyShopFilters === 'function') applyShopFilters();
                         }
                         if (typeof loadCollections === 'function') {
+                            loadLotAndTrending();
                             loadCollections().then(() => finishRefresh()).catch(() => finishRefresh());
                         } else {
                             finishRefresh();

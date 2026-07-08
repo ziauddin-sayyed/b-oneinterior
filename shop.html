@@ -433,6 +433,12 @@ query {
 
         if (json.errors) {
           const isExpired = json.errors.some(e => e.message === "Signature has expired" || e.extensions?.exception?.code === "ExpiredSignatureError");
+          const isInvalid = json.errors.some(e => e.message === "Signature verification failed" || e.extensions?.exception?.code === "InvalidSignatureError");
+          if (isInvalid) {
+            localStorage.removeItem('saleor_auth_token');
+            localStorage.removeItem('saleor_refresh_token');
+            return fetchSaleor(false);
+          }
           if (isExpired && retry) {
             console.log("Token expired, attempting refresh...");
             const refreshed = await refreshToken();

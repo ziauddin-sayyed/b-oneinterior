@@ -154,6 +154,11 @@
             width: 10px !important;
         }
 
+        .oos-grayscale img {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
         .product-image-carousel img,
         #imageContainer>img,
         #imageContainerMobile>img {
@@ -854,6 +859,12 @@
 
                 if (json.errors) {
                     const isExpired = json.errors.some(e => e.message === "Signature has expired" || e.extensions?.exception?.code === "ExpiredSignatureError");
+                    const isInvalid = json.errors.some(e => e.message === "Signature verification failed" || e.extensions?.exception?.code === "InvalidSignatureError");
+                    if (isInvalid) {
+                        localStorage.removeItem('saleor_auth_token');
+                        localStorage.removeItem('saleor_refresh_token');
+                        return fetchSaleor(query, false);
+                    }
                     if (isExpired && retry) {
                         console.log("Token expired, attempting refresh...");
                         const refreshed = await refreshToken();
@@ -930,13 +941,43 @@
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
 
-        function renderGallery(media, fallbackUrl, altName) {
+        function getCardBadgeHtml(p, fallbackSellingPrice = 0) {
+            let best = null;
+            const consider = (actualRaw, sellingRaw) => {
+                const actualVal = parseFloat(String(actualRaw || "").replace(/[^0-9.]/g, ""));
+                const sellingVal = Number(sellingRaw) || 0;
+                if (isNaN(actualVal) || actualVal <= 0 || sellingVal <= 0 || actualVal <= sellingVal) return;
+                const percent = Math.round(((actualVal - sellingVal) / actualVal) * 100);
+                if (percent <= 0) return;
+                if (!best || percent > best.percent) best = { percent };
+            };
+            const productActual = p.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+            if (productActual) consider(productActual, fallbackSellingPrice);
+            (p.variants || []).forEach(v => {
+                const variantActual = v.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+                const variantSelling = v.pricing?.price?.gross?.amount ?? fallbackSellingPrice;
+                if (variantActual) consider(variantActual, variantSelling);
+            });
+            if (!best) return "";
+            return `<div class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full z-10 shadow">${best.percent}% OFF</div>`;
+        }
+
+        function isProductOutOfStock(p) {
+            const variants = p.variants || [];
+            if (!variants.length) return false;
+            return variants.every(v => (v.quantityAvailable || 0) <= 0);
+        }
+
+        function renderGallery(media, fallbackUrl, altName, oos) {
             // Show Loader
             const spinner = document.getElementById("loadingSpinner");
             spinner.classList.remove("hidden");
 
             const container = document.getElementById("imageContainer");
             const containerMobile = document.getElementById("imageContainerMobile");
+            const oosClass = oos ? "oos-grayscale" : "";
+            if (container) container.className = `rounded-[32px] overflow-hidden shadow-2xl bg-white border border-white/10 aspect-square ${oosClass}`;
+            if (containerMobile) containerMobile.className = `rounded-[32px] overflow-hidden shadow-2xl bg-white border border-white/10 aspect-square ${oosClass}`;
             const $carousel = $('.product-image-carousel');
             if ($carousel.length > 0) {
                 $carousel.trigger('destroy.owl.carousel');
@@ -1217,6 +1258,7 @@
                         id
                         name
                         sku
+                        quantityAvailable
                         media {
                             url
                             type
@@ -1280,7 +1322,8 @@
             }
         }
 
-        function renderIndexStyleProductCard({ id, name, thumbnailUrl, categoryName, priceText, priceValue = 0, currency = 'INR' }) {
+        function renderIndexStyleProductCard({ id, name, thumbnailUrl, categoryName, priceText, priceValue = 0, currency = 'INR', badgeHtml = '', oos = false }) {
+            const oosClass = oos ? "grayscale opacity-50" : "";
             return `
                 <a href="product.html?id=${id}" class="creative-card related-card-root flex flex-col relative group cursor-pointer h-full"
                     data-product-id="${id}"
@@ -1289,8 +1332,10 @@
                     data-product-category="${String(categoryName || 'Decor').replace(/"/g, '&quot;')}"
                     data-product-price="${Number(priceValue) || 0}"
                     data-product-currency="${currency || 'INR'}">
-                    <div class="relative overflow-hidden aspect-square">
+                    <div class="relative overflow-hidden aspect-square ${oosClass}">
                         <img src="${thumbnailUrl || FALLBACK_IMG}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${name}">
+                        ${badgeHtml}
+                        ${oos ? `<div class="absolute inset-0 flex items-center justify-center z-10"><span class="bg-black/80 text-white/80 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Out of Stock</span></div>` : ""}
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -1411,9 +1456,14 @@
                                     }
                                 }
                             }
+                            attributes {
+                                attribute { name }
+                                values { name }
+                            }
                             category { name }
                             variants {
                                 id
+                                quantityAvailable
                                 pricing {
                                     price {
                                         gross {
@@ -1476,14 +1526,18 @@
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
+                    const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+                    const oos = (p.node.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
                     item.innerHTML = renderIndexStyleProductCard({
                         id: p.node.id,
                         name: p.node.name,
                         thumbnailUrl: p.node.thumbnail?.url,
                         categoryName: p.node.category?.name || 'Collection',
                         priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
-                        priceValue: (loggedIn && costPrice !== null) ? costPrice : sellingPrice,
-                        currency
+                        priceValue: displayPrice,
+                        currency,
+                        badgeHtml: getCardBadgeHtml(p.node, displayPrice),
+                        oos
                     });
                     carousel.appendChild(item);
                 });
@@ -1530,9 +1584,14 @@
                                     }
                                 }
                             }
+                            attributes {
+                                attribute { name }
+                                values { name }
+                            }
                             category { name }
                             variants {
                                 id
+                                quantityAvailable
                                 pricing {
                                     price {
                                         gross {
@@ -1592,14 +1651,18 @@
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
+                    const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+                    const oos = (p.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
                     item.innerHTML = renderIndexStyleProductCard({
                         id: p.id,
                         name: p.name,
                         thumbnailUrl: p.thumbnail?.url,
                         categoryName: p.category?.name || 'Collection',
                         priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
-                        priceValue: (loggedIn && costPrice !== null) ? costPrice : sellingPrice,
-                        currency
+                        priceValue: displayPrice,
+                        currency,
+                        badgeHtml: getCardBadgeHtml(p, displayPrice),
+                        oos
                     });
                     grid.appendChild(item);
                 });
@@ -1643,9 +1706,14 @@
                                         }
                                     }
                                 }
+                                attributes {
+                                    attribute { name }
+                                    values { name }
+                                }
                                 category { name }
                                 variants {
                                     id
+                                    quantityAvailable
                                     pricing {
                                         price {
                                             gross {
@@ -1700,7 +1768,9 @@
                     currency = currentPriceObj ? currentPriceObj.currency : 'INR';
                 }
 
-                const formattedPrice = currency === 'INR' ? `₹${(isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice).toFixed(2)}` : `${(isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice).toFixed(2)} ${currency}`;
+                const displayPrice = (isUserLoggedIn() && costPrice !== null) ? costPrice : sellingPrice;
+                const formattedPrice = currency === 'INR' ? `₹${displayPrice.toFixed(2)}` : `${displayPrice.toFixed(2)} ${currency}`;
+                const oos = (p.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
 
                 return `
                 <div class="item px-2 pb-6">
@@ -1710,8 +1780,10 @@
                     thumbnailUrl: p.thumbnail?.url,
                     categoryName: p.category?.name || 'Exclusive',
                     priceText: formattedPrice,
-                    priceValue: (isUserLoggedIn() && costPrice !== null ? costPrice : sellingPrice),
-                    currency
+                    priceValue: displayPrice,
+                    currency,
+                    badgeHtml: getCardBadgeHtml(p, displayPrice),
+                    oos
                 })}
                 </div>
                 `;
@@ -2401,10 +2473,24 @@
 
             // 6. Image Management
             if (selectedVariant?.media?.length > 0) {
-                renderGallery(selectedVariant.media, p.thumbnail?.url, selectedVariant.name);
+                renderGallery(selectedVariant.media, p.thumbnail?.url, selectedVariant.name, isProductOutOfStock(p));
             } else {
-                renderGallery(p.media, p.thumbnail?.url, p.name);
+                renderGallery(p.media, p.thumbnail?.url, p.name, isProductOutOfStock(p));
             }
+
+            // 6a. Out of Stock badge
+            const outOfStock = isProductOutOfStock(p);
+            document.querySelectorAll("#imageContainer, #imageContainerMobile").forEach(el => {
+                const existing = el.querySelector(".oos-badge");
+                if (existing) existing.remove();
+                if (outOfStock) {
+                    const badge = document.createElement("div");
+                    badge.className = "oos-badge absolute inset-0 flex items-center justify-center z-10 pointer-events-none";
+                    badge.innerHTML = `<span class="bg-black/80 text-white/80 text-xs font-black px-4 py-2 rounded-full uppercase tracking-wider">Out of Stock</span>`;
+                    if (el.style.position !== "relative") el.style.position = "relative";
+                    el.appendChild(badge);
+                }
+            });
 
             // 7. Variants & Catalogues
             renderVariants(p.variants);
