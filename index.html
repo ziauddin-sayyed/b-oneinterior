@@ -75,12 +75,10 @@
             }
         }
 
-        #trendingCarousel .item .aspect-square,
-        #lotItemsCarousel .item .aspect-square {
+        #trendingCarousel .item .aspect-square {
             aspect-ratio: 30/9 !important;
         }
-        #trendingCarousel .item .aspect-square img,
-        #lotItemsCarousel .item .aspect-square img {
+        #trendingCarousel .item .aspect-square img {
             object-fit: contain !important;
         }
 
@@ -710,20 +708,134 @@
         </script>
     </header>
 
-    <!-- Trending Collection Slider (cloned for LOT Items) -->
-    <section class="py-3">
-        <div class="container mx-auto px-2">
-            <div class="trending-wrapper" style="background:#3c2e1b;border-radius:8px;padding:8px">
-                <h2 class="font-extrabold text-center golden-text uppercase tracking-widest">LOT Items</h2>
-                <div class="overflow-x-auto pb-2 hide-scrollbar">
-                    <div id="lotItemsCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
+    <!-- Hero Slider -->
+    <section class="hero-slider w-full relative overflow-hidden">
+        <div class="owl-carousel owl-theme w-full" id="heroCarousel">
+
+            <!-- Slide 1 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider1.jpg"
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Premium
+                            Interiors</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Welcome to<br><span class="gold-gradient-text">Our Store</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Discover Amazing Products</p>
+                        <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Shop Now</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="owl-carousel owl-theme" id="lotItemsCarousel"></div>
             </div>
+
+            <!-- Slide 2 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider2.jpg"
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Trusted
+                            Quality</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Quality You<br><span class="gold-gradient-text">Can Trust</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-2 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Premium Products at Great Prices</p>
+                        <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider3.jpg"
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div
+                    class="absolute top-5 right-5 md:top-8 md:right-10 bg-gold-500/20 border border-gold-500/50 backdrop-blur-sm text-gold-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">
+                    ✦ Special Offer
+                </div>
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Exclusive
+                            Deals</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Special<br><span class="gold-gradient-text">Offers</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Save Big This Season</p>
+                        <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider4.jpg"
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Luxury
+                            Living</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Timeless<br><span class="gold-gradient-text">Elegance</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Designed for Modern Living</p>
+                        <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="item relative w-full overflow-hidden">
+                <img src="slider5.jpg"
+                    class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <div class="px-6 md:px-16 max-w-2xl">
+                        <span
+                            class="inline-block text-[9px] md:text-[11px] font-black uppercase tracking-[0.5em] text-gold-500 mb-3 opacity-80">Comfort
+                            & Style</span>
+                        <h1 class="text-3xl md:text-6xl font-black text-white leading-tight mb-2">
+                            Comfort Meets<br><span class="gold-gradient-text">Style</span>
+                        </h1>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="h-px w-10 bg-gold-500 flex-shrink-0"></div>
+                            <p class="text-gray-300 text-xs md:text-base">Experience Luxury at Home</p>
+                        <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <!-- Trending Collection Slider -->
+    <!--
     <section class="py-3">
         <div class="container mx-auto px-2">
             <div class="trending-wrapper" style="border:1px solid #D4AF37;border-radius:8px;padding:8px">
@@ -732,6 +844,7 @@
             </div>
         </div>
     </section>
+    -->
 
     <!-- PRODUCT CAROUSEL SECTION (hidden)
     <section class="py-6">
@@ -827,8 +940,9 @@
                         <div id="shopCategoryFilter" class="flex gap-6 min-w-max px-2"></div>
                     </div>
                     <div id="shopSubcategoryFilter" class="overflow-x-auto pb-2 hide-scrollbar mt-4 hidden">
-                        <div class="flex gap-6 min-w-max px-2"></div>
+                        <div class="flex gap-1 px-2" style="width:max-content"></div>
                     </div>
+                    <div id="shopSubcatDots" class="flex justify-center gap-1.5 mt-2 hidden"></div>
                 </div>
 
                 <!-- Product Display Top -->
@@ -1990,6 +2104,13 @@
                         } else {
                             await fetchShopSubcategories(selectedShopParentCategory);
                             renderShopSubcategoryFilters(selectedShopParentCategory);
+                            setTimeout(() => {
+                                const el = document.getElementById("shopSubcategoryFilter");
+                                if (el) {
+                                    const top = el.getBoundingClientRect().top + window.scrollY - 100;
+                                    window.scrollTo({ top, behavior: "smooth" });
+                                }
+                            }, 100);
                         }
 
                         shopAllProducts = [];
@@ -2018,31 +2139,71 @@
 
             if (subs.length === 0) {
                 container.classList.add("hidden");
+                document.getElementById("shopSubcatDots").classList.add("hidden");
                 return;
             }
 
             const activeSub = getActiveShopSubcategory();
             inner.innerHTML = `
                 <div class="shop-sub-filter group flex flex-col items-center cursor-pointer transition-all ${activeSub === 'all' ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-subcategory="all">
-                    <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
-                        <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
+                    <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                        <ion-icon name="grid-outline" class="text-2xl text-gold-500"></ion-icon>
                     </div>
-                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter ${activeSub === 'all' ? 'underline underline-offset-4' : ''}">All</span>
+                    <span class="text-[9px] font-bold text-white mt-1.5 uppercase tracking-tighter ${activeSub === 'all' ? 'underline underline-offset-4' : ''}">All</span>
                 </div>
                 ${subs.map(s => `
                     <div class="shop-sub-filter group flex flex-col items-center cursor-pointer transition-all ${activeSub === s.id ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-subcategory="${s.id}">
-                        <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors">
                             ${s.backgroundImage?.url
                     ? `<img src="${s.backgroundImage.url}" class="w-full h-full object-cover">`
-                    : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-3xl text-gold-500"></ion-icon></div>`
+                    : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-2xl text-gold-500"></ion-icon></div>`
                 }
                         </div>
-                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center ${activeSub === s.id ? 'underline underline-offset-4' : ''}">${s.name}</span>
+                        <span class="text-[9px] font-bold text-white mt-1.5 uppercase tracking-tighter w-14 text-center ${activeSub === s.id ? 'underline underline-offset-4' : ''}">${s.name}</span>
                     </div>
                 `).join("")}
             `;
 
             container.classList.remove("hidden");
+
+            // Dots navigation
+            const dotsContainer = document.getElementById("shopSubcatDots");
+            const totalItems = subs.length + 1; // +1 for "All"
+            const perPage = 10;
+            const pages = Math.ceil(totalItems / perPage);
+            if (pages <= 1) {
+                dotsContainer.classList.add("hidden");
+            } else {
+                dotsContainer.classList.remove("hidden");
+                dotsContainer.innerHTML = Array.from({ length: pages }, (_, i) =>
+                    `<button class="w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-gold-500 w-4' : 'bg-white/30 hover:bg-white/50'}" data-page="${i}"></button>`
+                ).join("");
+                dotsContainer.querySelectorAll("button").forEach(btn => {
+                    btn.onclick = () => {
+                        const page = parseInt(btn.dataset.page);
+                        const itemWidth = inner.children[0]?.offsetWidth || 60;
+                        const gap = 4;
+                        const scrollTo = page * perPage * (itemWidth + gap);
+                        container.scrollTo({ left: scrollTo, behavior: "smooth" });
+                    };
+                });
+                let scrollTimer;
+                container.onscroll = () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        const scrollLeft = container.scrollLeft;
+                        const itemWidth = inner.children[0]?.offsetWidth || 60;
+                        const gap = 4;
+                        const step = perPage * (itemWidth + gap);
+                        const activePage = Math.round(scrollLeft / step);
+                        dotsContainer.querySelectorAll("button").forEach((b, i) => {
+                            b.className = i === activePage
+                                ? "w-4 h-2 rounded-full bg-gold-500 transition-all"
+                                : "w-2 h-2 rounded-full bg-white/30 hover:bg-white/50 transition-all";
+                        });
+                    }, 100);
+                };
+            }
 
             container.querySelectorAll('.shop-sub-filter').forEach(btn => {
                 btn.onclick = async () => {
@@ -2461,7 +2622,6 @@
                     });
                 };
 
-                renderCol("LOT Items", "lotItemsCarousel");
                 renderCol("Trending", "trendingCarousel", {
                     responsive: {
                         0: { items: 1 },
@@ -3091,6 +3251,52 @@
                     }, 300);
                 }, 500);
             }
+        });
+    </script>
+
+    <!-- Login Prompt Modal -->
+    <div id="loginPromptModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-[#111] border border-gold-500/30 rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl relative">
+            <button id="loginPromptClose" class="absolute top-3 right-3 text-white/50 hover:text-white transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <div class="text-center">
+                <div class="w-14 h-14 rounded-full bg-gold-500/10 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Welcome!</h3>
+                <p class="text-gray-400 text-sm mb-6">Login to your account for a better shopping experience.</p>
+                <a href="login.html" class="block w-full gold-gradient-bg text-black py-3 rounded-xl font-bold text-sm mb-3 hover:scale-[1.02] transition transform">Login</a>
+                <button id="loginPromptSkip" class="w-full text-gray-500 text-sm hover:text-white transition">Skip for now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) {
+                const modal = document.getElementById('loginPromptModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            document.getElementById('loginPromptClose').onclick = () => {
+                document.getElementById('loginPromptModal').classList.add('hidden');
+                document.getElementById('loginPromptModal').classList.remove('flex');
+            };
+
+            document.getElementById('loginPromptSkip').onclick = () => {
+                document.getElementById('loginPromptModal').classList.add('hidden');
+                document.getElementById('loginPromptModal').classList.remove('flex');
+            };
+
+            document.getElementById('loginPromptModal').onclick = (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('loginPromptModal').classList.add('hidden');
+                    document.getElementById('loginPromptModal').classList.remove('flex');
+                }
+            };
         });
     </script>
 </body>
