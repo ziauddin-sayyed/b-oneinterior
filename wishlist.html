@@ -575,6 +575,41 @@
             const searchInput = document.getElementById('homeSearchInput');
             const searchDropdown = document.getElementById('searchDropdown');
 
+            function getSearchHistory() {
+                try { return JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch { return []; }
+            }
+
+            function saveSearchQuery(query) {
+                query = query.trim();
+                if (!query) return;
+                let history = getSearchHistory();
+                history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
+                history.unshift(query);
+                if (history.length > 5) history = history.slice(0, 5);
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+            }
+
+            function renderSearchHistory() {
+                if (!searchDropdown) return;
+                const history = getSearchHistory();
+                if (history.length === 0) {
+                    searchDropdown.classList.add('hidden');
+                    return;
+                }
+                const html = `
+                    <div class="p-2 text-xs text-gray-400 font-semibold uppercase tracking-wider border-b border-gray-100">Recent Searches</div>
+                    ${history.map(q => `
+                        <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                             onclick="document.getElementById('homeSearchInput').value='${q.replace(/'/g, "\\'")}'; document.getElementById('homeSearchInput').dispatchEvent(new Event('input'));">
+                            <ion-icon name="time-outline" class="text-gray-400 shrink-0"></ion-icon>
+                            <span class="text-sm text-gray-700">${q}</span>
+                        </div>
+                    `).join('')}
+                `;
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.remove('hidden');
+            }
+
             if (searchInput && searchDropdown) {
                 // Hide dropdown when clicking outside
                 document.addEventListener('click', function (e) {
@@ -583,11 +618,19 @@
                     }
                 });
 
+                searchInput.addEventListener('focus', function () {
+                    if (this.value.trim().length === 0) renderSearchHistory();
+                });
+
+                searchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') saveSearchQuery(this.value);
+                });
+
                 searchInput.addEventListener('input', function (e) {
                 const query = this.value.trim().toLowerCase();
 
                 if (query.length === 0) {
-                    searchDropdown.classList.add('hidden');
+                    renderSearchHistory();
                     return;
                 }
 
@@ -631,6 +674,7 @@
         }
 
             function renderDropdown(items) {
+                const query = searchInput.value.trim();
                 if (items.length === 0) {
                     searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
                     searchDropdown.classList.remove('hidden');
@@ -644,7 +688,7 @@
 
                     return `
                     <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
-                         onclick="window.location.href='product.html?id=${item.id}'">
+                         onclick="saveSearchQuery('${query.replace(/'/g, "\\'")}'); window.location.href='product.html?id=${item.id}'">
                         <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
                         <div>
                             <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>

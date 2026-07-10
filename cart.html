@@ -418,59 +418,105 @@
         const searchInput = document.getElementById('homeSearchInput');
         const searchDropdown = document.getElementById('searchDropdown');
 
-        if (searchInput && searchDropdown) {
-            // Hide dropdown when clicking outside
-            document.addEventListener('click', function (e) {
-            if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
-                searchDropdown.classList.add('hidden');
-            }
-        });
+        function getSearchHistory() {
+            try { return JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch { return []; }
+        }
 
-        searchInput.addEventListener('input', function (e) {
-            const query = this.value.trim().toLowerCase();
+        function saveSearchQuery(query) {
+            query = query.trim();
+            if (!query) return;
+            let history = getSearchHistory();
+            history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
+            history.unshift(query);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
 
-            if (query.length === 0) {
+        function renderSearchHistory() {
+            if (!searchDropdown) return;
+            const history = getSearchHistory();
+            if (history.length === 0) {
                 searchDropdown.classList.add('hidden');
                 return;
             }
+            const html = `
+                <div class="p-2 text-xs text-gray-400 font-semibold uppercase tracking-wider border-b border-gray-100">Recent Searches</div>
+                ${history.map(q => `
+                    <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                         onclick="document.getElementById('homeSearchInput').value='${q.replace(/'/g, "\\'")}'; document.getElementById('homeSearchInput').dispatchEvent(new Event('input'));">
+                        <ion-icon name="time-outline" class="text-gray-400 shrink-0"></ion-icon>
+                        <span class="text-sm text-gray-700">${q}</span>
+                    </div>
+                `).join('')}
+            `;
+            searchDropdown.innerHTML = html;
+            searchDropdown.classList.remove('hidden');
+        }
 
-            if (window.allProducts && window.allProducts.length > 0) {
-                const results = [];
+        if (searchInput && searchDropdown) {
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
 
-                window.allProducts.forEach(p => {
-                    const product = p.node;
-                    const productName = product.name.toLowerCase();
-                    // १. प्रोडक्ट का नाम चेक करें
-                    if (productName.includes(query)) {
-                        results.push({
-                            id: product.id,
-                            name: product.name,
-                            thumbnail: product.thumbnail?.url,
-                            price: product.pricing?.priceRange?.start?.gross?.amount,
-                            currency: product.pricing?.priceRange?.start?.gross?.currency
-                        });
-                    }
+            searchInput.addEventListener('focus', function () {
+                const query = this.value.trim();
+                if (query.length === 0) {
+                    renderSearchHistory();
+                }
+            });
 
-                    // २. वेरिएंट्स के नाम चेक करें
-                    if (product.variants) {
-                        product.variants.forEach(v => {
-                            if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
-                                console.log('v.name.toLowerCase().includes(query)==============', v)
-                                results.push({
-                                    id: v.id, // वेरिएंट की ID
-                                    name: `${v.name}`,
-                                    thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
-                                    price: v.pricing?.price?.gross?.amount,
-                                    currency: v.pricing?.price?.gross?.currency
-                                });
-                            }
-                        });
-                    }
-                });
+            searchInput.addEventListener('input', function () {
+                const query = this.value.trim().toLowerCase();
 
-                renderDropdown(results);
-            }
-        });
+                if (query.length === 0) {
+                    renderSearchHistory();
+                    return;
+                }
+
+                if (window.allProducts && window.allProducts.length > 0) {
+                    const results = [];
+
+                    window.allProducts.forEach(p => {
+                        const product = p.node;
+                        const productName = product.name.toLowerCase();
+
+                        if (productName.includes(query)) {
+                            results.push({
+                                id: product.id,
+                                name: product.name,
+                                thumbnail: product.thumbnail?.url,
+                                price: product.pricing?.priceRange?.start?.gross?.amount,
+                                currency: product.pricing?.priceRange?.start?.gross?.currency
+                            });
+                        }
+
+                        if (product.variants) {
+                            product.variants.forEach(v => {
+                                if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                    results.push({
+                                        id: v.id,
+                                        name: `${v.name}`,
+                                        thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                        price: v.pricing?.price?.gross?.amount,
+                                        currency: v.pricing?.price?.gross?.currency
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    renderDropdown(results);
+                }
+            });
+
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    saveSearchQuery(this.value);
+                }
+            });
         }
 
         function renderDropdown(items) {
@@ -487,15 +533,15 @@
 
                 return `
                     <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
-                         onclick="window.location.href='product.html?id=${item.id}'">
-                        <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
-                            <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                     onclick="saveSearchQuery(searchInput.value.trim()); window.location.href='product.html?id=${item.id}'">
+                            <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
+                                <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                            </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
 
             searchDropdown.innerHTML = html;
             searchDropdown.classList.remove('hidden');

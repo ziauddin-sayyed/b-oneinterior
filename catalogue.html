@@ -329,6 +329,38 @@
         const searchInput = document.getElementById('searchInput');
         const searchDropdown = document.getElementById('searchDropdown');
 
+        function getSearchHistory() {
+            return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        }
+
+        function saveSearchQuery(query) {
+            if (!query.trim()) return;
+            let history = getSearchHistory();
+            const idx = history.findIndex(item => item.toLowerCase() === query.toLowerCase());
+            if (idx > -1) history.splice(idx, 1);
+            history.unshift(query);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+
+        function renderSearchHistory() {
+            if (!searchDropdown) return;
+            const history = getSearchHistory();
+            if (history.length === 0) {
+                searchDropdown.classList.add('hidden');
+                return;
+            }
+            const html = history.map(item => `
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                     onclick="document.getElementById('searchInput').value='${item.replace(/'/g, "\\'")}'; document.getElementById('searchInput').dispatchEvent(new Event('input'));">
+                    <ion-icon name="time-outline" class="text-gray-400 text-lg"></ion-icon>
+                    <span class="text-sm text-gray-700">${item}</span>
+                </div>
+            `).join('');
+            searchDropdown.innerHTML = html;
+            searchDropdown.classList.remove('hidden');
+        }
+
         // Hide dropdown when clicking outside
         document.addEventListener('click', function (e) {
             if (searchInput && !searchInput.contains(e.target) && searchDropdown && !searchDropdown.contains(e.target)) {
@@ -336,7 +368,13 @@
             }
         });
 
-        if (searchInput) {
+        if (searchInput && searchDropdown) {
+            searchInput.addEventListener('focus', function () {
+                if (this.value.trim().length === 0) {
+                    renderSearchHistory();
+                }
+            });
+
             searchInput.addEventListener('input', function (e) {
                 const query = this.value.trim().toLowerCase();
 
@@ -346,7 +384,7 @@
                 }
 
                 if (query.length === 0) {
-                    searchDropdown.classList.add('hidden');
+                    renderSearchHistory();
                     return;
                 }
 
@@ -355,7 +393,6 @@
 
                     window.allProducts.forEach(product => {
                         const productName = product.name.toLowerCase();
-                        // १. प्रोडक्ट का नाम चेक करें
                         if (productName.includes(query)) {
                             results.push({
                                 id: product.id,
@@ -366,12 +403,11 @@
                             });
                         }
 
-                        // २. वेरिएंट्स के नाम चेक करें
                         if (product.variants) {
                             product.variants.forEach(v => {
                                 if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
                                     results.push({
-                                        id: v.id, // वेरिएंट की ID
+                                        id: v.id,
                                         name: `${v.name}`,
                                         thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
                                         price: v.pricing?.price?.gross?.amount,
@@ -383,6 +419,12 @@
                     });
 
                     renderDropdown(results);
+                }
+            });
+
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    saveSearchQuery(this.value);
                 }
             });
         }
@@ -402,7 +444,7 @@
 
                 return `
                         <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
-                             onclick="window.location.href='product.html?id=${item.id}'">
+                             onclick="saveSearchQuery(document.getElementById('searchInput').value); window.location.href='product.html?id=${item.id}'">
                             <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
                             <div>
                                 <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
