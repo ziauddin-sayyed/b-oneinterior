@@ -141,14 +141,6 @@
                     <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
-            <button onclick="toggleDrawer()"
-                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
         </div>
 
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
@@ -223,22 +215,17 @@
         </div>
         <label for="menu-toggle" class="overlay"></label>
 
-        <div class="fixedBottom">
-            <button onclick="history.back()" class="logoBx" style="background:none;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
+        <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;">
+            <button onclick="history.back()" class="logoBx"></button>
             <ul>
-                <li>
-                    <a href="https://b-oneinterior.com/help"
+                <li class="relative">
+                    <a href="profile.html"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" stroke="currentColor"
-                                stroke-width="2" />
-                            <text x="12" y="15" text-anchor="middle" font-size="10" fill="currentColor">?</text>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        <div class="text-[12px]  tracking-tighter">Help</div>
+                        <div class="text-[12px] tracking-tighter">Account</div>
                     </a>
                 </li>
                 <li class="relative">
@@ -250,42 +237,36 @@
                                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                             </path>
                         </svg>
-                        <div class="text-[12px]  tracking-tighter">Wishlist</div>
+                        <div class="text-[12px] tracking-tighter">Wishlist</div>
                         <span
                             class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
                             style="display:none;"></span>
                     </a>
                 </li>
-
-                <li class="mt-7"> Home<!-- Center Logo Spacer --></li>
-
-                <li>
-                    <a href="https://b-oneinterior.com/catalogue"
-                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        <div class="text-[12px]  tracking-tighter">Catalogue</div>
-                    </a>
-                </li>
-
+                <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home</li>
                 <li class="relative">
-                    <a href="https://b-oneinterior.com/cart"
-                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90 underline">
+                    <a id="mobileCartLink" href="https://b-oneinterior.com/cart"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gold">
                             <circle cx="9" cy="21" r="1"></circle>
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
-                        <div class="text-[12px] font-black tracking-tighter text-gold">Cart</div>
+                        <div class="text-[12px] font-black tracking-tighter underline text-gold">Cart</div>
                         <span id="cartCountBadge"
                             class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
                         </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="toggleDrawer(); return false;"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M3 6H21"/><path d="M3 12H21"/><path d="M3 18H21"/>
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Menu</div>
                     </a>
                 </li>
             </ul>
@@ -749,7 +730,7 @@ ${isSample ? '' : `                    <p class="text-xs font-bold text-white/80
                     <button onclick="openAddressModal()" 
                         class="w-full md:w-auto h-20 bg-blue-600 px-6 rounded-[24px] text-white font-black uppercase text-sm tracking-[0.2em] hover:opacity-90 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
                         <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
-                        Get Samples
+                        Send Query
                     </button>
                 </div>
                 `;
@@ -761,11 +742,18 @@ ${isSample ? '' : `                    <p class="text-xs font-bold text-white/80
                 <p class="text-[10px] font-black text-white/60 uppercase tracking-[0.3em] mb-2">Total Inquiry Estimate</p>
                 <p class="text-5xl md:text-6xl font-black gold-gradient-text tracking-tighter leading-none">₹${grandTotal.toFixed(2)}</p>
             </div>
-            <button onclick="openAddressModal()" 
-                class="w-full md:w-auto h-20 gold-gradient-bg px-3 rounded-[24px] text-black font-black uppercase text-sm tracking-[0.2em] hover:opacity-90 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
-                <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
-                Inquire on Whatsapp
-            </button>
+            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                <button onclick="openAddressModal()" 
+                    class="w-full md:w-auto h-20 gold-gradient-bg px-3 rounded-[24px] text-black font-black uppercase text-sm tracking-[0.2em] hover:opacity-90 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
+                    <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
+                    Send Query
+                </button>
+                <a href="checkout.html" 
+                    class="w-full md:w-auto h-20 bg-white/10 border border-gold-500/30 px-3 rounded-[24px] text-white font-black uppercase text-sm tracking-[0.2em] hover:bg-white/20 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
+                    <ion-icon name="cart-outline" class="text-3xl text-gold-500"></ion-icon>
+                    Place Order
+                </a>
+            </div>
         </div>
         <p class="text-center text-white/40 text-[9px] uppercase tracking-widest mt-6">Secure checkout provided by B-One Interior Design Team</p>
       `;
