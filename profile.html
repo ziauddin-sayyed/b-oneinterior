@@ -211,18 +211,6 @@
                     <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
-             <div class="relative flex-1 min-w-0">
-                <input type="text" id="profileSearchInput" placeholder="Search products..." autocomplete="off"
-                    class="w-full pl-9 pr-4 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500"
-                    onkeydown="if(event.key==='Enter'){event.preventDefault();saveSearchQuery(this.value);window.location.href='prodcut-list.html?q='+encodeURIComponent(this.value.trim())}">
-                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/70 pointer-events-none"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                <div id="profileSearchDropdown"
-                    class="hidden absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gold-500/30 rounded-xl overflow-hidden z-50 shadow-2xl">
-                </div>
-            </div>
         </div>
         <div class="md:hidden h-[59px]"></div>
     </header>
@@ -331,29 +319,6 @@
             history.unshift(query);
             if (history.length > 5) history = history.slice(0, 5);
             localStorage.setItem('searchHistory', JSON.stringify(history));
-        }
-
-        function renderSearchHistory() {
-            const dd = document.getElementById('profileSearchDropdown');
-            const input = document.getElementById('profileSearchInput');
-            if (!dd) return;
-            const history = getSearchHistory();
-            if (history.length === 0) {
-                dd.classList.add('hidden');
-                return;
-            }
-            const html = `
-                <div class="p-2 text-xs text-gray-400 font-semibold uppercase tracking-wider border-b border-gold-500/20">Recent Searches</div>
-                ${history.map(q => `
-                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-gold-500/10 cursor-pointer border-b border-gold-500/10 last:border-0"
-                         onclick="document.getElementById('profileSearchDropdown').classList.add('hidden'); var inp=document.getElementById('profileSearchInput'); inp.value='${q.replace(/'/g, "\\'")}'; inp.dispatchEvent(new Event('input')); inp.focus();">
-                        <ion-icon name="time-outline" class="text-gold-500/60 shrink-0 text-lg"></ion-icon>
-                        <span class="text-sm text-gray-300">${q}</span>
-                    </div>
-                `).join('')}
-            `;
-            dd.innerHTML = html;
-            dd.classList.remove('hidden');
         }
 
         // ─── Drawer ──────────────────────────────────────────────────
@@ -557,23 +522,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             fetchOrders();
-
-            const pInput = document.getElementById('profileSearchInput');
-            const pDD = document.getElementById('profileSearchDropdown');
-            if (pInput && pDD) {
-                pInput.addEventListener('focus', () => {
-                    if (!pInput.value.trim()) renderSearchHistory();
-                });
-                pInput.addEventListener('input', () => {
-                    if (!pInput.value.trim()) renderSearchHistory();
-                    else pDD.classList.add('hidden');
-                });
-                document.addEventListener('click', (e) => {
-                    if (!pDD.contains(e.target) && !pInput.contains(e.target)) {
-                        pDD.classList.add('hidden');
-                    }
-                });
-            }
         });
     </script>
 
