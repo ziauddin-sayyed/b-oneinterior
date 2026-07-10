@@ -623,7 +623,11 @@
                 });
 
                 searchInput.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter') saveSearchQuery(this.value);
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveSearchQuery(this.value);
+                        window.location.href = 'prodcut-list.html?q=' + encodeURIComponent(this.value.trim());
+                    }
                 });
 
                 searchInput.addEventListener('input', function (e) {

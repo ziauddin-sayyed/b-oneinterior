@@ -3304,8 +3304,9 @@
 
         shopSearchInputs.forEach(input => {
             input.addEventListener('input', () => {
-                const q = input.value.trim();
-                setShopSearchQuery(q);
+                const raw = input.value;
+                const q = raw.trim();
+                setShopSearchQuery(raw);
 
                 if (q.length > 3) {
                     searchProductsAPI(q);                    

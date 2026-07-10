@@ -87,16 +87,28 @@
       </ul>
     </nav>
 
-    <div id="drawer">
+    <div id="drawer" style="z-index: 99999;">
       <ul>
         <li><a href="https://b-oneinterior.com">Home</a></li>
-        <li><a href="https://b-oneinterior.com/catalogue">Catalogue</a></li>
-        <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
-        <li><a href="https://b-oneinterior.com/cart">Cart</a></li>
+        <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
         <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+        <li><a href="terms.html">Terms and Conditions</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li id="authLinkDrawer"></li>
       </ul>
+      <div id="drawer-social">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">Connect With Us</p>
+        <div class="social-grid">
+          <a href="tel:+917738130131" target="_blank"><img src="images/call_icon.png" alt=""><span>Call</span></a>
+          <a href="https://wa.me/+917738130131" target="_blank"><img src="images/whatsapp.png" alt=""><span>WhatsApp</span></a>
+          <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank"><img src="images/facebook.png" alt=""><span>Facebook</span></a>
+          <a href="https://www.instagram.com/bone.interior.solution" target="_blank"><img src="images/instagram.png" alt=""><span>Instagram</span></a>
+          <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank"><img src="images/youtube.png" alt=""><span>YouTube</span></a>
+          <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank"><img src="images/map_marker.png" alt=""><span>Location</span></a>
+        </div>
+      </div>
     </div>
-    <label class="overlay"></label>
+    <label for="menu-toggle" class="overlay" style="z-index: 99998;"></label>
   </header>
 
   <main class="container mx-auto px-4 pb-8 mb-24">
@@ -119,7 +131,7 @@
     <div id="resultGrid" class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6"></div>
   </main>
 
-  <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;">
+  <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;z-index: 25;">
     <a href="https://b-oneinterior.com/" class="logoBx"></a>
     <ul>
       <li class="relative">
@@ -270,7 +282,7 @@
           <a href="product.html?id=${item.linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
               <img src="${imgUrl}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
-              ${savePercent ? `<span class="absolute top-2 right-2 bg-[#dc2626] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">${savePercent}% OFF</span>` : ""}
+              ${savePercent ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">${savePercent}% OFF</span>` : ""}
             </div>
             <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
               <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${escapeHtml(p.category?.name || "Decor")}</span>

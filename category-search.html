@@ -57,7 +57,12 @@
                 <div class="relative flex-1">
                     <input type="text" id="catSearchInput" placeholder="Search products..."
                         class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500"
-                        oninput="filterProducts(this.value)">
+                        oninput="filterProducts(this.value)"
+                        onkeydown="if(event.key==='Enter'){event.preventDefault();saveSearchQuery(this.value);window.location.href='prodcut-list.html?q='+encodeURIComponent(this.value.trim())}"
+                        autocomplete="off">
+                    <div id="catSearchDropdown"
+                        class="hidden absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gold-500/30 rounded-xl overflow-hidden z-50 shadow-2xl">
+                    </div>
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
@@ -80,13 +85,25 @@
         <div id="drawer">
             <ul>
                 <li><a href="https://b-oneinterior.com">Home</a></li>
-                <li><a href="https://b-oneinterior.com/catalogue">Catalogue</a></li>
-                <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li>
-                <li><a href="https://b-oneinterior.com/cart">Cart</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="terms.html">Terms and Conditions</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
             </ul>
+            <div id="drawer-social">
+                <p style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">Connect With Us</p>
+                <div class="social-grid">
+                    <a href="tel:+917738130131" target="_blank"><img src="images/call_icon.png" alt=""><span>Call</span></a>
+                    <a href="https://wa.me/+917738130131" target="_blank"><img src="images/whatsapp.png" alt=""><span>WhatsApp</span></a>
+                    <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank"><img src="images/facebook.png" alt=""><span>Facebook</span></a>
+                    <a href="https://www.instagram.com/bone.interior.solution" target="_blank"><img src="images/instagram.png" alt=""><span>Instagram</span></a>
+                    <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank"><img src="images/youtube.png" alt=""><span>YouTube</span></a>
+                    <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank"><img src="images/map_marker.png" alt=""><span>Location</span></a>
+                </div>
+            </div>
         </div>
-        <label class="overlay"></label>
+        <label for="menu-toggle" class="overlay"></label>
     </header>
 
     <main class="container mx-auto px-4 pb-8 mb-24">
@@ -95,7 +112,8 @@
 
             <!-- Price Filter -->
             <div class="flex items-center gap-2 mb-3">
-                Enter Budget
+                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Enter Budget</span>
+
                 <input type="number" id="priceMin" placeholder="Min ₹" min="0"
                     class="w-28 bg-black/60 border border-gold-500/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-gold-500 placeholder:text-gray-600"
                     oninput="applyPriceFilter()">
@@ -103,11 +121,7 @@
                 <input type="number" id="priceMax" placeholder="Max ₹" min="0"
                     class="w-28 bg-black/60 border border-gold-500/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-gold-500 placeholder:text-gray-600"
                     oninput="applyPriceFilter()">
-                <button onclick="clearPriceFilter()"
-                    class="text-[10px] font-bold uppercase tracking-wider text-gold-500 hover:text-gold-400 transition px-2">
-                    Clear
-                </button>
-            </div>
+                </div>
 
             <!-- Sub-category horizontal scroll -->
             <div id="subcategoryScroll" class="overflow-x-auto pb-2 hide-scrollbar">
@@ -127,10 +141,10 @@
             <div id="productSection" class="hidden mt-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 id="activeSubName" class="text-lg md:text-2xl font-black gold-gradient-text uppercase tracking-widest"></h2>
-                    <span id="productCount" class="text-gray-500 text-sm"></span>
                 </div>
                 <div id="productGrid" class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
                 </div>
+                <div id="productSentinel" class="h-1"></div>
                 <div id="productLoader" class="hidden flex justify-center py-10">
                     <svg class="w-8 h-8 animate-spin text-gold-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                 </div>
@@ -141,7 +155,7 @@
         </div>
     </main>
 
-    <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;">
+      <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;z-index: 25;">
         <a href="https://b-oneinterior.com/" class="logoBx"></a>
         <ul>
             <li class="relative">
@@ -175,11 +189,27 @@
     </div>
 
     <script>
+        function getSearchHistory() {
+            try { return JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch { return []; }
+        }
+
+        function saveSearchQuery(query) {
+            query = query.trim();
+            if (!query) return;
+            let history = getSearchHistory();
+            history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
+            history.unshift(query);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         let allSubCategories = [];
         let selectedSubCategoryId = null;
-        let allProducts = [];
         let allCatProducts = [];
+        let productsCursor = null;
+        let hasMoreProducts = true;
+        let isLoadingMore = false;
 
         function getUrlParam(name) {
             return new URLSearchParams(window.location.search).get(name);
@@ -303,7 +333,11 @@
                 }
 
                 renderSubCategories();
-                selectSubCategory(allSubCategories[0].id);
+                const subIds = allSubCategories.map(s => s.id);
+                resetPagination();
+                await loadProducts(subIds);
+                setupInfiniteScroll();
+                selectSubCategory(null);
 
             } catch (err) {
                 console.error('Failed to load category:', err);
@@ -314,8 +348,18 @@
 
         function renderSubCategories() {
             const inner = document.getElementById('subcategoryInner');
+            const allSelected = selectedSubCategoryId === null;
 
-            inner.innerHTML = allSubCategories.map(s => `
+            inner.innerHTML = `
+                <div onclick="selectSubCategory(null)"
+                    class="sub-cat-item group flex flex-col items-center cursor-pointer transition-all ${allSelected ? 'opacity-100 scale-100' : 'hover:opacity-100'}"
+                    data-id="all">
+                    <div class="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden border ${allSelected ? 'border-gold-500' : 'border-gold-500/20'} group-hover:border-gold-500 transition-colors flex items-center justify-center">
+                        <ion-icon name="apps-outline" class="text-2xl text-gold-500"></ion-icon>
+                    </div>
+                    <span class="text-[9px] font-bold text-white mt-1.5 uppercase tracking-tighter w-14 text-center ${allSelected ? 'underline underline-offset-4' : ''}">All</span>
+                </div>
+            ` + allSubCategories.map(s => `
                 <div onclick="selectSubCategory('${s.id}')"
                     class="sub-cat-item group flex flex-col items-center cursor-pointer transition-all ${selectedSubCategoryId === s.id ? 'opacity-100 scale-100' : 'hover:opacity-100'}"
                     data-id="${s.id}">
@@ -334,24 +378,35 @@
             selectedSubCategoryId = subId;
             renderSubCategories();
 
-            const sub = allSubCategories.find(s => s.id === subId);
-            const name = sub ? sub.name : 'Products';
-            document.getElementById('activeSubName').textContent = name;
+            const catId = getUrlParam('catId');
             document.getElementById('productSection').classList.remove('hidden');
             document.getElementById('productGrid').innerHTML = '';
             document.getElementById('productEmpty').classList.add('hidden');
             document.getElementById('catSearchInput').value = '';
 
-            loadProducts(subId);
+            resetPagination();
+            if (subId === null) {
+                document.getElementById('activeSubName').textContent = 'All Products';
+                const ids = allSubCategories.map(s => s.id);
+                loadProducts(ids);
+            } else {
+                const sub = allSubCategories.find(s => s.id === subId);
+                document.getElementById('activeSubName').textContent = sub ? sub.name : 'Products';
+                loadProducts(subId);
+            }
         }
 
-        async function loadProducts(categoryId) {
+        async function loadProducts(categoryIds) {
             document.getElementById('productLoader').classList.remove('hidden');
+            isLoadingMore = false;
 
             try {
+                const ids = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
+                const idsJson = JSON.stringify(ids);
+                const after = productsCursor ? `after: "${productsCursor}", ` : '';
                 const query = `
                     query {
-                        products(first: 50, channel: "in", filter: { isPublished: true, categories: ["${categoryId}"] }, sortBy: { field: CREATED_AT, direction: DESC }) {
+                        products(first: 20, channel: "in", ${after}filter: { isPublished: true, categories: ${idsJson} }, sortBy: { field: CREATED_AT, direction: DESC }) {
                             edges {
                                 node {
                                     id name slug
@@ -363,32 +418,66 @@
                                     variants { id name quantityAvailable media { url type } pricing { price { gross { amount currency } } } }
                                 }
                             }
+                            pageInfo {
+                                hasNextPage
+                                endCursor
+                            }
                         }
                     }
                 `;
 
                 const result = await apiCall(query);
-                const edges = result.data?.products?.edges || [];
+                const data = result.data?.products;
+                const edges = data?.edges || [];
+                const pageInfo = data?.pageInfo;
 
                 document.getElementById('productLoader').classList.add('hidden');
 
-                allCatProducts = edges.map(e => e.node);
-
-                if (allCatProducts.length === 0) {
-                    document.getElementById('productEmpty').classList.remove('hidden');
-                    document.getElementById('productCount').textContent = '';
+                if (edges.length === 0) {
+                    hasMoreProducts = false;
+                    if (allCatProducts.length === 0) {
+                        document.getElementById('productEmpty').classList.remove('hidden');
+                    }
                     return;
                 }
 
-                document.getElementById('productCount').textContent = `${allCatProducts.length} product(s)`;
+                const newProducts = edges.map(e => e.node);
+                allCatProducts = [...allCatProducts, ...newProducts];
+                productsCursor = pageInfo?.endCursor || null;
+                hasMoreProducts = pageInfo?.hasNextPage ?? false;
+
                 renderProducts(allCatProducts);
 
             } catch (err) {
                 console.error('Failed to load products:', err);
                 document.getElementById('productLoader').classList.add('hidden');
-                document.getElementById('productEmpty').classList.remove('hidden');
-                document.getElementById('productEmpty').querySelector('p').textContent = 'Failed to load products.';
+                if (allCatProducts.length === 0) {
+                    document.getElementById('productEmpty').classList.remove('hidden');
+                    document.getElementById('productEmpty').querySelector('p').textContent = 'Failed to load products.';
+                }
             }
+        }
+
+        function resetPagination() {
+            allCatProducts = [];
+            productsCursor = null;
+            hasMoreProducts = true;
+            isLoadingMore = false;
+        }
+
+        function setupInfiniteScroll() {
+            const sentinel = document.getElementById('productSentinel');
+            if (!sentinel) return;
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMoreProducts && !isLoadingMore) {
+                    isLoadingMore = true;
+                    const ids = selectedSubCategoryId === null
+                        ? allSubCategories.map(s => s.id)
+                        : [selectedSubCategoryId];
+                    loadProducts(ids);
+                }
+            }, { rootMargin: '200px' });
+            observer.observe(sentinel);
         }
 
         function renderProducts(products) {
@@ -396,7 +485,6 @@
 
             if (products.length === 0) {
                 document.getElementById('productEmpty').classList.remove('hidden');
-                document.getElementById('productCount').textContent = '';
                 grid.innerHTML = '';
                 return;
             }
@@ -409,7 +497,6 @@
             const q = query.toLowerCase().trim();
             if (!q) {
                 renderProducts(allCatProducts);
-                document.getElementById('productCount').textContent = `${allCatProducts.length} product(s)`;
                 applyPriceFilter();
                 return;
             }
@@ -417,7 +504,6 @@
                 p.name.toLowerCase().includes(q)
             );
             renderProducts(filtered);
-            document.getElementById('productCount').textContent = `${filtered.length} of ${allCatProducts.length} product(s)`;
         }
 
         function applyPriceFilter() {
@@ -435,14 +521,9 @@
             });
 
             renderProducts(filtered);
-            document.getElementById('productCount').textContent = `${filtered.length} of ${allCatProducts.length} product(s)`;
         }
 
-        function clearPriceFilter() {
-            document.getElementById('priceMin').value = '';
-            document.getElementById('priceMax').value = '';
-            applyPriceFilter();
-        }
+
 
         function renderProductCard(p) {
             const imgUrl = p.thumbnail?.url || p.media?.[0]?.url || '';
@@ -481,9 +562,49 @@
             }
         }
 
+        function renderSearchHistory() {
+            const input = document.getElementById('catSearchInput');
+            const dd = document.getElementById('catSearchDropdown');
+            if (!dd) return;
+            const history = getSearchHistory();
+            if (history.length === 0) {
+                dd.classList.add('hidden');
+                return;
+            }
+            const html = `
+                <div class="p-2 text-xs text-gray-400 font-semibold uppercase tracking-wider border-b border-gold-500/20">Recent Searches</div>
+                ${history.map(q => `
+                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-gold-500/10 cursor-pointer border-b border-gold-500/10 last:border-0"
+                         onclick="document.getElementById('catSearchDropdown').classList.add('hidden'); var inp=document.getElementById('catSearchInput'); inp.value='${q.replace(/'/g, "\\'")}'; inp.dispatchEvent(new Event('input')); inp.focus();">
+                        <ion-icon name="time-outline" class="text-gold-500/60 shrink-0 text-lg"></ion-icon>
+                        <span class="text-sm text-gray-300">${q}</span>
+                    </div>
+                `).join('')}
+            `;
+            dd.innerHTML = html;
+            dd.classList.remove('hidden');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadCategory();
             refreshCartBadge();
+
+            const catInput = document.getElementById('catSearchInput');
+            const catDD = document.getElementById('catSearchDropdown');
+            if (catInput && catDD) {
+                catInput.addEventListener('focus', () => {
+                    if (!catInput.value.trim()) renderSearchHistory();
+                });
+                catInput.addEventListener('input', () => {
+                    if (!catInput.value.trim()) renderSearchHistory();
+                    else catDD.classList.add('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!catDD.contains(e.target) && !catInput.contains(e.target)) {
+                        catDD.classList.add('hidden');
+                    }
+                });
+            }
         });
     </script>
 </body>

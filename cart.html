@@ -514,7 +514,9 @@
 
             searchInput.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
                     saveSearchQuery(this.value);
+                    window.location.href = 'prodcut-list.html?q=' + encodeURIComponent(this.value.trim());
                 }
             });
         }

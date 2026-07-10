@@ -2021,6 +2021,20 @@
         /**
          * Product-level match shows one row per product; otherwise variant name matches show separate rows (like index.html).
          */
+        function getSearchHistory() {
+            try { return JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch { return []; }
+        }
+
+        function saveSearchQuery(query) {
+            query = query.trim();
+            if (!query) return;
+            let history = getSearchHistory();
+            history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
+            history.unshift(query);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+
         function getProductSearchDisplayItems(query = '') {
             const q = query.trim().toLowerCase();
             const products = headerSearchFilteredProducts();
@@ -2112,7 +2126,8 @@
 
                 return `
                     <a href="product.html?id=${item.linkId}"
-                        class="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-b-0 hover:bg-white/5 transition">
+                        class="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-b-0 hover:bg-white/5 transition"
+                        onclick="saveSearchQuery(document.getElementById('productSearchInput').value.trim())">
                         <img src="${item.image || FALLBACK_IMG}" alt="${escapeHtml(item.displayName)}"
                             class="w-12 h-12 rounded-xl object-cover border border-white/10">
                         <div class="min-w-0 flex-1">
@@ -2129,6 +2144,26 @@
             dropdown.classList.remove('hidden');
         }
 
+        function renderProductSearchHistory(input, dropdown) {
+            const history = getSearchHistory();
+            if (history.length === 0) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+            const html = `
+                <div class="p-2 text-xs text-gray-400 font-semibold uppercase tracking-wider border-b border-gold-500/20">Recent Searches</div>
+                ${history.map(q => `
+                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-gold-500/10 cursor-pointer border-b border-gold-500/10 last:border-0"
+                         onclick="this.closest('#productSearchDropdown').classList.add('hidden'); document.getElementById('productSearchInput').value='${q.replace(/'/g, "\\'")}'; document.getElementById('productSearchInput').dispatchEvent(new Event('input')); document.getElementById('productSearchInput').focus();">
+                        <ion-icon name="time-outline" class="text-gold-500/60 shrink-0 text-lg"></ion-icon>
+                        <span class="text-sm text-gray-300">${q}</span>
+                    </div>
+                `).join('')}
+            `;
+            dropdown.innerHTML = html;
+            dropdown.classList.remove('hidden');
+        }
+
         function setupProductHeaderSearch() {
             const input = document.getElementById('productSearchInput');
             const dropdown = document.getElementById('productSearchDropdown');
@@ -2141,15 +2176,29 @@
             };
 
             input.addEventListener('focus', () => {
-                if (headerSearchProductsRaw.length > 0) {
+                if (!input.value.trim()) {
+                    renderProductSearchHistory(input, dropdown);
+                } else if (headerSearchProductsRaw.length > 0) {
                     renderProductSearchResults(input.value);
                 }
                 updateClearBtn();
             });
 
             input.addEventListener('input', () => {
-                renderProductSearchResults(input.value);
+                if (!input.value.trim()) {
+                    renderProductSearchHistory(input, dropdown);
+                } else {
+                    renderProductSearchResults(input.value);
+                }
                 updateClearBtn();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveSearchQuery(input.value);
+                    window.location.href = `prodcut-list.html?q=${encodeURIComponent(input.value.trim())}`;
+                }
             });
 
             clearBtn?.addEventListener('click', (event) => {
