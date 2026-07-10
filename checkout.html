@@ -349,16 +349,26 @@
                     lines.push({ variantId: vid, quantity: parseInt(item.quantity) || 1 });
                 }
 
-                // Create checkout
+                // Create checkout with shipping address inline
+                const addrInput = {
+                    firstName: addr.firstName,
+                    lastName: addr.lastName,
+                    streetAddress1: addr.street,
+                    city: addr.city,
+                    countryArea: addr.state,
+                    postalCode: addr.pincode,
+                    country: addr.country,
+                    phone: addr.phone
+                };
                 const createQuery = `
-                    mutation CheckoutCreate($lines: [CheckoutLineInput!]!) {
-                        checkoutCreate(input: { channel: "in", lines: $lines }) {
+                    mutation CheckoutCreate($lines: [CheckoutLineInput!]!, $address: AddressInput!) {
+                        checkoutCreate(input: { channel: "in", lines: $lines, shippingAddress: $address, billingAddress: $address }) {
                             checkout { id token }
                             errors { field message }
                         }
                     }
                 `;
-                const createResult = await apiCall(createQuery, { lines });
+                const createResult = await apiCall(createQuery, { lines, address: addrInput });
                 if (createResult.errors && !createResult.data?.checkoutCreate?.checkout) {
                     throw new Error(createResult.errors[0]?.message || 'Checkout creation failed');
                 }
@@ -367,54 +377,6 @@
                     throw new Error(cErrors.map(e => e.message).join(', '));
                 }
                 checkoutId = createResult.data.checkoutCreate.checkout.id;
-
-                // Update shipping address
-                const shipAddrResult = await apiCall(`
-                    mutation CheckoutAddress($id: ID!, $address: AddressInput!) {
-                        checkoutShippingAddressUpdate(id: $id, shippingAddress: $address) {
-                            checkout { id }
-                            errors { field message }
-                        }
-                    }
-                `, {
-                    id: checkoutId,
-                    address: {
-                        firstName: addr.firstName,
-                        lastName: addr.lastName,
-                        streetAddress1: addr.street,
-                        city: addr.city,
-                        countryArea: addr.state,
-                        postalCode: addr.pincode,
-                        country: addr.country,
-                        phone: addr.phone
-                    }
-                });
-                const sae = shipAddrResult.data?.checkoutShippingAddressUpdate?.errors;
-                if (sae && sae.length > 0) throw new Error('Shipping address: ' + sae.map(e => e.message).join(', '));
-
-                // Update billing address (same as shipping)
-                const billResult = await apiCall(`
-                    mutation CheckoutBilling($id: ID!, $address: AddressInput!) {
-                        checkoutBillingAddressUpdate(id: $id, billingAddress: $address) {
-                            checkout { id }
-                            errors { field message }
-                        }
-                    }
-                `, {
-                    id: checkoutId,
-                    address: {
-                        firstName: addr.firstName,
-                        lastName: addr.lastName,
-                        streetAddress1: addr.street,
-                        city: addr.city,
-                        countryArea: addr.state,
-                        postalCode: addr.pincode,
-                        country: addr.country,
-                        phone: addr.phone
-                    }
-                });
-                const be = billResult.data?.checkoutBillingAddressUpdate?.errors;
-                if (be && be.length > 0) throw new Error('Billing address: ' + be.map(e => e.message).join(', '));
 
                 // Get shipping methods
                 const shipQuery = `
@@ -538,7 +500,7 @@
             }
 
             if (!checkoutId || !selectedShippingMethodId) {
-                showMessage('Please select a shipping address first.', 'red');
+                showMessage('Checkout session not found. Please select your address again.', 'red');
                 return;
             }
 
