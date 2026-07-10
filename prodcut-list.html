@@ -249,6 +249,7 @@
         grid.innerHTML = `<div class="col-span-full text-center text-white/60 py-16">No products found.</div>`;
         return;
       }
+      const q = query.toLowerCase();
       grid.innerHTML = items.map(item => {
         const p = item.product;
         const gross = p.pricing?.priceRange?.start?.gross;
@@ -256,10 +257,19 @@
         const cur = gross?.currency || "INR";
         const priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
         const savePercent = getSavePercent(p);
+        // Check if query matches a variant name
+        let imgUrl = p.thumbnail?.url || FALLBACK_IMG;
+        if (q && p.variants) {
+          const matchedVariant = p.variants.find(v => v.name && v.name.toLowerCase().includes(q));
+          if (matchedVariant) {
+            const variantMedia = matchedVariant.media?.[0]?.url || matchedVariant.thumbnail?.url;
+            if (variantMedia) imgUrl = variantMedia;
+          }
+        }
         return `
           <a href="product.html?id=${item.linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
-              <img src="${p.thumbnail?.url || FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
+              <img src="${imgUrl}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
               ${savePercent ? `<span class="absolute top-2 right-2 bg-[#dc2626] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wide">${savePercent}% OFF</span>` : ""}
             </div>
             <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">

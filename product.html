@@ -315,14 +315,6 @@
                         </svg>
                     </button>
                 </div>
-                <button onclick="toggleDrawer()"
-                    class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                </button>
             </div>
             <div id="productSearchDropdown"
                 class="hidden mt-3 rounded-2xl border border-gold-500/20 bg-[#050505]/95 backdrop-blur-xl shadow-2xl overflow-hidden max-h-[55vh] overflow-y-auto">
@@ -1847,6 +1839,11 @@
                 }
             }
 
+            // Auto-select first variant if none selected
+            if (!selectedVariant && currentProduct.variants && currentProduct.variants.length > 0) {
+                selectedVariant = currentProduct.variants[0];
+            }
+
             renderProduct(currentProduct);
             const currentUrl = new URL(window.location.href);
             const initialVariantId = selectedVariant?.id || currentUrl.searchParams.get("id") || null;
@@ -2456,11 +2453,13 @@
                 `;
             }
             if (actionBtnsHtml) {
+                // Remove previously inserted action button containers
+                document.querySelectorAll('.action-btns-row').forEach(el => el.remove());
                 const container = document.getElementById("cartActionContainerMobile");
-                container.insertAdjacentHTML('beforebegin', `<div class="flex gap-3 mb-2">${actionBtnsHtml}</div>`);
+                container.insertAdjacentHTML('beforebegin', `<div class="action-btns-row flex gap-3 mb-2">${actionBtnsHtml}</div>`);
                 const mobileContainer = document.getElementById("cartActionContainerMobile");
                 if (mobileContainer) {
-                    mobileContainer.insertAdjacentHTML('afterbegin', `<div class="grid grid-cols-2 gap-2">${actionBtnsHtml}</div>`);
+                    mobileContainer.insertAdjacentHTML('afterbegin', `<div class="action-btns-row grid grid-cols-2 gap-2">${actionBtnsHtml}</div>`);
                 }
             }
 
@@ -2820,9 +2819,10 @@
                 priceVal = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
 
             } else {
-                // Fallback to Product Default
-                id = currentProduct.id;
-                name = currentProduct.name;
+                // Fallback to first variant
+                const firstVar = currentProduct.variants?.[0];
+                id = firstVar ? firstVar.id : currentProduct.id;
+                name = firstVar ? `${currentProduct.name} - ${firstVar.name}` : currentProduct.name;
                 image = currentProduct.thumbnail?.url || FALLBACK_IMG;
                 priceVal = currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
                 currency = currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';

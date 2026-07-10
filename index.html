@@ -3023,6 +3023,7 @@
         async function loadBestSellerProducts() {
             if (!bestSellerHasNextPage || bestSellerLoadingMore || !bestSellerCollectionId) return;
             bestSellerLoadingMore = true;
+            document.getElementById('bestSellerLoader')?.classList.remove('hidden');
             const afterClause = bestSellerEndCursor ? `, after: "${bestSellerEndCursor}"` : "";
             const query = `
             query {
@@ -3100,7 +3101,22 @@
         function renderBestSellerCard(p) {
             const imgUrl = p.thumbnail?.url || p.media?.[0]?.url || '';
             const price = p.pricing?.priceRange?.start?.gross;
+            const variants = p.variants || [];
+            let actualPriceVal = null;
+            for (const v of variants) {
+                const attr = (v.attributes || []).find(a => a.attribute?.name === "Actual Price");
+                if (attr && attr.values?.[0]?.name) {
+                    const cleaned = attr.values[0].name.replace(/[^0-9.]/g, '');
+                    const parsed = parseFloat(cleaned);
+                    if (!isNaN(parsed)) { actualPriceVal = parsed; break; }
+                }
+            }
+            let discountPct = 0;
+            if (actualPriceVal && price && actualPriceVal > price.amount) {
+                discountPct = Math.round((1 - price.amount / actualPriceVal) * 100);
+            }
             const priceStr = price ? `₹${price.amount.toLocaleString('en-IN')}` : '';
+            const origPriceStr = actualPriceVal ? `₹${actualPriceVal.toLocaleString('en-IN')}` : '';
             const linkUrl = `product.html?id=${encodeURIComponent(p.id)}&slug=${encodeURIComponent(p.slug || '')}`;
             const catName = p.category?.name || '';
 
@@ -3112,7 +3128,7 @@
                             ? `<img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="${p.name}">`
                             : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-5xl text-gray-600"></ion-icon></div>`
                         }
-                        <div class="absolute top-2 left-2 bg-gold-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide">Best Seller</div>
+                        ${discountPct > 0 ? `<div class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">${discountPct}% OFF</div>` : ''}
                         <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -3120,7 +3136,10 @@
                     <div class="p-3">
                         ${catName ? `<span class="gold-gradient-text text-[9px] font-black uppercase tracking-widest">${catName}</span>` : ''}
                         <h3 class="font-bold text-white text-xs leading-tight mt-1 group-hover:text-gold-500 transition line-clamp-2">${p.name}</h3>
-                        ${priceStr ? `<div class="mt-2"><span class="text-gold-500 font-black text-sm">${priceStr}</span></div>` : ''}
+                        <div class="mt-2 flex items-baseline gap-1.5 flex-wrap">
+                            ${origPriceStr && discountPct > 0 ? `<span class="text-gray-500 text-[10px] line-through">${origPriceStr}</span>` : ''}
+                            ${priceStr ? `<span class="text-gold-500 font-black text-sm">${priceStr}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             `;

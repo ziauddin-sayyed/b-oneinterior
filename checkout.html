@@ -75,18 +75,12 @@
 
                 <!-- Shipping Address -->
                 <div class="glass-panel p-6">
-                    <h2 class="text-lg font-black uppercase tracking-wider text-white mb-4">Shipping Address</h2>
-                    <div id="savedAddressCard" class="hidden bg-white/5 rounded-xl p-4 border border-gold-500/20 mb-4 cursor-pointer hover:border-gold-500/50 transition" onclick="useSavedAddress()">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p id="savedAddressName" class="text-white font-bold"></p>
-                                <p id="savedAddressMobile" class="text-gray-400 text-sm"></p>
-                                <p id="savedAddressFull" class="text-gray-400 text-sm mt-1"></p>
-                            </div>
-                            <ion-icon name="checkmark-circle" class="text-2xl text-gold-500 flex-shrink-0"></ion-icon>
-                        </div>
-                    </div>
-                    <form id="checkoutAddressForm" class="space-y-4">
+                    <h2 class="text-lg font-black uppercase tracking-wider text-white mb-4">Select Shipping Address</h2>
+                    <div id="addressCards" class="grid grid-cols-1 gap-3 mb-4"></div>
+
+                    <!-- Add New Address Form (hidden initially) -->
+                    <div id="addAddressForm" class="hidden space-y-4 border-t border-white/10 pt-4">
+                        <h3 class="text-sm font-black uppercase tracking-wider text-gold-500">New Address</h3>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">First Name</label>
@@ -125,20 +119,24 @@
                                 <input type="text" id="chkCountry" value="IN" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
                             </div>
                         </div>
-                    </form>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="saveNewAddress()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
+                                <span id="saveAddrText">Save & Use This Address</span>
+                                <svg class="w-4 h-4 animate-spin hidden inline" id="saveAddrSpinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                            </button>
+                            <button type="button" onclick="cancelAddAddress()" class="text-gray-400 px-6 py-2.5 rounded-xl font-bold text-sm border border-white/10 hover:border-white/30 transition">Cancel</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Shipping Method -->
-                <div class="glass-panel p-6">
+                <div id="shippingPanel" class="glass-panel p-6 hidden">
                     <h2 class="text-lg font-black uppercase tracking-wider text-white mb-4">Shipping Method</h2>
                     <div id="shippingMethods">
-                        <p class="text-gray-500 text-sm">Fill in your address and pincode, then click "Check Shipping" to see available methods.</p>
-                        <button type="button" onclick="checkShipping()" class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
-                            Check Shipping
-                        </button>
+                        <p id="shippingPlaceholder" class="text-gray-500 text-sm">Select an address to see available shipping methods.</p>
                         <div id="shippingSpinner" class="hidden mt-3 flex items-center gap-2 text-gray-400 text-sm">
                             <svg class="animate-spin w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                            Checking shipping...
+                            Fetching shipping...
                         </div>
                         <div id="shippingOptions" class="hidden mt-3 space-y-3"></div>
                         <p id="shippingError" class="hidden mt-3 text-red-400 text-sm"></p>
@@ -146,7 +144,7 @@
                 </div>
 
                 <!-- Payment Method -->
-                <div class="glass-panel p-6">
+                <div id="paymentPanel" class="glass-panel p-6 hidden">
                     <h2 class="text-lg font-black uppercase tracking-wider text-white mb-4">Payment Method</h2>
                     <div class="space-y-3">
                         <label class="flex items-center gap-4 bg-white/5 rounded-xl p-4 border border-gold-500/20 cursor-pointer hover:border-gold-500/50 transition has-[:checked]:border-gold-500 has-[:checked]:bg-gold-500/10">
@@ -193,7 +191,6 @@
 
         let checkoutId = null;
         let selectedShippingMethodId = null;
-        let checkoutAddress = null;
 
         function getCartItems() {
             const all = JSON.parse(localStorage.getItem('inquiryList') || '[]');
@@ -232,6 +229,54 @@
             document.getElementById('checkoutTotal').textContent = `₹${total.toFixed(2)}`;
         }
 
+        function getUserAddresses() {
+            return JSON.parse(localStorage.getItem('userAddresses') || '[]');
+        }
+
+        function saveUserAddresses(addrs) {
+            localStorage.setItem('userAddresses', JSON.stringify(addrs));
+        }
+
+        function renderAddressCards() {
+            const container = document.getElementById('addressCards');
+            const addresses = getUserAddresses();
+
+            let html = addresses.map((addr, i) => `
+                <div onclick="selectAddress(${i})"
+                    class="addr-card bg-white/5 rounded-xl p-4 border border-white/10 cursor-pointer hover:border-gold-500/50 transition-all flex items-start justify-between gap-3 ${i === selectedAddrIndex ? 'border-gold-500 bg-gold-500/10' : ''}">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-bold text-sm">${addr.firstName} ${addr.lastName}</p>
+                        <p class="text-gray-400 text-xs">${addr.phone}</p>
+                        <p class="text-gray-400 text-xs mt-0.5">${addr.street}, ${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                    </div>
+                    ${i === selectedAddrIndex ? '<ion-icon name="checkmark-circle" class="text-xl text-gold-500 flex-shrink-0"></ion-icon>' : ''}
+                </div>
+            `).join('');
+
+            // Add New Address card
+            html += `
+                <div onclick="showAddAddressForm()"
+                    class="addr-card bg-white/5 rounded-xl p-4 border border-dashed border-white/20 cursor-pointer hover:border-gold-500/50 transition-all flex items-center justify-center gap-2">
+                    <ion-icon name="add-circle-outline" class="text-2xl text-gold-500"></ion-icon>
+                    <span class="text-gold-500 font-bold text-sm">Add New Address</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function showAddAddressForm() {
+            document.getElementById('addAddressForm').classList.remove('hidden');
+            document.getElementById('addAddressForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelAddAddress() {
+            document.getElementById('addAddressForm').classList.add('hidden');
+            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
         function getAddressFromForm() {
             return {
                 firstName: document.getElementById('chkFirstName').value.trim(),
@@ -239,62 +284,72 @@
                 street: document.getElementById('chkStreet').value.trim(),
                 city: document.getElementById('chkCity').value.trim(),
                 state: document.getElementById('chkState').value.trim(),
-                postalCode: document.getElementById('chkPincode').value.trim(),
-                country: document.getElementById('chkCountry').value.trim() || 'India',
+                pincode: document.getElementById('chkPincode').value.trim(),
+                country: document.getElementById('chkCountry').value.trim() || 'IN',
                 phone: document.getElementById('chkPhone').value.trim()
             };
         }
 
-        function showSavedAddress() {
-            const saved = JSON.parse(localStorage.getItem('userAddress') || '{}');
-            if (saved.firstName) {
-                document.getElementById('savedAddressCard').classList.remove('hidden');
-                document.getElementById('savedAddressName').textContent = `${saved.firstName} ${saved.lastName || ''}`;
-                document.getElementById('savedAddressMobile').textContent = saved.mobileNo || '';
-                document.getElementById('savedAddressFull').textContent = saved.fullAddress || '';
-            }
-        }
-
-        function useSavedAddress() {
-            const saved = JSON.parse(localStorage.getItem('userAddress') || '{}');
-            if (saved.firstName) document.getElementById('chkFirstName').value = saved.firstName;
-            if (saved.lastName) document.getElementById('chkLastName').value = saved.lastName;
-            if (saved.mobileNo) document.getElementById('chkPhone').value = saved.mobileNo;
-            if (saved.fullAddress) {
-                const parts = saved.fullAddress.split(',').map(s => s.trim());
-                document.getElementById('chkStreet').value = parts[0] || '';
-                document.getElementById('chkCity').value = parts[1] || '';
-                const statePincode = (parts[2] || '').split(' ');
-                document.getElementById('chkState').value = statePincode[0] || '';
-                document.getElementById('chkPincode').value = statePincode[1] || '';
-            }
-        }
-
-        async function checkShipping() {
-            const items = getCartItems();
-            if (items.length === 0) { showMessage('Your cart is empty.', 'red'); return; }
-
-            const address = getAddressFromForm();
-            if (!address.firstName || !address.lastName || !address.street || !address.city || !address.state || !address.postalCode || !address.phone) {
-                showMessage('Please fill in all address fields first.', 'red');
+        async function saveNewAddress() {
+            const addr = getAddressFromForm();
+            if (!addr.firstName || !addr.lastName || !addr.street || !addr.city || !addr.state || !addr.pincode || !addr.phone) {
+                showMessage('Please fill in all address fields.', 'red');
                 return;
             }
 
+            const addrs = getUserAddresses();
+            addrs.push(addr);
+            saveUserAddresses(addrs);
+            cancelAddAddress();
+            renderAddressCards();
+            await selectAddress(addrs.length - 1);
+        }
+
+        let selectedAddrIndex = -1;
+        let checkoutProcessing = false;
+
+        async function selectAddress(index) {
+            const addrs = getUserAddresses();
+            if (!addrs[index]) return;
+            if (checkoutProcessing) return;
+            checkoutProcessing = true;
+
+            selectedAddrIndex = index;
+            renderAddressCards();
+
+            const items = getCartItems();
+            if (items.length === 0) { showMessage('Your cart is empty.', 'red'); checkoutProcessing = false; return; }
+
+            const addr = addrs[index];
+            document.getElementById('shippingPlaceholder').textContent = 'Fetching shipping methods...';
             document.getElementById('shippingSpinner').classList.remove('hidden');
             document.getElementById('shippingOptions').classList.add('hidden');
             document.getElementById('shippingError').classList.add('hidden');
-            document.querySelector('#shippingMethods button').classList.add('hidden');
-
-            // Store address for later use
-            checkoutAddress = address;
 
             try {
-                // Create checkout
-                const lines = items.map(item => ({
-                    variantId: item.id,
-                    quantity: parseInt(item.quantity) || 1
-                }));
+                // Resolve product IDs to variant IDs
+                const lines = [];
+                for (const item of items) {
+                    let vid = item.id;
+                    try {
+                        const decoded = atob(vid);
+                        if (decoded && decoded.startsWith('Product:') && !decoded.startsWith('ProductVariant:')) {
+                            const prodQuery = `
+                                query {
+                                    product(id: "${vid}") {
+                                        variants(first: 1) { edges { node { id } } }
+                                    }
+                                }
+                            `;
+                            const prodRes = await apiCall(prodQuery);
+                            const firstVar = prodRes?.data?.product?.variants?.edges?.[0]?.node?.id;
+                            if (firstVar) vid = firstVar;
+                        }
+                    } catch (e) {}
+                    lines.push({ variantId: vid, quantity: parseInt(item.quantity) || 1 });
+                }
 
+                // Create checkout
                 const createQuery = `
                     mutation CheckoutCreate($lines: [CheckoutLineInput!]!) {
                         checkoutCreate(input: { channel: "in", lines: $lines }) {
@@ -303,91 +358,63 @@
                         }
                     }
                 `;
-
                 const createResult = await apiCall(createQuery, { lines });
-
                 if (createResult.errors && !createResult.data?.checkoutCreate?.checkout) {
-                    document.getElementById('shippingSpinner').classList.add('hidden');
-                    document.getElementById('shippingError').textContent = createResult.errors[0]?.message || 'Failed to create checkout';
-                    document.getElementById('shippingError').classList.remove('hidden');
-                    document.querySelector('#shippingMethods button').classList.remove('hidden');
-                    return;
+                    throw new Error(createResult.errors[0]?.message || 'Checkout creation failed');
                 }
-
                 const cErrors = createResult.data?.checkoutCreate?.errors;
                 if (cErrors && cErrors.length > 0) {
-                    document.getElementById('shippingSpinner').classList.add('hidden');
-                    document.getElementById('shippingError').textContent = cErrors.map(e => e.message).join(', ');
-                    document.getElementById('shippingError').classList.remove('hidden');
-                    document.querySelector('#shippingMethods button').classList.remove('hidden');
-                    return;
+                    throw new Error(cErrors.map(e => e.message).join(', '));
                 }
-
                 checkoutId = createResult.data.checkoutCreate.checkout.id;
 
                 // Update shipping address
-                const addrQuery = `
+                const shipAddrResult = await apiCall(`
                     mutation CheckoutAddress($id: ID!, $address: AddressInput!) {
                         checkoutShippingAddressUpdate(id: $id, shippingAddress: $address) {
                             checkout { id }
                             errors { field message }
                         }
                     }
-                `;
-
-                const addrResult = await apiCall(addrQuery, {
+                `, {
                     id: checkoutId,
                     address: {
-                        firstName: address.firstName,
-                        lastName: address.lastName,
-                        streetAddress1: address.street,
-                        city: address.city,
-                        countryArea: address.state,
-                        postalCode: address.postalCode,
-                        country: address.country,
-                        phone: address.phone
+                        firstName: addr.firstName,
+                        lastName: addr.lastName,
+                        streetAddress1: addr.street,
+                        city: addr.city,
+                        countryArea: addr.state,
+                        postalCode: addr.pincode,
+                        country: addr.country,
+                        phone: addr.phone
                     }
                 });
-                const addrErrors = addrResult.data?.checkoutShippingAddressUpdate?.errors;
-                if (addrErrors && addrErrors.length > 0) {
-                    document.getElementById('shippingSpinner').classList.add('hidden');
-                    document.getElementById('shippingError').textContent = 'Shipping address error: ' + addrErrors.map(e => e.message).join(', ');
-                    document.getElementById('shippingError').classList.remove('hidden');
-                    document.querySelector('#shippingMethods button').classList.remove('hidden');
-                    return;
-                }
+                const sae = shipAddrResult.data?.checkoutShippingAddressUpdate?.errors;
+                if (sae && sae.length > 0) throw new Error('Shipping address: ' + sae.map(e => e.message).join(', '));
 
                 // Update billing address (same as shipping)
-                const billQuery = `
+                const billResult = await apiCall(`
                     mutation CheckoutBilling($id: ID!, $address: AddressInput!) {
                         checkoutBillingAddressUpdate(id: $id, billingAddress: $address) {
                             checkout { id }
                             errors { field message }
                         }
                     }
-                `;
-
-                const billResult = await apiCall(billQuery, {
+                `, {
                     id: checkoutId,
                     address: {
-                        firstName: address.firstName,
-                        lastName: address.lastName,
-                        streetAddress1: address.street,
-                        city: address.city,
-                        countryArea: address.state,
-                        postalCode: address.postalCode,
-                        country: address.country,
-                        phone: address.phone
+                        firstName: addr.firstName,
+                        lastName: addr.lastName,
+                        streetAddress1: addr.street,
+                        city: addr.city,
+                        countryArea: addr.state,
+                        postalCode: addr.pincode,
+                        country: addr.country,
+                        phone: addr.phone
                     }
                 });
-                const billErrors = billResult.data?.checkoutBillingAddressUpdate?.errors;
-                if (billErrors && billErrors.length > 0) {
-                    document.getElementById('shippingSpinner').classList.add('hidden');
-                    document.getElementById('shippingError').textContent = 'Billing address error: ' + billErrors.map(e => e.message).join(', ');
-                    document.getElementById('shippingError').classList.remove('hidden');
-                    document.querySelector('#shippingMethods button').classList.remove('hidden');
-                    return;
-                }
+                const be = billResult.data?.checkoutBillingAddressUpdate?.errors;
+                if (be && be.length > 0) throw new Error('Billing address: ' + be.map(e => e.message).join(', '));
 
                 // Get shipping methods
                 const shipQuery = `
@@ -401,23 +428,23 @@
                         }
                     }
                 `;
-
                 const shipResult = await apiCall(shipQuery, { id: checkoutId });
                 const methods = shipResult.data?.checkout?.availableShippingMethods;
-
                 document.getElementById('shippingSpinner').classList.add('hidden');
 
                 if (!methods || methods.length === 0) {
-                    document.getElementById('shippingError').textContent = 'No shipping methods available for your pincode. Please try a different pincode.';
+                    document.getElementById('shippingError').textContent = 'No shipping methods available for this pincode. Please try a different address.';
                     document.getElementById('shippingError').classList.remove('hidden');
-                    document.querySelector('#shippingMethods button').classList.remove('hidden');
+                    document.getElementById('shippingPlaceholder').classList.remove('hidden');
+                    document.getElementById('shippingPlaceholder').textContent = 'Select an address to see available shipping methods.';
+                    checkoutProcessing = false;
                     return;
                 }
 
                 const container = document.getElementById('shippingOptions');
                 container.classList.remove('hidden');
                 container.innerHTML = methods.map((m, i) => `
-                    <label class="flex items-center gap-4 bg-white/5 rounded-xl p-4 border border-gold-500/20 cursor-pointer hover:border-gold-500/50 transition has-[:checked]:border-gold-500 has-[:checked]:bg-gold-500/10">
+                    <label class="flex items-center gap-4 bg-white/5 rounded-xl p-4 border ${i === 0 ? 'border-gold-500 bg-gold-500/10' : 'border-white/10'} cursor-pointer hover:border-gold-500/50 transition has-[:checked]:border-gold-500 has-[:checked]:bg-gold-500/10">
                         <input type="radio" name="shippingMethod" value="${m.id}" ${i === 0 ? 'checked' : ''} class="w-5 h-5 accent-gold-500" onchange="selectedShippingMethodId=this.value">
                         <div class="flex-1 flex items-center justify-between">
                             <p class="text-white font-bold text-sm">${m.name}</p>
@@ -426,13 +453,31 @@
                     </label>
                 `).join('');
                 selectedShippingMethodId = methods[0].id;
+                document.getElementById('shippingPanel').classList.remove('hidden');
+                document.getElementById('paymentPanel').classList.remove('hidden');
+
+                // Auto-set first shipping method on checkout
+                const deliveryResult = await apiCall(`
+                    mutation CheckoutDelivery($id: ID!, $methodId: ID!) {
+                        checkoutDeliveryMethodUpdate(id: $id, deliveryMethodId: $methodId) {
+                            checkout { id }
+                            errors { field message }
+                        }
+                    }
+                `, { id: checkoutId, methodId: selectedShippingMethodId });
+                const de = deliveryResult.data?.checkoutDeliveryMethodUpdate?.errors;
+                if (de && de.length > 0) throw new Error('Shipping method: ' + de.map(e => e.message).join(', '));
+
+                document.getElementById('shippingPlaceholder').textContent = 'Shipping method selected automatically.';
+                showMessage('Address & shipping set successfully!', 'green');
 
             } catch (err) {
-                console.error('Check shipping error:', err);
+                console.error('Checkout setup error:', err);
                 document.getElementById('shippingSpinner').classList.add('hidden');
-                document.getElementById('shippingError').textContent = 'Failed to check shipping. Please try again.';
+                document.getElementById('shippingError').textContent = err.message || 'Failed to setup checkout.';
                 document.getElementById('shippingError').classList.remove('hidden');
-                document.querySelector('#shippingMethods button').classList.remove('hidden');
+            } finally {
+                checkoutProcessing = false;
             }
         }
 
@@ -493,7 +538,7 @@
             }
 
             if (!checkoutId || !selectedShippingMethodId) {
-                showMessage('Please check shipping methods first.', 'red');
+                showMessage('Please select a shipping address first.', 'red');
                 return;
             }
 
@@ -510,83 +555,15 @@
             spinner.classList.remove('hidden');
 
             try {
-                // Read fresh address from form
-                const freshAddress = getAddressFromForm();
-
-                // Update shipping address
-                const shipAddrQuery = `
-                    mutation CheckoutShipping($id: ID!, $address: AddressInput!) {
-                        checkoutShippingAddressUpdate(id: $id, shippingAddress: $address) {
-                            checkout { id }
-                            errors { field message }
-                        }
-                    }
-                `;
-                const shipAddrResult = await apiCall(shipAddrQuery, {
-                    id: checkoutId,
-                    address: {
-                        firstName: freshAddress.firstName,
-                        lastName: freshAddress.lastName,
-                        streetAddress1: freshAddress.street,
-                        city: freshAddress.city,
-                        countryArea: freshAddress.state,
-                        postalCode: freshAddress.postalCode,
-                        country: freshAddress.country,
-                        phone: freshAddress.phone
-                    }
-                });
-                const shipAddrErrors = shipAddrResult.data?.checkoutShippingAddressUpdate?.errors;
-                if (shipAddrErrors && shipAddrErrors.length > 0) {
-                    showMessage('Shipping address error: ' + shipAddrErrors.map(e => e.message).join(', '), 'red');
-                    btn.disabled = false;
-                    spinner.classList.add('hidden');
-                    return;
-                }
-
-                // Update billing address from form
-                const billAddrQuery = `
-                    mutation CheckoutBilling($id: ID!, $address: AddressInput!) {
-                        checkoutBillingAddressUpdate(id: $id, billingAddress: $address) {
-                            checkout { id }
-                            errors { field message }
-                        }
-                    }
-                `;
-                const billResult = await apiCall(billAddrQuery, {
-                    id: checkoutId,
-                    address: {
-                        firstName: freshAddress.firstName,
-                        lastName: freshAddress.lastName,
-                        streetAddress1: freshAddress.street,
-                        city: freshAddress.city,
-                        countryArea: freshAddress.state,
-                        postalCode: freshAddress.postalCode,
-                        country: freshAddress.country,
-                        phone: freshAddress.phone
-                    }
-                });
-                const billErrors = billResult.data?.checkoutBillingAddressUpdate?.errors;
-                if (billErrors && billErrors.length > 0) {
-                    showMessage('Billing address error: ' + billErrors.map(e => e.message).join(', '), 'red');
-                    btn.disabled = false;
-                    spinner.classList.add('hidden');
-                    return;
-                }
-
-                // Update shipping method
-                const deliveryQuery = `
+                // Update shipping method (addresses already set during address selection)
+                const deliveryResult = await apiCall(`
                     mutation CheckoutDelivery($id: ID!, $methodId: ID!) {
                         checkoutDeliveryMethodUpdate(id: $id, deliveryMethodId: $methodId) {
                             checkout { id }
                             errors { field message }
                         }
                     }
-                `;
-
-                const deliveryResult = await apiCall(deliveryQuery, {
-                    id: checkoutId,
-                    methodId: selectedShippingMethodId
-                });
+                `, { id: checkoutId, methodId: selectedShippingMethodId });
                 const deliveryErrors = deliveryResult.data?.checkoutDeliveryMethodUpdate?.errors;
                 if (deliveryErrors && deliveryErrors.length > 0) {
                     showMessage('Shipping method error: ' + deliveryErrors.map(e => e.message).join(', '), 'red');
@@ -598,8 +575,9 @@
                 btn.disabled = false;
                 spinner.classList.add('hidden');
 
-                showMessage('Checkout updated successfully!', 'green');
+                showMessage('Order placed successfully!', 'green');
                 setTimeout(() => {
+                    localStorage.removeItem('inquiryList');
                     window.location.replace('profile.html');
                 }, 2000);
 
@@ -624,7 +602,7 @@
         // Init
         document.addEventListener('DOMContentLoaded', () => {
             renderOrderSummary();
-            showSavedAddress();
+            renderAddressCards();
         });
 
         // ─── Drawer ──────────────────────────────────────────────────

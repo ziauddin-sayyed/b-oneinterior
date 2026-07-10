@@ -121,49 +121,153 @@
         @media (min-width: 769px) {
             .fixedBottom { display: none; }
         }
+        #drawer {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: #111;
+            color: #fff;
+            padding-top: 60px;
+            transition: .3s;
+            z-index: 9999;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        #drawer ul {
+            flex: 1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+        }
+        #drawer ul li {
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        #drawer ul li a {
+            display: block;
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        #drawer ul li a:hover {
+            background: #D4AF37;
+            color: #000;
+        }
+        #drawer-social {
+            border-top: 1px solid rgba(255,255,255,.1);
+            padding: 14px 16px 20px;
+            background: #111;
+        }
+        #drawer-social .social-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+        #drawer-social .social-grid a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #aaa;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        #drawer-social .social-grid a:hover { color: #D4AF37; }
+        #drawer-social .social-grid a img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 1px solid rgba(212,175,55,.3);
+            padding: 4px;
+            background: rgba(212,175,55,.06);
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: .3s;
+            z-index: 9998;
+        }
     </style>
 </head>
 <body class="bg-black overflow-x-hidden w-full">
 
     <!-- Header -->
-    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="text-2xl font-bold text-gold-500">
-                <a href="index.html"><img src="logo.png" style="height: 8vh;" alt=""></a>
-            </div>
-            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
-                <li><a href="index.html" class="hover:text-gold-500 transition">Home</a></li>
-                <li><a href="catalogue.html" class="hover:text-gold-500 transition">Catalogue</a></li>
-                <li><a href="wishlist.html" class="hover:text-gold-500 transition">Wishlist</a></li>
-                <li><a href="cart.html" class="hover:text-gold-500 transition">Cart</a></li>
-                <li id="authLinkDesktop"></li>
-            </ul>
-            <button onclick="toggleDrawer()" aria-label="Open menu" class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center gap-3 fixed top-0 left-0 right-0 z-[70] px-4 py-2 border-b border-gold-500/10 bg-black/95 backdrop-blur-sm">
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
-        </nav>
+            <div class="relative flex-1 min-w-0">
+                <input type="text" id="profileSearchInput" placeholder="Search products..." autocomplete="off"
+                    class="w-full pl-9 pr-4 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500"
+                    onkeydown="if(event.key==='Enter' && this.value.trim()) window.location.href='prodcut-list.html?q='+encodeURIComponent(this.value.trim())">
+                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/70 pointer-events-none"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="md:hidden h-[59px]"></div>
     </header>
 
     <!-- Mobile Drawer -->
-    <div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-black/95 backdrop-blur-xl z-[100] shadow-2xl border-l border-gold-500/20 transform translate-x-full transition-transform duration-300">
-        <div class="flex justify-end p-4">
-            <button onclick="toggleDrawer()" class="text-white/60 hover:text-white">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
-        </div>
-        <ul class="flex flex-col space-y-4 px-6 mt-4 text-gray-300">
-            <li><a href="index.html" class="block py-2 hover:text-gold-500 transition">Home</a></li>
-            <li><a href="catalogue.html" class="block py-2 hover:text-gold-500 transition">Catalogue</a></li>
-            <li><a href="wishlist.html" class="block py-2 hover:text-gold-500 transition">Wishlist</a></li>
-            <li><a href="cart.html" class="block py-2 hover:text-gold-500 transition">Cart</a></li>
+    <div id="drawer">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="wishlist.html">Wishlist</a></li>
+            <li><a href="index.html#contact">Contact Us</a></li>
+            <li><a href="terms.html">Terms and Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
             <li id="authLinkDrawer"></li>
         </ul>
+
+        <!-- Social Icons at drawer bottom -->
+        <div id="drawer-social">
+            <p style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                Connect With Us</p>
+            <div class="social-grid">
+                <a href="tel:+917738130131" target="_blank">
+                    <img src="images/call_icon.png" alt="Call">
+                    <span>Call</span>
+                </a>
+                <a href="https://wa.me/+917738130131?text=Hi%20B-oneinterion%20Team" target="_blank">
+                    <img src="images/whatsapp.png" alt="WhatsApp">
+                    <span>WhatsApp</span>
+                </a>
+                <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                    <img src="images/facebook.png" alt="Facebook">
+                    <span>Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag==" target="_blank">
+                    <img src="images/instagram.png" alt="Instagram">
+                    <span>Instagram</span>
+                </a>
+                <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                    <img src="images/youtube.png" alt="YouTube">
+                    <span>YouTube</span>
+                </a>
+                <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                    <img src="images/map_marker.png" alt="Location">
+                    <span>Location</span>
+                </a>
+            </div>
+        </div>
     </div>
-    <div id="drawerOverlay" class="fixed inset-0 bg-black/50 z-[90] hidden" onclick="toggleDrawer()"></div>
+    <label for="menu-toggle" class="overlay" onclick="toggleDrawer()"></label>
 
     <!-- Profile Content -->
     <section class="min-h-screen py-10">
@@ -215,12 +319,16 @@
         // ─── Drawer ──────────────────────────────────────────────────
         function toggleDrawer() {
             const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawerOverlay');
-            const isOpen = !drawer.classList.contains('translate-x-full');
-            drawer.classList.toggle('translate-x-full', isOpen);
-            drawer.classList.toggle('translate-x-0', !isOpen);
-            overlay.classList.toggle('hidden', isOpen);
-            overlay.classList.toggle('flex', !isOpen);
+            const overlay = document.querySelector('.overlay');
+            if (drawer.style.left === '0px') {
+                drawer.style.left = '-250px';
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+            } else {
+                drawer.style.left = '0px';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+            }
         }
 
         // ─── Auth ────────────────────────────────────────────────────
