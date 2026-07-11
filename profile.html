@@ -215,6 +215,7 @@
                     <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
+            <button onclick="signOut()" class="ml-auto gold-gradient-bg text-black px-3 py-1.5 rounded-xl font-bold text-xs hover:scale-105 transition transform">Logout</button>
         </div>
         <div class="md:hidden h-[59px]"></div>
     </header>
@@ -269,15 +270,56 @@
         <div class="container mx-auto px-4 max-w-4xl">
             <!-- Profile Header -->
             <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-2 md:p-8 mb-6">
-                <div class="flex items-center gap-5">
-                    <div class="w-10 h-10 rounded-full bg-gold-500/10 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <!-- Display mode -->
+                <div id="profileDisplay">
+                    <div class="flex items-center gap-5">
+                        <div class="w-10 h-10 rounded-full bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
+                        <div>
+                            <h1 id="profileName" class="text-2xl font-bold text-white">User</h1>
+                            <p id="profileEmail" class="text-gray-400 text-sm">user@example.com</p>
+                            <p id="profilePhone" class="text-gray-500 text-xs hidden"></p>
+                        </div>
+                        <div class="ml-auto">
+                            <button onclick="enableProfileEdit()" class="text-gold-500 hover:bg-gold-500/10 p-2 rounded-xl transition active:scale-95" title="Edit Profile">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <h1 id="profileName" class="text-2xl font-bold text-white">User</h1>
-                        <p id="profileEmail" class="text-gray-400 text-sm">user@example.com</p>
+                </div>
+                <!-- Edit mode -->
+                <div id="profileEdit" class="hidden">
+                    <div class="flex items-center gap-3 mb-5">
+                        <svg class="w-6 h-6 text-gold-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <h3 class="text-lg font-bold text-white">Edit Profile</h3>
                     </div>
-                    <button onclick="signOut()" class="ml-auto gold-gradient-bg text-black px-1 py-2 rounded-xl font-bold text-sm hover:scale-105 transition transform">Logout</button>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">First Name</label>
+                            <input type="text" id="editFirstName" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Last Name</label>
+                            <input type="text" id="editLastName" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Email</label>
+                        <input type="email" id="editEmail" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone</label>
+                        <input type="tel" id="editPhone" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="saveProfile()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
+                            <span id="saveProfileText">Save Changes</span>
+                            <svg class="w-4 h-4 animate-spin hidden inline ml-1" id="saveProfileSpinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </button>
+                        <button onclick="cancelProfileEdit()" class="text-gray-400 px-6 py-2.5 rounded-xl font-bold text-sm border border-white/10 hover:border-white/30 transition">Cancel</button>
+                    </div>
+                    <div id="profileEditMessage" class="mt-3 text-sm hidden"></div>
                 </div>
             </div>
 
@@ -417,8 +459,19 @@
                 if (drawerLink) {
                     drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
                 }
-                document.getElementById('profileName').textContent = userName || 'User';
+
+                const firstName = localStorage.getItem('saleor_user_first_name') || '';
+                const lastName = localStorage.getItem('saleor_user_last_name') || '';
+                const displayName = (firstName + ' ' + lastName).trim() || userName || 'User';
+                document.getElementById('profileName').textContent = displayName;
                 document.getElementById('profileEmail').textContent = userEmail;
+
+                const phone = localStorage.getItem('saleor_user_phone');
+                const phoneEl = document.getElementById('profilePhone');
+                if (phone) {
+                    phoneEl.textContent = phone;
+                    phoneEl.classList.remove('hidden');
+                }
             } else {
                 window.location.href = 'login.html';
                 return;
@@ -431,7 +484,170 @@
             localStorage.removeItem('saleor_csrf_token');
             localStorage.removeItem('saleor_user_email');
             localStorage.removeItem('saleor_user_name');
+            localStorage.removeItem('saleor_user_first_name');
+            localStorage.removeItem('saleor_user_last_name');
+            localStorage.removeItem('saleor_user_phone');
             window.location.href = 'index.html';
+        }
+
+        // ─── Profile Edit ────────────────────────────────────────────
+        function enableProfileEdit() {
+            const firstName = localStorage.getItem('saleor_user_first_name') || '';
+            const lastName = localStorage.getItem('saleor_user_last_name') || '';
+            const email = localStorage.getItem('saleor_user_email') || '';
+            const phone = localStorage.getItem('saleor_user_phone') || '';
+
+            document.getElementById('editFirstName').value = firstName;
+            document.getElementById('editLastName').value = lastName;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editPhone').value = phone;
+
+            document.getElementById('profileDisplay').classList.add('hidden');
+            document.getElementById('profileEdit').classList.remove('hidden');
+            document.getElementById('profileEditMessage').classList.add('hidden');
+        }
+
+        function cancelProfileEdit() {
+            document.getElementById('profileDisplay').classList.remove('hidden');
+            document.getElementById('profileEdit').classList.add('hidden');
+            document.getElementById('profileEditMessage').classList.add('hidden');
+        }
+
+        async function fetchUserProfileFromApi() {
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) return;
+            try {
+                const result = await apiCall(`
+                    query GetMyProfile {
+                        me {
+                            id
+                            email
+                            firstName
+                            lastName
+                            phone
+                        }
+                    }
+                `);
+                const me = result?.data?.me;
+                if (me) {
+                    if (me.firstName) localStorage.setItem('saleor_user_first_name', me.firstName);
+                    if (me.lastName) localStorage.setItem('saleor_user_last_name', me.lastName);
+                    if (me.email) localStorage.setItem('saleor_user_email', me.email);
+                    if (me.phone) localStorage.setItem('saleor_user_phone', me.phone);
+                    const fullName = ((me.firstName || '') + ' ' + (me.lastName || '')).trim() || me.email || 'User';
+                    localStorage.setItem('saleor_user_name', fullName);
+                    document.getElementById('profileName').textContent = fullName;
+                    document.getElementById('profileEmail').textContent = me.email || '';
+                }
+            } catch (e) {
+                console.warn('Failed to fetch user profile:', e);
+            }
+        }
+
+        async function saveProfile() {
+            const firstName = document.getElementById('editFirstName').value.trim();
+            const lastName = document.getElementById('editLastName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const currentEmail = localStorage.getItem('saleor_user_email') || '';
+
+            if (!firstName || !lastName) {
+                showProfileMessage('First name and last name are required.', 'text-red-400');
+                return;
+            }
+            if (!email) {
+                showProfileMessage('Email is required.', 'text-red-400');
+                return;
+            }
+
+            const spinner = document.getElementById('saveProfileSpinner');
+            const text = document.getElementById('saveProfileText');
+            spinner.classList.remove('hidden');
+            text.textContent = 'Saving...';
+
+            let hasError = false;
+
+            try {
+                // Update name via accountUpdate
+                if (firstName !== localStorage.getItem('saleor_user_first_name') ||
+                    lastName !== localStorage.getItem('saleor_user_last_name') ||
+                    phone !== (localStorage.getItem('saleor_user_phone') || '')) {
+                    const mutationInput = { firstName, lastName };
+                    if (phone) mutationInput.phone = phone;
+                    const result = await apiCall(`
+                        mutation AccountUpdate($input: AccountInput!) {
+                            accountUpdate(input: $input) {
+                                user { id email firstName lastName }
+                                errors { field message }
+                            }
+                        }
+                    `, {
+                        input: mutationInput
+                    });
+
+                    if (result?.data?.accountUpdate?.errors?.length > 0) {
+                        const errMsg = result.data.accountUpdate.errors.map(e => e.message).join(', ');
+                        showProfileMessage('Failed to update name: ' + errMsg, 'text-red-400');
+                        hasError = true;
+                    } else if (result?.data?.accountUpdate?.user) {
+                        localStorage.setItem('saleor_user_first_name', firstName);
+                        localStorage.setItem('saleor_user_last_name', lastName);
+                        if (phone) localStorage.setItem('saleor_user_phone', phone);
+                    }
+                }
+
+                // Update email if changed (requires verification)
+                if (email !== currentEmail && !hasError) {
+                    const emailResult = await apiCall(`
+                        mutation AccountRequestEmailChange($password: String!, $newEmail: String!) {
+                            accountRequestEmailChange(password: $password, newEmail: $newEmail) {
+                                user { id email }
+                                errors { field message }
+                            }
+                        }
+                    `, {
+                        password: 'placeholder',
+                        newEmail: email
+                    });
+
+                    if (emailResult?.data?.accountRequestEmailChange?.errors?.length > 0) {
+                        const errMsg = emailResult.data.accountRequestEmailChange.errors.map(e => e.message).join(', ');
+                        if (errMsg.toLowerCase().includes('password')) {
+                            showProfileMessage('Email change requires password verification. Please contact support to change your email.', 'text-yellow-400');
+                        } else {
+                            showProfileMessage('Email change failed: ' + errMsg, 'text-red-400');
+                        }
+                        hasError = true;
+                    } else {
+                        showProfileMessage('A verification link has been sent to your new email address.', 'text-green-400');
+                    }
+                }
+
+                if (!hasError) {
+                    const fullName = (firstName + ' ' + lastName).trim() || email;
+                    localStorage.setItem('saleor_user_name', fullName);
+                    document.getElementById('profileName').textContent = fullName;
+                    document.getElementById('profileEmail').textContent = email;
+
+                    showProfileMessage('Profile updated successfully!', 'text-green-400');
+                    setTimeout(() => {
+                        cancelProfileEdit();
+                    }, 1500);
+                }
+            } catch (e) {
+                console.error('Save profile error:', e);
+                showProfileMessage('An error occurred while saving. Please try again.', 'text-red-400');
+            }
+
+            spinner.classList.add('hidden');
+            text.textContent = 'Save Changes';
+        }
+
+        function showProfileMessage(msg, colorClass) {
+            const el = document.getElementById('profileEditMessage');
+            el.textContent = msg;
+            el.className = 'mt-3 text-sm ' + colorClass;
+            el.classList.remove('hidden');
         }
 
         // ─── Orders ──────────────────────────────────────────────────
@@ -912,6 +1128,7 @@
             checkAuth();
             fetchOrders();
             if (localStorage.getItem('saleor_auth_token')) {
+                await fetchUserProfileFromApi();
                 await fetchUserAddressesFromApi();
             }
             fetchStates();
