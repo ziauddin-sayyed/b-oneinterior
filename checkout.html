@@ -51,9 +51,21 @@
         .bg-gold { background: var(--gold); }
         .text-gold-500 { color: #D4AF37; }
         input, select, textarea { color-scheme: dark; }
+        select option { background: #1a1a1a; color: #fff; }
+        select option:checked { background: #2a2a2a; }
+        select option:hover { background: #D4AF37; color: #000; }
+        .shipping-panel-hidden { display: none !important; }
     </style>
 </head>
 <body>
+
+    <!-- Page Loader -->
+    <div id="pageLoader" class="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center hidden">
+        <div class="flex flex-col items-center gap-4">
+            <svg class="animate-spin w-10 h-10 text-gold-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            <p class="text-white text-sm font-bold tracking-wider">Loading...</p>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-gold-500/20">
@@ -102,11 +114,17 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">City</label>
-                                <input type="text" id="chkCity" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                                <input type="text" id="chkCity" required list="citySuggestions" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                                <datalist id="citySuggestions"></datalist>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">State</label>
-                                <input type="text" id="chkState" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                                <div class="relative">
+                                    <select id="chkState" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm appearance-none pr-10">
+                                        <option value="">Select State</option>
+                                    </select>
+                                    <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
@@ -115,8 +133,8 @@
                                 <input type="text" id="chkPincode" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Country Code</label>
-                                <input type="text" id="chkCountry" value="IN" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Country</label>
+                                <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm pointer-events-none select-none">India 🇮🇳</div>
                             </div>
                         </div>
                         <div class="flex gap-3">
@@ -130,7 +148,7 @@
                 </div>
 
                 <!-- Shipping Method -->
-                <div id="shippingPanel" class="glass-panel p-6 hidden">
+                <div id="shippingPanel" class="glass-panel p-6 shipping-panel-hidden">
                     <h2 class="text-lg font-black uppercase tracking-wider text-white mb-4">Shipping Method</h2>
                     <div id="shippingMethods">
                         <p id="shippingPlaceholder" class="text-gray-500 text-sm">Select an address to see available shipping methods.</p>
@@ -189,8 +207,18 @@
     <script>
         const API_URL = 'https://api.b-oneinterior.com/graphql/';
 
-        let checkoutId = null;
+        let checkoutId = localStorage.getItem('checkoutId') || null;
         let selectedShippingMethodId = null;
+
+        function showPageLoader() {
+            document.getElementById('pageLoader').classList.remove('hidden');
+            document.querySelectorAll('button').forEach(b => b.disabled = true);
+        }
+
+        function hidePageLoader() {
+            document.getElementById('pageLoader').classList.add('hidden');
+            document.querySelectorAll('button').forEach(b => b.disabled = false);
+        }
 
         function getCartItems() {
             const all = JSON.parse(localStorage.getItem('inquiryList') || '[]');
@@ -235,6 +263,92 @@
 
         function saveUserAddresses(addrs) {
             localStorage.setItem('userAddresses', JSON.stringify(addrs));
+        }
+
+        async function fetchUserAddressesFromApi() {
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) return;
+            try {
+                const result = await apiCall(`
+                    query GetMyAddresses {
+                        me {
+                            id
+                            email
+                            addresses {
+                                id
+                                firstName
+                                lastName
+                                streetAddress1
+                                streetAddress2
+                                city
+                                cityArea
+                                postalCode
+                                country { code country }
+                                countryArea
+                                phone
+                                metadata { key value }
+                            }
+                            defaultBillingAddress { id }
+                            defaultShippingAddress { id }
+                        }
+                    }
+                `);
+                const addresses = result?.data?.me?.addresses;
+                if (addresses && addresses.length > 0) {
+                    const mapped = addresses.map(a => ({
+                        id: a.id,
+                        firstName: a.firstName || '',
+                        lastName: a.lastName || '',
+                        phone: a.phone || '',
+                        street: a.streetAddress1 || '',
+                        city: a.city || '',
+                        state: a.countryArea || '',
+                        pincode: a.postalCode || '',
+                        country: a.country?.code || 'IN'
+                    }));
+                    // Merge: keep localStorage addresses that have no id, replace rest with API data
+                    const localAddrs = getUserAddresses().filter(a => !a.id);
+                    saveUserAddresses([...mapped, ...localAddrs]);
+                }
+            } catch (e) {
+                console.warn('Failed to fetch addresses from API:', e);
+            }
+        }
+
+        function getCachedStates() {
+            try { return JSON.parse(localStorage.getItem('indiaStates') || '[]'); } catch { return []; }
+        }
+
+        function cacheStates(states) {
+            localStorage.setItem('indiaStates', JSON.stringify(states));
+        }
+
+        async function fetchStates() {
+            const cached = getCachedStates();
+            if (cached.length > 0) { populateStateDropdown(cached); return; }
+            try {
+                const result = await apiCall(`
+                    query AddressValidation {
+                        addressValidationRules(countryCode: IN) {
+                            countryAreaChoices { raw verbose }
+                        }
+                    }
+                `);
+                const choices = result?.data?.addressValidationRules?.countryAreaChoices;
+                if (choices && choices.length > 0) {
+                    const states = [...new Set(choices.map(c => c.raw).filter(Boolean))];
+                    cacheStates(states);
+                    populateStateDropdown(states);
+                }
+            } catch (e) {
+                console.warn('Failed to fetch states:', e);
+            }
+        }
+
+        function populateStateDropdown(states) {
+            const sel = document.getElementById('chkState');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Select State</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
         }
 
         function renderAddressCards() {
@@ -285,7 +399,7 @@
                 city: document.getElementById('chkCity').value.trim(),
                 state: document.getElementById('chkState').value.trim(),
                 pincode: document.getElementById('chkPincode').value.trim(),
-                country: document.getElementById('chkCountry').value.trim() || 'IN',
+                country: 'IN',
                 phone: document.getElementById('chkPhone').value.trim()
             };
         }
@@ -297,12 +411,59 @@
                 return;
             }
 
+            // Temporarily add to addresses for selectAddress to use
             const addrs = getUserAddresses();
             addrs.push(addr);
             saveUserAddresses(addrs);
             cancelAddAddress();
             renderAddressCards();
-            await selectAddress(addrs.length - 1);
+
+            // Try to create checkout — on failure revert the save
+            const ok = await selectAddress(addrs.length - 1);
+            if (!ok) {
+                addrs.pop();
+                saveUserAddresses(addrs);
+                renderAddressCards();
+                return;
+            }
+
+            // Save to Saleor account if logged in
+            const token = localStorage.getItem('saleor_auth_token');
+            if (token) {
+                try {
+                    const addrMutation = `
+                        mutation AccountAddressCreate($input: AddressInput!) {
+                            accountAddressCreate(input: $input) {
+                                address { id firstName lastName streetAddress1 streetAddress2 city cityArea postalCode country { code country } countryArea phone isDefaultBillingAddress isDefaultShippingAddress }
+                                errors { field message code }
+                            }
+                        }
+                    `;
+                    const apiResult = await apiCall(addrMutation, {
+                        input: {
+                            firstName: addr.firstName,
+                            lastName: addr.lastName,
+                            streetAddress1: addr.street,
+                            city: addr.city,
+                            countryArea: addr.state,
+                            postalCode: addr.pincode,
+                            country: addr.country,
+                            phone: addr.phone
+                        }
+                    });
+                    const apiAddr = apiResult?.data?.accountAddressCreate?.address;
+                    if (apiAddr && apiAddr.id) {
+                        const updatedAddrs = getUserAddresses();
+                        const idx = updatedAddrs.findIndex(a => a.firstName === addr.firstName && a.lastName === addr.lastName && a.phone === addr.phone && a.street === addr.street);
+                        if (idx !== -1) {
+                            updatedAddrs[idx].id = apiAddr.id;
+                            saveUserAddresses(updatedAddrs);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to save address to account:', e);
+                }
+            }
         }
 
         let selectedAddrIndex = -1;
@@ -310,15 +471,16 @@
 
         async function selectAddress(index) {
             const addrs = getUserAddresses();
-            if (!addrs[index]) return;
-            if (checkoutProcessing) return;
+            if (!addrs[index]) return false;
+            if (checkoutProcessing) return false;
             checkoutProcessing = true;
+            showPageLoader();
 
             selectedAddrIndex = index;
             renderAddressCards();
 
             const items = getCartItems();
-            if (items.length === 0) { showMessage('Your cart is empty.', 'red'); checkoutProcessing = false; return; }
+            if (items.length === 0) { showMessage('Your cart is empty.', 'red'); checkoutProcessing = false; return false; }
 
             const addr = addrs[index];
             document.getElementById('shippingPlaceholder').textContent = 'Fetching shipping methods...';
@@ -349,8 +511,39 @@
                     lines.push({ variantId: vid, quantity: parseInt(item.quantity) || 1 });
                 }
 
-                // Create checkout with shipping address inline
-                const addrInput = {
+                // Create checkout with shipping address inline (only if no existing checkout)
+                if (!checkoutId) {
+                    const addrInput = {
+                        firstName: addr.firstName,
+                        lastName: addr.lastName,
+                        streetAddress1: addr.street,
+                        city: addr.city,
+                        countryArea: addr.state,
+                        postalCode: addr.pincode,
+                        country: addr.country,
+                        phone: addr.phone
+                    };
+                    const createQuery = `
+                        mutation CheckoutCreate($lines: [CheckoutLineInput!]!, $address: AddressInput!) {
+                            checkoutCreate(input: { channel: "in", lines: $lines, shippingAddress: $address, billingAddress: $address }) {
+                                checkout { id token }
+                                errors { field message }
+                            }
+                        }
+                    `;
+                    const createResult = await apiCall(createQuery, { lines, address: addrInput });
+                    if (createResult.errors && !createResult.data?.checkoutCreate?.checkout) {
+                        throw new Error(createResult.errors[0]?.message || 'Checkout creation failed');
+                    }
+                    const cErrors = createResult.data?.checkoutCreate?.errors;
+                    if (cErrors && cErrors.length > 0) {
+                        throw new Error(cErrors.map(e => e.message).join(', '));
+                    }
+                    checkoutId = createResult.data.checkoutCreate.checkout.id;
+                    localStorage.setItem('checkoutId', checkoutId);
+                }
+
+                const billingAddress = {
                     firstName: addr.firstName,
                     lastName: addr.lastName,
                     streetAddress1: addr.street,
@@ -360,23 +553,41 @@
                     country: addr.country,
                     phone: addr.phone
                 };
-                const createQuery = `
-                    mutation CheckoutCreate($lines: [CheckoutLineInput!]!, $address: AddressInput!) {
-                        checkoutCreate(input: { channel: "in", lines: $lines, shippingAddress: $address, billingAddress: $address }) {
-                            checkout { id token }
-                            errors { field message }
+
+                const updateBillingQuery = `
+                    mutation CheckoutBillingAddressUpdate($checkoutId: ID!, $billingAddress: AddressInput!) {
+                        checkoutBillingAddressUpdate(
+                            id: $checkoutId,
+                            billingAddress: $billingAddress
+                        ) {
+                            checkout {
+                                id
+                                token
+                                billingAddress {
+                                    firstName
+                                    lastName
+                                    streetAddress1
+                                    city
+                                    postalCode
+                                    country {
+                                        code
+                                    }
+                                    phone
+                                }
+                            }
+                            errors {
+                                field
+                                message
+                                code
+                            }
                         }
                     }
                 `;
-                const createResult = await apiCall(createQuery, { lines, address: addrInput });
-                if (createResult.errors && !createResult.data?.checkoutCreate?.checkout) {
-                    throw new Error(createResult.errors[0]?.message || 'Checkout creation failed');
-                }
-                const cErrors = createResult.data?.checkoutCreate?.errors;
-                if (cErrors && cErrors.length > 0) {
-                    throw new Error(cErrors.map(e => e.message).join(', '));
-                }
-                checkoutId = createResult.data.checkoutCreate.checkout.id;
+
+                const updateResult = await apiCall(updateBillingQuery, {
+                    checkoutId: checkoutId,
+                    billingAddress
+                });
 
                 // Get shipping methods
                 const shipQuery = `
@@ -399,8 +610,9 @@
                     document.getElementById('shippingError').classList.remove('hidden');
                     document.getElementById('shippingPlaceholder').classList.remove('hidden');
                     document.getElementById('shippingPlaceholder').textContent = 'Select an address to see available shipping methods.';
+                    hidePageLoader();
                     checkoutProcessing = false;
-                    return;
+                    return false;
                 }
 
                 const container = document.getElementById('shippingOptions');
@@ -415,8 +627,8 @@
                     </label>
                 `).join('');
                 selectedShippingMethodId = methods[0].id;
-                document.getElementById('shippingPanel').classList.remove('hidden');
-                document.getElementById('paymentPanel').classList.remove('hidden');
+                // document.getElementById('shippingPanel').classList.remove('shipping-panel-hidden');
+                // document.getElementById('paymentPanel').classList.remove('hidden');
 
                 // Auto-set first shipping method on checkout
                 const deliveryResult = await apiCall(`
@@ -432,14 +644,21 @@
 
                 document.getElementById('shippingPlaceholder').textContent = 'Shipping method selected automatically.';
                 showMessage('Address & shipping set successfully!', 'green');
+                hidePageLoader();
+                checkoutProcessing = false;
+                return true;
 
             } catch (err) {
                 console.error('Checkout setup error:', err);
                 document.getElementById('shippingSpinner').classList.add('hidden');
                 document.getElementById('shippingError').textContent = err.message || 'Failed to setup checkout.';
                 document.getElementById('shippingError').classList.remove('hidden');
-            } finally {
+                // Clear stale checkout so next attempt creates a fresh one
+                localStorage.removeItem('checkoutId');
+                checkoutId = null;
+                hidePageLoader();
                 checkoutProcessing = false;
+                return false;
             }
         }
 
@@ -511,10 +730,7 @@
                 return;
             }
 
-            const btn = document.getElementById('placeOrderBtn');
-            const spinner = document.getElementById('orderSpinner');
-            btn.disabled = true;
-            spinner.classList.remove('hidden');
+            showPageLoader();
 
             try {
                 // Update shipping method (addresses already set during address selection)
@@ -529,25 +745,23 @@
                 const deliveryErrors = deliveryResult.data?.checkoutDeliveryMethodUpdate?.errors;
                 if (deliveryErrors && deliveryErrors.length > 0) {
                     showMessage('Shipping method error: ' + deliveryErrors.map(e => e.message).join(', '), 'red');
-                    btn.disabled = false;
-                    spinner.classList.add('hidden');
+                    hidePageLoader();
                     return;
                 }
 
-                btn.disabled = false;
-                spinner.classList.add('hidden');
+                hidePageLoader();
 
                 showMessage('Order placed successfully!', 'green');
                 setTimeout(() => {
                     localStorage.removeItem('inquiryList');
+                    localStorage.removeItem('checkoutId');
                     window.location.replace('profile.html');
                 }, 2000);
 
             } catch (err) {
                 console.error('Checkout error:', err);
                 showMessage('An unexpected error occurred. Please try again.', 'red');
-                btn.disabled = false;
-                spinner.classList.add('hidden');
+                hidePageLoader();
             }
         }
 
@@ -562,9 +776,13 @@
         }
 
         // Init
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            showPageLoader();
+            await fetchUserAddressesFromApi();
+            fetchStates();
             renderOrderSummary();
             renderAddressCards();
+            hidePageLoader();
         });
 
         // ─── Drawer ──────────────────────────────────────────────────
@@ -621,7 +839,7 @@
                     <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20" style="display:none;"></span>
                 </a>
             </li>
-            <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home</li>
+            <li class="mt-7 active:scale-90 tracking-tighter text-gold-500"> Home</li>
             <li class="relative">
                 <a id="mobileCartLink" href="https://b-oneinterior.com/cart"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">

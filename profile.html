@@ -187,6 +187,10 @@
             padding: 4px;
             background: rgba(212,175,55,.06);
         }
+        select option { background: #1a1a1a; color: #fff; }
+        select option:checked { background: #2a2a2a; }
+        select option:hover { background: #D4AF37; color: #000; }
+        input, select, textarea { color-scheme: dark; }
         .overlay {
             position: fixed;
             inset: 0;
@@ -293,6 +297,68 @@
                     <p class="text-red-400">Failed to load orders. Please try again later.</p>
                 </div>
                 <div id="ordersList" class="hidden space-y-4"></div>
+            </div>
+
+            <!-- My Addresses -->
+            <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 mt-6">
+                <h2 class="text-xl font-bold text-white mb-6">My Addresses</h2>
+                <div id="profAddressCards" class="grid grid-cols-1 gap-3 mb-4"></div>
+
+                <!-- Add / Edit Address Form -->
+                <div id="addProfAddressForm" class="hidden space-y-4 border-t border-white/10 pt-4">
+                    <h3 id="profAddrFormTitle" class="text-sm font-black uppercase tracking-wider text-gold-500">New Address</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">First Name</label>
+                            <input type="text" id="chkFirstName" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Last Name</label>
+                            <input type="text" id="chkLastName" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone</label>
+                        <input type="tel" id="chkPhone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Street Address</label>
+                        <input type="text" id="chkStreet" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">City</label>
+                            <input type="text" id="chkCity" required list="citySuggestions" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                            <datalist id="citySuggestions"></datalist>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">State</label>
+                            <div class="relative">
+                                <select id="chkState" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm appearance-none pr-10">
+                                    <option value="">Select State</option>
+                                </select>
+                                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Pincode</label>
+                            <input type="text" id="chkPincode" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Country</label>
+                            <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm pointer-events-none select-none">India 🇮🇳</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="saveAddress()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
+                            <span id="saveAddrText">Save Address</span>
+                            <svg class="w-4 h-4 animate-spin hidden inline" id="saveAddrSpinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </button>
+                        <button type="button" onclick="cancelAddAddress()" class="text-gray-400 px-6 py-2.5 rounded-xl font-bold text-sm border border-white/10 hover:border-white/30 transition">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -519,9 +585,314 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // ─── Addresses ───────────────────────────────────────────────
+        function getUserAddresses() {
+            return JSON.parse(localStorage.getItem('userAddresses') || '[]');
+        }
+
+        function saveUserAddresses(addrs) {
+            localStorage.setItem('userAddresses', JSON.stringify(addrs));
+        }
+
+        async function apiCall(query, variables = {}) {
+            let token = localStorage.getItem('saleor_auth_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const doFetch = async () => {
+                const res = await fetch('https://api.b-oneinterior.com/graphql/', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ query, variables })
+                });
+                return res.json();
+            };
+
+            let json = await doFetch();
+
+            if (json.errors && json.errors.some(e =>
+                e.message?.toLowerCase().includes('signature has expired') ||
+                e.message?.toLowerCase().includes('expired')
+            )) {
+                const refreshed = await refreshToken();
+                if (refreshed) {
+                    headers['Authorization'] = `Bearer ${localStorage.getItem('saleor_auth_token')}`;
+                    json = await doFetch();
+                }
+            }
+
+            return json;
+        }
+
+        async function fetchUserAddressesFromApi() {
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) return;
+            try {
+                const result = await apiCall(`
+                    query GetMyAddresses {
+                        me {
+                            id
+                            email
+                            addresses {
+                                id
+                                firstName
+                                lastName
+                                streetAddress1
+                                streetAddress2
+                                city
+                                cityArea
+                                postalCode
+                                country { code country }
+                                countryArea
+                                phone
+                                metadata { key value }
+                            }
+                            defaultBillingAddress { id }
+                            defaultShippingAddress { id }
+                        }
+                    }
+                `);
+                const addresses = result?.data?.me?.addresses;
+                if (addresses && addresses.length > 0) {
+                    const mapped = addresses.map(a => ({
+                        id: a.id,
+                        firstName: a.firstName || '',
+                        lastName: a.lastName || '',
+                        phone: a.phone || '',
+                        street: a.streetAddress1 || '',
+                        city: a.city || '',
+                        state: a.countryArea || '',
+                        pincode: a.postalCode || '',
+                        country: a.country?.code || 'IN'
+                    }));
+                    const localAddrs = getUserAddresses().filter(a => !a.id);
+                    saveUserAddresses([...mapped, ...localAddrs]);
+                }
+            } catch (e) {
+                console.warn('Failed to fetch addresses from API:', e);
+            }
+        }
+
+        function getCachedStates() {
+            try { return JSON.parse(localStorage.getItem('indiaStates') || '[]'); } catch { return []; }
+        }
+
+        function cacheStates(states) {
+            localStorage.setItem('indiaStates', JSON.stringify(states));
+        }
+
+        async function fetchStates() {
+            const cached = getCachedStates();
+            if (cached.length > 0) { populateStateDropdown(cached); return; }
+            try {
+                const result = await apiCall(`
+                    query AddressValidation {
+                        addressValidationRules(countryCode: IN) {
+                            countryAreaChoices { raw verbose }
+                        }
+                    }
+                `);
+                const choices = result?.data?.addressValidationRules?.countryAreaChoices;
+                if (choices && choices.length > 0) {
+                    const states = [...new Set(choices.map(c => c.raw).filter(Boolean))];
+                    cacheStates(states);
+                    populateStateDropdown(states);
+                }
+            } catch (e) {
+                console.warn('Failed to fetch states:', e);
+            }
+        }
+
+        function populateStateDropdown(states) {
+            const sel = document.getElementById('chkState');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Select State</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        let editingAddrIndex = -1;
+
+        function renderAddressCards() {
+            const container = document.getElementById('profAddressCards');
+            const addresses = getUserAddresses();
+
+            let html = addresses.map((addr, i) => `
+                <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-bold text-sm">${addr.firstName} ${addr.lastName}</p>
+                        <p class="text-gray-400 text-xs">${addr.phone}</p>
+                        <p class="text-gray-400 text-xs mt-0.5">${addr.street}, ${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="editAddress(${i})" class="gold-gradient-bg text-black px-4 py-1.5 rounded-xl font-bold text-xs hover:scale-105 transition transform">Edit</button>
+                        <button onclick="deleteAddress(${i})" class="text-red-400 px-4 py-1.5 rounded-xl font-bold text-xs border border-red-400/30 hover:bg-red-400/10 transition">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            html += `
+                <div onclick="showAddAddressForm()"
+                    class="bg-white/5 rounded-xl p-4 border border-dashed border-white/20 cursor-pointer hover:border-gold-500/50 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    <span class="text-gold-500 font-bold text-sm">Add New Address</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function showAddAddressForm() {
+            editingAddrIndex = -1;
+            document.getElementById('profAddrFormTitle').textContent = 'New Address';
+            document.getElementById('saveAddrText').textContent = 'Save Address';
+            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('addProfAddressForm').classList.remove('hidden');
+            document.getElementById('addProfAddressForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelAddAddress() {
+            document.getElementById('addProfAddressForm').classList.add('hidden');
+        }
+
+        function getAddressFromForm() {
+            return {
+                firstName: document.getElementById('chkFirstName').value.trim(),
+                lastName: document.getElementById('chkLastName').value.trim(),
+                street: document.getElementById('chkStreet').value.trim(),
+                city: document.getElementById('chkCity').value.trim(),
+                state: document.getElementById('chkState').value.trim(),
+                pincode: document.getElementById('chkPincode').value.trim(),
+                country: 'IN',
+                phone: document.getElementById('chkPhone').value.trim()
+            };
+        }
+
+        async function saveAddress() {
+            const addr = getAddressFromForm();
+            if (!addr.firstName || !addr.lastName || !addr.street || !addr.city || !addr.state || !addr.pincode || !addr.phone) {
+                alert('Please fill in all address fields.');
+                return;
+            }
+
+            const addrs = getUserAddresses();
+
+            if (editingAddrIndex >= 0) {
+                // Update existing
+                const existing = addrs[editingAddrIndex];
+                // Preserve API id if it existed
+                if (existing.id) addr.id = existing.id;
+                addrs[editingAddrIndex] = addr;
+            } else {
+                addrs.push(addr);
+            }
+
+            saveUserAddresses(addrs);
+            cancelAddAddress();
+            renderAddressCards();
+
+            // Save to API if logged in and it's a new address (no id yet)
+            if (!addr.id) {
+                const token = localStorage.getItem('saleor_auth_token');
+                if (token) {
+                    const spinner = document.getElementById('saveAddrSpinner');
+                    const text = document.getElementById('saveAddrText');
+                    spinner.classList.remove('hidden');
+                    text.textContent = 'Saving...';
+                    try {
+                        const addrMutation = `
+                            mutation AccountAddressCreate($input: AddressInput!) {
+                                accountAddressCreate(input: $input) {
+                                    address { id firstName lastName streetAddress1 streetAddress2 city cityArea postalCode country { code country } countryArea phone isDefaultBillingAddress isDefaultShippingAddress }
+                                    errors { field message code }
+                                }
+                            }
+                        `;
+                        const apiResult = await apiCall(addrMutation, {
+                            input: {
+                                firstName: addr.firstName,
+                                lastName: addr.lastName,
+                                streetAddress1: addr.street,
+                                city: addr.city,
+                                countryArea: addr.state,
+                                postalCode: addr.pincode,
+                                country: addr.country,
+                                phone: addr.phone
+                            }
+                        });
+                        const apiAddr = apiResult?.data?.accountAddressCreate?.address;
+                        if (apiAddr && apiAddr.id) {
+                            const updatedAddrs = getUserAddresses();
+                            const idx = updatedAddrs.findIndex(a => a.firstName === addr.firstName && a.lastName === addr.lastName && a.phone === addr.phone && a.street === addr.street && !a.id);
+                            if (idx !== -1) {
+                                updatedAddrs[idx].id = apiAddr.id;
+                                saveUserAddresses(updatedAddrs);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Failed to save address to account:', e);
+                    }
+                    spinner.classList.add('hidden');
+                    text.textContent = 'Save Address';
+                }
+            }
+        }
+
+        function editAddress(index) {
+            const addrs = getUserAddresses();
+            if (!addrs[index]) return;
+            editingAddrIndex = index;
+            const addr = addrs[index];
+
+            document.getElementById('chkFirstName').value = addr.firstName || '';
+            document.getElementById('chkLastName').value = addr.lastName || '';
+            document.getElementById('chkPhone').value = addr.phone || '';
+            document.getElementById('chkStreet').value = addr.street || '';
+            document.getElementById('chkCity').value = addr.city || '';
+            document.getElementById('chkState').value = addr.state || '';
+            document.getElementById('chkPincode').value = addr.pincode || '';
+
+            document.getElementById('profAddrFormTitle').textContent = 'Edit Address';
+            document.getElementById('saveAddrText').textContent = 'Update Address';
+            document.getElementById('addProfAddressForm').classList.remove('hidden');
+            document.getElementById('addProfAddressForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function deleteAddress(index) {
+            if (!confirm('Delete this address?')) return;
+            const addrs = getUserAddresses();
+            const addr = addrs[index];
+            addrs.splice(index, 1);
+            saveUserAddresses(addrs);
+            renderAddressCards();
+
+            // Delete from Saleor API if it has an id
+            if (addr.id) {
+                const token = localStorage.getItem('saleor_auth_token');
+                if (token) {
+                    try {
+                        await apiCall(`
+                            mutation AccountAddressDelete($id: ID!) {
+                                accountAddressDelete(id: $id) {
+                                    errors { field message }
+                                }
+                            }
+                        `, { id: addr.id });
+                    } catch (e) {
+                        console.warn('Failed to delete address from API:', e);
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
             checkAuth();
             fetchOrders();
+            if (localStorage.getItem('saleor_auth_token')) {
+                await fetchUserAddressesFromApi();
+            }
+            fetchStates();
+            renderAddressCards();
         });
     </script>
 
@@ -550,7 +921,7 @@
                     <span class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20" style="display:none;"></span>
                 </a>
             </li>
-            <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home</li>
+            <li class="mt-7 active:scale-90 tracking-tighter text-gold-500"> Home</li>
             <li class="relative">
                 <a id="mobileCartLink" href="https://b-oneinterior.com/cart"
                     class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
