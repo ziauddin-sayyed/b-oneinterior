@@ -268,16 +268,16 @@
     <section class="min-h-screen py-10">
         <div class="container mx-auto px-4 max-w-4xl">
             <!-- Profile Header -->
-            <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 mb-6">
+            <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-2 md:p-8 mb-6">
                 <div class="flex items-center gap-5">
-                    <div class="w-16 h-16 rounded-full bg-gold-500/10 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div class="w-10 h-10 rounded-full bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
                     <div>
                         <h1 id="profileName" class="text-2xl font-bold text-white">User</h1>
                         <p id="profileEmail" class="text-gray-400 text-sm">user@example.com</p>
                     </div>
-                    <button onclick="signOut()" class="ml-auto gold-gradient-bg text-black px-5 py-2 rounded-xl font-bold text-sm hover:scale-105 transition transform">Sign Out</button>
+                    <button onclick="signOut()" class="ml-auto gold-gradient-bg text-black px-1 py-2 rounded-xl font-bold text-sm hover:scale-105 transition transform">Logout</button>
                 </div>
             </div>
 
@@ -858,9 +858,32 @@
             document.getElementById('addProfAddressForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
+        function showErrorPopup(message) {
+            const existing = document.getElementById('errorPopup');
+            if (existing) existing.remove();
+            const overlay = document.createElement('div');
+            overlay.id = 'errorPopup';
+            overlay.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/60';
+            overlay.innerHTML = `
+                <div class="bg-[#1a1a1a] border border-gold-500/30 rounded-2xl p-6 mx-4 max-w-sm w-full shadow-2xl">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+                        <p class="text-white font-bold text-lg mb-1">Cannot Delete Address</p>
+                        <p class="text-gray-400 text-sm mb-5">${message}</p>
+                        <button onclick="this.closest('#errorPopup').remove()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
         async function deleteAddress(index) {
-            if (!confirm('Delete this address?')) return;
             const addrs = getUserAddresses();
+            if (addrs.length <= 1) {
+                showErrorPopup('At least one address must exist. Please add a new address before deleting this one.');
+                return;
+            }
+            if (!confirm('Delete this address?')) return;
             const addr = addrs[index];
             addrs.splice(index, 1);
             saveUserAddresses(addrs);
