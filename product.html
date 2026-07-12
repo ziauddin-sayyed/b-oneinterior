@@ -2599,7 +2599,7 @@
                         <span id="cartItemTotal" class="text-2xl font-black gold-gradient-text">${inCart.currency === 'INR' ? '₹' : ''}${(inCart.quantity * inCart.price).toFixed(2)}</span>
                     </div>
                     <div class="flex flex-col gap-2 mt-3">
-                        <button type="button" onclick="openProductBuyNowModal()"
+                        <button type="button" onclick="buyNow()"
                             class="w-full h-14 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <ion-icon name="flash-outline" class="text-xl"></ion-icon>
                             Buy Now
@@ -2669,7 +2669,7 @@
 
                         </svg>
                         </button>
-                        <button type="button" onclick="openProductBuyNowModal()"
+                        <button type="button" onclick="buyNow()"
                             class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2">
                             <ion-icon name="flash-outline" class="text-xl"></ion-icon>
                             Buy Now
@@ -2990,6 +2990,21 @@
                 currency
             };
         }
+
+        window.buyNow = function () {
+            if (!currentProduct) return;
+            const item = getCurrentSelectionLineItem();
+            if (!item) return;
+            const cart = getCart();
+            const inCart = cart.find(i => i.id === item.id && (i.cartType || 'products') === 'products');
+            if (!inCart) {
+                item.cartType = 'products';
+                item.quantity = 1;
+                cart.unshift(item);
+                saveCart(cart);
+            }
+            window.location.href = 'cart.html';
+        };
 
         window.openProductBuyNowModal = function () {
             if (!currentProduct) return;

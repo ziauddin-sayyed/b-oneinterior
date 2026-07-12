@@ -137,6 +137,10 @@
                                 <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm pointer-events-none select-none">India 🇮🇳</div>
                             </div>
                         </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">GST Number (optional)</label>
+                            <input type="text" id="chkGst" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm" placeholder="e.g. 27ABCDE1234F1Z5">
+                        </div>
                         <div class="flex gap-3">
                             <button type="button" onclick="saveNewAddress()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
                                 <span id="saveAddrText">Save & Use This Address</span>
@@ -295,17 +299,21 @@
                 `);
                 const addresses = result?.data?.me?.addresses;
                 if (addresses && addresses.length > 0) {
-                    const mapped = addresses.map(a => ({
-                        id: a.id,
-                        firstName: a.firstName || '',
-                        lastName: a.lastName || '',
-                        phone: a.phone || '',
-                        street: a.streetAddress1 || '',
-                        city: a.city || '',
-                        state: a.countryArea || '',
-                        pincode: a.postalCode || '',
-                        country: a.country?.code || 'IN'
-                    }));
+                    const mapped = addresses.map(a => {
+                        const gstMeta = (a.metadata || []).find(m => m.key === 'gst_number');
+                        return {
+                            id: a.id,
+                            firstName: a.firstName || '',
+                            lastName: a.lastName || '',
+                            phone: a.phone || '',
+                            street: a.streetAddress1 || '',
+                            city: a.city || '',
+                            state: a.countryArea || '',
+                            pincode: a.postalCode || '',
+                            country: a.country?.code || 'IN',
+                            gst: gstMeta ? gstMeta.value : ''
+                        };
+                    });
                     // Merge: keep localStorage addresses that have no id, replace rest with API data
                     const localAddrs = getUserAddresses().filter(a => !a.id);
                     saveUserAddresses([...mapped, ...localAddrs]);
@@ -362,6 +370,7 @@
                         <p class="text-white font-bold text-sm">${addr.firstName} ${addr.lastName}</p>
                         <p class="text-gray-400 text-xs">${addr.phone}</p>
                         <p class="text-gray-400 text-xs mt-0.5">${addr.street}, ${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                        <p class="text-gray-400 text-xs mt-0.5">GST: ${addr.gst || 'Not added'}</p>
                     </div>
                     ${i === selectedAddrIndex ? '<ion-icon name="checkmark-circle" class="text-xl text-gold-500 flex-shrink-0"></ion-icon>' : ''}
                 </div>
@@ -386,7 +395,7 @@
 
         function cancelAddAddress() {
             document.getElementById('addAddressForm').classList.add('hidden');
-            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode'].forEach(id => {
+            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode','chkGst'].forEach(id => {
                 document.getElementById(id).value = '';
             });
         }
@@ -400,7 +409,8 @@
                 state: document.getElementById('chkState').value.trim(),
                 pincode: document.getElementById('chkPincode').value.trim(),
                 country: 'IN',
-                phone: document.getElementById('chkPhone').value.trim()
+                phone: document.getElementById('chkPhone').value.trim(),
+                gst: document.getElementById('chkGst').value.trim()
             };
         }
 
@@ -439,6 +449,7 @@
                             }
                         }
                     `;
+                    const metadata = addr.gst ? [{ key: "gst_number", value: addr.gst }] : [];
                     const apiResult = await apiCall(addrMutation, {
                         input: {
                             firstName: addr.firstName,
@@ -448,7 +459,8 @@
                             countryArea: addr.state,
                             postalCode: addr.pincode,
                             country: addr.country,
-                            phone: addr.phone
+                            phone: addr.phone,
+                            metadata: metadata
                         }
                     });
                     const apiAddr = apiResult?.data?.accountAddressCreate?.address;
@@ -749,7 +761,10 @@
                     return;
                 }
 
-                hidePageLoader();
+                document.getElementById('pageLoader').classList.add('hidden');
+                const orderBtn = document.getElementById('placeOrderBtn');
+                orderBtn.disabled = true;
+                orderBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
                 showMessage('Order placed successfully!', 'green');
                 setTimeout(() => {

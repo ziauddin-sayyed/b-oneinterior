@@ -385,13 +385,17 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Pincode</label>
-                            <input type="text" id="chkPincode" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Pincode</label>
+                                <input type="text" id="chkPincode" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Country</label>
+                                <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm pointer-events-none select-none">India 🇮🇳</div>
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Country</label>
-                            <div class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm pointer-events-none select-none">India 🇮🇳</div>
-                        </div>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">GST Number (optional)</label>
+                            <input type="text" id="chkGst" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm" placeholder="e.g. 27ABCDE1234F1Z5">
                     </div>
                     <div class="flex gap-3">
                         <button type="button" onclick="saveAddress()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
@@ -870,17 +874,21 @@
                 `);
                 const addresses = result?.data?.me?.addresses;
                 if (addresses && addresses.length > 0) {
-                    const mapped = addresses.map(a => ({
-                        id: a.id,
-                        firstName: a.firstName || '',
-                        lastName: a.lastName || '',
-                        phone: a.phone || '',
-                        street: a.streetAddress1 || '',
-                        city: a.city || '',
-                        state: a.countryArea || '',
-                        pincode: a.postalCode || '',
-                        country: a.country?.code || 'IN'
-                    }));
+                    const mapped = addresses.map(a => {
+                        const gstMeta = (a.metadata || []).find(m => m.key === 'gst_number');
+                        return {
+                            id: a.id,
+                            firstName: a.firstName || '',
+                            lastName: a.lastName || '',
+                            phone: a.phone || '',
+                            street: a.streetAddress1 || '',
+                            city: a.city || '',
+                            state: a.countryArea || '',
+                            pincode: a.postalCode || '',
+                            country: a.country?.code || 'IN',
+                            gst: gstMeta ? gstMeta.value : ''
+                        };
+                    });
                     const localAddrs = getUserAddresses().filter(a => !a.id);
                     saveUserAddresses([...mapped, ...localAddrs]);
                 }
@@ -937,6 +945,7 @@
                         <p class="text-white font-bold text-sm">${addr.firstName} ${addr.lastName}</p>
                         <p class="text-gray-400 text-xs">${addr.phone}</p>
                         <p class="text-gray-400 text-xs mt-0.5">${addr.street}, ${addr.city}, ${addr.state} - ${addr.pincode}</p>
+                        <p class="text-gray-400 text-xs mt-0.5">GST: ${addr.gst || 'Not added'}</p>
                     </div>
                     <div class="flex gap-2 mt-3">
                         <button onclick="editAddress(${i})" class="gold-gradient-bg text-black px-4 py-1.5 rounded-xl font-bold text-xs hover:scale-105 transition transform">Edit</button>
@@ -960,7 +969,7 @@
             editingAddrIndex = -1;
             document.getElementById('profAddrFormTitle').textContent = 'New Address';
             document.getElementById('saveAddrText').textContent = 'Save Address';
-            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode'].forEach(id => {
+            ['chkFirstName','chkLastName','chkPhone','chkStreet','chkCity','chkState','chkPincode','chkGst'].forEach(id => {
                 document.getElementById(id).value = '';
             });
             document.getElementById('addProfAddressForm').classList.remove('hidden');
@@ -980,7 +989,8 @@
                 state: document.getElementById('chkState').value.trim(),
                 pincode: document.getElementById('chkPincode').value.trim(),
                 country: 'IN',
-                phone: document.getElementById('chkPhone').value.trim()
+                phone: document.getElementById('chkPhone').value.trim(),
+                gst: document.getElementById('chkGst').value.trim()
             };
         }
 
@@ -1007,19 +1017,45 @@
             cancelAddAddress();
             renderAddressCards();
 
-            // Save to API if logged in and it's a new address (no id yet)
-            if (!addr.id) {
-                const token = localStorage.getItem('saleor_auth_token');
-                if (token) {
-                    const spinner = document.getElementById('saveAddrSpinner');
-                    const text = document.getElementById('saveAddrText');
-                    spinner.classList.remove('hidden');
-                    text.textContent = 'Saving...';
-                    try {
+            // Save to API if logged in
+            const token = localStorage.getItem('saleor_auth_token');
+            if (token) {
+                const spinner = document.getElementById('saveAddrSpinner');
+                const text = document.getElementById('saveAddrText');
+                spinner.classList.remove('hidden');
+                text.textContent = 'Saving...';
+                try {
+                    const metadata = addr.gst ? [{ key: "gst_number", value: addr.gst }] : [];
+                    if (addr.id) {
+                        // Update existing address
+                        const addrMutation = `
+                            mutation AccountAddressUpdate($id: ID!, $input: AddressInput!) {
+                                accountAddressUpdate(id: $id, input: $input) {
+                                    address { id firstName lastName streetAddress1 streetAddress2 city cityArea postalCode country { code country } countryArea phone metadata { key value } }
+                                    errors { field message code }
+                                }
+                            }
+                        `;
+                        await apiCall(addrMutation, {
+                            id: addr.id,
+                            input: {
+                                firstName: addr.firstName,
+                                lastName: addr.lastName,
+                                streetAddress1: addr.street,
+                                city: addr.city,
+                                countryArea: addr.state,
+                                postalCode: addr.pincode,
+                                country: addr.country,
+                                phone: addr.phone,
+                                metadata: metadata
+                            }
+                        });
+                    } else {
+                        // Create new address
                         const addrMutation = `
                             mutation AccountAddressCreate($input: AddressInput!) {
                                 accountAddressCreate(input: $input) {
-                                    address { id firstName lastName streetAddress1 streetAddress2 city cityArea postalCode country { code country } countryArea phone isDefaultBillingAddress isDefaultShippingAddress }
+                                    address { id firstName lastName streetAddress1 streetAddress2 city cityArea postalCode country { code country } countryArea phone metadata { key value } }
                                     errors { field message code }
                                 }
                             }
@@ -1033,7 +1069,8 @@
                                 countryArea: addr.state,
                                 postalCode: addr.pincode,
                                 country: addr.country,
-                                phone: addr.phone
+                                phone: addr.phone,
+                                metadata: metadata
                             }
                         });
                         const apiAddr = apiResult?.data?.accountAddressCreate?.address;
@@ -1045,12 +1082,12 @@
                                 saveUserAddresses(updatedAddrs);
                             }
                         }
-                    } catch (e) {
-                        console.warn('Failed to save address to account:', e);
                     }
-                    spinner.classList.add('hidden');
-                    text.textContent = 'Save Address';
+                } catch (e) {
+                    console.warn('Failed to save address to account:', e);
                 }
+                spinner.classList.add('hidden');
+                text.textContent = editingAddrIndex >= 0 ? 'Update Address' : 'Save Address';
             }
         }
 
@@ -1067,6 +1104,7 @@
             document.getElementById('chkCity').value = addr.city || '';
             document.getElementById('chkState').value = addr.state || '';
             document.getElementById('chkPincode').value = addr.pincode || '';
+            document.getElementById('chkGst').value = addr.gst || '';
 
             document.getElementById('profAddrFormTitle').textContent = 'Edit Address';
             document.getElementById('saveAddrText').textContent = 'Update Address';
