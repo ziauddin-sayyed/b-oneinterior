@@ -126,6 +126,18 @@
       </div>
     </div>
 
+    <!-- Price Filter -->
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Filter Budget</span>
+      <input type="number" id="priceMin" placeholder="Min ₹" min="0" value="0"
+        class="w-28 bg-black/60 border border-gold-500/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-gold-500 placeholder:text-gray-600"
+        oninput="applyPriceFilter()">
+      <span class="text-gray-500 text-xs">to</span>
+      <input type="number" id="priceMax" placeholder="Max ₹" min="0"
+        class="w-28 bg-black/60 border border-gold-500/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-gold-500 placeholder:text-gray-600"
+        oninput="applyPriceFilter()">
+    </div>
+
     <h1 class="text-2xl md:text-4xl font-black gold-gradient-text uppercase tracking-widest mb-2">Product List</h1>
     <p id="resultMeta" class="text-white/70 text-sm mb-6"></p>
     <div id="resultGrid" class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6"></div>
@@ -278,8 +290,9 @@
             if (variantMedia) imgUrl = variantMedia;
           }
         }
+        const priceAmount = Number(gross?.amount || 0);
         return `
-          <a href="product.html?id=${item.linkId}" class="creative-card flex flex-col group cursor-pointer h-full">
+          <a href="product.html?id=${item.linkId}" data-product-price="${priceAmount}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
               <img src="${imgUrl}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
               ${savePercent ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">${savePercent}% OFF</span>` : ""}
@@ -291,6 +304,24 @@
             </div>
           </a>`;
       }).join("");
+    }
+
+    function applyPriceFilter() {
+      const min = parseFloat(document.getElementById('priceMin').value) || 0;
+      const max = parseFloat(document.getElementById('priceMax').value) || Infinity;
+      let visibleCount = 0;
+      const total = document.querySelectorAll('#resultGrid > a').length;
+      document.querySelectorAll('#resultGrid > a').forEach(card => {
+        const price = parseFloat(card.dataset?.productPrice) || 0;
+        const match = price >= min && price <= max;
+        card.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+      const meta = document.getElementById('resultMeta');
+      if (meta) {
+        const q = getQueryFromUrl();
+        meta.textContent = `Search: "${q}" • ${visibleCount} of ${total} result(s)`;
+      }
     }
 
     function getQueryFromUrl() { return (new URLSearchParams(window.location.search).get("q") || "").trim().toLowerCase(); }
@@ -408,6 +439,7 @@
         const json = await productsRes.json();
         const edges = json.data?.products?.edges || [];
         renderCards(getDisplayItems(edges.map(e => e.node)), q);
+        applyPriceFilter();
       } catch (e) {
         meta.textContent = "Failed to load products.";
       }

@@ -114,7 +114,7 @@
             <div class="flex items-center gap-2 mb-3">
                 <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Enter Budget</span>
 
-                <input type="number" id="priceMin" placeholder="Min ₹" min="0"
+                <input type="number" id="priceMin" placeholder="Min ₹" min="0" value="0"
                     class="w-28 bg-black/60 border border-gold-500/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-gold-500 placeholder:text-gray-600"
                     oninput="applyPriceFilter()">
                 <span class="text-gray-500 text-xs">to</span>
@@ -483,27 +483,27 @@
         function renderProducts(products) {
             const grid = document.getElementById('productGrid');
 
-            if (products.length === 0) {
+            if (allCatProducts.length === 0) {
                 document.getElementById('productEmpty').classList.remove('hidden');
                 grid.innerHTML = '';
                 return;
             }
 
             document.getElementById('productEmpty').classList.add('hidden');
-            grid.innerHTML = products.map(p => renderProductCard(p)).join('');
+            grid.innerHTML = allCatProducts.map(p => renderProductCard(p)).join('');
+            applyPriceFilter();
         }
 
         function filterProducts(query) {
             const q = query.toLowerCase().trim();
-            if (!q) {
-                renderProducts(allCatProducts);
-                applyPriceFilter();
-                return;
-            }
-            const filtered = allCatProducts.filter(p =>
-                p.name.toLowerCase().includes(q)
-            );
-            renderProducts(filtered);
+            applyPriceFilter();
+            document.querySelectorAll('#productGrid > div').forEach(card => {
+                const name = card.dataset?.productName || '';
+                const match = !q || name.includes(q);
+                card.style.display = match ? '' : 'none';
+            });
+            const visible = document.querySelectorAll('#productGrid > div[style*="display: none"]').length < document.querySelectorAll('#productGrid > div').length;
+            document.getElementById('productEmpty').classList.toggle('hidden', visible);
         }
 
         function applyPriceFilter() {
@@ -511,16 +511,15 @@
             const max = parseFloat(document.getElementById('priceMax').value) || Infinity;
             const searchQ = document.getElementById('catSearchInput').value.trim().toLowerCase();
 
-            let filtered = allCatProducts;
-            if (searchQ) {
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQ));
-            }
-            filtered = filtered.filter(p => {
-                const price = p.pricing?.priceRange?.start?.gross?.amount || 0;
-                return price >= min && price <= max;
+            document.querySelectorAll('#productGrid > div').forEach(card => {
+                const price = parseFloat(card.dataset?.productPrice) || 0;
+                const name = card.dataset?.productName || '';
+                const inPrice = price >= min && price <= max;
+                const inSearch = !searchQ || name.includes(searchQ);
+                card.style.display = inPrice && inSearch ? '' : 'none';
             });
-
-            renderProducts(filtered);
+            const visible = Array.from(document.querySelectorAll('#productGrid > div')).some(card => card.style.display !== 'none');
+            document.getElementById('productEmpty').classList.toggle('hidden', visible);
         }
 
 
@@ -528,18 +527,35 @@
         function renderProductCard(p) {
             const imgUrl = p.thumbnail?.url || p.media?.[0]?.url || '';
             const price = p.pricing?.priceRange?.start?.gross;
+            const variants = p.variants || [];
+            let actualPriceVal = null;
+            for (const v of variants) {
+                const attr = (v.attributes || []).find(a => a.attribute?.name === "Actual Price");
+                if (attr && attr.values?.[0]?.name) {
+                    const cleaned = attr.values[0].name.replace(/[^0-9.]/g, '');
+                    const parsed = parseFloat(cleaned);
+                    if (!isNaN(parsed)) { actualPriceVal = parsed; break; }
+                }
+            }
+            let discountPct = 0;
+            if (actualPriceVal && price && actualPriceVal > price.amount) {
+                discountPct = Math.round((1 - price.amount / actualPriceVal) * 100);
+            }
             const priceStr = price ? `₹${price.amount.toLocaleString('en-IN')}` : '';
+            const origPriceStr = actualPriceVal ? `₹${actualPriceVal.toLocaleString('en-IN')}` : '';
             const linkUrl = `product.html?id=${encodeURIComponent(p.id)}&slug=${encodeURIComponent(p.slug || '')}`;
             const catName = p.category?.name || '';
 
+            const priceAmount = price ? price.amount : 0;
             return `
-                <div onclick="window.location.href='${linkUrl}'"
+                <div onclick="window.location.href='${linkUrl}'" data-product-price="${priceAmount}" data-product-name="${(p.name || '').toLowerCase()}"
                     class="creative-card1 flex flex-col group cursor-pointer h-full relative bg-white/5 rounded-2xl overflow-hidden border border-gold-500/10 hover:border-gold-500/50 transition-all active:scale-[0.98]">
                     <div class="relative overflow-hidden aspect-square bg-black/40">
                         ${imgUrl
                             ? `<img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="${p.name}">`
                             : `<div class="w-full h-full flex items-center justify-center"><ion-icon name="cube-outline" class="text-5xl text-gray-600"></ion-icon></div>`
                         }
+                        ${discountPct > 0 ? `<div class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">${discountPct}% OFF</div>` : ''}
                         <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
                         </div>
@@ -547,7 +563,10 @@
                     <div class="p-3 flex flex-col flex-grow">
                         ${catName ? `<span class="gold-gradient-text text-[9px] font-black uppercase tracking-widest mb-1">${catName}</span>` : ''}
                         <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
-                        ${priceStr ? `<div class="mt-auto"><span class="text-gold-500 font-black text-sm">${priceStr}</span></div>` : ''}
+                        <div class="mt-auto flex items-baseline gap-1.5 flex-wrap">
+                            ${origPriceStr && discountPct > 0 ? `<span class="text-gray-500 text-[10px] line-through">${origPriceStr}</span>` : ''}
+                            ${priceStr ? `<span class="text-gold-500 font-black text-sm">${priceStr}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             `;

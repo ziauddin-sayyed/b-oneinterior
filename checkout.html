@@ -68,13 +68,150 @@
     </div>
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-gold-500/20">
-        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="index.html"><img src="logo.png" style="height: 6vh;" alt="B-One Interior"></a>
-            <a href="cart.html" class="text-white/70 hover:text-gold-500 transition flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
-                <ion-icon name="arrow-back-outline"></ion-icon> Back to Cart
-            </a>
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10">
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
         </div>
+
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <button onclick="history.back()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95 flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                </li>
+                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
+                <li><a href="https://b-oneinterior.com/cart"
+                        class="text-gold-500 underline transition font-bold">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+        </nav>
+
+        <!-- Floating social icons -->
+        <div class="floating-icon">
+            <div class="cursor-pointer" onclick="openTechModal()">
+                <img style="max-width: 40px;height: 40px;" src="images/technician.png" alt="Expert">
+            </div>
+            <a target="_blank" href="tel:+917738130131"><img src="images/call_icon.png" alt="Call"></a>
+            <a target="_blank" href="https://wa.me/+917738130131"><img src="images/whatsapp.png" alt="WhatsApp"></a>
+            <a target="_blank" href="https://www.facebook.com/share/1C4T1wQGLY/"><img src="images/facebook.png"
+                    alt="FB"></a>
+            <a target="_blank" href="https://www.instagram.com/bone.interior.solution"><img src="images/instagram.png"
+                    alt="IG"></a>
+            <a target="_blank" href="https://youtube.com/@believeone307"><img src="images/youtube.png" alt="YT"></a>
+            <a target="_blank" href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA"><img src="images/map_marker.png"
+                    alt="Map"></a>
+        </div>
+
+        <script>
+            function toggleDrawer() {
+                const drawer = document.getElementById('drawer');
+                const overlay = document.getElementById('drawerOverlay');
+                if (!drawer) return;
+                const isOpen = drawer.style.right === '0px';
+                drawer.style.right = isOpen ? '-300px' : '0px';
+                overlay.style.display = isOpen ? 'none' : 'block';
+            }
+
+            function checkAuth() {
+                const token = localStorage.getItem('saleor_auth_token');
+                const userEmail = localStorage.getItem('saleor_user_email');
+                const dLink = document.getElementById('authLinkDesktop');
+                const drLink = document.getElementById('authLinkDrawer');
+                if (token && userEmail) {
+                    if (dLink) dLink.innerHTML = `<a href="#" onclick="signOut()" class="text-[10px] font-black uppercase border border-gold/30 px-3 py-1.5 rounded-lg hover:bg-gold hover:text-black transition">Sign Out</a>`;
+                    if (drLink) drLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                } else {
+                    if (dLink) dLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                    if (drLink) drLink.innerHTML = `<a href="login.html">Login</a>`;
+                }
+            }
+            function signOut() {
+                localStorage.removeItem('saleor_auth_token'); localStorage.removeItem('saleor_refresh_token'); localStorage.removeItem('saleor_csrf_token');
+                localStorage.removeItem('saleor_user_email'); localStorage.removeItem('saleor_user_name'); window.location.reload();
+            }
+            document.addEventListener('DOMContentLoaded', checkAuth);
+
+            function updateWishlistBadge() {
+                const raw = JSON.parse(localStorage.getItem("wishlist") || "[]");
+                const count = Array.isArray(raw) ? raw.length : Object.values(raw || {}).reduce((acc, arr) => {
+                    return acc + (Array.isArray(arr) ? arr.length : 0);
+                }, 0);
+                document.querySelectorAll('.wishlist-badge').forEach(b => {
+                    b.textContent = count;
+                    b.style.display = count > 0 ? 'flex' : 'none';
+                });
+            }
+            updateWishlistBadge();
+
+            let technicians = [];
+            async function loadTechnicians() {
+                const query = `query { pages(first: 100) { edges { node { id title content metadata } } } }`;
+                try {
+                    const res = await fetch("https://api.b-oneinterior.com/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
+                    const json = await res.json();
+                    technicians = (json.data?.pages?.edges || []).map(edge => {
+                        const n = edge.node;
+                        const p = n.metadata.find(m => m.key === "number")?.value || "+917738130131";
+                        const c = n.metadata.find(m => m.key === "price")?.value || "500";
+                        let name = n.title;
+                        try { const cd = JSON.parse(n.content); if (cd.blocks?.[0]?.data?.text) name = cd.blocks[0].data.text; } catch (e) { }
+                        return { category: n.title, name, address: "Mumbai", phone: p, charge: "₹" + c };
+                    });
+                } catch (e) { console.error(e); }
+            }
+            function renderTechList(data) {
+                const c = document.getElementById('techListContainer'); if (!c) return;
+                if (data.length === 0) { c.innerHTML = `<p class="text-center py-10 text-gray-400 font-bold uppercase text-[10px]">No Experts Found</p>`; return; }
+                c.innerHTML = data.map(t => `
+                <div class="bg-black/40 p-5 rounded-2xl border border-white/10 hover:border-gold/50 transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-gold/10 text-gold text-[9px] font-black px-2 py-1 rounded-md uppercase border border-gold/20">${t.category}</span>
+                        <span class="text-gold font-black">${t.charge}</span>
+                    </div>
+                    <h3 class="font-black text-white text-lg uppercase tracking-tight mb-1 group-hover:text-gold transition">${t.name}</h3>
+                    <p class="text-white/80 text-[10px] font-bold flex items-center gap-1 mb-4 uppercase"><ion-icon name="location-outline"></ion-icon> Mumbai</p>
+                    <a href="tel:${t.phone}" class="flex items-center justify-center gap-2 gold-gradient-bg text-black py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:opacity-90 shadow-xl">
+                        <ion-icon name="call" class="text-lg"></ion-icon> Call Expert
+                    </a>
+                </div>
+            `).join('');
+            }
+            function filterTechnicians() {
+                const q = document.getElementById('techSearchInput').value.toLowerCase();
+                renderTechList(technicians.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)));
+            }
+            function openTechModal() {
+                document.getElementById('techModal').classList.remove('hidden');
+                document.getElementById('techSearchInput').value = '';
+                (async () => { await loadTechnicians(); renderTechList(technicians); setupTechVoiceSearch(); })();
+            }
+            function closeTechModal() { document.getElementById('techModal').classList.add('hidden'); }
+            function setupTechVoiceSearch() {
+                const btn = document.getElementById('techVoiceBtn');
+                const rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (rec && btn) {
+                    const r = new rec(); r.lang = 'en-IN';
+                    btn.onclick = (e) => { e.preventDefault(); try { r.start(); } catch (err) { } };
+                    r.onstart = () => { btn.classList.add('text-red-500', 'animate-pulse'); };
+                    r.onresult = (ev) => { document.getElementById('techSearchInput').value = ev.results[0][0].transcript; filterTechnicians(); };
+                    r.onend = () => { btn.classList.remove('text-red-500', 'animate-pulse'); };
+                }
+            }
+        </script>
     </header>
 
     <!-- Checkout Content -->
@@ -731,7 +868,7 @@
             }
 
             if (!checkoutId || !selectedShippingMethodId) {
-                showMessage('Checkout session not found. Please select your address again.', 'red');
+                showMessage('Please select a shipping address before placing the order.', 'red');
                 return;
             }
 
@@ -800,15 +937,6 @@
             hidePageLoader();
         });
 
-        // ─── Drawer ──────────────────────────────────────────────────
-        function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawerOverlay');
-            if (!drawer) return;
-            const isOpen = drawer.style.right === '0px';
-            drawer.style.right = isOpen ? '-300px' : '0px';
-            overlay.style.display = isOpen ? 'none' : 'block';
-        }
     </script>
 
     <!-- Mobile Drawer -->
@@ -825,6 +953,7 @@
             <li><a href="https://b-oneinterior.com/#contact" class="block py-2 hover:text-gold-500 transition">Contact Us</a></li>
             <li><a href="terms.html" class="block py-2 hover:text-gold-500 transition">Terms</a></li>
             <li><a href="privacy.html" class="block py-2 hover:text-gold-500 transition">Privacy</a></li>
+            <li id="authLinkDrawer"></li>
         </ul>
     </div>
     <div id="drawerOverlay" class="fixed inset-0 bg-black/50 z-[90] hidden" onclick="toggleDrawer()"></div>
@@ -879,6 +1008,44 @@
                 </a>
             </li>
         </ul>
+    </div>
+
+    <div id="techModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b border-gray-100 bg-gold-500 text-white">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl font-bold">Our Service Experts</h2>
+                    <button onclick="closeTechModal()" class="text-white hover:text-black transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="techSearchInput" oninput="filterTechnicians()"
+                        placeholder="Search by name or category (e.g. Plumbing)..."
+                        class="w-full pl-10 pr-12 py-2 rounded-lg border-none text-gray-800 focus:ring-2 focus:ring-black shadow-inner">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl w-5 h-5" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <button id="techVoiceBtn"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-gold-500 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v2a7 7 0 01-14 0v-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v4m-4 0h8" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-y-auto p-4 space-y-4 bg-gray-50" id="techListContainer"></div>
+        </div>
     </div>
 </body>
 </html>
