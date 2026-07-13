@@ -719,6 +719,16 @@
                                 shippingPrice {
                                     gross { amount currency }
                                 }
+                                billingAddress {
+                                    firstName
+                                    lastName
+                                    streetAddress1
+                                    streetAddress2
+                                    city
+                                    countryArea
+                                    postalCode
+                                    phone
+                                }
                                 discounts {
                                     amount {
                                         amount
@@ -731,6 +741,11 @@
                                     productName
                                     quantity
                                     unitPrice { gross { amount currency } }
+                                    totalPrice { gross { amount currency } }
+                                    discounts {
+                                        value
+                                        valueType
+                                    }
                                 }
                             }
                         }
@@ -802,8 +817,8 @@
                     const total = node.total?.gross?.amount || 0;
                     const currency = node.total?.gross?.currency || 'INR';
                     const shipping = node.shippingPrice?.gross?.amount || 0;
-                    const discount = node.discounts?.[0]?.amount?.amount || 0;
-                    const discountReason = node.discounts?.[0]?.reason || 'Discount';
+                    const orderDiscount = node.discounts?.[0]?.amount?.amount || 0;
+                    const orderDiscountReason = node.discounts?.[0]?.reason || 'Discount';
                     const orderId = 'order-' + node.number;
 
                     const div = document.createElement('div');
@@ -817,7 +832,7 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="text-gray-400 text-xs">${date}</span>
-                                <span class="text-white font-black">${currency} ${total.toLocaleString('en-IN')}</span>
+                                <span class="text-white font-black">${total.toLocaleString('en-IN')}</span>
                             </div>
                         </div>
                         <div id="${orderId}" class="hidden border-t border-gold-500/10 px-4 pb-4 pt-3 space-y-3">
@@ -825,9 +840,19 @@
                             <div>
                                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Items (${node.lines.length})</p>
                                 <div class="text-xs text-gray-400 space-y-1">
-                                    ${node.lines.map(l =>
-                                        `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span>${currency} ${(l.unitPrice?.gross?.amount || 0).toLocaleString('en-IN')}</span></div>`
-                                    ).join('')}
+                                    ${node.lines.map(l => {
+                                        const lineDiscount = l.discounts?.[0];
+                                        const discountVal = lineDiscount?.value || 0;
+                                        const discountType = lineDiscount?.valueType || '';
+                                        const price = l.unitPrice?.gross?.amount || 0;
+                                        let discountLabel = '';
+                                        if (discountVal > 0) {
+                                            const calcAmt = discountType === 'PERCENTAGE' ? (price * l.quantity * discountVal / 100) : discountVal;
+                                            const pct = discountType === 'PERCENTAGE' ? `${discountVal}%` : '';
+                                            discountLabel = ` (-${pct ? pct + ' | ' : ''}${currency} ${calcAmt.toLocaleString('en-IN')})`;
+                                        }
+                                        return `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span>${currency} ${price.toLocaleString('en-IN')}${discountLabel ? ' <span class="text-green-400">' + discountLabel + '</span>' : ''}</span></div>`;
+                                    }).join('')}
                                 </div>
                             </div>` : ''}
                             <div class="border-t border-white/5 pt-2 space-y-1 text-xs">
@@ -835,10 +860,10 @@
                                     <span>Delivery</span>
                                     <span>${shipping > 0 ? currency + ' ' + shipping.toLocaleString('en-IN') : 'Free'}</span>
                                 </div>
-                                ${discount > 0 ? `
+                                ${orderDiscount > 0 ? `
                                 <div class="flex justify-between text-green-400">
-                                    <span>${discountReason}</span>
-                                    <span>-${currency} ${discount.toLocaleString('en-IN')}</span>
+                                    <span>${orderDiscountReason}</span>
+                                    <span>-${currency} ${orderDiscount.toLocaleString('en-IN')}</span>
                                 </div>` : ''}
                                 <div class="flex justify-between text-white font-bold pt-1 border-t border-white/5">
                                     <span>Total</span>
@@ -875,59 +900,95 @@
 
             let y = margin;
 
-            function centerText(text, size, color, yOff) {
-                doc.setFontSize(size);
-                doc.setTextColor(color[0], color[1], color[2]);
-                doc.text(text, margin + pageW / 2, y + yOff, { align: 'center' });
-            }
+            // Logo
+            const logo = new Image();
+            logo.src = 'https://b-oneinterior.com/logo.png';
+            doc.addImage(logo, 'PNG', margin, y, 30, 30);
+            y += 32;
 
-            // Header
-            centerText('B-One Interior', 22, dark, 0);
-            centerText('Order Invoice', 10, gray, 6);
-            y += 14;
+            // Header - Order Invoice on right
+            doc.setFontSize(20);
+            doc.setTextColor(dark[0], dark[1], dark[2]);
+            doc.setFont(undefined, 'bold');
+            doc.text('ORDER INVOICE', margin + pageW, margin + 6, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+
+            // Gold line under header
             doc.setDrawColor(gold[0], gold[1], gold[2]);
             doc.setLineWidth(0.8);
             doc.line(margin, y, margin + pageW, y);
-            y += 10;
+            y += 8;
 
-            // Order number & date
+            // Billed To section
+            const addr = order.billingAddress || {};
+            const customerName = [addr.firstName, addr.lastName].filter(Boolean).join(' ') || 'N/A';
+            const addrParts = [
+                addr.streetAddress1,
+                addr.streetAddress2,
+                [addr.city, addr.countryArea].filter(Boolean).join(', '),
+                addr.postalCode
+            ].filter(Boolean);
+            const addrStr = addrParts.length > 0 ? addrParts.join(', ') : 'N/A';
+            const phone = addr.phone ? addr.phone.replace(/^\+91/, '') : 'N/A';
+
             doc.setFontSize(9);
             doc.setTextColor(gray[0], gray[1], gray[2]);
-            doc.text('ORDER NO.', margin, y);
-            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('BILLED TO', margin, y);
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(dark[0], dark[1], dark[2]);
+            doc.text(customerName, margin, y + 5);
+            doc.setFontSize(9);
+            doc.setTextColor(51, 51, 51);
+            doc.text(addrStr, margin, y + 10, { maxWidth: 100 });
+            const addrLines = doc.getTextDimensions(addrStr, { maxWidth: 100 }).h || 4;
+            doc.text('Phone: +91 ' + phone, margin, y + 14 + addrLines);
+
+            // Order number & date (right side)
+            doc.setFontSize(9);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.setFont(undefined, 'bold');
+            doc.text('ORDER NO.', margin + pageW, y, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(14);
             doc.setTextColor(dark[0], dark[1], dark[2]);
             doc.setFont(undefined, 'bold');
-            doc.text('#' + order.number, margin, y + 6);
+            doc.text('#' + order.number, margin + pageW, y + 5, { align: 'right' });
             doc.setFont(undefined, 'normal');
 
             doc.setFontSize(9);
             doc.setTextColor(gray[0], gray[1], gray[2]);
-            doc.text('DATE', margin + pageW, y, { align: 'right' });
+            doc.setFont(undefined, 'bold');
+            doc.text('DATE', margin + pageW, y + 11, { align: 'right' });
+            doc.setFont(undefined, 'normal');
             const date = new Date(order.created).toLocaleDateString('en-IN', {
                 year: 'numeric', month: 'short', day: 'numeric'
             });
-            doc.setFontSize(12);
+            doc.setFontSize(11);
             doc.setTextColor(51, 51, 51);
-            doc.setFont(undefined, 'bold');
-            doc.text(date, margin + pageW, y + 5, { align: 'right' });
-            doc.setFont(undefined, 'normal');
-            y += 14;
+            doc.text(date, margin + pageW, y + 16, { align: 'right' });
 
             // Status
+            const statusY = y + 24;
             doc.setFontSize(9);
             doc.setTextColor(gray[0], gray[1], gray[2]);
-            doc.text('STATUS', margin, y);
-            doc.setFontSize(11);
-            doc.setTextColor(gold[0], gold[1], gold[2]);
             doc.setFont(undefined, 'bold');
+            doc.text('STATUS', margin + pageW, statusY, { align: 'right' });
+            doc.setFont(undefined, 'normal');
             const status = order.status || '';
             const sw = doc.getTextWidth(status);
             doc.setFillColor(254, 245, 231);
-            doc.roundedRect(margin, y + 3, sw + 8, 6, 1, 1, 'F');
+            doc.roundedRect(margin + pageW - sw - 8, statusY + 2, sw + 8, 6, 1, 1, 'F');
+            doc.setFontSize(10);
             doc.setTextColor(gold[0], gold[1], gold[2]);
-            doc.text(status, margin + 4, y + 8);
+            doc.setFont(undefined, 'bold');
+            doc.text(status, margin + pageW - sw - 4, statusY + 7);
             doc.setFont(undefined, 'normal');
-            y += 16;
+
+            // Billed To height accounting
+            const billedToHeight = Math.max(28, 14 + addrLines + 6);
+            y += billedToHeight + 6;
 
             // Items table header
             const colX = [margin, margin + 80, margin + 140, margin + pageW];
@@ -953,7 +1014,12 @@
             const symbol = '₹';
             (order.lines || []).forEach(l => {
                 const price = l.unitPrice?.gross?.amount || 0;
-                const lineTotal = price * l.quantity;
+                const origTotal = price * l.quantity;
+                const lineDiscount = l.discounts?.[0];
+                const discountVal = lineDiscount?.value || 0;
+                const discountType = lineDiscount?.valueType || '';
+                const discountedAmt = discountType === 'PERCENTAGE' ? (origTotal * discountVal / 100) : discountVal;
+                const lineTotal = origTotal - discountedAmt;
                 doc.setFontSize(10);
                 doc.setTextColor(51, 51, 51);
                 doc.text(l.productName, colX[0], y, { maxWidth: colX[1] - colX[0] - 4 });
@@ -962,10 +1028,20 @@
                 doc.setFont(undefined, 'bold');
                 doc.text(symbol + lineTotal.toLocaleString('en-IN'), colX[3], y, { align: 'right' });
                 doc.setFont(undefined, 'normal');
-                y += 7;
+                y += 6;
+                if (discountVal > 0) {
+                    doc.setFontSize(7);
+                    doc.setTextColor(153, 153, 153);
+                    doc.text('Original: ' + symbol + origTotal.toLocaleString('en-IN'), colX[0], y);
+                    doc.setFontSize(8);
+                    doc.setTextColor(22, 163, 74);
+                    const discLabel = discountType === 'PERCENTAGE' ? discountVal + '% | -' + symbol + discountedAmt.toLocaleString('en-IN') : '-' + symbol + discountedAmt.toLocaleString('en-IN');
+                    doc.text('Discount: ' + discLabel, colX[2], y, { align: 'right' });
+                    y += 5;
+                }
                 doc.setDrawColor(238, 238, 238);
                 doc.setLineWidth(0.2);
-                doc.line(margin, y - 3, margin + pageW, y - 3);
+                doc.line(margin, y - 2, margin + pageW, y - 2);
             });
 
             y += 4;
@@ -973,9 +1049,8 @@
             // Totals section
             const total = order.total?.gross?.amount || 0;
             const shipping = order.shippingPrice?.gross?.amount || 0;
-            const discount = order.discounts?.[0]?.amount?.amount || 0;
-            const discountReason = order.discounts?.[0]?.reason || 'Discount';
-            const totalsX = margin + pageW - 80;
+            const orderDiscount = order.discounts?.[0]?.amount?.amount || 0;
+            const orderDiscountReason = order.discounts?.[0]?.reason || 'Discount';
             const labelX = margin + pageW - 80;
             const valX = margin + pageW;
 
@@ -993,12 +1068,12 @@
             doc.setFont(undefined, 'normal');
             y += 6;
 
-            if (discount > 0) {
+            if (orderDiscount > 0) {
                 doc.setTextColor(gray[0], gray[1], gray[2]);
-                doc.text(discountReason, labelX, y);
+                doc.text(orderDiscountReason, labelX, y);
                 doc.setTextColor(22, 163, 74);
                 doc.setFont(undefined, 'bold');
-                doc.text('-' + symbol + discount.toLocaleString('en-IN'), valX, y, { align: 'right' });
+                doc.text('-' + symbol + orderDiscount.toLocaleString('en-IN'), valX, y, { align: 'right' });
                 doc.setFont(undefined, 'normal');
                 y += 6;
             }
@@ -1017,13 +1092,14 @@
             doc.setFont(undefined, 'normal');
 
             // Footer
+            const footerY = 275;
             doc.setDrawColor(238, 238, 238);
             doc.setLineWidth(0.3);
-            const footerY = 280;
             doc.line(margin, footerY, margin + pageW, footerY);
-            doc.setFontSize(8);
+            doc.setFontSize(7);
             doc.setTextColor(153, 153, 153);
-            doc.text('Thank you for choosing B-One Interior', margin + pageW / 2, footerY + 6, { align: 'center' });
+            doc.text('Thank you for choosing B-One Interior', margin + pageW / 2, footerY + 5, { align: 'center' });
+            doc.text('B-One Interior, Mumbai, India | Phone: +91 77381 30131 | www.b-oneinterior.com', margin + pageW / 2, footerY + 10, { align: 'center' });
 
             doc.save('B-One_Order_' + order.number + '.pdf');
         }
