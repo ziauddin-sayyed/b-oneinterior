@@ -2636,7 +2636,7 @@
                     edges {
                         node {
                             name
-                            products(first: 10) {
+                            products(first: 10, sortBy: { field: COLLECTION, direction: ASC }) {
                                 edges { node { id name thumbnail { url } } }
                             }
                         }
@@ -2688,17 +2688,17 @@
         async function loadCollections() {
             const query = `
             query {
-                collections(first: 10, channel: "in") {
-                    edges {
-                        node {
-                            id
-                            name
-                            products(first: 10) {
-                                edges {
-                                    node {
-                                        id
-                                        name
-                                        thumbnail { url }
+            collections(first: 10, channel: "in") {
+                        edges {
+                            node {
+                                id
+                                name
+                                products(first: 10, sortBy: { field: COLLECTION, direction: ASC }) {
+                                    edges {
+                                        node {
+                                            id
+                                            name
+                                            thumbnail { url }
                                         attributes {
                                             attribute { name }
                                             values { name }
@@ -3080,7 +3080,7 @@
             const query = `
             query {
                 collection(id: "${bestSellerCollectionId}", channel: "in") {
-                    products(first: 10 ${afterClause}) {
+                    products(first: 10 ${afterClause}, sortBy: { field: COLLECTION, direction: ASC }) {
                         pageInfo { hasNextPage endCursor }
                         edges {
                             node {
