@@ -734,7 +734,6 @@
                                         amount
                                         currency
                                     }
-                                    reason
                                 }
                                 lines {
                                     id
@@ -818,7 +817,7 @@
                     const currency = node.total?.gross?.currency || 'INR';
                     const shipping = node.shippingPrice?.gross?.amount || 0;
                     const orderDiscount = node.discounts?.[0]?.amount?.amount || 0;
-                    const orderDiscountReason = node.discounts?.[0]?.reason || 'Discount';
+                    const orderDiscountReason = 'Discount';
                     const orderId = 'order-' + node.number;
 
                     const div = document.createElement('div');
@@ -1050,7 +1049,7 @@
             const total = order.total?.gross?.amount || 0;
             const shipping = order.shippingPrice?.gross?.amount || 0;
             const orderDiscount = order.discounts?.[0]?.amount?.amount || 0;
-            const orderDiscountReason = order.discounts?.[0]?.reason || 'Discount';
+            const orderDiscountReason = 'Discount';
             const labelX = margin + pageW - 80;
             const valX = margin + pageW;
 
