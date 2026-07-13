@@ -848,25 +848,25 @@
                                         if (discountVal > 0) {
                                             const calcAmt = discountType === 'PERCENTAGE' ? (price * l.quantity * discountVal / 100) : discountVal;
                                             const pct = discountType === 'PERCENTAGE' ? `${discountVal}%` : '';
-                                            discountLabel = ` (-${pct ? pct + ' | ' : ''}${currency} ${calcAmt.toLocaleString('en-IN')})`;
+                                            discountLabel = ` (-${pct ? pct + ' | ' : ''} ${calcAmt.toLocaleString('en-IN')})`;
                                         }
-                                        return `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span>${currency} ${price.toLocaleString('en-IN')}${discountLabel ? ' <span class="text-green-400">' + discountLabel + '</span>' : ''}</span></div>`;
+                                        return `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span> ${price.toLocaleString('en-IN')}${discountLabel ? ' <span class="text-green-400">' + discountLabel + '</span>' : ''}</span></div>`;
                                     }).join('')}
                                 </div>
                             </div>` : ''}
                             <div class="border-t border-white/5 pt-2 space-y-1 text-xs">
                                 <div class="flex justify-between text-gray-400">
                                     <span>Delivery</span>
-                                    <span>${shipping > 0 ? currency + ' ' + shipping.toLocaleString('en-IN') : 'Free'}</span>
+                                    <span>${shipping > 0 ? shipping.toLocaleString('en-IN') : 'Free'}</span>
                                 </div>
                                 ${orderDiscount > 0 ? `
                                 <div class="flex justify-between text-green-400">
                                     <span>${orderDiscountReason}</span>
-                                    <span>-${currency} ${orderDiscount.toLocaleString('en-IN')}</span>
+                                    <span>-${orderDiscount.toLocaleString('en-IN')}</span>
                                 </div>` : ''}
                                 <div class="flex justify-between text-white font-bold pt-1 border-t border-white/5">
                                     <span>Total</span>
-                                    <span>${currency} ${total.toLocaleString('en-IN')}</span>
+                                    <span>${total.toLocaleString('en-IN')}</span>
                                 </div>
                             </div>
                             <button onclick="downloadOrderPDF('${node.id}')" class="w-full mt-2 gold-gradient-bg text-black py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest hover:opacity-90 transition active:scale-95 flex items-center justify-center gap-2">
