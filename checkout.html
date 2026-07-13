@@ -241,8 +241,11 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone</label>
-                            <input type="tel" id="chkPhone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone (+91)</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 bg-white/10 border border-r-0 border-white/10 rounded-l-xl text-white/80 text-sm font-bold select-none">+91</span>
+                                <input type="tel" id="chkPhone" required maxlength="10" placeholder="Enter 10-digit number" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Street Address</label>
@@ -546,7 +549,7 @@
                 state: document.getElementById('chkState').value.trim(),
                 pincode: document.getElementById('chkPincode').value.trim(),
                 country: 'IN',
-                phone: document.getElementById('chkPhone').value.trim(),
+                phone: '+91' + document.getElementById('chkPhone').value.trim(),
                 gst: document.getElementById('chkGst').value.trim()
             };
         }
@@ -555,6 +558,11 @@
             const addr = getAddressFromForm();
             if (!addr.firstName || !addr.lastName || !addr.street || !addr.city || !addr.state || !addr.pincode || !addr.phone) {
                 showMessage('Please fill in all address fields.', 'red');
+                return;
+            }
+            const phoneDigits = document.getElementById('chkPhone').value.trim();
+            if (phoneDigits.length !== 10) {
+                showMessage('Phone number must be exactly 10 digits.', 'red');
                 return;
             }
 

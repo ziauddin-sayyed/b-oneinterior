@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -67,6 +68,9 @@
         }
         .pulse-animation {
             animation: pulse-gold 0.5s ease-in-out;
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
         }
         .fixedBottom {
             position: fixed;
@@ -309,8 +313,11 @@
                         <input type="email" id="editEmail" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone</label>
-                        <input type="tel" id="editPhone" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone (+91)</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 bg-white/10 border border-r-0 border-white/10 rounded-l-xl text-white/80 text-sm font-bold select-none">+91</span>
+                            <input type="tel" id="editPhone" maxlength="10" placeholder="Enter 10-digit number" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveProfile()" class="gold-gradient-bg text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition transform active:scale-95">
@@ -360,8 +367,11 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone</label>
-                        <input type="tel" id="chkPhone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Phone (+91)</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 bg-white/10 border border-r-0 border-white/10 rounded-l-xl text-white/80 text-sm font-bold select-none">+91</span>
+                            <input type="tel" id="chkPhone" required maxlength="10" placeholder="Enter 10-digit number" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-1">Street Address</label>
@@ -504,7 +514,7 @@
             document.getElementById('editFirstName').value = firstName;
             document.getElementById('editLastName').value = lastName;
             document.getElementById('editEmail').value = email;
-            document.getElementById('editPhone').value = phone;
+            document.getElementById('editPhone').value = phone.replace(/^\+91/, '');
 
             document.getElementById('profileDisplay').classList.add('hidden');
             document.getElementById('profileEdit').classList.remove('hidden');
@@ -552,7 +562,8 @@
             const firstName = document.getElementById('editFirstName').value.trim();
             const lastName = document.getElementById('editLastName').value.trim();
             const email = document.getElementById('editEmail').value.trim();
-            const phone = document.getElementById('editPhone').value.trim();
+            const phoneRaw = document.getElementById('editPhone').value.trim();
+            const phone = phoneRaw ? '+91' + phoneRaw : '';
             const currentEmail = localStorage.getItem('saleor_user_email') || '';
 
             if (!firstName || !lastName) {
@@ -561,6 +572,10 @@
             }
             if (!email) {
                 showProfileMessage('Email is required.', 'text-red-400');
+                return;
+            }
+            if (phoneRaw && phoneRaw.length !== 10) {
+                showProfileMessage('Phone number must be exactly 10 digits.', 'text-red-400');
                 return;
             }
 
@@ -682,6 +697,8 @@
             return false;
         }
 
+        let fetchedOrders = [];
+
         async function fetchOrders() {
             const token = localStorage.getItem('saleor_auth_token');
             if (!token) return;
@@ -698,6 +715,16 @@
                                 status
                                 total {
                                     gross { amount currency }
+                                }
+                                shippingPrice {
+                                    gross { amount currency }
+                                }
+                                discounts {
+                                    amount {
+                                        amount
+                                        currency
+                                    }
+                                    reason
                                 }
                                 lines {
                                     id
@@ -751,6 +778,7 @@
                 }
 
                 const orders = json.data?.me?.orders?.edges || [];
+                fetchedOrders = orders.map(e => e.node);
 
                 if (orders.length === 0) {
                     document.getElementById('ordersEmpty').classList.remove('hidden');
@@ -773,28 +801,55 @@
                     const statusClass = statusColors[node.status] || 'text-gray-400';
                     const total = node.total?.gross?.amount || 0;
                     const currency = node.total?.gross?.currency || 'INR';
+                    const shipping = node.shippingPrice?.gross?.amount || 0;
+                    const discount = node.discounts?.[0]?.amount?.amount || 0;
+                    const discountReason = node.discounts?.[0]?.reason || 'Discount';
+                    const orderId = 'order-' + node.number;
 
                     const div = document.createElement('div');
-                    div.className = 'bg-black/40 border border-gold-500/10 rounded-xl p-4';
+                    div.className = 'bg-black/40 border border-gold-500/10 rounded-xl overflow-hidden';
                     div.innerHTML = `
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-white font-bold">#${node.number}</span>
-                            <span class="${statusClass} text-xs font-bold uppercase">${node.status}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-400">${date}</span>
-                            <span class="text-white font-bold">${currency} ${total.toLocaleString('en-IN')}</span>
-                        </div>
-                        ${node.lines && node.lines.length > 0 ? `
-                        <div class="mt-3 pt-3 border-t border-gold-500/10">
-                            <p class="text-xs text-gray-500 mb-1">${node.lines.length} item(s)</p>
-                            <div class="text-xs text-gray-400 space-y-1">
-                                ${node.lines.slice(0, 3).map(l =>
-                                    `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span>${currency} ${(l.unitPrice?.gross?.amount || 0).toLocaleString('en-IN')}</span></div>`
-                                ).join('')}
-                                ${node.lines.length > 3 ? `<div class="text-gray-500">+${node.lines.length - 3} more</div>` : ''}
+                        <div onclick="document.getElementById('${orderId}').classList.toggle('hidden');this.querySelector('.chevron-icon').classList.toggle('rotate-180')" class="flex items-center justify-between p-4 cursor-pointer hover:bg-white/5 transition">
+                            <div class="flex items-center gap-3">
+                                <svg class="chevron-icon w-4 h-4 text-gold-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                <span class="text-white font-bold">#${node.number}</span>
+                                <span class="${statusClass} text-[10px] font-black uppercase">${node.status}</span>
                             </div>
-                        </div>` : ''}
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-400 text-xs">${date}</span>
+                                <span class="text-white font-black">${currency} ${total.toLocaleString('en-IN')}</span>
+                            </div>
+                        </div>
+                        <div id="${orderId}" class="hidden border-t border-gold-500/10 px-4 pb-4 pt-3 space-y-3">
+                            ${node.lines && node.lines.length > 0 ? `
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Items (${node.lines.length})</p>
+                                <div class="text-xs text-gray-400 space-y-1">
+                                    ${node.lines.map(l =>
+                                        `<div class="flex justify-between"><span>${l.productName} × ${l.quantity}</span><span>${currency} ${(l.unitPrice?.gross?.amount || 0).toLocaleString('en-IN')}</span></div>`
+                                    ).join('')}
+                                </div>
+                            </div>` : ''}
+                            <div class="border-t border-white/5 pt-2 space-y-1 text-xs">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>Delivery</span>
+                                    <span>${shipping > 0 ? currency + ' ' + shipping.toLocaleString('en-IN') : 'Free'}</span>
+                                </div>
+                                ${discount > 0 ? `
+                                <div class="flex justify-between text-green-400">
+                                    <span>${discountReason}</span>
+                                    <span>-${currency} ${discount.toLocaleString('en-IN')}</span>
+                                </div>` : ''}
+                                <div class="flex justify-between text-white font-bold pt-1 border-t border-white/5">
+                                    <span>Total</span>
+                                    <span>${currency} ${total.toLocaleString('en-IN')}</span>
+                                </div>
+                            </div>
+                            <button onclick="downloadOrderPDF('${node.id}')" class="w-full mt-2 gold-gradient-bg text-black py-2.5 rounded-xl font-black uppercase text-[10px] tracking-widest hover:opacity-90 transition active:scale-95 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Download PDF
+                            </button>
+                        </div>
                     `;
                     container.appendChild(div);
                 });
@@ -803,6 +858,174 @@
                 document.getElementById('ordersLoading').classList.add('hidden');
                 document.getElementById('ordersError').classList.remove('hidden');
             }
+        }
+
+        function downloadOrderPDF(orderId) {
+            const order = fetchedOrders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+            const pageW = 190;
+            const margin = 10;
+            const gold = [212, 175, 55];
+            const gray = [136, 136, 136];
+            const dark = [17, 17, 17];
+
+            let y = margin;
+
+            function centerText(text, size, color, yOff) {
+                doc.setFontSize(size);
+                doc.setTextColor(color[0], color[1], color[2]);
+                doc.text(text, margin + pageW / 2, y + yOff, { align: 'center' });
+            }
+
+            // Header
+            centerText('B-One Interior', 22, dark, 0);
+            centerText('Order Invoice', 10, gray, 6);
+            y += 14;
+            doc.setDrawColor(gold[0], gold[1], gold[2]);
+            doc.setLineWidth(0.8);
+            doc.line(margin, y, margin + pageW, y);
+            y += 10;
+
+            // Order number & date
+            doc.setFontSize(9);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.text('ORDER NO.', margin, y);
+            doc.setFontSize(16);
+            doc.setTextColor(dark[0], dark[1], dark[2]);
+            doc.setFont(undefined, 'bold');
+            doc.text('#' + order.number, margin, y + 6);
+            doc.setFont(undefined, 'normal');
+
+            doc.setFontSize(9);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.text('DATE', margin + pageW, y, { align: 'right' });
+            const date = new Date(order.created).toLocaleDateString('en-IN', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+            doc.setFontSize(12);
+            doc.setTextColor(51, 51, 51);
+            doc.setFont(undefined, 'bold');
+            doc.text(date, margin + pageW, y + 5, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+            y += 14;
+
+            // Status
+            doc.setFontSize(9);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.text('STATUS', margin, y);
+            doc.setFontSize(11);
+            doc.setTextColor(gold[0], gold[1], gold[2]);
+            doc.setFont(undefined, 'bold');
+            const status = order.status || '';
+            const sw = doc.getTextWidth(status);
+            doc.setFillColor(254, 245, 231);
+            doc.roundedRect(margin, y + 3, sw + 8, 6, 1, 1, 'F');
+            doc.setTextColor(gold[0], gold[1], gold[2]);
+            doc.text(status, margin + 4, y + 8);
+            doc.setFont(undefined, 'normal');
+            y += 16;
+
+            // Items table header
+            const colX = [margin, margin + 80, margin + 140, margin + pageW];
+            doc.setDrawColor(gold[0], gold[1], gold[2]);
+            doc.setLineWidth(0.8);
+            doc.line(margin, y, margin + pageW, y);
+            y += 3;
+            doc.setFontSize(8);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.setFont(undefined, 'bold');
+            doc.text('ITEM', colX[0], y);
+            doc.text('QTY', colX[1], y, { align: 'center' });
+            doc.text('PRICE', colX[2], y, { align: 'right' });
+            doc.text('TOTAL', colX[3], y, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+            y += 4;
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.line(margin, y, margin + pageW, y);
+            y += 4;
+
+            // Items rows
+            const symbol = '₹';
+            (order.lines || []).forEach(l => {
+                const price = l.unitPrice?.gross?.amount || 0;
+                const lineTotal = price * l.quantity;
+                doc.setFontSize(10);
+                doc.setTextColor(51, 51, 51);
+                doc.text(l.productName, colX[0], y, { maxWidth: colX[1] - colX[0] - 4 });
+                doc.text(String(l.quantity), colX[1], y, { align: 'center' });
+                doc.text(symbol + price.toLocaleString('en-IN'), colX[2], y, { align: 'right' });
+                doc.setFont(undefined, 'bold');
+                doc.text(symbol + lineTotal.toLocaleString('en-IN'), colX[3], y, { align: 'right' });
+                doc.setFont(undefined, 'normal');
+                y += 7;
+                doc.setDrawColor(238, 238, 238);
+                doc.setLineWidth(0.2);
+                doc.line(margin, y - 3, margin + pageW, y - 3);
+            });
+
+            y += 4;
+
+            // Totals section
+            const total = order.total?.gross?.amount || 0;
+            const shipping = order.shippingPrice?.gross?.amount || 0;
+            const discount = order.discounts?.[0]?.amount?.amount || 0;
+            const discountReason = order.discounts?.[0]?.reason || 'Discount';
+            const totalsX = margin + pageW - 80;
+            const labelX = margin + pageW - 80;
+            const valX = margin + pageW;
+
+            doc.setDrawColor(gold[0], gold[1], gold[2]);
+            doc.setLineWidth(0.8);
+            doc.line(labelX, y, valX, y);
+            y += 4;
+
+            doc.setFontSize(10);
+            doc.setTextColor(gray[0], gray[1], gray[2]);
+            doc.text('Delivery', labelX, y);
+            doc.setTextColor(51, 51, 51);
+            doc.setFont(undefined, 'bold');
+            doc.text(shipping > 0 ? symbol + ' ' + shipping.toLocaleString('en-IN') : 'Free', valX, y, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+            y += 6;
+
+            if (discount > 0) {
+                doc.setTextColor(gray[0], gray[1], gray[2]);
+                doc.text(discountReason, labelX, y);
+                doc.setTextColor(22, 163, 74);
+                doc.setFont(undefined, 'bold');
+                doc.text('-' + symbol + discount.toLocaleString('en-IN'), valX, y, { align: 'right' });
+                doc.setFont(undefined, 'normal');
+                y += 6;
+            }
+
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            doc.line(labelX, y, valX, y);
+            y += 4;
+
+            doc.setFontSize(13);
+            doc.setTextColor(dark[0], dark[1], dark[2]);
+            doc.setFont(undefined, 'bold');
+            doc.text('Total', labelX, y);
+            doc.setTextColor(gold[0], gold[1], gold[2]);
+            doc.text(symbol + total.toLocaleString('en-IN'), valX, y, { align: 'right' });
+            doc.setFont(undefined, 'normal');
+
+            // Footer
+            doc.setDrawColor(238, 238, 238);
+            doc.setLineWidth(0.3);
+            const footerY = 280;
+            doc.line(margin, footerY, margin + pageW, footerY);
+            doc.setFontSize(8);
+            doc.setTextColor(153, 153, 153);
+            doc.text('Thank you for choosing B-One Interior', margin + pageW / 2, footerY + 6, { align: 'center' });
+
+            doc.save('B-One_Order_' + order.number + '.pdf');
         }
 
         // ─── Addresses ───────────────────────────────────────────────
@@ -989,7 +1212,7 @@
                 state: document.getElementById('chkState').value.trim(),
                 pincode: document.getElementById('chkPincode').value.trim(),
                 country: 'IN',
-                phone: document.getElementById('chkPhone').value.trim(),
+                phone: '+91' + document.getElementById('chkPhone').value.trim(),
                 gst: document.getElementById('chkGst').value.trim()
             };
         }
@@ -998,6 +1221,11 @@
             const addr = getAddressFromForm();
             if (!addr.firstName || !addr.lastName || !addr.street || !addr.city || !addr.state || !addr.pincode || !addr.phone) {
                 alert('Please fill in all address fields.');
+                return;
+            }
+            const phoneDigits = document.getElementById('chkPhone').value.trim();
+            if (phoneDigits.length !== 10) {
+                alert('Phone number must be exactly 10 digits.');
                 return;
             }
 
@@ -1099,7 +1327,7 @@
 
             document.getElementById('chkFirstName').value = addr.firstName || '';
             document.getElementById('chkLastName').value = addr.lastName || '';
-            document.getElementById('chkPhone').value = addr.phone || '';
+            document.getElementById('chkPhone').value = (addr.phone || '').replace(/^\+91/, '');
             document.getElementById('chkStreet').value = addr.street || '';
             document.getElementById('chkCity').value = addr.city || '';
             document.getElementById('chkState').value = addr.state || '';
