@@ -3255,14 +3255,13 @@
             const isSelected = (vid) => selectedVariant && selectedVariant.id === vid;
 
             const circlesHtml = colorChoices.map(opt => `
-                <button type="button" onclick="window.selectVariant('${opt.variantId}'); window.scrollTo({top:0,behavior:'smooth'});"
-                    class="group relative flex flex-col items-center gap-1 transition-all active:scale-90 ${isSelected(opt.variantId) ? 'scale-110' : 'hover:scale-110'}">
+                <div class="group relative flex flex-col items-center gap-1 transition-all active:scale-90 ${isSelected(opt.variantId) ? 'scale-110' : 'hover:scale-110'}">
                     <div class="w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg ${isSelected(opt.variantId) ? 'border-gold-500 shadow-gold-500/40 scale-110' : 'border-white/20 hover:border-gold-500/60'}"
                          style="background-color: ${getColorHex(opt.color)};">
                         ${isSelected(opt.variantId) ? '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 ' + (getColorHex(opt.color) === '#FFFFFF' ? 'text-black' : 'text-white') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>' : ''}
                     </div>
                     <span class="text-[8px] font-bold uppercase tracking-tighter ${isSelected(opt.variantId) ? 'text-gold-500' : 'text-white/60'}">${opt.color}</span>
-                </button>
+                </div>
             `).join('');
 
             const html = `
