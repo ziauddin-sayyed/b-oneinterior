@@ -559,12 +559,7 @@
                         <div id="variantContainerMobile" class="grid grid-cols-3 gap-3"></div>
                     </div>
 
-                    <div id="colorSelectContainerMobile" class="hidden">
-                        <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Color
-                            Options</label>
-                        <select id="colorSelectMobile"
-                            class="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-4 focus:border-gold transition appearance-none"></select>
-                    </div>
+                    <div id="colorSelectContainerMobile" class="hidden"></div>
 
                     <div id="catalogueContainerMobile"></div>
 
@@ -614,12 +609,7 @@
                             <div id="catalogueContainer"></div>
                         </div>
 
-                        <div id="colorSelectContainer" class="mt-8 hidden">
-                            <label
-                                class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Customization</label>
-                            <select id="colorSelect"
-                                class="w-full h-14 bg-black/40 border border-white/10 text-white rounded-2xl px-6 focus:border-gold transition appearance-none cursor-pointer"></select>
-                        </div>
+                        <div id="colorSelectContainer" class="mt-8 hidden"></div>
                     </div>
 
                     <!-- Details Tabs/Accordion Style -->
@@ -1224,6 +1214,14 @@
                     attributes {
                         attribute {
                             name
+                            choices(first: 100) {
+                                edges {
+                                    node {
+                                        name
+                                        slug
+                                    }
+                                }
+                            }
                         }
                         values {
                             name
@@ -1457,6 +1455,10 @@
                                         }
                                     }
                                 }
+                                attributes {
+                                    attribute { name }
+                                    values { name }
+                                }
                                 ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                             }
                         }
@@ -1585,6 +1587,10 @@
                                         }
                                     }
                                 }
+                                attributes {
+                                    attribute { name }
+                                    values { name }
+                                }
                                 ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                             }
                         }
@@ -1706,6 +1712,10 @@
                                                 currency
                                             }
                                         }
+                                    }
+                                    attributes {
+                                        attribute { name }
+                                        values { name }
                                     }
                                     ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                                 }
@@ -3160,11 +3170,33 @@
             }
         });
 
+        const COLOR_MAP = {
+            red: '#EF4444', crimson: '#DC2626', maroon: '#800000', darkred: '#8B0000',
+            blue: '#3B82F6', navy: '#1E3A5F', royalblue: '#2563EB', skyblue: '#87CEEB',
+            green: '#22C55E', forestgreen: '#228B22', lime: '#65A30D', olive: '#808000',
+            black: '#1A1A1A', white: '#FFFFFF', gray: '#6B7280', grey: '#6B7280', silver: '#C0C0C0',
+            gold: '#D4AF37', yellow: '#EAB308', orange: '#F97316', brown: '#8B4513',
+            purple: '#A855F7', violet: '#8B5CF6', pink: '#EC4899', rose: '#F43F5E',
+            teal: '#14B8A6', cyan: '#06B6D4', indigo: '#6366F1', amber: '#F59E0B',
+            beige: '#F5F5DC', cream: '#FFFDD0', ivory: '#FFFFF0', champagne: '#F7E7CE',
+            bronze: '#CD7F32', copper: '#B87333', taupe: '#483C32', charcoal: '#36454F',
+            mahogany: '#C04000', walnut: '#773F1A', oak: '#806517', cherry: '#DE3163',
+            maple: '#D4A76A', espresso: '#4B2E1A', mocha: '#6F4E37', latte: '#C4A35A'
+        };
+
+        function getColorHex(name) {
+            const key = name.toLowerCase().replace(/\s+/g, '');
+            return COLOR_MAP[key] || COLOR_MAP[name.toLowerCase()] || '#D4AF37';
+        }
+
+        function isColorAttribute(attrName) {
+            const n = attrName.toLowerCase();
+            return n.includes('colour') || n.includes('color');
+        }
+
         function renderColorSelect(variants) {
             const container = document.getElementById("colorSelectContainer");
-            const select = document.getElementById("colorSelect");
             const containerMobile = document.getElementById("colorSelectContainerMobile");
-            const selectMobile = document.getElementById("colorSelectMobile");
 
             if (!variants || variants.length === 0) {
                 container.classList.add("hidden");
@@ -3172,61 +3204,74 @@
                 return;
             }
 
-            // Extract Color attribute from variants
-            const colorOptions = [];
-            variants.forEach(v => {
-                if (v.attributes) {
-                    const colorAttr = v.attributes.find(a => a.attribute.name === "Color");
-                    if (colorAttr && colorAttr.values && colorAttr.values.length > 0) {
-                        const colorName = colorAttr.values[0].name;
-                        // Avoid duplicates
-                        if (!colorOptions.find(opt => opt.color === colorName)) {
-                            colorOptions.push({
-                                color: colorName,
-                                variantId: v.id,
-                                variantName: v.name
-                            });
+            // First: try product-level attribute with choices
+            let colorChoices = [];
+            if (currentProduct && currentProduct.attributes) {
+                const productColorAttr = currentProduct.attributes.find(a => isColorAttribute(a.attribute.name));
+                if (productColorAttr && productColorAttr.attribute.choices && productColorAttr.attribute.choices.edges) {
+                    const rawChoices = productColorAttr.attribute.choices.edges.map(e => e.node.name);
+                    // Map each choice to variants that have that color
+                    rawChoices.forEach(cName => {
+                        const matchingVariant = variants.find(v => {
+                            if (!v.attributes) return false;
+                            const attr = v.attributes.find(a => isColorAttribute(a.attribute.name));
+                            if (!attr || !attr.values) return false;
+                            return attr.values.some(val => val.name.toLowerCase() === cName.toLowerCase());
+                        });
+                        if (matchingVariant) {
+                            colorChoices.push({ color: cName, variantId: matchingVariant.id, variantName: matchingVariant.name });
                         }
-                    }
+                    });
                 }
-            });
+            }
 
-            // If no color attributes found, hide the container
-            if (colorOptions.length === 0) {
+            // Fallback: build from variant attributes only
+            if (colorChoices.length === 0) {
+                const seen = new Set();
+                variants.forEach(v => {
+                    if (!v.attributes) return;
+                    const attr = v.attributes.find(a => isColorAttribute(a.attribute.name));
+                    if (attr && attr.values) {
+                        attr.values.forEach(val => {
+                            const cName = val.name;
+                            if (!seen.has(cName.toLowerCase())) {
+                                seen.add(cName.toLowerCase());
+                                colorChoices.push({ color: cName, variantId: v.id, variantName: v.name });
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (colorChoices.length === 0) {
                 container.classList.add("hidden");
                 if (containerMobile) containerMobile.classList.add("hidden");
                 return;
             }
 
-            // Show the container
             container.classList.remove("hidden");
             if (containerMobile) containerMobile.classList.remove("hidden");
 
-            // Build select options
-            let optionsHtml = '<option value="" disabled>Select a color</option>';
-            colorOptions.forEach((opt, index) => {
-                const isSelected = selectedVariant && selectedVariant.id === opt.variantId;
-                optionsHtml += `<option value="${opt.variantId}" ${isSelected ? 'selected' : ''}>${opt.color}</option>`;
-            });
+            const isSelected = (vid) => selectedVariant && selectedVariant.id === vid;
 
-            select.innerHTML = optionsHtml;
-            if (selectMobile) selectMobile.innerHTML = optionsHtml;
+            const circlesHtml = colorChoices.map(opt => `
+                <button type="button" onclick="window.selectVariant('${opt.variantId}'); window.scrollTo({top:0,behavior:'smooth'});"
+                    class="group relative flex flex-col items-center gap-1 transition-all active:scale-90 ${isSelected(opt.variantId) ? 'scale-110' : 'hover:scale-110'}">
+                    <div class="w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg ${isSelected(opt.variantId) ? 'border-gold-500 shadow-gold-500/40 scale-110' : 'border-white/20 hover:border-gold-500/60'}"
+                         style="background-color: ${getColorHex(opt.color)};">
+                        ${isSelected(opt.variantId) ? '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 ' + (getColorHex(opt.color) === '#FFFFFF' ? 'text-black' : 'text-white') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>' : ''}
+                    </div>
+                    <span class="text-[8px] font-bold uppercase tracking-tighter ${isSelected(opt.variantId) ? 'text-gold-500' : 'text-white/60'}">${opt.color}</span>
+                </button>
+            `).join('');
 
-            // Add change event listener
-            const handleColorChange = function () {
-                const selectedVariantId = this.value;
-                if (selectedVariantId) {
-                    window.selectVariant(selectedVariantId);
-                }
-            };
-            select.onchange = handleColorChange;
-            if (selectMobile) selectMobile.onchange = handleColorChange;
+            const html = `
+                <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">Available Colors</label>
+                <div class="flex flex-wrap gap-4 items-start">${circlesHtml}</div>
+            `;
 
-            // Select first option if no variant is selected
-            if (!selectedVariant && colorOptions.length > 0) {
-                select.value = colorOptions[0].variantId;
-                if (selectMobile) selectMobile.value = colorOptions[0].variantId;
-            }
+            container.innerHTML = html;
+            if (containerMobile) containerMobile.innerHTML = html;
         }
 
         function renderVariants(variants) {

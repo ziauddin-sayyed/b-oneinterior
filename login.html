@@ -690,7 +690,7 @@
                 showSuccess('Login successful! Redirecting...');
 
                 setTimeout(function() {
-                    window.location.replace('profile.html');
+                    window.location.replace('https://b-oneinterior.com/');
                 }, 1500);
             })
             .catch(function(err) {
@@ -739,7 +739,7 @@
             var token = localStorage.getItem('saleor_auth_token');
             var userEmail = localStorage.getItem('saleor_user_email');
             if (token && userEmail) {
-                window.location.replace('profile.html');
+                window.location.replace('https://b-oneinterior.com/');
                 return;
             }
             checkAuth();
