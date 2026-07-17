@@ -411,11 +411,12 @@
                                 node {
                                     id name slug
                                     thumbnail { url }
-                                    media { url type }
-                                    category { id name }
-                                    pricing { priceRange { start { gross { amount currency } } stop { gross { amount currency } } } }
-                                    attributes { attribute { name } values { name file { url } } }
-                                    variants { id name quantityAvailable media { url type } pricing { price { gross { amount currency } } } attributes { attribute { name } values { name } } }
+                                    category { name }
+                                    pricing { priceRange { start { gross { amount } } } }
+                                    defaultVariant {
+                                        pricing { price { gross { amount } } }
+                                        attributes { attribute { name } values { name } }
+                                    }
                                 }
                             }
                             pageInfo {
@@ -525,16 +526,16 @@
 
 
         function renderProductCard(p) {
-            const imgUrl = p.thumbnail?.url || p.media?.[0]?.url || '';
-            const price = p.pricing?.priceRange?.start?.gross;
-            const variants = p.variants || [];
+            const imgUrl = p.thumbnail?.url || '';
+            const dv = p.defaultVariant || null;
+            const price = dv?.pricing?.price?.gross || p.pricing?.priceRange?.start?.gross;
             let actualPriceVal = null;
-            for (const v of variants) {
-                const attr = (v.attributes || []).find(a => a.attribute?.name === "Actual Price");
+            if (dv) {
+                const attr = (dv.attributes || []).find(a => a.attribute?.name === "Actual Price");
                 if (attr && attr.values?.[0]?.name) {
                     const cleaned = attr.values[0].name.replace(/[^0-9.]/g, '');
                     const parsed = parseFloat(cleaned);
-                    if (!isNaN(parsed)) { actualPriceVal = parsed; break; }
+                    if (!isNaN(parsed)) actualPriceVal = parsed;
                 }
             }
             let discountPct = 0;

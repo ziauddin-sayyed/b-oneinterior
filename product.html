@@ -926,18 +926,28 @@
                 if (percent <= 0) return;
                 if (!best || percent > best.percent) best = { percent };
             };
-            const productActual = p.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
-            if (productActual) consider(productActual, fallbackSellingPrice);
-            (p.variants || []).forEach(v => {
-                const variantActual = v.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
-                const variantSelling = v.pricing?.price?.gross?.amount ?? fallbackSellingPrice;
-                if (variantActual) consider(variantActual, variantSelling);
-            });
+            const dv = p.defaultVariant || null;
+            if (dv) {
+                const dvActual = dv.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+                const dvSelling = dv.pricing?.price?.gross?.amount ?? fallbackSellingPrice;
+                if (dvActual) consider(dvActual, dvSelling);
+            }
+            if (!best) {
+                const productActual = p.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+                if (productActual) consider(productActual, fallbackSellingPrice);
+                (p.variants || []).forEach(v => {
+                    const variantActual = v.attributes?.find(a => a.attribute?.name === "Actual Price")?.values?.[0]?.name;
+                    const variantSelling = v.pricing?.price?.gross?.amount ?? fallbackSellingPrice;
+                    if (variantActual) consider(variantActual, variantSelling);
+                });
+            }
             if (!best) return "";
             return `<div class="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full z-10 shadow">${best.percent}% OFF</div>`;
         }
 
         function isProductOutOfStock(p) {
+            const dv = p.defaultVariant || null;
+            if (dv) return (dv.quantityAvailable || 0) <= 0;
             const variants = p.variants || [];
             if (!variants.length) return false;
             return variants.every(v => (v.quantityAvailable || 0) <= 0);
@@ -1423,7 +1433,7 @@
         async function fetchRecommendedProducts(categoryName, currentId) {
             const query = `
             query {
-                products(first: 100, channel: "in") {
+                products(first: 25, channel: "in") {
                     edges {
                         node {
                             id
@@ -1434,24 +1444,17 @@
                                     start {
                                         gross {
                                             amount
-                                            currency
                                         }
                                     }
                                 }
                             }
-                            attributes {
-                                attribute { name }
-                                values { name }
-                            }
                             category { name }
-                            variants {
-                                id
+                            defaultVariant {
                                 quantityAvailable
                                 pricing {
                                     price {
                                         gross {
                                             amount
-                                            currency
                                         }
                                     }
                                 }
@@ -1459,7 +1462,6 @@
                                     attribute { name }
                                     values { name }
                                 }
-                                ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                             }
                         }
                     }
@@ -1489,38 +1491,23 @@
                 section.classList.remove("hidden");
 
                 products.forEach(p => {
-                    // Variant Pricing Logic for Card
-                    let sellingPrice = 0;
-                    let costPrice = null;
-                    let currency = 'INR';
+                    const dv = p.node.defaultVariant || null;
+                    const priceGross = dv?.pricing?.price?.gross || p.node.pricing?.priceRange?.start?.gross;
+                    const sellingPrice = priceGross?.amount || 0;
+                    const currency = 'INR';
 
-                    if (p.node.variants && p.node.variants.length > 0 && p.node.variants[0].channelListings && p.node.variants[0].channelListings.length > 0) {
-                        const listing = p.node.variants[0].channelListings[0];
-                        sellingPrice = listing.price?.amount || 0;
-                        currency = listing.price?.currency || 'INR';
-                        costPrice = listing.costPrice?.amount || null;
-                    } else {
-                        // Fallback
-                        const currentPriceObj = p.node.pricing?.priceRange?.start?.gross;
-                        sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
-                        currency = currentPriceObj ? currentPriceObj.currency : 'INR';
-                    }
-
-                    const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
-                    const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
-
-                    const loggedIn = isUserLoggedIn(); // Check global auth status
+                    const displayPrice = sellingPrice;
+                    const oos = dv ? (dv.quantityAvailable || 0) <= 0 : true;
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
-                    const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
-                    const oos = (p.node.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
+                    const formattedPrice = `₹${sellingPrice.toFixed(2)}`;
                     item.innerHTML = renderIndexStyleProductCard({
                         id: p.node.id,
                         name: p.node.name,
                         thumbnailUrl: p.node.thumbnail?.url,
                         categoryName: p.node.category?.name || 'Collection',
-                        priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
+                        priceText: formattedPrice,
                         priceValue: displayPrice,
                         currency,
                         badgeHtml: getCardBadgeHtml(p.node, displayPrice),
@@ -1555,7 +1542,7 @@
         async function fetchMoreProducts(currentId) {
             const query = `
             query {
-                products(first: 50, channel: "in", filter: { isPublished: true }) {
+                products(first: 25, channel: "in", filter: { isPublished: true }) {
                     edges {
                         node {
                             id
@@ -1566,24 +1553,17 @@
                                     start {
                                         gross {
                                             amount
-                                            currency
                                         }
                                     }
                                 }
                             }
-                            attributes {
-                                attribute { name }
-                                values { name }
-                            }
                             category { name }
-                            variants {
-                                id
+                            defaultVariant {
                                 quantityAvailable
                                 pricing {
                                     price {
                                         gross {
                                             amount
-                                            currency
                                         }
                                     }
                                 }
@@ -1591,7 +1571,6 @@
                                     attribute { name }
                                     values { name }
                                 }
-                                ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                             }
                         }
                     }
@@ -1620,36 +1599,23 @@
                 section.classList.remove("hidden");
 
                 products.forEach(p => {
-                    let sellingPrice = 0;
-                    let costPrice = null;
-                    let currency = 'INR';
+                    const dv = p.defaultVariant || null;
+                    const priceGross = dv?.pricing?.price?.gross || p.pricing?.priceRange?.start?.gross;
+                    const sellingPrice = priceGross?.amount || 0;
+                    const currency = 'INR';
 
-                    if (p.variants && p.variants.length > 0 && p.variants[0].channelListings && p.variants[0].channelListings.length > 0) {
-                        const listing = p.variants[0].channelListings[0];
-                        sellingPrice = listing.price?.amount || 0;
-                        currency = listing.price?.currency || 'INR';
-                        costPrice = listing.costPrice?.amount || null;
-                    } else {
-                        const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-                        sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
-                        currency = currentPriceObj ? currentPriceObj.currency : 'INR';
-                    }
-
-                    const formattedSellingPrice = currency === 'INR' ? `₹${sellingPrice.toFixed(2)}` : `${sellingPrice.toFixed(2)} ${currency}`;
-                    const formattedCostPrice = costPrice !== null ? (currency === 'INR' ? `₹${costPrice.toFixed(2)}` : `${costPrice.toFixed(2)} ${currency}`) : '';
-
-                    const loggedIn = isUserLoggedIn();
+                    const displayPrice = sellingPrice;
+                    const oos = dv ? (dv.quantityAvailable || 0) <= 0 : true;
 
                     const item = document.createElement("div");
                     item.className = "min-w-0";
-                    const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
-                    const oos = (p.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
+                    const formattedPrice = `₹${sellingPrice.toFixed(2)}`;
                     item.innerHTML = renderIndexStyleProductCard({
                         id: p.id,
                         name: p.name,
                         thumbnailUrl: p.thumbnail?.url,
                         categoryName: p.category?.name || 'Collection',
-                        priceText: (loggedIn && costPrice !== null) ? formattedCostPrice : formattedSellingPrice,
+                        priceText: formattedPrice,
                         priceValue: displayPrice,
                         currency,
                         badgeHtml: getCardBadgeHtml(p, displayPrice),
@@ -1692,24 +1658,17 @@
                                         start {
                                             gross {
                                                 amount
-                                                currency
                                             }
                                         }
                                     }
                                 }
-                                attributes {
-                                    attribute { name }
-                                    values { name }
-                                }
                                 category { name }
-                                variants {
-                                    id
+                                defaultVariant {
                                     quantityAvailable
                                     pricing {
                                         price {
                                             gross {
                                                 amount
-                                                currency
                                             }
                                         }
                                     }
@@ -1717,7 +1676,6 @@
                                         attribute { name }
                                         values { name }
                                     }
-                                    ${getVariantFields(localStorage.getItem('saleor_user_is_staff') === 'true')}
                                 }
                             }
                         }
@@ -1748,24 +1706,13 @@
             section.classList.remove("hidden");
 
             const html = products.map(p => {
-                let sellingPrice = 0;
-                let costPrice = null;
-                let currency = 'INR';
-
-                if (p.variants?.[0]?.channelListings?.[0]) {
-                    const listing = p.variants[0].channelListings[0];
-                    sellingPrice = listing.price?.amount || 0;
-                    currency = listing.price?.currency || 'INR';
-                    costPrice = listing.costPrice?.amount || null;
-                } else {
-                    const currentPriceObj = p.pricing?.priceRange?.start?.gross;
-                    sellingPrice = currentPriceObj ? currentPriceObj.amount : 0;
-                    currency = currentPriceObj ? currentPriceObj.currency : 'INR';
-                }
-
-                const displayPrice = (isUserLoggedIn() && costPrice !== null) ? costPrice : sellingPrice;
-                const formattedPrice = currency === 'INR' ? `₹${displayPrice.toFixed(2)}` : `${displayPrice.toFixed(2)} ${currency}`;
-                const oos = (p.variants || []).every(v => (v.quantityAvailable || 0) <= 0);
+                const dv = p.defaultVariant || null;
+                const priceGross = dv?.pricing?.price?.gross || p.pricing?.priceRange?.start?.gross;
+                const sellingPrice = priceGross?.amount || 0;
+                const currency = 'INR';
+                const displayPrice = sellingPrice;
+                const formattedPrice = `₹${displayPrice.toFixed(2)}`;
+                const oos = dv ? (dv.quantityAvailable || 0) <= 0 : true;
 
                 return `
                 <div class="item px-2 pb-6">
@@ -2050,17 +1997,24 @@
             const products = headerSearchFilteredProducts();
             const display = [];
 
+            const getProductPrice = (p) => {
+                const dv = p.defaultVariant || null;
+                const gross = dv?.pricing?.price?.gross || p.pricing?.priceRange?.start?.gross;
+                return { amount: gross?.amount || 0 };
+            };
+
             if (!q) {
                 products.slice(0, PRODUCT_SEARCH_LIMIT).forEach(p => {
-                    const linkId = p.variants?.[0]?.id || p.id;
-                    const gross = p.pricing?.priceRange?.start?.gross;
+                    const dv = p.defaultVariant || null;
+                    const linkId = dv?.id || p.variants?.[0]?.id || p.id;
+                    const gross = getProductPrice(p);
                     display.push({
                         linkId,
                         displayName: p.name,
                         subtitle: null,
                         image: p.thumbnail?.url || FALLBACK_IMG,
-                        price: gross?.amount || 0,
-                        currency: gross?.currency || 'INR',
+                        price: gross.amount,
+                        currency: 'INR',
                         category: p.category?.name || 'Collection',
                         isVariant: false
                     });
@@ -2075,15 +2029,16 @@
 
                 if (pName.includes(q) || pDesc.includes(q) || pCat.includes(q) ||
                     looseIncludes(product.name, q) || looseIncludes(product.description, q) || looseIncludes(product.category?.name, q)) {
-                    const linkId = product.variants?.[0]?.id || product.id;
-                    const gross = product.pricing?.priceRange?.start?.gross;
+                    const dv = product.defaultVariant || null;
+                    const linkId = dv?.id || product.variants?.[0]?.id || product.id;
+                    const gross = getProductPrice(product);
                     display.push({
                         linkId,
                         displayName: product.name,
                         subtitle: null,
                         image: product.thumbnail?.url || FALLBACK_IMG,
-                        price: gross?.amount || 0,
-                        currency: gross?.currency || 'INR',
+                        price: gross.amount,
+                        currency: 'INR',
                         category: product.category?.name || 'Collection',
                         isVariant: false
                     });
@@ -2093,16 +2048,14 @@
                 if (product.variants) {
                     product.variants.forEach(v => {
                         if ((v.name || '').toLowerCase().includes(q) || looseIncludes(v.name, q)) {
-                            const variantImg = (v.media && v.media.length > 0) ? v.media[0].url : (product.thumbnail?.url || FALLBACK_IMG);
-                            const vp = v.pricing?.price?.gross;
-                            const fallbackGross = product.pricing?.priceRange?.start?.gross;
+                            const gross = getProductPrice(product);
                             display.push({
                                 linkId: v.id,
                                 displayName: v.name,
                                 subtitle: product.name,
-                                image: variantImg,
-                                price: vp?.amount ?? fallbackGross?.amount ?? 0,
-                                currency: vp?.currency ?? fallbackGross?.currency ?? 'INR',
+                                image: product.thumbnail?.url || FALLBACK_IMG,
+                                price: gross.amount,
+                                currency: 'INR',
                                 category: product.category?.name || 'Collection',
                                 isVariant: true
                             });
@@ -2298,7 +2251,15 @@
                                     start {
                                         gross {
                                             amount
-                                            currency
+                                        }
+                                    }
+                                }
+                            }
+                            defaultVariant {
+                                pricing {
+                                    price {
+                                        gross {
+                                            amount
                                         }
                                     }
                                 }
@@ -2306,18 +2267,6 @@
                             variants {
                                 id
                                 name
-                                media {
-                                    url
-                                    type
-                                }
-                                pricing {
-                                    price {
-                                        gross {
-                                            amount
-                                            currency
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
