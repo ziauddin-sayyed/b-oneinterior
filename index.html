@@ -2998,6 +2998,7 @@
                             id
                             name
                             backgroundImage { url }
+                            metadata { key value }
                         }
                     }
                 }
@@ -3011,6 +3012,25 @@
                 });
                 const json = await res.json();
                 const categories = (json.data?.categories?.edges || []).map(e => e.node);
+                console.log('Raw categories:', categories.map(c => ({ name: c.name, metadata: c.metadata })));
+                categories.sort((a, b) => {
+                    const getSortVal = (c) => {
+                        const m = c.metadata?.find(m => m.key === 'sort');
+                        if (!m) return null;
+                        const v = parseInt(m.value, 10);
+                        return isNaN(v) ? null : v;
+                    };
+                    const va = getSortVal(a);
+                    const vb = getSortVal(b);
+                    if (va === null && vb === null) return 0;
+                    if (va === null) return 1;
+                    if (vb === null) return -1;
+                    return va - vb;
+                });
+                console.log('Sorted categories:', categories.map(c => ({
+                    name: c.name,
+                    sort: c.metadata?.find(m => m.key === 'sort')?.value || null
+                })));
                 const container = document.getElementById('mainCatFilter');
                 if (!container) return;
                 container.innerHTML = categories.map(c => `
