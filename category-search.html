@@ -333,9 +333,7 @@
                 }
 
                 renderSubCategories();
-                const subIds = allSubCategories.map(s => s.id);
                 resetPagination();
-                await loadProducts(subIds);
                 setupInfiniteScroll();
                 selectSubCategory(null);
 
@@ -397,8 +395,8 @@
         }
 
         async function loadProducts(categoryIds) {
+            isLoadingMore = true;
             document.getElementById('productLoader').classList.remove('hidden');
-            isLoadingMore = false;
 
             try {
                 const ids = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
@@ -439,6 +437,7 @@
                     if (allCatProducts.length === 0) {
                         document.getElementById('productEmpty').classList.remove('hidden');
                     }
+                    isLoadingMore = false;
                     return;
                 }
 
@@ -448,6 +447,7 @@
                 hasMoreProducts = pageInfo?.hasNextPage ?? false;
 
                 renderProducts(allCatProducts);
+                isLoadingMore = false;
 
             } catch (err) {
                 console.error('Failed to load products:', err);
@@ -456,6 +456,7 @@
                     document.getElementById('productEmpty').classList.remove('hidden');
                     document.getElementById('productEmpty').querySelector('p').textContent = 'Failed to load products.';
                 }
+                isLoadingMore = false;
             }
         }
 
