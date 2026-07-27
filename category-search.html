@@ -204,6 +204,7 @@
         }
 
         const API_URL = "https://api.b-oneinterior.com/graphql/";
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
         let allSubCategories = [];
         let selectedSubCategoryId = null;
         let allCatProducts = [];
@@ -404,7 +405,7 @@
                 const after = productsCursor ? `after: "${productsCursor}", ` : '';
                 const query = `
                     query {
-                        products(first: 20, channel: "in", ${after}filter: { isPublished: true, categories: ${idsJson} }, sortBy: { field: CREATED_AT, direction: DESC }) {
+                        products(first: 20, channel: "${SALEOR_CHANNEL}", ${after}filter: { isPublished: true, categories: ${idsJson} }, sortBy: { field: CREATED_AT, direction: DESC }) {
                             edges {
                                 node {
                                     id name slug

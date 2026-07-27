@@ -357,11 +357,7 @@
             }
 
             function signOut() {
-                localStorage.removeItem('saleor_auth_token');
-                localStorage.removeItem('saleor_refresh_token');
-                localStorage.removeItem('saleor_csrf_token');
-                localStorage.removeItem('saleor_user_email');
-                localStorage.removeItem('saleor_user_name');
+                localStorage.clear();
                 window.location.reload();
             }
 
@@ -1248,6 +1244,8 @@
             observer.observe(section);
         });
 
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
+
         function updateCartBadge() {
             const badge = document.getElementById("cartCountBadge");
             if (!badge) return; // Badge element may not exist
@@ -1563,7 +1561,7 @@
             const catFilter = categoryIds && categoryIds.length > 0 ? `, categories: ${JSON.stringify(categoryIds)}` : "";
             return `
             query {
-                products(first: 10, channel: "in", filter: { isPublished: true${catFilter} }, sortBy: { field: CREATED_AT, direction: DESC } ${afterClause}) {
+                products(first: 10, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true${catFilter} }, sortBy: { field: CREATED_AT, direction: DESC } ${afterClause}) {
                     pageInfo {
                         hasNextPage
                         endCursor
@@ -2551,7 +2549,7 @@
 
             const query = `
             query {
-            products(first: 10, channel: "in", filter: { isPublished: true }) {
+            products(first: 10, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true }) {
                 edges {
                 node {
                     id
@@ -2632,7 +2630,7 @@
         async function loadLotAndTrending() {
             const query = `
             query {
-                collections(first: 10, channel: "in") {
+                collections(first: 10, channel: "${SALEOR_CHANNEL}") {
                     edges {
                         node {
                             name
@@ -2688,7 +2686,7 @@
         async function loadCollections() {
             const query = `
             query {
-            collections(first: 10, channel: "in") {
+            collections(first: 10, channel: "${SALEOR_CHANNEL}") {
                         edges {
                             node {
                                 id
@@ -3062,7 +3060,7 @@
         async function initBestSeller() {
             const query = `
             query {
-                collections(first: 10, channel: "in") {
+                collections(first: 10, channel: "${SALEOR_CHANNEL}") {
                     edges {
                         node { id name }
                     }
@@ -3099,7 +3097,7 @@
             const afterClause = bestSellerEndCursor ? `, after: "${bestSellerEndCursor}"` : "";
             const query = `
             query {
-                collection(id: "${bestSellerCollectionId}", channel: "in") {
+                collection(id: "${bestSellerCollectionId}", channel: "${SALEOR_CHANNEL}") {
                     products(first: 15 ${afterClause}, sortBy: { field: COLLECTION, direction: ASC }) {
                         pageInfo { hasNextPage endCursor }
                         edges {
@@ -3256,7 +3254,7 @@
         async function searchProductsAPI(query) {
             const gqlQuery = `
             query SearchProducts($search: String!) {
-                products(first: 20, filter: { search: $search }, channel: "in") {
+                products(first: 20, filter: { search: $search }, channel: "${SALEOR_CHANNEL}") {
                     edges {
                         node {
                             id

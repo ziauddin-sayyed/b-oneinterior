@@ -315,11 +315,7 @@
         }
 
         function signOut() {
-            localStorage.removeItem('saleor_auth_token');
-            localStorage.removeItem('saleor_refresh_token');
-            localStorage.removeItem('saleor_csrf_token');
-            localStorage.removeItem('saleor_user_email');
-            localStorage.removeItem('saleor_user_name');
+            localStorage.clear();
             window.location.reload();
         }
 
@@ -757,6 +753,7 @@
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
         const FALLBACK_IMG = "images/placeholder.png";
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
 
         const QUERY = `
 query {
@@ -786,7 +783,7 @@ query {
       } 
     } 
   }
-  products(first: 100, channel: "in") { 
+  products(first: 100, channel: "${SALEOR_CHANNEL}") { 
     edges { 
       node { 
         id 

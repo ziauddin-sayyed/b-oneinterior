@@ -190,6 +190,7 @@
   <script>
     const FALLBACK_IMG = "images/placeholder.png";
     const API_URL = "https://api.b-oneinterior.com/graphql/";
+    var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
     function toggleDrawer() {
       const drawer = document.getElementById("drawer");
       const overlay = document.querySelector(".overlay");
@@ -404,7 +405,7 @@
       meta.textContent = "Loading products...";
       const query = `
         query SearchProducts($search: String!) {
-          products(first: 20, filter: { search: $search }, channel: "in") {
+          products(first: 20, filter: { search: $search }, channel: "${SALEOR_CHANNEL}") {
             edges {
               node {
                 id

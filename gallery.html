@@ -162,11 +162,7 @@
         }
 
         function signOut() {
-            localStorage.removeItem('saleor_auth_token');
-            localStorage.removeItem('saleor_refresh_token');
-            localStorage.removeItem('saleor_csrf_token');
-            localStorage.removeItem('saleor_user_email');
-            localStorage.removeItem('saleor_user_name');
+            localStorage.clear();
             window.location.reload();
         }
 
@@ -217,6 +213,7 @@
     <script>
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
 
         async function fetchGraphQL(query, variables = {}) {
             try {
@@ -255,7 +252,7 @@
             // 2. Fetch Products for this Product Type
             const productsQuery = `
             query ($productTypeId: ID!) {
-                products(first: 50, channel: "in", filter: { productTypes: [$productTypeId] }) {
+                products(first: 50, channel: "${SALEOR_CHANNEL}", filter: { productTypes: [$productTypeId] }) {
                     edges {
                         node {
                             id

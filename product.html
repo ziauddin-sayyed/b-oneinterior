@@ -503,12 +503,7 @@
         }
 
         function signOut() {
-            localStorage.removeItem('saleor_auth_token');
-            localStorage.removeItem('saleor_refresh_token');
-            localStorage.removeItem('saleor_csrf_token');
-            localStorage.removeItem('saleor_user_email');
-            localStorage.removeItem('saleor_user_name');
-            localStorage.removeItem('saleor_user_is_staff');
+            localStorage.clear();
             window.location.reload();
         }
 
@@ -812,6 +807,7 @@
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         const PRODUCT_SEARCH_LIMIT = 10;
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
         /** Raw product nodes from GraphQL (includes variants for variant search, same idea as index.html shop search). */
         let headerSearchProductsRaw = [];
 
@@ -1196,7 +1192,7 @@
         async function fetchProductDetails(id) {
             const query = `
             query {
-                product(id: "${id}", channel: "in") {
+                product(id: "${id}", channel: "${SALEOR_CHANNEL}") {
                     id
                     name
                     description
@@ -1296,7 +1292,7 @@
         async function fetchVariantDetails(variantId) {
             const query = `
             query {
-                productVariant(id: "${variantId}", channel: "in") {
+                productVariant(id: "${variantId}", channel: "${SALEOR_CHANNEL}") {
                     id
                     name
                     product {
@@ -1433,7 +1429,7 @@
         async function fetchRecommendedProducts(categoryName, currentId) {
             const query = `
             query {
-                products(first: 25, channel: "in") {
+                products(first: 25, channel: "${SALEOR_CHANNEL}") {
                     edges {
                         node {
                             id
@@ -1542,7 +1538,7 @@
         async function fetchMoreProducts(currentId) {
             const query = `
             query {
-                products(first: 25, channel: "in", filter: { isPublished: true }) {
+                products(first: 25, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true }) {
                     edges {
                         node {
                             id
@@ -1646,7 +1642,7 @@
         async function fetchCollectionProducts(collectionId, currentId) {
             const query = `
             query {
-                collection(id: "${collectionId}", channel: "in") {
+                collection(id: "${collectionId}", channel: "${SALEOR_CHANNEL}") {
                     products(first: 20) {
                         edges {
                             node {
@@ -2238,7 +2234,7 @@
 
             const query = `
             query {
-                products(first: 100, channel: "in", filter: { isPublished: true }) {
+                products(first: 100, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true }) {
                     edges {
                         node {
                             id

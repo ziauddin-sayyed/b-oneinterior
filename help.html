@@ -577,6 +577,7 @@
     <script>
         const API_URL = "https://api.b-oneinterior.com/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
         let helpProducts = [];
         let technicians = [];
         let userDetectedPincode = "";
@@ -878,7 +879,7 @@
         async function loadHelpSearchProducts() {
             const query = `
                 query {
-                    products(first: 100, channel: "in", filter: { isPublished: true }) {
+                    products(first: 100, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true }) {
                         edges {
                             node {
                                 id

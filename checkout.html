@@ -140,8 +140,8 @@
                 }
             }
             function signOut() {
-                localStorage.removeItem('saleor_auth_token'); localStorage.removeItem('saleor_refresh_token'); localStorage.removeItem('saleor_csrf_token');
-                localStorage.removeItem('saleor_user_email'); localStorage.removeItem('saleor_user_name'); window.location.reload();
+                localStorage.clear();
+                window.location.reload();
             }
             document.addEventListener('DOMContentLoaded', checkAuth);
 
@@ -350,6 +350,7 @@
 
     <script>
         const API_URL = 'https://api.b-oneinterior.com/graphql/';
+        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
 
         let checkoutId = localStorage.getItem('checkoutId') || null;
         let selectedShippingMethodId = null;
@@ -682,7 +683,7 @@
                     };
                     const createQuery = `
                         mutation CheckoutCreate($lines: [CheckoutLineInput!]!, $address: AddressInput!) {
-                            checkoutCreate(input: { channel: "in", lines: $lines, shippingAddress: $address, billingAddress: $address }) {
+                            checkoutCreate(input: { channel: "${SALEOR_CHANNEL}", lines: $lines, shippingAddress: $address, billingAddress: $address }) {
                                 checkout { id token }
                                 errors { field message }
                             }

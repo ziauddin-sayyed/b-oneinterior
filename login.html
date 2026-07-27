@@ -690,7 +690,38 @@
                 showSuccess('Login successful! Redirecting...');
 
                 setTimeout(function() {
-                    window.location.replace('https://b-oneinterior.com/');
+                    var token = localStorage.getItem('saleor_auth_token');
+                    if (token) {
+                        fetch('https://api.b-oneinterior.com/graphql/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({
+                                query: 'query { me { id metadata { key value } } }'
+                            })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function(json) {
+                            var user = json && json.data && json.data.me;
+                            if (user && user.metadata) {
+                                for (var i = 0; i < user.metadata.length; i++) {
+                                    if (user.metadata[i].key === 'role' && user.metadata[i].value === 'contractor') {
+                                        localStorage.setItem('role', 'contractor');
+                                        break;
+                                    }
+                                }
+                            }
+                            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                        })
+                        .catch(function(err) {
+                            console.error('Failed to fetch user metadata:', err);
+                            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                        });
+                    } else {
+                        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                    }
                 }, 1500);
             })
             .catch(function(err) {
@@ -727,11 +758,7 @@
         }
 
         function signOut() {
-            localStorage.removeItem('saleor_auth_token');
-            localStorage.removeItem('saleor_refresh_token');
-            localStorage.removeItem('saleor_csrf_token');
-            localStorage.removeItem('saleor_user_email');
-            localStorage.removeItem('saleor_user_name');
+            localStorage.clear();
             window.location.reload();
         }
 
@@ -739,7 +766,11 @@
             var token = localStorage.getItem('saleor_auth_token');
             var userEmail = localStorage.getItem('saleor_user_email');
             if (token && userEmail) {
-                window.location.replace('https://b-oneinterior.com/');
+                if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                    window.location.replace(location.origin + '/b-oneinterior');
+                } else {
+                    window.location.replace('https://b-oneinterior.com/');
+                }
                 return;
             }
             checkAuth();

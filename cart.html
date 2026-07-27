@@ -314,8 +314,8 @@
                 }
             }
             function signOut() {
-                localStorage.removeItem('saleor_auth_token'); localStorage.removeItem('saleor_refresh_token'); localStorage.removeItem('saleor_csrf_token');
-                localStorage.removeItem('saleor_user_email'); localStorage.removeItem('saleor_user_name'); window.location.reload();
+                localStorage.clear();
+                window.location.reload();
             }
             document.addEventListener('DOMContentLoaded', checkAuth);
 
