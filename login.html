@@ -690,6 +690,7 @@
                 showSuccess('Login successful! Redirecting...');
 
                 setTimeout(function() {
+                    var redirectTo = new URLSearchParams(window.location.search).get('redirectTo');
                     var token = localStorage.getItem('saleor_auth_token');
                     if (token) {
                         fetch('https://api.b-oneinterior.com/graphql/', {
@@ -713,14 +714,14 @@
                                     }
                                 }
                             }
-                            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                            if (redirectTo === 'checkout') { window.location.replace('checkout.html'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior'); } else { window.location.replace('https://b-oneinterior.com/'); }
                         })
                         .catch(function(err) {
                             console.error('Failed to fetch user metadata:', err);
-                            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                            if (redirectTo === 'checkout') { window.location.replace('checkout.html'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior'); } else { window.location.replace('https://b-oneinterior.com/'); }
                         });
                     } else {
-                        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { location.reload(); } else { window.location.replace('https://b-oneinterior.com/'); }
+                        if (redirectTo === 'checkout') { window.location.replace('checkout.html'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior'); } else { window.location.replace('https://b-oneinterior.com/'); }
                     }
                 }, 1500);
             })

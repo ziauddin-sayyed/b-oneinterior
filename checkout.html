@@ -326,6 +326,16 @@
                     </div>
                 </div>
 
+                <!-- Referred By -->
+                <div class="mb-4">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Referred By (optional)</label>
+                    <div class="flex">
+                        <span class="inline-flex items-center px-3 bg-white/10 border border-r-0 border-white/10 rounded-l-xl text-white/80 text-sm font-bold select-none">+91</span>
+                        <input type="tel" id="referredBy" maxlength="10" placeholder="Enter 10-digit number" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm">
+                    </div>
+                    <p class="text-gray-500 text-[10px] mt-1">Enter the 10-digit phone number of the person who referred you.</p>
+                </div>
+
                 <!-- Place Order Button -->
                 <button id="placeOrderBtn" onclick="placeOrder()" class="w-full gold-gradient-bg text-black font-black uppercase py-4 rounded-xl tracking-[0.2em] shadow-xl hover:opacity-90 transition transform active:scale-95 text-sm flex items-center justify-center gap-3">
                     <span>Place Order</span>
@@ -891,6 +901,19 @@
             showPageLoader();
 
             try {
+                // Set referral metadata if provided
+                var referredBy = document.getElementById('referredBy').value.trim();
+                if (referredBy.length === 10) {
+                    await apiCall(`
+                        mutation UpdateMetadata($id: ID!, $input: [MetadataInput!]!) {
+                            updateMetadata(id: $id, input: $input) {
+                                item { ... on Checkout { id } }
+                                errors { field message }
+                            }
+                        }
+                    `, { id: checkoutId, input: [{ key: "reference", value: "+91" + referredBy }] });
+                }
+
                 // Update shipping method (addresses already set during address selection)
                 const deliveryResult = await apiCall(`
                     mutation CheckoutDelivery($id: ID!, $methodId: ID!) {

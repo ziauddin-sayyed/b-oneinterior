@@ -313,6 +313,15 @@
                     if (drLink) drLink.innerHTML = `<a href="login.html">Login</a>`;
                 }
             }
+            function goToCheckout() {
+                var token = localStorage.getItem('saleor_auth_token');
+                var userEmail = localStorage.getItem('saleor_user_email');
+                if (token && userEmail) {
+                    window.location.href = 'checkout.html';
+                } else {
+                    window.location.href = 'login.html?redirectTo=checkout';
+                }
+            }
             function signOut() {
                 localStorage.clear();
                 window.location.reload();
@@ -808,7 +817,7 @@ ${isSample ? '' : `                    <p class="text-xs font-bold text-white/80
                     <ion-icon name="logo-whatsapp" class="text-3xl"></ion-icon>
                     Send Query
                 </button> -->
-                <a href="checkout.html" 
+                <a href="#" onclick="goToCheckout(); return false;"
                     class="w-full md:w-auto h-20 bg-white/10 border border-gold-500/30 px-3 rounded-[24px] text-white font-black uppercase text-sm tracking-[0.2em] hover:bg-white/20 transition transform active:scale-95 shadow-2xl flex items-center justify-center gap-4">
                     <ion-icon name="cart-outline" class="text-3xl text-gold-500"></ion-icon>
                     Confirm Details
