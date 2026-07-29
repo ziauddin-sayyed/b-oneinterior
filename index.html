@@ -2599,13 +2599,14 @@
                 const collectionId = col.id;
                 const collectionName = col.name;
 
+                const slideLink = `collection.html?collection_id=${collectionId}`;
                 slide.innerHTML = `
-                    <img src="${bgUrl}"
-                        class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s]">
-                    <div class="absolute inset-0 flex items-end md:items-center md:pb-0">
+                    <img src="${bgUrl}" onclick="window.location.href='${slideLink}'"
+                        class="w-full h-[50vw] md:h-[350px] object-cover scale-105 transition-transform duration-[8s] cursor-pointer">
+                    <div class="absolute inset-0 flex items-end md:items-center md:pb-0 pointer-events-none">
                         <div class="px-6 md:px-16 max-w-2xl">
-                            <button onclick="window.location.href='collection.html?collection_id=${collectionId}'"
-                                class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap">Explore Collection</button>
+                            <button onclick="window.location.href='${slideLink}'"
+                                class="mt-3 gold-gradient-bg text-black px-6 py-2.5 rounded-full font-black text-sm shadow-2xl hover:scale-105 transition transform whitespace-nowrap pointer-events-auto">Explore Collection</button>
                         </div>
                     </div>
                 `;
