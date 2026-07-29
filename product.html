@@ -2314,10 +2314,10 @@
             let nameHtml = "";
             if (selectedVariant && selectedVariant.name) {
                 nameHtml = `
-                    <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${selectedVariant.name}</h1>
+                    <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${p.name}</h1>
                     <div class="flex items-center gap-2 opacity-50">
                         <div class="h-px w-8 bg-gold"></div>
-                        <span class="text-xs font-bold uppercase tracking-[0.2em]">${p.name}</span>
+                        <span class="text-xs font-bold uppercase tracking-[0.2em]">${selectedVariant.name}</span>
                     </div>
                 `;
             } else {
