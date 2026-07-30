@@ -433,6 +433,28 @@
         </div>
     </section>
 
+    <!-- Conversation / Chat with Admin -->
+    <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 mt-6">
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="fetchMessages()" class="bg-white/10 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-white/20 border border-white/10 transition active:scale-95 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M1 4v6h6M23 20v-6h-6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                Load new messages
+            </button>
+        </div>
+        <div id="chatMessages" class="space-y-3 h-80 overflow-y-auto mb-4 pr-2 hide-scrollbar"></div>
+        <div id="chatEmpty" class="text-center py-6 text-gray-400 text-sm">No messages yet. Start a conversation!</div>
+        <div class="flex gap-3">
+            <input type="text" id="chatInput" placeholder="Type your message..."
+                class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm"
+                onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="gold-gradient-bg text-black px-5 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition active:scale-95 flex items-center gap-2 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Send
+            </button>
+        </div>
+        <div id="chatStatus" class="mt-2 text-xs text-gray-500 hidden"></div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-black text-white py-12 border-t border-gray-800">
         <div class="container mx-auto p-10">
@@ -1472,12 +1494,107 @@
             }
         }
 
+        // ─── Conversation / Chat with Admin ─────────────────────────
+        const CONV_API_BASE = 'https://api.b-oneinterior.com';
+
+        async function fetchMessages() {
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) return;
+            try {
+                const res = await fetch(`${CONV_API_BASE}/api/conversation/messages/?limit=50&offset=0`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                renderMessages(data.messages || []);
+            } catch (e) {
+                // Silently fail
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            const empty = document.getElementById('chatEmpty');
+            if (!container) return;
+            if (!messages.length) {
+                container.innerHTML = '';
+                if (empty) empty.classList.remove('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            const sorted = [...messages].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            const userEmail = localStorage.getItem('saleor_user_email') || '';
+            container.innerHTML = sorted.map(m => {
+                const isMine = m.sender_email === userEmail;
+                return `
+                    <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[80%] ${isMine ? 'bg-gold-500/20 border-gold-500/30' : 'bg-white/10 border-white/10'} border rounded-xl px-4 py-2.5">
+                            <p class="text-white text-sm">${escapeHtml(m.content)}</p>
+                            <p class="text-[10px] text-gray-500 mt-1">${new Date(m.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const status = document.getElementById('chatStatus');
+            const content = input.value.trim();
+            if (!content) return;
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) {
+                status.textContent = 'Please login first.';
+                status.classList.remove('hidden');
+                return;
+            }
+            input.disabled = true;
+            status.classList.add('hidden');
+            try {
+                const res = await fetch(`${CONV_API_BASE}/api/conversation/messages/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                if (res.status === 429) {
+                    const err = await res.json();
+                    status.textContent = err.error || 'Rate limited. Please wait.';
+                    status.classList.remove('hidden');
+                    return;
+                }
+                if (!res.ok) {
+                    status.textContent = 'Failed to send message.';
+                    status.classList.remove('hidden');
+                    return;
+                }
+                input.value = '';
+                await fetchMessages();
+            } catch (e) {
+                status.textContent = 'Network error. Try again.';
+                status.classList.remove('hidden');
+            } finally {
+                input.disabled = false;
+                input.focus();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             checkAuth();
             fetchOrders();
             if (localStorage.getItem('saleor_auth_token')) {
                 await fetchUserProfileFromApi();
                 await fetchUserAddressesFromApi();
+                fetchMessages();
             }
             fetchStates();
             renderAddressCards();
