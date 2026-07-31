@@ -693,7 +693,9 @@
                     <div class="glass-panel p-10">
                         <div class="grid grid-cols-2 gap-8 items-center">
                             <div id="cartActionContainer"></div>
+                            
                             <div id="catalogueContainer"></div>
+                            
                         </div>
 
                         <div id="colorSelectContainer" class="mt-8 hidden"></div>
@@ -2847,7 +2849,15 @@
                 </div>
             `;
 
-            document.getElementById("cartActionContainer").innerHTML = html;
+            const consultationBtnHtml = `
+                <button type="button" onclick="openConsultationModal()"
+                    class="w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 flex items-center justify-center gap-2 mt-2">
+                    <ion-icon name="chatbubbles-outline" class="text-xl"></ion-icon>
+                    Free Consultation
+                </button>
+            `;
+
+            document.getElementById("cartActionContainer").innerHTML = html + consultationBtnHtml;
             if (document.getElementById("cartActionContainerMobile")) {
                 document.getElementById("cartActionContainerMobile").innerHTML = html;
             }
