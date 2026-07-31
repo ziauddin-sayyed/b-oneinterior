@@ -268,6 +268,93 @@
             /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.95)); */
             pointer-events: none;
         }
+
+        /* Consultation Login / OTP */
+        .consult-btn {
+            background: linear-gradient(135deg, #e8b84b 0%, #b8941f 100%);
+            transition: all 0.3s ease;
+        }
+        .consult-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(232, 184, 75, 0.3);
+        }
+        .consult-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .consult-btn-outline {
+            border: 1px solid rgba(232, 184, 75, 0.5);
+            color: #e8b84b;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        .consult-btn-outline:hover {
+            background: rgba(232, 184, 75, 0.1);
+            border-color: #e8b84b;
+        }
+        .consult-btn-outline:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .consult-error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        .consult-success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .consult-phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(232, 184, 75, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .consult-phone-input-wrapper:focus-within {
+            border-color: #e8b84b;
+            box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.2);
+        }
+        .consult-phone-input-wrapper .country-code {
+            padding: 0.75rem 0.5rem 0.75rem 1rem;
+            color: #e8b84b;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            border-right: 1px solid rgba(232, 184, 75, 0.2);
+        }
+        .consult-phone-input-wrapper input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .consult-phone-input-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .consult-otp-input {
+            width: 42px;
+            height: 52px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(232, 184, 75, 0.3);
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .consult-otp-input:focus {
+            border-color: #e8b84b;
+            box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.2);
+            outline: none;
+        }
     </style>
 
 </head>
@@ -544,6 +631,11 @@
                 <!-- Mobile: Details & Actions -->
                 <div class="flex flex-col gap-6">
                     <div id="cartActionContainerMobile"></div>
+                    <button type="button" onclick="openConsultationModal()"
+                        class="flex gap-2 items-center w-full h-12 rounded-2xl border-2 border-gold-500 text-gold-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-gold/10 transition transform active:scale-95 items-center justify-center">
+                        <ion-icon name="chatbubbles-outline" class="text-xl"></ion-icon>
+                        Free Consultation
+                    </button>
                     <div>
                         <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-4">Product Details
                         </h3>
@@ -649,6 +741,85 @@
         </div>
 
     </main>
+
+    <!-- Free Consultation Modal -->
+    <div id="consultationModal" class="fixed inset-0 z-[115] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConsultationModal()"></div>
+        <div class="glass-panel w-full max-w-md p-8 relative z-10 animate-in fade-in zoom-in duration-300 max-h-[92vh] overflow-y-auto hide-scrollbar">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black uppercase tracking-tight gold-gradient-text">Free Consultation</h2>
+                <button type="button" onclick="closeConsultationModal()" class="text-white/80 hover:text-white transition">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Login Section -->
+            <div id="consultLoginSection">
+                <!-- Step 1: Phone Number -->
+                <div id="consultStepPhone">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile Number</label>
+                    <div class="consult-phone-input-wrapper">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="consultPhoneInput" maxlength="10" placeholder="Enter 10-digit mobile number" autocomplete="tel">
+                    </div>
+                    <button type="button" id="consultSendOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2 mt-6">
+                        <span id="consultSendOtpText">Send OTP</span>
+                        <div id="consultSendOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="consultStepOtp" class="hidden">
+                    <p class="text-sm text-gray-400 mb-2">Enter the OTP sent to <span id="consultDisplayPhone" class="text-gold-500 font-bold"></span></p>
+                    <div class="flex justify-center gap-2 mb-6">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="0">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="1">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="2">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="3">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="4">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="5">
+                    </div>
+                    <button type="button" id="consultVerifyOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
+                        <span id="consultVerifyOtpText">Verify OTP</span>
+                        <div id="consultVerifyOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                    <div class="flex items-center justify-between mt-4">
+                        <button type="button" id="consultChangePhoneBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium">← Change Number</button>
+                        <button type="button" id="consultResendOtpBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium resend-btn" disabled>Resend OTP (<span id="consultResendTimer">30</span>s)</button>
+                    </div>
+                </div>
+
+                <div id="consultLoginError" class="consult-error-message text-red-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+                <div id="consultLoginSuccess" class="consult-success-message text-green-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+            </div>
+
+            <!-- Consultation Form Section -->
+            <div id="consultFormSection" class="hidden">
+                <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Select Category</label>
+                <select id="consultCategorySelect"
+                    class="w-full bg-gray-200 text-black border border-gray-300 rounded-xl px-4 py-3 font-medium focus:border-gold outline-none transition mb-4">
+                    <option value="">Select a category</option>
+                </select>
+
+                <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Your Message</label>
+                <textarea id="consultMessage" rows="4" placeholder="Tell us what you need..."
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold outline-none transition resize-none mb-4"></textarea>
+
+                <button type="button" onclick="submitConsultation()"
+                    class="w-full gold-gradient-bg text-black font-black uppercase py-4 rounded-xl tracking-[0.2em] shadow-xl hover:opacity-90 transition transform active:scale-95">
+                    Submit
+                </button>
+
+                <div id="consultFormMsg" class="mt-3 text-sm hidden"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Buy Now: Address Modal (same flow as cart.html) -->
     <div id="productBuyNowModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center px-4">
@@ -2401,25 +2572,26 @@
 
             // 5. Attributes - Grid style
             let attrsHtml = "";
-            const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description", "Book Installation", "Get Sample"];
+            // const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description", "Book Installation", "Get Sample"];
+            const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description"];
             let showBookInstallation = false;
             let showGetSample = false;
-            p.attributes.forEach(attr => {
-                if (excludeAttrs.includes(attr.attribute.name)) {
-                    if (attr.attribute.name === "Book Installation" && attr.values?.[0]?.name === "Yes") showBookInstallation = true;
-                    if (attr.attribute.name === "Get Sample" && attr.values?.[0]?.name === "Yes") showGetSample = true;
-                    return;
-                }
-                const val = attr.values[0];
-                if (!val) return;
+            // p.attributes.forEach(attr => {
+            //     if (excludeAttrs.includes(attr.attribute.name)) {
+            //         if (attr.attribute.name === "Book Installation" && attr.values?.[0]?.name === "Yes") showBookInstallation = true;
+            //         if (attr.attribute.name === "Get Sample" && attr.values?.[0]?.name === "Yes") showGetSample = true;
+            //         return;
+            //     }
+            //     const val = attr.values[0];
+            //     if (!val) return;
 
-                attrsHtml += `
-                    <div class="attribute-row">
-                        <span class="attribute-label">${attr.attribute.name}</span>
-                        <span class="attribute-value">${val.name}</span>
-                    </div>
-                `;
-            });
+            //     attrsHtml += `
+            //         <div class="attribute-row">
+            //             <span class="attribute-label">${attr.attribute.name}</span>
+            //             <span class="attribute-value">${val.name}</span>
+            //         </div>
+            //     `;
+            // });
 
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
             if (document.getElementById("attributesContainerMobile")) {
@@ -3493,6 +3665,468 @@
                 }
             }
         };
+
+        // ─── Free Consultation Modal ────────────────────────────────
+        const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
+        const CONV_API_BASE = 'https://api.b-oneinterior.com';
+        let consultVerifiedMobile = '';
+        let consultMsg91ReqId = '';
+        let consultResendCooldown = 30;
+        let consultResendTimer = null;
+
+        function openConsultationModal() {
+            const modal = document.getElementById('consultationModal');
+            if (!modal) return;
+            if (isUserLoggedIn()) {
+                document.getElementById('consultLoginSection').classList.add('hidden');
+                document.getElementById('consultFormSection').classList.remove('hidden');
+                loadConsultCategories();
+            } else {
+                document.getElementById('consultLoginSection').classList.remove('hidden');
+                document.getElementById('consultFormSection').classList.add('hidden');
+                const phoneEl = document.getElementById('consultPhoneInput');
+                if (phoneEl) phoneEl.value = '';
+                document.getElementById('consultStepPhone').classList.remove('hidden');
+                document.getElementById('consultStepOtp').classList.add('hidden');
+                hideConsultLoginMessages();
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConsultationModal() {
+            const modal = document.getElementById('consultationModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function hideConsultLoginMessages() {
+            document.getElementById('consultLoginError').classList.add('hidden');
+            document.getElementById('consultLoginSuccess').classList.add('hidden');
+        }
+
+        function showConsultError(msg) {
+            const el = document.getElementById('consultLoginError');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            document.getElementById('consultLoginSuccess').classList.add('hidden');
+        }
+
+        function showConsultSuccess(msg) {
+            const el = document.getElementById('consultLoginSuccess');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            document.getElementById('consultLoginError').classList.add('hidden');
+        }
+
+        // MSG91 SDK load & init (mirrors login.html)
+        (function() {
+            if (window.__msg91SdkInitiated) return;
+            window.__msg91SdkInitiated = true;
+            window.msg91Config = {
+                widgetId: "3666416d5868313933373531",
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                exposeMethods: true,
+                success: function(data) {
+                    if (data && typeof data === 'object') {
+                        var r = data.reqId || data.requestId || data.req_id || (data.data && (data.data.reqId || data.data.requestId || data.data.req_id));
+                        if (r) consultMsg91ReqId = r;
+                    }
+                },
+                failure: function(error) {
+                    console.log('MSG91 client failure callback', error);
+                }
+            };
+            function initMsg91() {
+                if (typeof window.initSendOTP === 'function') {
+                    try {
+                        window.initSendOTP(window.msg91Config);
+                        console.log('MSG91 widget initialized');
+                        return true;
+                    } catch (err) {
+                        console.error('Error during initSendOTP:', err);
+                        return false;
+                    }
+                }
+                return false;
+            }
+            function initWithRetry(maxRetries) {
+                if (initMsg91()) return;
+                if (maxRetries > 0) {
+                    setTimeout(function() { initWithRetry(maxRetries - 1); }, 500);
+                }
+            }
+            if (typeof window.initSendOTP === 'function') {
+                initMsg91();
+            } else {
+                var script = document.createElement('script');
+                script.src = 'https://verify.msg91.com/otp-provider.js';
+                script.async = true;
+                script.onload = function() { initWithRetry(40); };
+                script.onerror = function() { console.error('Failed to load MSG91 SDK'); };
+                document.body.appendChild(script);
+            }
+        })();
+
+        function waitForMsg91Method(methodName, callback, maxRetries) {
+            if (maxRetries === undefined) maxRetries = 40;
+            let attempts = 0;
+            const check = function() {
+                if (typeof window[methodName] === 'function') {
+                    callback(true);
+                } else if (attempts < maxRetries) {
+                    attempts++;
+                    setTimeout(check, 250);
+                } else {
+                    callback(false);
+                }
+            };
+            check();
+        }
+
+        function getConsultOtpValue() {
+            let val = '';
+            document.querySelectorAll('.consult-otp-input').forEach(inp => val += inp.value);
+            return val;
+        }
+
+        function clearConsultOtpInputs() {
+            const inputs = document.querySelectorAll('.consult-otp-input');
+            inputs.forEach(inp => inp.value = '');
+            if (inputs[0]) inputs[0].focus();
+        }
+
+        function startConsultResendTimer() {
+            consultResendCooldown = 30;
+            const btn = document.getElementById('consultResendOtpBtn');
+            const timerEl = document.getElementById('consultResendTimer');
+            btn.disabled = true;
+            timerEl.textContent = consultResendCooldown;
+            if (consultResendTimer) clearInterval(consultResendTimer);
+            consultResendTimer = setInterval(() => {
+                consultResendCooldown--;
+                timerEl.textContent = consultResendCooldown;
+                if (consultResendCooldown <= 0) {
+                    clearInterval(consultResendTimer);
+                    consultResendTimer = null;
+                    btn.disabled = false;
+                    btn.innerHTML = 'Resend OTP';
+                }
+            }, 1000);
+        }
+
+        function setConsultSendOtpLoading(loading) {
+            document.getElementById('consultSendOtpBtn').disabled = loading;
+            document.getElementById('consultSendOtpText').textContent = loading ? 'Sending OTP...' : 'Send OTP';
+            document.getElementById('consultSendOtpSpinner').classList.toggle('hidden', !loading);
+        }
+
+        function setConsultVerifyOtpLoading(loading) {
+            document.getElementById('consultVerifyOtpBtn').disabled = loading;
+            document.getElementById('consultVerifyOtpText').textContent = loading ? 'Verifying OTP...' : 'Verify OTP';
+            document.getElementById('consultVerifyOtpSpinner').classList.toggle('hidden', !loading);
+        }
+
+        // Send OTP
+        document.getElementById('consultSendOtpBtn').addEventListener('click', function() {
+            const mobile = document.getElementById('consultPhoneInput').value.trim();
+            if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) {
+                showConsultError('Please enter a valid 10-digit mobile number');
+                return;
+            }
+            hideConsultLoginMessages();
+            setConsultSendOtpLoading(true);
+            const sendOtpTimeout = setTimeout(function() { setConsultSendOtpLoading(false); }, 15000);
+
+            waitForMsg91Method('sendOtp', function(ready) {
+                if (!ready) {
+                    showConsultError('Verification service is not ready. Please try again in a moment.');
+                    setConsultSendOtpLoading(false);
+                    return;
+                }
+                try {
+                    window.sendOtp('91' + mobile,
+                        function(data) {
+                            clearTimeout(sendOtpTimeout);
+                            try {
+                                if (typeof data === 'object' && data) {
+                                    consultMsg91ReqId = data.reqId || data.requestId || data.req_id || data.message || '';
+                                }
+                            } catch (e) { console.warn(e); }
+                            consultVerifiedMobile = mobile;
+                            document.getElementById('consultDisplayPhone').textContent = '+91 ' + mobile;
+                            document.getElementById('consultStepPhone').classList.add('hidden');
+                            document.getElementById('consultStepOtp').classList.remove('hidden');
+                            clearConsultOtpInputs();
+                            startConsultResendTimer();
+                            hideConsultLoginMessages();
+                            setConsultSendOtpLoading(false);
+                        },
+                        function(errorData) {
+                            clearTimeout(sendOtpTimeout);
+                            showConsultError((errorData && errorData.message) || 'Failed to send OTP. Please check your number.');
+                            setConsultSendOtpLoading(false);
+                        }
+                    );
+                } catch (e) {
+                    clearTimeout(sendOtpTimeout);
+                    showConsultError('Failed to send OTP. Please try again.');
+                    setConsultSendOtpLoading(false);
+                }
+            });
+        });
+
+        // Change phone number
+        document.getElementById('consultChangePhoneBtn').addEventListener('click', function() {
+            document.getElementById('consultStepOtp').classList.add('hidden');
+            document.getElementById('consultStepPhone').classList.remove('hidden');
+            if (consultResendTimer) {
+                clearInterval(consultResendTimer);
+                consultResendTimer = null;
+            }
+            hideConsultLoginMessages();
+        });
+
+        // Resend OTP
+        document.getElementById('consultResendOtpBtn').addEventListener('click', function() {
+            if (this.disabled) return;
+            hideConsultLoginMessages();
+            waitForMsg91Method('retryOtp', function(ready) {
+                if (!ready) {
+                    showConsultError('Verification service is not ready.');
+                    return;
+                }
+                window.retryOtp(consultMsg91ReqId || '11',
+                    function(data) {
+                        try {
+                            if (typeof data === 'object' && data) {
+                                consultMsg91ReqId = data.reqId || data.requestId || data.req_id || consultMsg91ReqId;
+                            }
+                        } catch (e) {}
+                        startConsultResendTimer();
+                        clearConsultOtpInputs();
+                    },
+                    function(errorData) {
+                        showConsultError((errorData && errorData.message) || 'Failed to resend OTP.');
+                    }
+                );
+            });
+        });
+
+        // Verify OTP
+        document.getElementById('consultVerifyOtpBtn').addEventListener('click', async function() {
+            const otp = getConsultOtpValue();
+            if (otp.length !== 6) {
+                showConsultError('Please enter the complete 6-digit OTP');
+                return;
+            }
+            hideConsultLoginMessages();
+            setConsultVerifyOtpLoading(true);
+
+            if (!consultMsg91ReqId) {
+                showConsultError('Session expired. Please request a new OTP.');
+                setConsultVerifyOtpLoading(false);
+                return;
+            }
+            const mobile = document.getElementById('consultPhoneInput').value.trim();
+            const payload = {
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                otp: otp,
+                identifier: mobile,
+                widgetId: "3666416d5868313933373531",
+                reqId: consultMsg91ReqId
+            };
+
+            try {
+                const res = await fetch(DJANGO_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const t = await res.text();
+                    throw new Error(t || 'Verification failed');
+                }
+                const data = await res.json();
+
+                const token = data.token || data.access || '';
+                if (!token) {
+                    showConsultError('Login failed: no token returned.');
+                    setConsultVerifyOtpLoading(false);
+                    return;
+                }
+
+                localStorage.setItem('saleor_auth_token', token);
+                localStorage.setItem('saleor_refresh_token', data.refreshToken || data.refresh || '');
+                localStorage.setItem('saleor_csrf_token', data.csrfToken || '');
+                if (data.user) {
+                    localStorage.setItem('saleor_user_email', data.user.email || '');
+                    localStorage.setItem('saleor_user_name',
+                        ((data.user.firstName || '') + ' ' + (data.user.lastName || '')).trim() || data.user.email || ''
+                    );
+                    localStorage.setItem('saleor_user_is_staff', data.user.isStaff || false);
+                }
+
+                // Validate token and capture user metadata (mirrors login.html)
+                const meData = await fetchSaleor(`query { me { id email metadata { key value } } }`);
+                const me = meData && meData.me;
+                if (me && me.email) {
+                    localStorage.setItem('saleor_user_email', me.email);
+                }
+                if (me && me.metadata) {
+                    for (const m of me.metadata) {
+                        if (m.key === 'role' && m.value === 'contractor') {
+                            localStorage.setItem('role', 'contractor');
+                        }
+                    }
+                }
+
+                showConsultSuccess('Login successful!');
+
+                // No page refresh: show consultation form
+                document.getElementById('consultLoginSection').classList.add('hidden');
+                document.getElementById('consultFormSection').classList.remove('hidden');
+                loadConsultCategories();
+            } catch (err) {
+                console.error('Verify OTP error:', err);
+                showConsultError(err.message || 'Invalid or expired OTP.');
+                setConsultVerifyOtpLoading(false);
+            }
+        });
+
+        // OTP input auto-advance
+        const consultOtpInputs = document.querySelectorAll('.consult-otp-input');
+        consultOtpInputs.forEach(function(inp, idx) {
+            inp.addEventListener('input', function() {
+                if (inp.value && idx < consultOtpInputs.length - 1) {
+                    consultOtpInputs[idx + 1].focus();
+                }
+            });
+            inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !inp.value && idx > 0) {
+                    consultOtpInputs[idx - 1].focus();
+                }
+                if (e.key === 'Enter') {
+                    document.getElementById('consultVerifyOtpBtn').click();
+                }
+            });
+        });
+        document.getElementById('consultPhoneInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('consultSendOtpBtn').click();
+            }
+        });
+
+        // Load all categories
+        async function loadConsultCategories() {
+            const select = document.getElementById('consultCategorySelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">Loading categories...</option>';
+            const data = await fetchSaleor(`
+                query {
+                    categories(level: 0, first: 100) {
+                        edges {
+                            node { id name }
+                        }
+                    }
+                }
+            `);
+            const cats = (data && data.categories && data.categories.edges) || [];
+            if (!cats.length) {
+                select.innerHTML = '<option value="">No categories available</option>';
+                return;
+            }
+            select.innerHTML = '<option value="">Select a category</option>' +
+                cats.map(c => `<option value="${c.node.id}">${c.node.name}</option>`).join('');
+        }
+
+        // Submit consultation
+        async function submitConsultation() {
+            const msgEl = document.getElementById('consultFormMsg');
+            const select = document.getElementById('consultCategorySelect');
+            const messageEl = document.getElementById('consultMessage');
+            const categoryId = select.value;
+            const categoryName = select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : '';
+            const message = messageEl.value.trim();
+
+            if (!categoryId) {
+                msgEl.textContent = 'Please select a category.';
+                msgEl.className = 'mt-3 text-sm text-red-400';
+                msgEl.classList.remove('hidden');
+                return;
+            }
+            if (!message) {
+                msgEl.textContent = 'Please enter a message.';
+                msgEl.className = 'mt-3 text-sm text-red-400';
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            const token = localStorage.getItem('saleor_auth_token');
+            if (!token) {
+                msgEl.textContent = 'Please login first.';
+                msgEl.className = 'mt-3 text-sm text-red-400';
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            // Ensure a fresh token before posting
+            let authToken = token;
+            if (localStorage.getItem('saleor_refresh_token')) {
+                try {
+                    await refreshToken();
+                    authToken = localStorage.getItem('saleor_auth_token') || token;
+                } catch (e) {
+                    console.warn('Token refresh failed:', e);
+                }
+            }
+
+            const productAndVariant = currentProduct
+                ? `${currentProduct.name}${selectedVariant && selectedVariant.name ? ' - ' + selectedVariant.name : ''}`
+                : '';
+
+            const content = `[${productAndVariant}]\n[${categoryName}] ${message}`;
+
+            try {
+                const res = await fetch(`${CONV_API_BASE}/api/conversation/messages/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                if (res.status === 429) {
+                    const err = await res.json();
+                    msgEl.textContent = err.error || 'Rate limited. Please wait.';
+                    msgEl.className = 'mt-3 text-sm text-red-400';
+                    msgEl.classList.remove('hidden');
+                    return;
+                }
+                if (res.status === 401) {
+                    msgEl.textContent = 'Unauthorized. Please login again and retry.';
+                    msgEl.className = 'mt-3 text-sm text-red-400';
+                    msgEl.classList.remove('hidden');
+                    return;
+                }
+                if (!res.ok) {
+                    msgEl.textContent = 'Failed to send message.';
+                    msgEl.className = 'mt-3 text-sm text-red-400';
+                    msgEl.classList.remove('hidden');
+                    return;
+                }
+                msgEl.textContent = 'Message sent successfully!';
+                msgEl.className = 'mt-3 text-sm text-green-400';
+                msgEl.classList.remove('hidden');
+                messageEl.value = '';
+                setTimeout(closeConsultationModal, 1500);
+            } catch (e) {
+                msgEl.textContent = 'Network error. Try again.';
+                msgEl.className = 'mt-3 text-sm text-red-400';
+                msgEl.classList.remove('hidden');
+            }
+        }
 
         setupProductHeaderSearch();
         setupProductVoiceSearch();
