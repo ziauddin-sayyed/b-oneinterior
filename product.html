@@ -2494,9 +2494,9 @@
             if (selectedVariant && selectedVariant.name) {
                 nameHtml = `
                     <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${p.name}</h1>
-                    <div class="flex items-center gap-2 opacity-50">
+                    <div class="flex items-center gap-2">
                         <div class="h-px w-8 bg-gold"></div>
-                        <span class="text-xs font-bold uppercase tracking-[0.2em]">${selectedVariant.name}</span>
+                        <span class="text-lg text-white font-bold uppercase tracking-[0.1em]">${selectedVariant.name}</span>
                     </div>
                 `;
             } else {
@@ -2551,7 +2551,7 @@
 
             let priceHtml = `
                 <div class="flex flex-col">
-                    ${actualPriceStr ? `<span class="line-through text-white/30 text-lg md:text-xl font-medium mb-[-4px]">${symbol}${actualPriceStr}</span>` : ''}
+                    ${actualPriceStr ? `<span class="line-through text-white/80 text-lg md:text-xl font-medium mb-[-4px]">${symbol}${actualPriceStr}</span>` : ''}
                     <div class="flex items-center gap-4">
                         <span> ${unitStr ? `${unitStr} ` : ''} </span>
                         <span class="text-4xl md:text-5xl font-black ${'gold-gradient-text'}">
