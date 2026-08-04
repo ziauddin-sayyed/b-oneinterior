@@ -1408,6 +1408,7 @@
                         }
                     }
                     category {
+                        id
                         name
                     }
                     productType {
@@ -1599,7 +1600,7 @@
         async function fetchRecommendedProducts(categoryName, currentId) {
             const query = `
             query {
-                products(first: 25, channel: "${SALEOR_CHANNEL}") {
+                products(first: 50, channel: "${SALEOR_CHANNEL}", filter: { categories: ["${currentProduct.category?.id || ''}"] }) {
                     edges {
                         node {
                             id
@@ -1639,11 +1640,10 @@
                 const data = await fetchSaleor(query);
                 let products = data?.products?.edges || [];
 
-                // Filter by Category & Exclude Current
+                // Exclude Current Product
                 products = products.filter(p =>
-                    p.node.category?.name === categoryName &&
                     p.node.id !== currentId
-                ).slice(0, 10);
+                );
 
                 const carousel = document.getElementById("recommendedCarousel");
                 const section = document.getElementById("recommendedSection");
@@ -1688,7 +1688,7 @@
                         loop: products.length > 3,
                         margin: 8,
                         nav: false,
-                        dots: true,
+                        dots: false,
                         autoplay: false,
                         autoplayHoverPause: true,
                         stagePadding: 50,
