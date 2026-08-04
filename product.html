@@ -2491,7 +2491,8 @@
 
             // 2. Name - Premium Typography
             let nameHtml = "";
-            if (selectedVariant && selectedVariant.name) {
+            const hasMultipleVariants = (currentProduct.variants || []).length > 1;
+            if (selectedVariant && selectedVariant.name && hasMultipleVariants) {
                 nameHtml = `
                     <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${p.name}</h1>
                     <div class="flex items-center gap-2">
@@ -4087,7 +4088,7 @@
             }
 
             const productAndVariant = currentProduct
-                ? `${currentProduct.name}${selectedVariant && selectedVariant.name ? ' - ' + selectedVariant.name : ''}`
+                ? `${currentProduct.name}${selectedVariant && selectedVariant.name && (currentProduct.variants || []).length > 1 ? ' - ' + selectedVariant.name : ''}`
                 : '';
 
             const content = `[${option}]\n[${productAndVariant}]`;
