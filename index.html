@@ -3376,7 +3376,7 @@
             recognition.onresult = (event) => {
                 const text = event.results[0][0].transcript;
                 setShopSearchQuery(text);
-                applyShopFilters();
+                goToSearchResultsPage();
             };
 
             recognition.onerror = (event) => {
