@@ -1410,6 +1410,14 @@
                     category {
                         id
                         name
+                        ancestors(first: 5) {
+                            edges {
+                                node {
+                                    id
+                                    name
+                                }
+                            }
+                        }
                     }
                     productType {
                         name
@@ -1707,47 +1715,72 @@
         }
 
         async function fetchMoreProducts(currentId) {
-            const query = `
-            query {
-                products(first: 25, channel: "${SALEOR_CHANNEL}", filter: { isPublished: true }) {
-                    edges {
-                        node {
-                            id
-                            name
-                            thumbnail { url }
-                            pricing {
-                                priceRange {
-                                    start {
-                                        gross {
-                                            amount
-                                        }
-                                    }
-                                }
-                            }
-                            category { name }
-                            defaultVariant {
-                                quantityAvailable
-                                pricing {
-                                    price {
-                                        gross {
-                                            amount
-                                        }
-                                    }
-                                }
-                                attributes {
-                                    attribute { name }
-                                    values { name }
+            try {
+                const cat = currentProduct.category;
+                if (!cat) {
+                    document.getElementById("moreProductsSection")?.classList.add("hidden");
+                    return;
+                }
+
+                // Find parent category (top-level ancestor)
+                const ancestors = cat.ancestors?.edges || [];
+                const parentId = ancestors.length > 0 ? ancestors[0].node.id : cat.id;
+                const parentName = ancestors.length > 0 ? ancestors[0].node.name : cat.name;
+
+                // Fetch parent category's children (sibling categories)
+                const catQuery = `query {
+                    category(id: "${parentId}") {
+                        children(first: 50) {
+                            edges {
+                                node {
+                                    id
+                                    name
                                 }
                             }
                         }
                     }
-                }
-            }
-            `;
+                }`;
+                const catData = await fetchSaleor(catQuery);
+                const siblings = (catData?.category?.children?.edges || [])
+                    .map(e => e.node)
+                    .filter(c => c.id !== cat.id);
 
-            try {
-                const data = await fetchSaleor(query);
-                let products = (data?.products?.edges || [])
+                if (siblings.length === 0) {
+                    document.getElementById("moreProductsSection")?.classList.add("hidden");
+                    return;
+                }
+
+                // Fetch products from sibling categories
+                const siblingIds = siblings.map(c => `"${c.id}"`).join(',');
+                const prodQuery = `query {
+                    products(first: 50, channel: "${SALEOR_CHANNEL}", filter: { categories: [${siblingIds}] }) {
+                        edges {
+                            node {
+                                id
+                                name
+                                thumbnail { url }
+                                pricing {
+                                    priceRange {
+                                        start {
+                                            gross { amount }
+                                        }
+                                    }
+                                }
+                                category { name }
+                                defaultVariant {
+                                    quantityAvailable
+                                    pricing {
+                                        price {
+                                            gross { amount }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }`;
+                const prodData = await fetchSaleor(prodQuery);
+                let products = (prodData?.products?.edges || [])
                     .map(e => e.node)
                     .filter(p => p.id !== currentId)
                     .filter(p => !["Gallery Image Category", "Catalogue"].includes(p.category?.name));
@@ -1763,6 +1796,7 @@
                     return;
                 }
 
+                document.getElementById("moreProductsSection").querySelector("h2").textContent = `More in ${parentName}`;
                 section.classList.remove("hidden");
 
                 products.forEach(p => {
