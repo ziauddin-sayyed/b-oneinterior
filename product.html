@@ -549,23 +549,6 @@
             }
         }
 
-        function bookInstallation() {
-            window.location.href = "https://b-oneinterior.com/help";
-        }
-
-        function getSample() {
-            window.location.href = "https://b-oneinterior.com/help";
-        }
-
-        const overlay = document.querySelector(".overlay");
-        overlay.addEventListener("click", () => {
-            const drawer = document.getElementById("drawer");
-            drawer.style.left = "-250px";
-            overlay.style.opacity = "0";
-            overlay.style.pointerEvents = "none";
-        });
-
-        // Auth check and navigation update
         function checkAuth() {
             const token = localStorage.getItem('saleor_auth_token');
             const userEmail = localStorage.getItem('saleor_user_email');
@@ -593,6 +576,14 @@
             localStorage.clear();
             window.location.reload();
         }
+
+        const overlay = document.querySelector(".overlay");
+        overlay.addEventListener("click", () => {
+            const drawer = document.getElementById("drawer");
+            drawer.style.left = "-250px";
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        });
 
         document.addEventListener('DOMContentLoaded', checkAuth);
 
@@ -721,7 +712,7 @@
 
         <!-- Recommended Products Section -->
         <div id="recommendedSection" class="hidden mt-2 border-t border-gray-800 pt-2">
-            <h2 class="text-2xl font-bold mb-3 text-white">Recommended For You</h2>
+            <h2 class="text-2xl font-bold mb-3 text-white">Related Products</h2>
             <div id="recommendedCarousel" class="owl-carousel owl-theme"></div>
         </div>
 
@@ -1700,10 +1691,11 @@
                         dots: true,
                         autoplay: false,
                         autoplayHoverPause: true,
+                        stagePadding: 50,
                         responsive: {
-                            0: { items: 2 },
-                            768: { items: 3 },
-                            1024: { items: 5 }
+                            0: { items: 2, stagePadding: 50 },
+                            768: { items: 3, stagePadding: 40 },
+                            1024: { items: 4, stagePadding: 30 }
                         }
                     });
                     window.refreshRelatedCardStates();
@@ -2583,8 +2575,6 @@
             let attrsHtml = "";
             // const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description", "Book Installation", "Get Sample"];
             const excludeAttrs = ["Actual Price", "Catalogue", "Variant Description"];
-            let showBookInstallation = false;
-            let showGetSample = false;
             // p.attributes.forEach(attr => {
             //     if (excludeAttrs.includes(attr.attribute.name)) {
             //         if (attr.attribute.name === "Book Installation" && attr.values?.[0]?.name === "Yes") showBookInstallation = true;
@@ -2605,47 +2595,6 @@
             document.getElementById("attributesContainer").innerHTML = attrsHtml;
             if (document.getElementById("attributesContainerMobile")) {
                 document.getElementById("attributesContainerMobile").innerHTML = attrsHtml;
-            }
-
-            // Action buttons above attributes
-            let actionBtnsHtml = '';
-            if (showBookInstallation) {
-                actionBtnsHtml += `
-
-                            <button type="button" onclick="bookInstallation()"
-                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 leading-none ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
-                                <span><ion-icon name="construct-outline" class="text-xl"></ion-icon></span>
-                                <span>Book Installation</span>
-                            </button>
-                
-                `;
-            }
-            if (showGetSample) {
-                actionBtnsHtml += `
-
-                        <button type="button" onclick="getSample()"
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-                            <!-- Circle -->
-                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-                            
-                            <!-- Tick -->
-                            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            Add to Get Sample
-                        </button>                
-
-                `;
-            }
-            if (actionBtnsHtml) {
-                // Remove previously inserted action button containers
-                document.querySelectorAll('.action-btns-row').forEach(el => el.remove());
-                const container = document.getElementById("cartActionContainerMobile");
-                container.insertAdjacentHTML('beforebegin', `<div class="action-btns-row flex gap-3 mb-2">${actionBtnsHtml}</div>`);
-                const mobileContainer = document.getElementById("cartActionContainerMobile");
-                if (mobileContainer) {
-                    mobileContainer.insertAdjacentHTML('afterbegin', `<div class="action-btns-row grid grid-cols-2 gap-2">${actionBtnsHtml}</div>`);
-                }
             }
 
             // 6. Image Management
@@ -2703,8 +2652,6 @@
             const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
             const cart = getCart();
             const inCart = cart.find(i => i.id === activeId && (i.cartType || 'products') === 'products');
-            const inCartSample = cart.find(i => i.id === activeId && i.cartType === 'get_sample');
-
             const html = inCart ? `
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center gap-3 w-full">
@@ -2741,47 +2688,6 @@
                             Buy Now
                         </button>
                         
-                        ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
-                        <div class="grid grid-cols-2 gap-2">
-                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
-                        (inCartSample ? `
-                            <button type="button" onclick="removeSample()"
-                                class="w-full h-14 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-                                <!-- Circle -->
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                
-                                <!-- Cross -->
-                                <path d="M8 8l8 8M16 8l-8 8"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"/>
-                                </svg>
-                                <span>Remove from Sample</span>
-                            </button>
-                            ` : `
-                            <button type="button" onclick="getSample()"
-                                class="w-full h-14 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex flex-col items-center justify-center leading-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-                                    <!-- Circle -->
-                                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-                                    
-                                    <!-- Tick -->
-                                    <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <span>Add to Get Sample</span>
-                            </button>
-                            `) : ''}
-                            
-                            ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
-                            <button type="button" onclick="bookInstallation()"
-                                class="w-full h-14 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex flex-col items-center justify-center leading-none ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
-                                <ion-icon name="construct-outline" class="text-xl mb-1"></ion-icon>
-                                <span>Book Installation</span>
-                            </button>
-                            ` : ''}
-                        </div>
-                        ` : ''}
                     </div>
                 </div>
             ` : `
@@ -2810,49 +2716,7 @@
                             <ion-icon name="flash-outline" class="text-xl"></ion-icon>
                             Buy Now
                         </button>
-                    </div>
-                    
-                    ${((currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') || (currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true')) ? `
-                    <div class="grid grid-cols-2 gap-2">
-                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ?
-                    (inCartSample ? `
-                        <button type="button" onclick="removeSample()"
-                            class="w-full h-12 rounded-2xl border-2 border-red-500 text-red-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-red-500/10 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-                                <!-- Circle -->
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                
-                                <!-- Cross -->
-                                <path d="M8 8l8 8M16 8l-8 8"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"/>
-                            </svg>
-                            Remove from Sample
-                        </button>
-                        ` : `
-                        <button type="button" onclick="getSample()"
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition transform active:scale-95 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-                            <!-- Circle -->
-                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-                            
-                            <!-- Tick -->
-                            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            Add to Get Sample
-                        </button>
-                        `) : ''}
-                        
-                        ${(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'installation' && m.value.toLowerCase() === 'true') ? `
-                        <button type="button" onclick="bookInstallation()"
-                            class="w-full h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-[10px] uppercase tracking-[0.1em] shadow-xl hover:bg-white/5 transition transform active:scale-95 flex items-center justify-center gap-2 ${!(currentProduct.metadata || []).some(m => m.key.toLowerCase() === 'sample' && m.value.toLowerCase() === 'true') ? 'col-span-2' : ''}">
-                            <ion-icon name="construct-outline" class="text-lg"></ion-icon>
-                            Book Installation
-                        </button>
-                        ` : ''}
-                    </div>
-                    ` : ''}
+</div>
                 </div>
             `;
 
@@ -2873,12 +2737,6 @@
             }
         }
 
-        function bookInstallation() {
-            if (!currentProduct) return;
-            const cat = (currentProduct.metadata || []).find(m => m.key.toLowerCase() === 'type')?.value;
-            window.location.href = `help.html?openExperts=true&category=${encodeURIComponent(cat)}`;
-        }
-
         function showCustomToast(msg) {
             let toast = document.getElementById('customOverlayToast');
             if (!toast) {
@@ -2893,19 +2751,6 @@
             window._customToastTimer = setTimeout(() => {
                 toast.classList.add('opacity-0');
             }, 2800);
-        }
-
-        function getSample() {
-            addToCart('get_sample');
-        }
-
-        function removeSample() {
-            const activeId = selectedVariant ? selectedVariant.id : currentProduct.id;
-            let cart = getCart();
-            cart = cart.filter(i => !(i.id === activeId && i.cartType === 'get_sample'));
-            saveCart(cart);
-            renderCartAction();
-            updateCartBadge();
         }
 
         function updateQty(id, change, cartType = 'products') {
@@ -2958,16 +2803,6 @@
         window.addToCart = function (forcedType) {
             const cartType = typeof forcedType === 'string' ? forcedType : 'products';
             const cart = getCart();
-
-            if (cartType === 'get_sample') {
-                const sampleCount = cart.filter(i => i.cartType === 'get_sample').reduce((acc, item) => acc + (parseInt(item.quantity, 10) || 1), 0);
-                if (sampleCount >= 5) {
-                    if (typeof showCustomToast === 'function') {
-                        showCustomToast("Cannot add more than 5 products in get sample");
-                    }
-                    return;
-                }
-            }
 
             let id, name, image, priceVal, currency;
 
