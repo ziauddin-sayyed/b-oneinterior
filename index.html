@@ -3529,19 +3529,24 @@
                 <div class="w-14 h-14 rounded-full bg-gold-500/10 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-7 h-7 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <h3 id="welcomeTitle" class="text-lg font-bold text-white mb-2">Welcome!</h3>
+                <h3 id="welcomeTitle" class="text-lg font-bold text-white mb-2">Welcome !!!</h3>
                 <script>
                     (function() {
                         var ua = navigator.userAgent || '';
                         var isWebView = /Android.*wv\)/i.test(ua) || /iPhone.*AppleWebKit(?!.*Safari)/i.test(ua) || /iPad.*AppleWebKit(?!.*Safari)/i.test(ua) || window.Android !== undefined || window.webkit?.messageHandlers !== undefined;
                         if (isWebView) {
                             document.getElementById('welcomeTitle').textContent = 'Welcome! to B-one App';
+                            var dlBtn = document.getElementById('playstoreBtn');
+                            if (dlBtn) dlBtn.style.display = 'none';
                         }
                     })();
                 </script>
                 <p class="text-gray-400 text-sm mb-6">Login to your account for a better shopping experience.</p>
                 <a href="login.html" class="block w-full gold-gradient-bg text-black py-3 rounded-xl font-bold text-sm mb-3 hover:scale-[1.02] transition transform">Login</a>
-                <button id="loginPromptSkip" class="w-full text-gray-500 text-sm hover:text-white transition">Skip for now</button>
+                <a id="playstoreBtn" href="https://play.google.com/store/apps/details?id=com.boneinterior.store&hl=en_IN" target="_blank" class="block w-full border-2 border-gold-500 text-gold-500 py-3 rounded-xl font-bold text-sm mb-3 hover:bg-gold/10 transition transform flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.8L13.7 12 3.6 22.2c-.4-.2-.6-.5-.6-1V2.8c0-.5.2-.8.6-1zM16.4 9.2L5.9 2.6l11.6 11.6-1.1-5zM18.2 10.8l1.9 1c.9.5.9 1.8 0 2.3l-1.9 1-2-2 2-2.3zM5.9 21.4l10.5-6.6 2 2-12.5-7.4v12z"/></svg>
+                    Download on Playstore
+                </a>
             </div>
         </div>
     </div>
