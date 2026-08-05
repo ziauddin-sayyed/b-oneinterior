@@ -3541,7 +3541,6 @@
                         var ua = navigator.userAgent || '';
                         var isWebView = /Android.*wv\)/i.test(ua) || /iPhone.*AppleWebKit(?!.*Safari)/i.test(ua) || /iPad.*AppleWebKit(?!.*Safari)/i.test(ua) || window.Android !== undefined || window.webkit?.messageHandlers !== undefined;
                         if (isWebView) {
-                            document.getElementById('welcomeTitle').textContent = 'Welcome! to B-one App';
                             var dlBtn = document.getElementById('playstoreBtn');
                             if (dlBtn) dlBtn.style.display = 'none';
                         }
@@ -3562,11 +3561,6 @@
             }
 
             document.getElementById('loginPromptClose').onclick = () => {
-                document.getElementById('loginPromptModal').classList.add('hidden');
-                document.getElementById('loginPromptModal').classList.remove('flex');
-            };
-
-            document.getElementById('loginPromptSkip').onclick = () => {
                 document.getElementById('loginPromptModal').classList.add('hidden');
                 document.getElementById('loginPromptModal').classList.remove('flex');
             };
