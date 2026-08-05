@@ -3529,7 +3529,16 @@
                 <div class="w-14 h-14 rounded-full bg-gold-500/10 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-7 h-7 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <h3 class="text-lg font-bold text-white mb-2">Welcome!</h3>
+                <h3 id="welcomeTitle" class="text-lg font-bold text-white mb-2">Welcome!</h3>
+                <script>
+                    (function() {
+                        var ua = navigator.userAgent || '';
+                        var isWebView = /Android.*wv\)/i.test(ua) || /iPhone.*AppleWebKit(?!.*Safari)/i.test(ua) || /iPad.*AppleWebKit(?!.*Safari)/i.test(ua) || window.Android !== undefined || window.webkit?.messageHandlers !== undefined;
+                        if (isWebView) {
+                            document.getElementById('welcomeTitle').textContent = 'Welcome! to B-one App';
+                        }
+                    })();
+                </script>
                 <p class="text-gray-400 text-sm mb-6">Login to your account for a better shopping experience.</p>
                 <a href="login.html" class="block w-full gold-gradient-bg text-black py-3 rounded-xl font-bold text-sm mb-3 hover:scale-[1.02] transition transform">Login</a>
                 <button id="loginPromptSkip" class="w-full text-gray-500 text-sm hover:text-white transition">Skip for now</button>
