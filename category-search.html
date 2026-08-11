@@ -211,6 +211,21 @@
         let productsCursor = null;
         let hasMoreProducts = true;
         let isLoadingMore = false;
+        let extraCatProducts = [];
+        let extraCatLoaded = false;
+
+        const PRODUCT_CARD_QUERY = `
+            id name slug
+            thumbnail { url }
+            category { name }
+            pricing { priceRange { start { gross { amount } } } }
+            defaultVariant {
+                pricing { price { gross { amount } } }
+                attributes { attribute { name } values { name } }
+            }
+        `;
+
+        const EXTRA_CATEGORY_KEYS = ['Extra-Category1', 'Extra-Category2', 'Extra-Category3'];
 
         function getUrlParam(name) {
             return new URLSearchParams(window.location.search).get(name);
@@ -383,6 +398,8 @@
             document.getElementById('productEmpty').classList.add('hidden');
             document.getElementById('catSearchInput').value = '';
 
+            extraCatProducts = [];
+            extraCatLoaded = false;
             resetPagination();
             if (subId === null) {
                 document.getElementById('activeSubName').textContent = 'All Products';
@@ -408,14 +425,7 @@
                         products(first: 20, channel: "${SALEOR_CHANNEL}", ${after}filter: { isPublished: true, categories: ${idsJson} }, sortBy: { field: CREATED_AT, direction: DESC }) {
                             edges {
                                 node {
-                                    id name slug
-                                    thumbnail { url }
-                                    category { name }
-                                    pricing { priceRange { start { gross { amount } } } }
-                                    defaultVariant {
-                                        pricing { price { gross { amount } } }
-                                        attributes { attribute { name } values { name } }
-                                    }
+                                    ${PRODUCT_CARD_QUERY}
                                 }
                             }
                             pageInfo {
@@ -439,6 +449,7 @@
                         document.getElementById('productEmpty').classList.remove('hidden');
                     }
                     isLoadingMore = false;
+                    maybeLoadExtraProducts();
                     return;
                 }
 
@@ -449,6 +460,7 @@
 
                 renderProducts(allCatProducts);
                 isLoadingMore = false;
+                maybeLoadExtraProducts();
 
             } catch (err) {
                 console.error('Failed to load products:', err);
@@ -466,6 +478,91 @@
             productsCursor = null;
             hasMoreProducts = true;
             isLoadingMore = false;
+        }
+
+        function maybeLoadExtraProducts() {
+            if (hasMoreProducts || extraCatLoaded || allCatProducts.length === 0) return;
+            extraCatLoaded = true;
+            loadExtraCategoryProducts();
+        }
+
+        function getSelectedCategoryInfo() {
+            const catId = getUrlParam('catId');
+            if (selectedSubCategoryId === null) {
+                return { id: catId, name: document.getElementById('categoryTitleDesktop').textContent };
+            }
+            const sub = allSubCategories.find(s => s.id === selectedSubCategoryId);
+            return { id: selectedSubCategoryId, name: sub ? sub.name : '' };
+        }
+
+        async function loadExtraCategoryProducts() {
+            const catInfo = getSelectedCategoryInfo();
+            if (!catInfo.id) return;
+
+            const seen = new Set(allCatProducts.map(p => p.id));
+            const merged = [];
+
+            try {
+                for (const key of EXTRA_CATEGORY_KEYS) {
+                    let cursor = null;
+                    let hasMore = true;
+
+                    while (hasMore) {
+                        const after = cursor ? `after: "${cursor}", ` : '';
+                        const query = `
+                            query {
+                                products(first: 20, channel: "${SALEOR_CHANNEL}", ${after}filter: { isPublished: true, metadata: { key: "${key}", value: "${catInfo.id}" } }, sortBy: { field: CREATED_AT, direction: DESC }) {
+                                    edges {
+                                        node {
+                                            ${PRODUCT_CARD_QUERY}
+                                        }
+                                    }
+                                    pageInfo {
+                                        hasNextPage
+                                        endCursor
+                                    }
+                                }
+                            }
+                        `;
+
+                        const result = await apiCall(query);
+                        const data = result.data?.products;
+                        const edges = data?.edges || [];
+
+                        for (const e of edges) {
+                            const node = e.node;
+                            if (!seen.has(node.id)) {
+                                seen.add(node.id);
+                                merged.push(node);
+                            }
+                        }
+
+                        hasMore = data?.pageInfo?.hasNextPage ?? false;
+                        cursor = data?.pageInfo?.endCursor || null;
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load extra category products:', err);
+            }
+
+            if (merged.length > 0) {
+                extraCatProducts = merged;
+                renderExtraProducts(merged, catInfo.name);
+            }
+        }
+
+        function renderExtraProducts(products, categoryName) {
+            const grid = document.getElementById('productGrid');
+            const label = categoryName ? `More in ${categoryName}` : 'More Products';
+            const header = `
+                <div data-extra-section class="col-span-2 md:col-span-4 xl:col-span-5 flex items-center gap-3 py-4">
+                    <span class="flex-1 h-px bg-gold-500/20"></span>
+                    <span class="gold-gradient-text text-xs md:text-sm font-black uppercase tracking-widest whitespace-nowrap">${label}</span>
+                    <span class="flex-1 h-px bg-gold-500/20"></span>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', header + products.map(p => renderProductCard(p)).join(''));
+            applyPriceFilter();
         }
 
         function setupInfiniteScroll() {
@@ -501,11 +598,12 @@
             const q = query.toLowerCase().trim();
             applyPriceFilter();
             document.querySelectorAll('#productGrid > div').forEach(card => {
+                if (card.dataset?.extraSection) return;
                 const name = card.dataset?.productName || '';
                 const match = !q || name.includes(q);
                 card.style.display = match ? '' : 'none';
             });
-            const visible = document.querySelectorAll('#productGrid > div[style*="display: none"]').length < document.querySelectorAll('#productGrid > div').length;
+            const visible = Array.from(document.querySelectorAll('#productGrid > div')).some(card => card.dataset?.extraSection || card.style.display !== 'none');
             document.getElementById('productEmpty').classList.toggle('hidden', visible);
         }
 
@@ -515,13 +613,14 @@
             const searchQ = document.getElementById('catSearchInput').value.trim().toLowerCase();
 
             document.querySelectorAll('#productGrid > div').forEach(card => {
+                if (card.dataset?.extraSection) return;
                 const price = parseFloat(card.dataset?.productPrice) || 0;
                 const name = card.dataset?.productName || '';
                 const inPrice = price >= min && price <= max;
                 const inSearch = !searchQ || name.includes(searchQ);
                 card.style.display = inPrice && inSearch ? '' : 'none';
             });
-            const visible = Array.from(document.querySelectorAll('#productGrid > div')).some(card => card.style.display !== 'none');
+            const visible = Array.from(document.querySelectorAll('#productGrid > div')).some(card => card.dataset?.extraSection || card.style.display !== 'none');
             document.getElementById('productEmpty').classList.toggle('hidden', visible);
         }
 
