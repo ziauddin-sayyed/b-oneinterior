@@ -114,7 +114,7 @@
 /* Robust positioning that does NOT rely on Tailwind utilities */
 .login-prompt-card {
     position: fixed !important;
-    top: 16px !important;
+    top: 16px;
     right: 16px !important;
     z-index: 105 !important;
     width: 260px;
