@@ -2,6 +2,7 @@
 <html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8" />
     <title>Product Details - B-One Interior Premium Collection</title>
     <meta property="og:title" content="Product Details - B-One Interior Premium Collection">
@@ -980,7 +981,7 @@
 
 
     <script>
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const API_URL = window.API_BASE_URL + "/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         const PRODUCT_SEARCH_LIMIT = 10;
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
@@ -1433,6 +1434,10 @@
                         name
                         sku
                         quantityAvailable
+                        metadata {
+                            key
+                            value
+                        }
                         media {
                             url
                             type
@@ -2523,13 +2528,13 @@
 
             // 2. Name - Premium Typography
             let nameHtml = "";
-            const hasMultipleVariants = (currentProduct.variants || []).length > 1;
+            const hasMultipleVariants = getMainVariants().length > 1;
             if (selectedVariant && selectedVariant.name && hasMultipleVariants) {
                 nameHtml = `
                     <h1 class="text-[20px] md:text-6xl font-black text-white tracking-tighter leading-[0.9] mb-2 uppercase">${p.name}</h1>
                     <div class="flex items-center gap-2">
                         
-                        <span class="text-[14.85px] text-white font-bold uppercase tracking-[0.1em]">${selectedVariant.name}</span>
+                        <span class="text-[14.85px] text-white font-bold uppercase tracking-[0.1em]">${getDisplayVariantName(selectedVariant)}</span>
                     </div>
                 `;
             } else {
@@ -2598,6 +2603,7 @@
                     </div>
                     ${loggedIn && costPrice !== null ? `<span class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">Dealer/Cost Price applied</span>` : ''}
                 </div>
+                ${buildSubVariantRowHtml(getRelevantParentId())}
             `;
             document.getElementById("priceContainer").innerHTML = priceHtml;
             if (document.getElementById("priceContainerMobile")) {
@@ -2848,7 +2854,7 @@
 
             if (selectedVariant) {
                 id = selectedVariant.id;
-                name = `${currentProduct.name} - ${selectedVariant.name}`;
+                name = `${currentProduct.name} - ${getDisplayVariantName(selectedVariant)}`;
                 image = (selectedVariant.media && selectedVariant.media.length > 0) ? selectedVariant.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
 
                 // Price logic - check logged in
@@ -2948,7 +2954,7 @@
 
             if (selectedVariant) {
                 id = selectedVariant.id;
-                name = `${currentProduct.name} - ${selectedVariant.name}`;
+                name = `${currentProduct.name} - ${getDisplayVariantName(selectedVariant)}`;
                 image = (selectedVariant.media && selectedVariant.media.length > 0) ? selectedVariant.media[0].url : (currentProduct.thumbnail?.url || FALLBACK_IMG);
 
                 const loggedIn = isUserLoggedIn();
@@ -3203,9 +3209,96 @@
             return n.includes('colour') || n.includes('color');
         }
 
+        function isSubVariant(v) {
+            return !!(v.metadata && v.metadata.some(m => m.key === 'sub-variant-of' && m.value));
+        }
+
+        function getSubVariantParentId(v) {
+            const m = v.metadata && v.metadata.find(m => m.key === 'sub-variant-of');
+            return m ? m.value : null;
+        }
+
+        function getMainVariants() {
+            if (!currentProduct || !currentProduct.variants) return [];
+            return currentProduct.variants.filter(v => !isSubVariant(v));
+        }
+
+        function getSubVariants(parentId) {
+            if (!currentProduct || !currentProduct.variants || !parentId) return [];
+            return currentProduct.variants.filter(v => getSubVariantParentId(v) === parentId);
+        }
+
+        function getRelevantParentId() {
+            if (!selectedVariant) return null;
+            if (isSubVariant(selectedVariant)) {
+                return getSubVariantParentId(selectedVariant);
+            }
+            return selectedVariant.id;
+        }
+
+        function getDisplayVariantName(v) {
+            if (!v) return '';
+            if (isSubVariant(v)) {
+                const parentId = getSubVariantParentId(v);
+                const parent = (currentProduct.variants || []).find(pv => pv.id === parentId);
+                const parentName = parent && parent.name ? parent.name : '';
+                return parentName ? `${parentName} - ${v.name}` : v.name;
+            }
+            return v.name;
+        }
+
+        function buildSubVariantRowHtml(parentId) {
+            const subVariants = getSubVariants(parentId);
+            if (subVariants.length === 0) return '';
+
+            const loggedIn = isUserLoggedIn();
+            const items = subVariants.map(v => {
+                let sellingPrice = 0;
+                let costPrice = null;
+                let currency = 'INR';
+                if (v.channelListings?.[0]) {
+                    sellingPrice = v.channelListings[0].price?.amount || 0;
+                    currency = v.channelListings[0].price?.currency || 'INR';
+                    costPrice = v.channelListings[0].costPrice?.amount || null;
+                } else {
+                    const gross = v.pricing?.price?.gross || currentProduct.pricing?.priceRange?.start?.gross;
+                    sellingPrice = gross?.amount || 0;
+                    currency = gross?.currency || 'INR';
+                }
+                if (costPrice === null) {
+                    const costPriceAttr = currentProduct.attributes?.find(a => a.attribute.name === "Cost Price");
+                    const costPriceStr = costPriceAttr?.values?.[0]?.name;
+                    if (costPriceStr) {
+                        const parsed = parseFloat(String(costPriceStr).replace(/[^0-9.]/g, ''));
+                        if (!isNaN(parsed)) costPrice = parsed;
+                    }
+                }
+                const displayPrice = (loggedIn && costPrice !== null) ? costPrice : sellingPrice;
+                const symbol = currency === 'INR' ? '₹' : (currency + ' ');
+                const isSelected = selectedVariant && selectedVariant.id === v.id;
+
+                return `
+                    <div class="relative group cursor-pointer ${isSelected ? 'ring-2 ring-gold rounded-xl' : ''} border ${isSelected ? 'border-gold' : 'border-white/10 hover:border-gold/50'} rounded-xl px-3 py-3 transition-all duration-300" onclick="handleVariantClick(event, '${v.id}')">
+                        <p class="text-[10px] font-black text-white uppercase tracking-tighter truncate">${v.name}</p>
+                        <p class="text-xs font-black gold-gradient-text mt-1">${symbol}${displayPrice.toFixed(2)}</p>
+                        ${isSelected ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-gold rounded-full flex items-center justify-center border-2 border-black shadow-xl"><ion-icon name="checkmark" class="text-[10px] text-black font-bold"></ion-icon></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="mt-6 pt-6 border-t border-white/10">
+                    <label class="block text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">More Options</label>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">${items}</div>
+                </div>
+            `;
+        }
+
         function renderColorSelect(variants) {
             const container = document.getElementById("colorSelectContainer");
             const containerMobile = document.getElementById("colorSelectContainerMobile");
+
+            variants = (variants || []).filter(v => !isSubVariant(v));
 
             if (!variants || variants.length === 0) {
                 container.classList.add("hidden");
@@ -3288,11 +3381,14 @@
             container.innerHTML = "";
             if (containerMobile) containerMobile.innerHTML = "";
 
-            if (!variants || variants.length === 0) return;
+            // Only show main variants (parent options) in the grid.
+            // Sub-variants are excluded from the variant container entirely.
+            const mainVariants = (variants || []).filter(v => !isSubVariant(v));
+            if (mainVariants.length === 0) return;
 
             const loggedIn = isUserLoggedIn();
 
-            variants.forEach(v => {
+            mainVariants.forEach(v => {
                 const imgUrl = v.media?.[0]?.url || currentProduct.thumbnail?.url || FALLBACK_IMG;
                 const isSelected = selectedVariant && selectedVariant.id === v.id;
 
@@ -3441,7 +3537,7 @@
                 wishlist.splice(index, 1);
             } else {
                 // Add
-                const name = selectedVariant ? `${currentProduct.name} - ${selectedVariant.name}` : currentProduct.name;
+                const name = selectedVariant ? `${currentProduct.name} - ${getDisplayVariantName(selectedVariant)}` : currentProduct.name;
                 const image = (selectedVariant?.media?.[0]?.url) || currentProduct.thumbnail?.url || FALLBACK_IMG;
 
                 // Price logic - check logged in
@@ -3559,8 +3655,8 @@
         };
 
         // ─── Free Consultation Modal ────────────────────────────────
-        const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
-        const CONV_API_BASE = 'https://api.b-oneinterior.com';
+        const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
+        const CONV_API_BASE = window.API_BASE_URL;
         let consultVerifiedMobile = '';
         let consultMsg91ReqId = '';
         let consultResendCooldown = 30;
@@ -3963,7 +4059,7 @@
             }
 
             const productAndVariant = currentProduct
-                ? `${currentProduct.name}${selectedVariant && selectedVariant.name && (currentProduct.variants || []).length > 1 ? ' - ' + selectedVariant.name : ''}`
+                ? `${currentProduct.name}${selectedVariant && selectedVariant.name && (currentProduct.variants || []).length > 1 ? ' - ' + getDisplayVariantName(selectedVariant) : ''}`
                 : '';
 
             const content = `[${option}]\n[${productAndVariant}]`;

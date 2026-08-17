@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - B-Oneinterior</title>
@@ -710,7 +711,7 @@
                 }
             }`;
             try {
-                const res = await fetch('https://api.b-oneinterior.com/graphql/', {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: mutation })
@@ -783,7 +784,7 @@
 
             const apiCall = async () => {
                 const tok = localStorage.getItem('saleor_auth_token');
-                const res = await fetch('https://api.b-oneinterior.com/graphql/', {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1147,7 +1148,7 @@
             if (token) headers['Authorization'] = `Bearer ${token}`;
 
             const doFetch = async () => {
-                const res = await fetch('https://api.b-oneinterior.com/graphql/', {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({ query, variables })
@@ -1495,7 +1496,7 @@
         }
 
         // ─── Conversation / Chat with Admin ─────────────────────────
-        const CONV_API_BASE = 'https://api.b-oneinterior.com';
+        const CONV_API_BASE = window.API_BASE_URL;
 
         async function fetchMessages() {
             const token = localStorage.getItem('saleor_auth_token');

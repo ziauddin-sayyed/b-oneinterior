@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8" />
     <title>Product Catalogues | B-One Interior Store</title>
     <meta property="og:title" content="Product Catalogues | B-One Interior Store">
@@ -538,7 +539,7 @@
                 `;
 
             try {
-                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })
@@ -757,7 +758,7 @@
     </div>
 
     <script>
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const API_URL = window.API_BASE_URL + "/graphql/";
         const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
         const FALLBACK_IMG = "images/placeholder.png";
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';

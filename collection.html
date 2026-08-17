@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Collection - B-One Interior</title>
@@ -241,7 +242,7 @@
             localStorage.setItem('searchHistory', JSON.stringify(history));
         }
 
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const API_URL = window.API_BASE_URL + "/graphql/";
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
         let allCollectionProducts = [];
         let productsCursor = null;

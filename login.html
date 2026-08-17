@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8" />
     <title>Login - B-One Interior</title>
     <meta property="og:title" content="Login - B-One Interior">
@@ -422,8 +423,8 @@
         })();
 
         // ─── Configuration ─────────────────────────────────────────
-        // const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
-        const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
+        // const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
+        const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
 
         let verifiedMobile = '';
         let msg91ReqId = '';
@@ -704,7 +705,7 @@
                     var redirectTo = new URLSearchParams(window.location.search).get('redirectTo');
                     var token = localStorage.getItem('saleor_auth_token');
                     if (token) {
-                        fetch('https://api.b-oneinterior.com/graphql/', {
+                        fetch(window.API_BASE_URL + "/graphql/", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

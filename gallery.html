@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8" />
     <title>Our Work Gallery - Interior Design Projects | B-One Interior</title>
     <meta property="og:title" content="Our Work Gallery - Interior Design Projects | B-One Interior">
@@ -219,7 +220,7 @@
     </div>
 
     <script>
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const API_URL = window.API_BASE_URL + "/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
 

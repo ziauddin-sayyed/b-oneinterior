@@ -2,6 +2,7 @@
 <html lang="en" class="scroll-smooth">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B-One Interior - Help</title>
@@ -585,7 +586,7 @@
     </div>
 
     <script>
-        const API_URL = "https://api.b-oneinterior.com/graphql/";
+        const API_URL = window.API_BASE_URL + "/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
         let helpProducts = [];
@@ -616,7 +617,7 @@
                 }
             `;
             try {
-                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })

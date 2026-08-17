@@ -6,9 +6,9 @@
 (function () {
     "use strict";
 
-    const DJANGO_API_URL = 'https://api.b-oneinterior.com/api/verify-otp/';
-    const CONV_API_BASE = 'https://api.b-oneinterior.com';
-    const GRAPHQL_URL = 'https://api.b-oneinterior.com/graphql/';
+    const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
+    const CONV_API_BASE = window.API_BASE_URL;
+    const GRAPHQL_URL = window.API_BASE_URL + "/graphql/";
 
     let consultMsg91ReqId = '';
     let consultVerifiedMobile = '';

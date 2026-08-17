@@ -2,6 +2,7 @@
 <html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
@@ -410,7 +411,7 @@
                 `;
 
                 try {
-                    const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                    const res = await fetch(window.API_BASE_URL + "/graphql/", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ query })
@@ -1231,7 +1232,7 @@
 
 
         // Shop Section Logic
-        const SHOP_API_URL = "https://api.b-oneinterior.com/graphql/";
+        const SHOP_API_URL = window.API_BASE_URL + "/graphql/";
         const SHOP_HIDDEN_CATEGORIES = ["Gallery Image Category", "Catalogue"];
         const SHOP_FALLBACK_IMG = "images/placeholder.png";
         const SHOP_SEARCH_LIMIT = 10;
@@ -2501,7 +2502,7 @@
         `;
 
             try {
-                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })
@@ -2543,7 +2544,7 @@
                 }
             }`;
             try {
-                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })
@@ -2702,7 +2703,7 @@
             `;
 
             try {
-                const res = await fetch("https://api.b-oneinterior.com/graphql/", {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })

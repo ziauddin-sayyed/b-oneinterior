@@ -2,6 +2,7 @@
 <html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:image" content="https://b-oneinterior.com/logo.png">
@@ -346,7 +347,7 @@
             async function loadTechnicians() {
                 const query = `query { pages(first: 100) { edges { node { id title content metadata } } } }`;
                 try {
-                    const res = await fetch("https://api.b-oneinterior.com/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
+                    const res = await fetch(window.API_BASE_URL + "/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
                     const json = await res.json();
                     technicians = (json.data?.pages?.edges || []).map(edge => {
                         const n = edge.node;

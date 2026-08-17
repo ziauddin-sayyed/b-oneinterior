@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - B-One Interior</title>
@@ -162,7 +163,7 @@
             async function loadTechnicians() {
                 const query = `query { pages(first: 100) { edges { node { id title content metadata } } } }`;
                 try {
-                    const res = await fetch("https://api.b-oneinterior.com/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
+                    const res = await fetch(window.API_BASE_URL + "/graphql/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query }) });
                     const json = await res.json();
                     technicians = (json.data?.pages?.edges || []).map(edge => {
                         const n = edge.node;
@@ -360,7 +361,7 @@
     </div>
 
     <script>
-        const API_URL = 'https://api.b-oneinterior.com/graphql/';
+        const API_URL = window.API_BASE_URL + "/graphql/";
         var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
 
         let checkoutId = localStorage.getItem('checkoutId') || null;

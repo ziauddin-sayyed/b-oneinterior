@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="config.js"></script>
   <meta charset="UTF-8" />
   <title>Shop Premium Furniture & Decor | B-One Interior Store</title>
   <meta property="og:title" content="Shop Premium Furniture & Decor | B-One Interior Store">
@@ -307,7 +308,7 @@
   </div>
 
   <script>
-    const API_URL = "https://api.b-oneinterior.com/graphql/";
+    const API_URL = window.API_BASE_URL + "/graphql/";
     const HIDDEN_CATEGORY_NAMES = ["Gallery Image Category", "Catalogue"];
     const FALLBACK_IMG = "images/placeholder.png";
     var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
