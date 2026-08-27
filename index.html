@@ -1169,7 +1169,7 @@
             observer.observe(section);
         });
 
-        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
+        var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
 
         function updateCartBadge() {
             const badge = document.getElementById("cartCountBadge");

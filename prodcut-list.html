@@ -214,7 +214,7 @@
   <script>
     const FALLBACK_IMG = "images/placeholder.png";
     const API_URL = window.API_BASE_URL + "/graphql/";
-    var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
+    var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
     function toggleDrawer() {
       const drawer = document.getElementById("drawer");
       const overlay = document.querySelector(".overlay");

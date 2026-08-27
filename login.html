@@ -720,8 +720,8 @@
                             var user = json && json.data && json.data.me;
                             if (user && user.metadata) {
                                 for (var i = 0; i < user.metadata.length; i++) {
-                                    if (user.metadata[i].key === 'role' && user.metadata[i].value === 'contractor') {
-                                        localStorage.setItem('role', 'contractor');
+                                    if (user.metadata[i].key === 'role') {
+                                        localStorage.setItem('role', user.metadata[i].value);
                                         break;
                                     }
                                 }

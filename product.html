@@ -984,7 +984,7 @@
         const API_URL = window.API_BASE_URL + "/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         const PRODUCT_SEARCH_LIMIT = 10;
-        var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
+        var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
         /** Raw product nodes from GraphQL (includes variants for variant search, same idea as index.html shop search). */
         let headerSearchProductsRaw = [];
 
@@ -3991,8 +3991,8 @@
                 }
                 if (me && me.metadata) {
                     for (const m of me.metadata) {
-                        if (m.key === 'role' && m.value === 'contractor') {
-                            localStorage.setItem('role', 'contractor');
+                        if (m.key === 'role') {
+                            localStorage.setItem('role', m.value);
                         }
                     }
                 }

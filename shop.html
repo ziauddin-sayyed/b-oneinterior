@@ -311,7 +311,7 @@
     const API_URL = window.API_BASE_URL + "/graphql/";
     const HIDDEN_CATEGORY_NAMES = ["Gallery Image Category", "Catalogue"];
     const FALLBACK_IMG = "images/placeholder.png";
-    var SALEOR_CHANNEL = localStorage.getItem('role') === 'contractor' ? 'contractor' : 'in';
+    var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
 
     // Updated query to fetch parent category information and product attributes
     function getGraphqlQuery(isStaff) {
