@@ -788,12 +788,15 @@
         }
     </style>
     <section class="hero-slider w-full relative overflow-hidden">
-        <div class="hero-reveal" id="heroCarousel">
+        <div class="hero-reveal cursor-pointer" id="heroCarousel" title="Click to view Our Work">
             <img src="images/slider1/before.jpeg" alt="Before" class="hr-before">
             <img src="images/slider1/after.jpeg" alt="After" class="hr-after">
             <div class="hr-line"></div>
+            <div class="absolute bottom-3 right-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full border border-[#D4AF37]/40">Click to view Our Work</div>
         </div>
     </section>
+
+
 
     <!-- Trending Collection Slider -->
     <!--
@@ -2610,6 +2613,12 @@ function renderHeroSlider(collections) {
             const hero = document.getElementById("heroCarousel");
             if (!hero) return;
         }
+
+        // hero click -> open Our Work page (black background masonry)
+        document.addEventListener("DOMContentLoaded", function () {
+            const hero = document.getElementById("heroCarousel");
+            if (hero) hero.addEventListener("click", function () { window.location.href = "our-work.html"; });
+        });
 
         async function loadCollections() {
             const query = `
