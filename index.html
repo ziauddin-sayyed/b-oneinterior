@@ -761,38 +761,51 @@
         </script>
     </header>
 
-    <!-- Hero Slider: Before -> After wipe reveal -->
+    <!-- Hero Slider: Before -> After (one-time wipe, then draggable seek) — image1=before left, image2=after right -->
     <style>
-        .hero-reveal{position:relative;width:100%;height:50vw;overflow:hidden;background:#000;}
+        .hero-reveal{position:relative;width:100%;height:50vw;overflow:hidden;background:#000;touch-action:none;user-select:none;}
         @media(min-width:768px){.hero-reveal{height:350px;}}
-        .hero-reveal img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;}
-        .hr-after{clip-path:inset(0 100% 0 0);animation:hrClip 9s linear infinite;}
-        .hr-line{position:absolute;top:0;bottom:0;left:0;width:4px;margin-left:-2px;z-index:5;
+        .hero-reveal img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none;}
+        /* image1=before on top (clipped), image2=after at bottom — left=Before, right=After at 50% */
+        .hr-after{clip-path:inset(0 0 0 0);animation:hrClipOnce 6.4s ease-in-out 0.6s forwards;}
+        .hr-line{position:absolute;top:0;bottom:0;left:100%;width:4px;margin-left:-2px;z-index:5;
             background:linear-gradient(180deg,#F7E08A 0%,#D4AF37 50%,#8a6d1f 100%);
             box-shadow:0 0 18px 4px rgba(212,175,55,.75);
-            opacity:0;animation:hrLine 9s linear infinite;}
-        /* Timeline (9s loop): hold BEFORE ~1s -> line sweeps left-to-right ~3s
-           uncovering AFTER -> hold AFTER ~3.9s -> quick fade back to BEFORE */
-        @keyframes hrClip{
-            0%,12%{clip-path:inset(0 100% 0 0);opacity:1}
-            45%,88%{clip-path:inset(0 0 0 0);opacity:1}
-            96%{clip-path:inset(0 0 0 0);opacity:0}
-            97%,99.9%{clip-path:inset(0 100% 0 0);opacity:0}
-            100%{clip-path:inset(0 100% 0 0);opacity:1}
+            opacity:0;animation:hrLineOnce 6.4s ease-in-out 0.6s forwards;}
+        @keyframes hrClipOnce{
+            0%{clip-path:inset(0 0 0 0)}
+            18%{clip-path:inset(0 0 0 0)}
+            80%{clip-path:inset(0 100% 0 0)}
+            100%{clip-path:inset(0 100% 0 0)}
         }
-        @keyframes hrLine{
-            0%,12%{left:0%;opacity:0}
-            13%{left:0%;opacity:1}
-            45%{left:100%;opacity:1}
-            52%,100%{left:100%;opacity:0}
+        @keyframes hrLineOnce{
+            0%,18%{left:100%;opacity:0}
+            20%{left:100%;opacity:1}
+            80%{left:0%;opacity:1}
+            90%,100%{left:0%;opacity:0}
         }
+        .hero-seek{position:absolute;inset:0;z-index:6;}
+        .hero-seek-line{position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:linear-gradient(180deg,#F7E08A 0%,#D4AF37 50%,#8a6d1f 100%);box-shadow:0 0 10px 2px rgba(212,175,55,.6);pointer-events:none;}
+        .hero-seek-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#000;border:2px solid #D4AF37;box-shadow:0 2px 12px rgba(0,0,0,.5),0 0 10px rgba(212,175,55,.4);display:flex;align-items:center;justify-content:center;gap:3px;pointer-events:none;}
+        .hero-seek-handle svg{width:14px;height:14px;fill:#D4AF37;}
     </style>
     <section class="hero-slider w-full relative overflow-hidden">
-        <div class="hero-reveal cursor-pointer" id="heroCarousel" title="Click to view Our Work">
-            <img src="images/slider1/before.jpeg" alt="Before" class="hr-before">
-            <img src="images/slider1/after.jpeg" alt="After" class="hr-after">
-            <div class="hr-line"></div>
-            <div class="absolute bottom-3 right-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full border border-[#D4AF37]/40">Click to view Our Work</div>
+        <div class="hero-reveal" id="heroCarousel" style="cursor:ew-resize;">
+            <!-- Bottom = image2 After, Top = image1 Before (clipped) so left=Before, right=After at 50% -->
+            <img src="images/slider1/after.jpeg" alt="After" id="heroAfterImg">
+            <img src="images/slider1/before.jpeg" alt="Before" class="hr-after" id="heroBeforeImg">
+            <div class="hr-line" id="heroAutoLine"></div>
+            <!-- Draggable seek — shown after one-time wipe -->
+            <div class="hero-seek hidden" id="heroSeek">
+                <div class="hero-seek-line" id="heroSeekLine"></div>
+                <div class="hero-seek-handle" id="heroSeekHandle">
+                    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="#D4AF37" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="#D4AF37" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </div>
+            <span class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-2 py-1 rounded pointer-events-none">Before</span>
+            <span class="absolute top-3 right-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-2 py-1 rounded pointer-events-none">After</span>
+            <a href="our-work.html" onclick="event.stopPropagation()" class="absolute bottom-3 right-3 z-[30] bg-black/80 backdrop-blur text-white text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full border border-[#D4AF37]/40 hover:bg-black transition-colors" style="pointer-events:auto;">Click to View our work</a>
         </div>
     </section>
 
@@ -2608,17 +2621,57 @@
 
 
 function renderHeroSlider(collections) {
-            // Hero is now a pure-CSS before->after wipe reveal (see .hero-reveal styles).
-            // Markup lives statically in the HTML; nothing to build here.
+            // Hero markup is static; no build needed.
             const hero = document.getElementById("heroCarousel");
             if (!hero) return;
         }
 
-        // hero click -> open Our Work page (black background masonry)
-        document.addEventListener("DOMContentLoaded", function () {
-            const hero = document.getElementById("heroCarousel");
-            if (hero) hero.addEventListener("click", function () { window.location.href = "our-work.html"; });
-        });
+        // One-time wipe -> draggable before/after seek (left=Before image1, right=After image2) — 2x slower
+        function initHeroSeek() {
+            const container = document.getElementById("heroCarousel");
+            const beforeImg = document.getElementById("heroBeforeImg");
+            const autoLine = document.getElementById("heroAutoLine");
+            const seek = document.getElementById("heroSeek");
+            const seekLine = document.getElementById("heroSeekLine");
+            const handle = document.getElementById("heroSeekHandle");
+            if (!container || !beforeImg) return;
+            let switched = false;
+            function setPos(p) {
+                p = Math.max(0, Math.min(100, p));
+                beforeImg.style.animation = "none";
+                beforeImg.style.clipPath = "inset(0 " + (100 - p) + "% 0 0)";
+                if (autoLine) autoLine.style.display = "none";
+                if (seek) seek.classList.remove("hidden");
+                if (seekLine) seekLine.style.left = p + "%";
+                if (handle) handle.style.left = p + "%";
+            }
+            function switchToInteractive() {
+                if (switched) return;
+                switched = true;
+                setPos(50);
+            }
+            beforeImg.addEventListener("animationend", switchToInteractive);
+            setTimeout(switchToInteractive, 7600);
+            let dragging = false;
+            function pctFromX(x) {
+                const r = container.getBoundingClientRect();
+                return ((x - r.left) / r.width) * 100;
+            }
+            container.addEventListener("pointerdown", function(e){
+                if (e.target.closest('a[href="our-work.html"]')) return;
+                dragging = true;
+                try{container.setPointerCapture(e.pointerId);}catch(_){}
+                setPos(pctFromX(e.clientX));
+                e.preventDefault();
+            });
+            window.addEventListener("pointermove", function(e){
+                if (!dragging) return;
+                setPos(pctFromX(e.clientX));
+            });
+            window.addEventListener("pointerup", function(){ dragging = false; });
+            window.addEventListener("pointercancel", function(){ dragging = false; });
+        }
+        document.addEventListener("DOMContentLoaded", initHeroSeek);
 
         async function loadCollections() {
             const query = `

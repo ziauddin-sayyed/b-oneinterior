@@ -15,24 +15,24 @@
         @media(min-width:768px){.ourwork-col{gap:16px;}}
         .half-placeholder{height:10rem;flex-shrink:0;}
         @media(min-width:768px){.half-placeholder{height:12rem;}}
-        /* Same wipe animation as home page hero — vertical line sweeps left->right uncovering image2 over image1 */
+        /* Wipe inside popup/drawer — image1=Before left, image2=After right — 2x slower */
         .mr-reveal{position:relative;width:100%;height:20rem;overflow:hidden;background:#18181b;}
         @media(min-width:768px){.mr-reveal{height:24rem;}}
         .mr-reveal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-        .mr-after{clip-path:inset(0 100% 0 0);animation:mrClip 9s linear infinite;}
-        .mr-line{position:absolute;top:0;bottom:0;left:0;width:3px;margin-left:-1.5px;z-index:5;background:linear-gradient(180deg,#F7E08A 0%,#D4AF37 50%,#8a6d1f 100%);box-shadow:0 0 12px 2px rgba(212,175,55,.65);opacity:0;animation:mrLine 9s linear infinite;}
+        .mr-after{clip-path:inset(0 0 0 0);animation:mrClip 18s linear infinite;}
+        .mr-line{position:absolute;top:0;bottom:0;left:100%;width:3px;margin-left:-1.5px;z-index:5;background:linear-gradient(180deg,#F7E08A 0%,#D4AF37 50%,#8a6d1f 100%);box-shadow:0 0 12px 2px rgba(212,175,55,.65);opacity:0;animation:mrLine 18s linear infinite;}
         @keyframes mrClip{
-            0%,12%{clip-path:inset(0 100% 0 0);opacity:1}
-            45%,88%{clip-path:inset(0 0 0 0);opacity:1}
-            96%{clip-path:inset(0 0 0 0);opacity:0}
-            97%,99.9%{clip-path:inset(0 100% 0 0);opacity:0}
-            100%{clip-path:inset(0 100% 0 0);opacity:1}
+            0%,12%{clip-path:inset(0 0 0 0);opacity:1}
+            45%,88%{clip-path:inset(0 100% 0 0);opacity:1}
+            96%{clip-path:inset(0 100% 0 0);opacity:0}
+            97%,99.9%{clip-path:inset(0 0 0 0);opacity:0}
+            100%{clip-path:inset(0 0 0 0);opacity:1}
         }
         @keyframes mrLine{
-            0%,12%{left:0%;opacity:0}
-            13%{left:0%;opacity:1}
-            45%{left:100%;opacity:1}
-            52%,100%{left:100%;opacity:0}
+            0%,12%{left:100%;opacity:0}
+            13%{left:100%;opacity:1}
+            45%{left:0%;opacity:1}
+            52%,100%{left:0%;opacity:0}
         }
     </style>
 </head>
@@ -194,8 +194,8 @@
             if (img1 && img2) {
                 imageBlock = `<div class="rounded-xl overflow-hidden border border-[#D4AF37]/20">
                     <div class="mr-reveal">
-                        <img src="${img1}" alt="Before" loading="lazy" onerror="this.style.display='none'">
-                        <img src="${img2}" alt="After" class="mr-after" loading="lazy" onerror="this.style.display='none'">
+                        <img src="${img2}" alt="After" loading="lazy" onerror="this.style.display='none'">
+                        <img src="${img1}" alt="Before" class="mr-after" loading="lazy" onerror="this.style.display='none'">
                         <div class="mr-line"></div>
                     </div>
                     <div class="flex justify-between px-3 py-1.5 bg-black/50 text-[10px] tracking-widest uppercase text-zinc-400"><span>Before</span><span>After</span></div>
