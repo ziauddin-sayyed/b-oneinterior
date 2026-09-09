@@ -4,6 +4,7 @@
     <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Permissions-Policy" content="compute-pressure=(self)">
     <title>Our Work — B-One Interior</title>
     <script src="assets/js/tailwind.min.js"></script>
     <script type="module" src="assets/js/ionicons/ionicons.esm.js"></script>
@@ -133,10 +134,41 @@
             if (u.startsWith("/")) return base + u;
             return base + "/" + u;
         }
+        function getDisplayMediaUrl(entry) {
+            if (!entry) return "";
+            let v = entry.display_media ?? entry.displayMedia ?? entry.display_media_url ?? entry.media_url ?? entry.media ?? "";
+            if (!v) return "";
+            if (typeof v === "string") return v.trim();
+            if (typeof v === "object") return (v.url || v.src || v.link || v.media || v.display_media || "").trim();
+            return "";
+        }
+        function isYouTubeUrl(url) {
+            return /(?:youtube\.com\/(?:shorts\/|watch\?|embed\/)|youtu\.be\/)/i.test(url);
+        }
+        function isImageUrl(url) {
+            return /\.(jpe?g|png|webp|gif|avif|bmp|svg)(\?|#|$)/i.test(url) || /^data:image\//i.test(url);
+        }
+        function extractYouTubeId(url) {
+            let m;
+            m = url.match(/youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            m = url.match(/youtube\.com\/watch\?.*v=([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            m = url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{11})/);
+            if (m) return m[1];
+            return null;
+        }
+        function buildYouTubeEmbed(url) {
+            const id = extractYouTubeId(url);
+            if (!id) return "";
+            // youtube-nocookie + hide controls/branding + limit to 10s (start 0 end 10)
+            const src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&showinfo=0&enablejsapi=1&start=0&end=10&loop=0&origin=${encodeURIComponent(location.origin)}`;
+            return `<iframe src="${src}" class="w-full h-full pointer-events-none" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; compute-pressure" allowfullscreen loading="lazy" title="YouTube Short"></iframe>`;
+        }
         function buildBlock(entry, idx) {
             const hasData = !!entry;
-            const img1 = hasData ? resolveOurWorkImageUrl(entry.image1 || entry.image_1 || entry.before_image || entry.image || "") : "";
-            const img2 = hasData ? resolveOurWorkImageUrl(entry.image2 || entry.image_2 || entry.after_image || entry.afterImage || "") : "";
             const title = hasData ? (entry.title || entry.name || "") : "";
             if (!hasData) {
                 return `<div class="ourwork-block rounded-xl overflow-hidden border border-dashed border-[#D4AF37]/30 bg-zinc-900">
@@ -148,6 +180,32 @@
                     </div>
                 </div>`;
             }
+            // display_media takes priority: image -> cover, youtube short -> autoplay muted
+            const dmUrlRaw = getDisplayMediaUrl(entry);
+            if (dmUrlRaw) {
+                if (isYouTubeUrl(dmUrlRaw)) {
+                    const embed = buildYouTubeEmbed(dmUrlRaw);
+                    if (embed) {
+                        return `<div class="ourwork-block rounded-xl overflow-hidden border border-[#D4AF37]/20 bg-black shadow cursor-pointer hover:border-[#D4AF37]/40 transition-colors" data-idx="${idx}" onclick="openOurWorkDrawer(${idx})">
+                            <div class="h-80 md:h-96 overflow-hidden bg-black relative">
+                                ${embed}
+                                <div class="absolute top-0 left-0 right-0 h-10 bg-black pointer-events-none z-10"></div>
+                                <div class="absolute bottom-0 left-0 right-0 h-12 bg-black pointer-events-none z-10"></div>
+                            </div>
+                            ${title ? `<div class="px-3 py-2 bg-black/40 border-t border-[#D4AF37]/10"><p class="text-[11px] tracking-widest uppercase text-[#D4AF37] truncate">${title}</p></div>` : ``}
+                        </div>`;
+                    }
+                }
+                // otherwise treat as image (cover)
+                let mediaUrl = dmUrlRaw;
+                if (!/^https?:\/\//i.test(mediaUrl) && !mediaUrl.startsWith("data:")) mediaUrl = resolveOurWorkImageUrl(mediaUrl);
+                return `<div class="ourwork-block rounded-xl overflow-hidden border border-[#D4AF37]/20 bg-zinc-900 shadow cursor-pointer hover:border-[#D4AF37]/40 transition-colors" data-idx="${idx}" onclick="openOurWorkDrawer(${idx})">
+                    <div class="h-80 md:h-96 overflow-hidden bg-zinc-800"><img src="${mediaUrl}" alt="${title || 'Our Work'}" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'"></div>
+                    ${title ? `<div class="px-3 py-2 bg-black/40 border-t border-[#D4AF37]/10"><p class="text-[11px] tracking-widest uppercase text-[#D4AF37] truncate">${title}</p></div>` : ``}
+                </div>`;
+            }
+            const img1 = resolveOurWorkImageUrl(entry.image1 || entry.image_1 || entry.before_image || entry.image || "");
+            const img2 = resolveOurWorkImageUrl(entry.image2 || entry.image_2 || entry.after_image || entry.afterImage || "");
             const top = img1
                 ? `<img src="${img1}" alt="${title} before" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">`
                 : `<div class="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-600"><ion-icon name="image-outline" class="text-2xl"></ion-icon></div>`;
@@ -181,9 +239,10 @@
             const bodyEl = document.getElementById("ourWorkDrawerBody");
             const title = entry.title || entry.name || `Work #${idx + 1}`;
             titleEl.textContent = title;
+            const dmUrlRaw = getDisplayMediaUrl(entry);
             const img1 = resolveOurWorkImageUrl(entry.image1 || entry.image_1 || entry.before_image || entry.image || "");
             const img2 = resolveOurWorkImageUrl(entry.image2 || entry.image_2 || entry.after_image || entry.afterImage || "");
-            const skipKeys = new Set(["image1","image_1","image2","image_2","before_image","after_image","image","afterImage","title","name"]);
+            const skipKeys = new Set(["image1","image_1","image2","image_2","before_image","after_image","image","afterImage","title","name","display_media","displayMedia","display_media_url","media_url","media"]);
             let metaRows = "";
             for (const [k,v] of Object.entries(entry)) {
                 if (skipKeys.has(k)) continue;
@@ -191,7 +250,20 @@
                 metaRows += `<div class="flex justify-between gap-3 py-2 border-b border-white/5 last:border-0"><span class="text-[10px] tracking-widest uppercase text-zinc-500 shrink-0">${k}</span><span class="text-xs text-white text-right break-all">${formatDrawerValue(v)}</span></div>`;
             }
             let imageBlock = "";
-            if (img1 && img2) {
+            if (dmUrlRaw) {
+                if (isYouTubeUrl(dmUrlRaw)) {
+                    const embed = buildYouTubeEmbed(dmUrlRaw);
+                    if (embed) {
+                        imageBlock = `<div class="rounded-xl overflow-hidden border border-[#D4AF37]/20 bg-black"><div class="w-full aspect-[9/16] max-h-[60vh] bg-black relative overflow-hidden">${embed}<div class="absolute top-0 left-0 right-0 h-10 bg-black pointer-events-none z-10"></div><div class="absolute bottom-0 left-0 right-0 h-12 bg-black pointer-events-none z-10"></div></div><div class="px-3 py-1.5 bg-black/50 text-[10px] tracking-widest uppercase text-zinc-400">YouTube Short • 10s preview</div></div>`;
+                    } else {
+                        imageBlock = `<div class="rounded-xl border border-dashed border-white/10 bg-white/[0.02] h-32 flex items-center justify-center text-zinc-600"><span class="text-xs">Invalid YouTube URL</span></div>`;
+                    }
+                } else {
+                    let mediaUrl = dmUrlRaw;
+                    if (!/^https?:\/\//i.test(mediaUrl) && !mediaUrl.startsWith("data:")) mediaUrl = resolveOurWorkImageUrl(mediaUrl);
+                    imageBlock = `<div class="rounded-xl overflow-hidden border border-[#D4AF37]/20"><img src="${mediaUrl}" alt="${title}" class="w-full h-auto max-h-[60vh] object-contain bg-black" loading="lazy" onerror="this.style.display='none'"></div>`;
+                }
+            } else if (img1 && img2) {
                 imageBlock = `<div class="rounded-xl overflow-hidden border border-[#D4AF37]/20">
                     <div class="mr-reveal">
                         <img src="${img2}" alt="After" loading="lazy" onerror="this.style.display='none'">
