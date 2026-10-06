@@ -301,10 +301,29 @@
       const q = query.toLowerCase();
       grid.innerHTML = items.map(item => {
         const p = item.product;
-        const gross = p.pricing?.priceRange?.start?.gross;
-        const price = Number(gross?.amount || 0).toFixed(2);
-        const cur = gross?.currency || "INR";
-        const priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
+        const startGross = p.pricing?.priceRange?.start?.gross;
+        const stopGross = p.pricing?.priceRange?.stop?.gross;
+        let minPrice = Number(startGross?.amount ?? 0);
+        let maxPrice = Number(stopGross?.amount ?? minPrice);
+        const cur = startGross?.currency || stopGross?.currency || "INR";
+        // Fallback: derive min/max from variants when priceRange is not a range
+        if ((!stopGross || maxPrice <= minPrice) && Array.isArray(p.variants) && p.variants.length) {
+          const variantPrices = p.variants.map(v => Number(v.pricing?.price?.gross?.amount)).filter(v => !isNaN(v) && v > 0);
+          if (variantPrices.length) {
+            const vMin = Math.min(...variantPrices);
+            const vMax = Math.max(...variantPrices);
+            if (vMin) minPrice = vMin;
+            if (vMax) maxPrice = vMax;
+          }
+        }
+        let priceText;
+        if (minPrice && maxPrice && maxPrice > minPrice) {
+          const fmt = (n) => Number(n).toFixed(2);
+          priceText = cur === "INR" ? `₹${fmt(minPrice)} - ₹${fmt(maxPrice)}` : `${fmt(minPrice)} - ${fmt(maxPrice)} ${cur}`;
+        } else {
+          const price = Number(minPrice || 0).toFixed(2);
+          priceText = cur === "INR" ? `₹${price}` : `${price} ${cur}`;
+        }
         const savePercent = getSavePercent(p);
         // Check if query matches a variant name
         let imgUrl = p.thumbnail?.url || FALLBACK_IMG;
@@ -315,9 +334,8 @@
             if (variantMedia) imgUrl = variantMedia;
           }
         }
-        const priceAmount = Number(gross?.amount || 0);
         return `
-          <a href="product.html?id=${item.linkId}" data-product-price="${priceAmount}" class="creative-card flex flex-col group cursor-pointer h-full">
+          <a href="product.html?id=${item.linkId}" data-product-price="${minPrice}" data-product-price-max="${maxPrice}" class="creative-card flex flex-col group cursor-pointer h-full">
             <div class="relative overflow-hidden aspect-square">
               <img src="${imgUrl}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${escapeHtml(p.name)}">
               ${savePercent ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow">${savePercent}% OFF</span>` : ""}
@@ -337,8 +355,9 @@
       let visibleCount = 0;
       const total = document.querySelectorAll('#resultGrid > a').length;
       document.querySelectorAll('#resultGrid > a').forEach(card => {
-        const price = parseFloat(card.dataset?.productPrice) || 0;
-        const match = price >= min && price <= max;
+        const pMin = parseFloat(card.dataset?.productPrice) || 0;
+        const pMax = parseFloat(card.dataset?.productPriceMax) || pMin;
+        const match = pMax >= min && pMin <= max;
         card.style.display = match ? '' : 'none';
         if (match) visibleCount++;
       });
