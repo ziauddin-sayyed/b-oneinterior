@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Invoice — B-One Interior</title>
+<meta name="description" content="Tax invoice — B-One Interior."/>
+<link rel="icon" href="../logo.png"/>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#111;font-family:Arial,Helvetica,sans-serif;color:#000}
+  .toolbar{max-width:900px;margin:12px auto;padding:0 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .toolbar button{border:1px solid #444;background:#fff;border-radius:999px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;color:#111}
+  .toolbar button.primary{background:linear-gradient(135deg,#D4AF37,#F5E6A3,#D4AF37);border-color:#D4AF37;color:#111}
+  .toolbar button:disabled{opacity:.55;cursor:wait}
+  #sheet{width:5.85in;min-height:8.27in;margin:0 auto 24px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.45);padding:0;font-size:11px;line-height:1.5;overflow:hidden}
+  #sheet *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .inv-band{height:40px;background:linear-gradient(90deg,#8a6d0b,#D4AF37,#F5E6A3,#D4AF37,#8a6d0b)}
+  .inv-pad{padding:0.28in 0.32in}
+  .inv-hero{text-align:center;padding:2px 0}
+  .inv-hero img{height:76px}
+  .inv-doc{display:inline-block;margin:4px 0 0;padding:4px 22px;border-radius:999px;background:linear-gradient(135deg,#D4AF37,#F5E6A3,#D4AF37);color:#111;font-size:12px;font-weight:800;letter-spacing:.28em;text-indent:.28em}
+  .inv-meta{display:flex;justify-content:center;gap:18px;margin-top:6px;font-size:10.5px;color:#6b5f2a;flex-wrap:wrap}
+  .inv-meta b{color:#8a6d0b}
+  .boxes{display:flex;gap:10px;margin-top:10px}
+  .box{flex:1;border:1.5px solid #e6cf7a;border-top:4px solid #D4AF37;border-radius:10px;padding:6px 9px;font-size:10.5px;background:#fdf9ec}
+  .box h4{margin:0 0 3px;font-size:10px;letter-spacing:.1em;color:#8a6d0b}
+  table.items{width:100%;border-collapse:collapse;margin-top:10px;font-size:11px}
+  table.items th{font-size:10px;text-align:left;padding:6px 5px;background:linear-gradient(135deg,#8a6d0b,#D4AF37);color:#fff}
+  table.items th:first-child{border-radius:8px 0 0 8px}
+  table.items th:last-child{border-radius:0 8px 8px 0}
+  table.items td{padding:6px 5px;border-bottom:1px dashed #e6cf7a;vertical-align:middle}
+  table.items td img.thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e6cf7a;display:block}
+  .totals{margin-top:6px;font-size:11px;background:#fdf9ec;border:1px solid #e6cf7a;border-radius:10px;padding:6px 10px}
+  .totals .row{display:flex;justify-content:space-between;padding:2px 0}
+  .totals .grand{font-size:14px;font-weight:800;border-top:2px solid #D4AF37;margin-top:4px;padding-top:5px;color:#8a6d0b}
+  .rule{height:3px;margin-top:10px;border-radius:99px;background:linear-gradient(90deg,#8a6d0b,#D4AF37,#F5E6A3,#D4AF37,#8a6d0b)}
+  .foot{display:flex;align-items:flex-end;gap:12px;margin-top:8px}
+  .foot .left{flex:1;font-size:10px}
+  #invQr{width:92px;height:92px;padding:4px;border:2px solid #D4AF37;border-radius:12px}
+  @page{size:A4 landscape;margin:0}
+  @media print{
+    body{background:#fff}
+    .toolbar{display:none}
+    #sheet{margin:0;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button onclick="location.href='../profile/'">← Back to Profile</button>
+  <button class="primary" onclick="window.print()">🖨 Print Invoice</button>
+  <button id="pdfBtn" class="primary" onclick="savePdf()">⬇ Save PDF</button>
+  <span id="tbMsg" style="font-size:12px;color:#bbb"></span>
+</div>
+<div id="sheet"><p>Loading invoice…</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="../config.js"></script>
+<script>
+var GRAPHQL=(window.API_BASE_URL?window.API_BASE_URL+"/graphql/":"https://api.b-oneinterior.com/graphql/");
+var SELLER={name:"B-One Interior",addr:"Mumbai, India",phone:"+91 76999 77771",site:"www.b-oneinterior.com"};
+var PLACEHOLDER="../images/placeholder.png";
+function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function money(a,c){c=c||"INR";try{return new Intl.NumberFormat('en-IN',{style:'currency',currency:c,maximumFractionDigits:0}).format(a)}catch(e){return "Rs."+a}}
+function fmtDate(s){try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}catch(e){return s||""}}
+function looksLikeOrder(o){return !!(o&&typeof o==="object"&&o.number&&Array.isArray(o.lines));}
+function readStore(store,key){
+  try{
+    const v=store.getItem(key);
+    if(!v) return null;
+    const o=JSON.parse(v);
+    return looksLikeOrder(o)?o:null;
+  }catch(e){return null;}
+}
+function scanStores(wantNumber){
+  const stores=[];
+  try{stores.push(sessionStorage);}catch(e){}
+  try{stores.push(localStorage);}catch(e){}
+  for(const st of stores){
+    try{
+      for(let i=0;i<st.length;i++){
+        const k=st.key(i);
+        const o=readStore(st,k);
+        if(o&&(!wantNumber||String(o.number)===String(wantNumber))) return o;
+      }
+    }catch(e){}
+  }
+  return null;
+}
+function loadStored(){
+  const q=new URLSearchParams(location.search);
+  const want=q.get("number")||"";
+  const stores=[];
+  try{stores.push(sessionStorage);}catch(e){}
+  try{stores.push(localStorage);}catch(e){}
+  const keys=[];
+  if(q.get("key")) keys.push(q.get("key"));
+  keys.push("b1_print_order");
+  keys.push("ak_print_order");
+  for(const st of stores){
+    for(const k of keys){
+      const o=readStore(st,k);
+      if(o&&(!want||String(o.number)===want)) return o;
+    }
+  }
+  return scanStores(want);
+}
+async function fetchOrder(number){
+  const token=localStorage.getItem("saleor_auth_token");
+  if(!token||!number) return null;
+  const query=`{me{orders(first:20){edges{node{id number created status paymentStatusDisplay customerNote shippingMethodName subtotal{gross{amount currency}} shippingPrice{gross{amount currency}} total{gross{amount currency}} billingAddress{firstName lastName streetAddress1 streetAddress2 city countryArea postalCode phone} shippingAddress{firstName lastName streetAddress1 streetAddress2 city countryArea postalCode phone} lines{quantity productName variantName productSku thumbnail{url alt} unitPrice{gross{amount currency}} totalPrice{gross{amount currency}}}}}}}`;
+  const r=await fetch(GRAPHQL,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({query})});
+  const j=await r.json();
+  const edges=(((j.data||{}).me||{}).orders||{}).edges||[];
+  return (edges.map(e=>e.node).find(o=>String(o.number)===String(number)))||null;
+}
+var currentOrder=null;
+function lineThumb(l){
+  if(l&&l.thumbnail&&l.thumbnail.url) return l.thumbnail.url;
+  if(l&&l.product&&l.product.thumbnail&&l.product.thumbnail.url) return l.product.thumbnail.url;
+  return PLACEHOLDER;
+}
+function renderInvoice(o){
+  currentOrder=o;
+  const a=o.shippingAddress||o.billingAddress||{};
+  const cname=[a.firstName,a.lastName].filter(Boolean).join(" ")||"Customer";
+  const addrLines=[cname,a.streetAddress1,a.streetAddress2,[a.city,a.countryArea].filter(Boolean).join(", ")+(a.postalCode?" - "+a.postalCode:""),a.phone||""].filter(Boolean).map(esc).join("<br/>");
+  const trackUrl="https://b-oneinterior.com/orders/"+(o.number||o.id);
+  const lines=o.lines||[];
+  const rows=lines.map((l,ix)=>{
+    const nm=l.variantName||l.productName||l.productSku||"Item";
+    const amt=l.totalPrice&&l.totalPrice.gross?money(l.totalPrice.gross.amount,l.totalPrice.gross.currency):"—";
+    const img=lineThumb(l);
+    return `<tr><td>${ix+1}</td><td><img class="thumb" crossorigin="anonymous" src="${esc(img)}" alt="" onerror="this.onerror=null;this.src='${PLACEHOLDER}'"/></td><td>${esc(nm)}</td><td align="center">${l.quantity}</td><td align="right">${esc(amt)}</td></tr>`;
+  }).join("");
+  const sub=o.subtotal&&o.subtotal.gross?money(o.subtotal.gross.amount,o.subtotal.gross.currency):null;
+  const ship=o.shippingPrice&&o.shippingPrice.gross?money(o.shippingPrice.gross.amount,o.shippingPrice.gross.currency):null;
+  const tot=o.total&&o.total.gross?money(o.total.gross.amount,o.total.gross.currency):"—";
+  document.getElementById('sheet').innerHTML=`
+    <div class="inv-band"></div>
+    <div class="inv-pad">
+    <div class="inv-hero">
+      <img src="../logo.png" alt="B-One Interior"/>
+      <div><span class="inv-doc">TAX INVOICE</span></div>
+      <div class="inv-meta"><span>Order <b>#${esc(o.number||"")}</b></span><span>${esc(fmtDate(o.created))}</span><span>${esc(o.paymentStatusDisplay||o.status||"")}</span></div>
+    </div>
+    <div class="boxes">
+      <div class="box"><h4>SHIP TO</h4><b>${esc(cname)}</b><br/>${addrLines}</div>
+      <div class="box"><h4>SOLD BY</h4><b>${esc(SELLER.name)}</b><br/>${esc(SELLER.addr)}<br/>${esc(SELLER.phone)}<br/>${esc(SELLER.site)}</div>
+    </div>
+    <table class="items"><tr><th>#</th><th>Photo</th><th>Item</th><th>Qty</th><th align="right">Amount</th></tr>${rows}</table>
+    <div class="totals">
+      ${sub?`<div class="row"><span>Subtotal</span><span>${esc(sub)}</span></div>`:""}
+      ${ship?`<div class="row"><span>Shipping${o.shippingMethodName?" ("+esc(o.shippingMethodName)+")":""}</span><span>${esc(ship)}</span></div>`:""}
+      <div class="row grand"><span>Total</span><span>${esc(tot)}</span></div>
+      <div class="row"><span>Payment: ${esc(o.paymentStatusDisplay||"")}</span><span>${esc(o.status||"")}</span></div>
+      ${o.customerNote?`<div class="row"><span>Note: ${esc(o.customerNote)}</span><span></span></div>`:""}
+    </div>
+    <div class="rule"></div>
+    <div class="foot">
+      <div class="left">Thank you for choosing B-One Interior!</div>
+      <div id="invQr"></div>
+    </div>
+    </div>`;
+  const qrEl=document.getElementById('invQr');
+  try{
+    if(window.QRCode&&qrEl){ new QRCode(qrEl,{text:trackUrl,width:92,height:92,correctLevel:QRCode.CorrectLevel.M}); }
+    else if(qrEl){ qrEl.innerHTML='<img src="https://api.qrserver.com/v1/create-qr-code/?size=92x92&data='+encodeURIComponent(trackUrl)+'" width="92" height="92"/>'; }
+  }catch(e){}
+}
+async function savePdf(){
+  if(!currentOrder){ return; }
+  const btn=document.getElementById('pdfBtn');
+  const msg=document.getElementById('tbMsg');
+  if(!(window.html2pdf)){
+    msg.textContent="PDF library still loading — use Print → Save as PDF instead.";
+    setTimeout(()=>window.print(),400);
+    return;
+  }
+  btn.disabled=true;
+  msg.textContent="Preparing PDF…";
+  try{
+    const el=document.getElementById('sheet');
+    const fname="B-One_Invoice_"+(currentOrder.number||"order")+".pdf";
+    await window.html2pdf().set({
+      margin:0,
+      filename:fname,
+      image:{type:'jpeg',quality:0.95},
+      html2canvas:{scale:2,useCORS:true,logging:false},
+      jsPDF:{unit:'in',format:'a4',orientation:'landscape'}
+    }).from(el).save();
+    msg.textContent="PDF saved.";
+  }catch(e){
+    console.error("Save PDF failed:",e);
+    msg.textContent="Direct PDF failed — opening print dialog (choose Save as PDF).";
+    setTimeout(()=>window.print(),400);
+  }finally{
+    btn.disabled=false;
+    setTimeout(()=>{ if(msg.textContent==="PDF saved.") msg.textContent=""; },3000);
+  }
+}
+(async function init(){
+  const q=new URLSearchParams(location.search);
+  let o=loadStored();
+  if(!o&&q.get("number")){
+    document.getElementById('tbMsg').textContent="Fetching order…";
+    try{ o=await fetchOrder(q.get("number")); }catch(e){ o=null; }
+    document.getElementById('tbMsg').textContent="";
+  }
+  if(!o){ document.getElementById('sheet').innerHTML="<p>No order found in this browser's session/local storage. Open an order from <a href='../profile/'>Profile → Invoice</a> on the same device and browser.</p>"; return; }
+  document.title="Invoice #"+(o.number||"")+" — B-One Interior";
+  renderInvoice(o);
+  if(q.get("autoprint")!=="0") setTimeout(()=>window.print(),800);
+})();
+</script>
+<script>
+// Admin dashboard print handshake.
+// When this page is opened by the dashboard (window.opener), the dashboard
+// waits for our "READY" ping and then posts the order object to us.
+(function () {
+  window.addEventListener("message", function (e) {
+    if (!e || e.source !== window.opener) return;
+    var o = e.data;
+    if (looksLikeOrder(o)) {
+      document.title = "Invoice #" + (o.number || "") + " — B-One Interior";
+      renderInvoice(o);
+      var q = new URLSearchParams(location.search);
+      if (q.get("autoprint") !== "0") setTimeout(function () { window.print(); }, 800);
+    }
+  });
+  try {
+    if (window.opener) window.opener.postMessage("READY", "*");
+  } catch (err) { /* opener unreachable; storage/GraphQL flow above still applies */ }
+})();
+</script>
+</body>
+</html>

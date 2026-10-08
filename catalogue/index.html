@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../config.js"></script>
+    <meta charset="UTF-8" />
+    <title>Product Catalogues | B-One Interior Store</title>
+    <meta property="og:title" content="Product Catalogues | B-One Interior Store">
+    <meta property="og:description"
+        content="Browse and download product catalogues from B-One Interior. Find detailed specifications and designs for our premium furniture and decor collections.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+    <!-- Tailwind CSS -->
+    <script src="../assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- jQuery + Owl Carousel -->
+    <script src="../assets/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../assets/css/owl.theme.default.min.css">
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script type="module" src="../assets/js/ionicons/ionicons.esm.js"></script>
+
+    <link rel="stylesheet" href="../style.css?v=1.1">
+
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(212, 175, 55, 0.15);
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #B88A44 0%, #E2B05E 25%, #F9D08B 50%, #E2B05E 75%, #B88A44 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #shopStickyBar {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs" type="module"></script>
+
+    <link rel="stylesheet" href="../assets/css/consultation.css">
+</head>
+
+<body class="bg-[#0a0a0a] min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center justify-between px-4 py-2 border-b border-gold-500/10 gap-4">
+            <div id="shopStickyBar"
+            class="bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gold-500/10  transition-shadow duration-300 flex-1 ">
+            <div class="container mx-auto">
+                <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
+                    <!-- Search -->
+                    <div class="relative flex-1">
+                        <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off"
+                            class="w-full pl-10 pr-10 py-2.5 bg-black/60 border border-gold-500/30 rounded-xl text-white text-sm focus:outline-none focus:border-gold-500">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gold-500 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <button id="voiceSearchBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gold-500/70 hover:text-gold-500 hover:scale-110 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 10v2a7 7 0 01-14 0v-2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19v4m-4 0h8" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <a href="https://b-oneinterior.com/cart/" aria-label="Cart"
+                class="relative flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition flex-shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span id="cartCountBadge" class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden"></span>
+            </a>
+            <button onclick="toggleDrawer()"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition active:scale-95">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="../logo.png" style="height: 8vh;" alt=""></div>
+            <ul class="hidden md:flex space-x-6 text-gray-300 items-center">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
+                <li><a href="https://b-oneinterior.com/catalogue/"
+                        class="text-gold-500 underline transition font-bold">Catalogue</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/gallery/" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist/" class="hover:text-gold-500 transition">Wishlist</a>
+                </li>
+                <li><a href="https://b-oneinterior.com/cart/" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+        </nav>
+
+        <!-- Sticky Search Bar (matches index.html style) -->
+    </header>
+
+    <div id="drawer">
+        <ul>
+            <li><a href="https://b-oneinterior.com">Home</a></li>
+            <!-- <li><a href="https://b-oneinterior.com/shop/">Shop</a></li> -->
+            <li><a href="https://b-oneinterior.com/wishlist/">Wishlist</a></li>
+            <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
+            <!-- <li><a href="https://b-oneinterior.com/gallery/">Gallery</a></li> -->
+
+
+            <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+            <li><a href="../terms/">Terms and Conditions</a></li>
+            <li><a href="../privacy/">Privacy Policy</a></li>
+            <li id="authLinkDrawer"></li>
+        </ul>
+
+        <!-- Social Icons at drawer bottom -->
+        <div id="drawer-social">
+            <p
+                style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:2px;">
+                Connect With Us</p>
+            <div class="social-grid">
+                <a href="tel:+917699977771" target="_blank">
+                    <img src="../images/call_icon.png" alt="Call">
+                    <span>Call</span>
+                </a>
+                <a href="https://wa.me/+917699977771?text=Hi%20B-oneinterion%20Team" target="_blank">
+                    <img src="../images/whatsapp.png" alt="WhatsApp">
+                    <span>WhatsApp</span>
+                </a>
+                <a href="https://www.facebook.com/share/1C4T1wQGLY/" target="_blank">
+                    <img src="../images/facebook.png" alt="Facebook">
+                    <span>Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/bone.interior.solution?igsh=MWhwanB2OWEweXhlag==" target="_blank">
+                    <img src="../images/instagram.png" alt="Instagram">
+                    <span>Instagram</span>
+                </a>
+                <a href="https://youtube.com/@believeone307?si=T7B9HvbORx00jtFK" target="_blank">
+                    <img src="../images/youtube.png" alt="YouTube">
+                    <span>YouTube</span>
+                </a>
+                <a href="https://maps.app.goo.gl/pzqRhTqqncJHLWfEA" target="_blank">
+                    <img src="../images/map_marker.png" alt="Location">
+                    <span>Location</span>
+                </a>
+                <!-- <a href="javascript:void(0)" onclick="closeMobileDrawer(); openTechModal();" style="color:#D4AF37;">
+                        <img src="../images/technician.png" alt="Technician" style="border-color:rgba(212,175,55,0.6);">
+                        <span style="color:#D4AF37;">Technician</span>
+                    </a> -->
+            </div>
+        </div>
+    </div>
+    <label for="menu-toggle" class="overlay"></label>
+    <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li class="relative">
+                    <a href="../profile/"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Account</div>
+                    </a>
+                </li>
+
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist/"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Wishlist</div>
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
+                    </a>
+                </li>
+
+                <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home</li>
+
+                <li class="relative">
+                    <a href="#" onclick="openConsultationModal(); return false;"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg class="w-[25.5px] h-[25.5px]" fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8V128h-.7l-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48V352h28.2l91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16V352c0 17.7 14.3 32 32 32H64c17.7 0 32-14.3 32-32V128H16zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128V352c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V144c0-8.8-7.2-16-16-16H544zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z"/></svg>
+                        <div class="text-[12px] tracking-tighter">Consultation</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
+                        </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="toggleDrawer(); return false;"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Menu</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById("drawer");
+            const overlay = document.querySelector(".overlay");
+            if (drawer.style.left === "0px") {
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            } else {
+                drawer.style.left = "0px";
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "auto";
+            }
+        }
+
+        function closeMobileDrawer() {
+            const drawer = document.getElementById("drawer");
+            const overlay = document.querySelector(".overlay");
+            drawer.style.left = "-250px";
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        }
+
+        const overlay = document.querySelector(".overlay");
+        overlay.addEventListener("click", () => {
+            const drawer = document.getElementById("drawer");
+            drawer.style.left = "-250px";
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        });
+
+        // Auth check and navigation update
+        function checkAuth() {
+            const token = localStorage.getItem('saleor_auth_token');
+            const userEmail = localStorage.getItem('saleor_user_email');
+            const desktopLink = document.getElementById('authLinkDesktop');
+            const drawerLink = document.getElementById('authLinkDrawer');
+
+            if (token && userEmail) {
+                if (desktopLink) {
+                    desktopLink.innerHTML = `<a href="#" onclick="signOut()" class="hover:text-gold-500 transition">Sign Out</a>`;
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = `<a href="#" onclick="signOut()">Sign Out (${userEmail})</a>`;
+                }
+            } else {
+                if (desktopLink) {
+                    desktopLink.innerHTML = `<a href="../login/" class="hover:text-gold-500 transition">Login</a>`;
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = `<a href="../login/">Login</a>`;
+                }
+            }
+        }
+
+        function signOut() {
+            localStorage.clear();
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        // Search Logic
+        const searchInput = document.getElementById('searchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
+
+        function getSearchHistory() {
+            return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        }
+
+        function saveSearchQuery(query) {
+            if (!query.trim()) return;
+            let history = getSearchHistory();
+            const idx = history.findIndex(item => item.toLowerCase() === query.toLowerCase());
+            if (idx > -1) history.splice(idx, 1);
+            history.unshift(query);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+
+        function renderSearchHistory() {
+            if (!searchDropdown) return;
+            const history = getSearchHistory();
+            if (history.length === 0) {
+                searchDropdown.classList.add('hidden');
+                return;
+            }
+            const html = history.map(item => `
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                     onclick="document.getElementById('searchInput').value='${item.replace(/'/g, "\\'")}'; document.getElementById('searchInput').dispatchEvent(new Event('input'));">
+                    <ion-icon name="time-outline" class="text-gray-400 text-lg"></ion-icon>
+                    <span class="text-sm text-gray-700">${item}</span>
+                </div>
+            `).join('');
+            searchDropdown.innerHTML = html;
+            searchDropdown.classList.remove('hidden');
+        }
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (searchInput && !searchInput.contains(e.target) && searchDropdown && !searchDropdown.contains(e.target)) {
+                searchDropdown.classList.add('hidden');
+            }
+        });
+
+        if (searchInput && searchDropdown) {
+            searchInput.addEventListener('focus', function () {
+                if (this.value.trim().length === 0) {
+                    renderSearchHistory();
+                }
+            });
+
+            searchInput.addEventListener('input', function (e) {
+                const query = this.value.trim().toLowerCase();
+
+                // Also trigger the catalogue filtering
+                if (typeof applyFilters === 'function') {
+                    applyFilters();
+                }
+
+                if (query.length === 0) {
+                    renderSearchHistory();
+                    return;
+                }
+
+                if (window.allProducts && window.allProducts.length > 0) {
+                    const results = [];
+
+                    window.allProducts.forEach(product => {
+                        const productName = product.name.toLowerCase();
+                        if (productName.includes(query)) {
+                            results.push({
+                                id: product.id,
+                                name: product.name,
+                                thumbnail: product.thumbnail?.url,
+                                price: product.pricing?.priceRange?.start?.gross?.amount,
+                                currency: product.pricing?.priceRange?.start?.gross?.currency
+                            });
+                        }
+
+                        if (product.variants) {
+                            product.variants.forEach(v => {
+                                if (v.name.toLowerCase().includes(query) && !productName.includes(query)) {
+                                    results.push({
+                                        id: v.id,
+                                        name: `${v.name}`,
+                                        thumbnail: v.media?.[0]?.url || product.thumbnail?.url,
+                                        price: v.pricing?.price?.gross?.amount,
+                                        currency: v.pricing?.price?.gross?.currency
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    renderDropdown(results);
+                }
+            });
+
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    saveSearchQuery(this.value);
+                }
+            });
+        }
+
+        function renderDropdown(items) {
+            if (!searchDropdown) return;
+            if (items.length === 0) {
+                searchDropdown.innerHTML = `<div class="p-4 text-center text-gray-500">No products found</div>`;
+                searchDropdown.classList.remove('hidden');
+                return;
+            }
+
+            const html = items.map(item => {
+                const price = item.price ? item.price.toFixed(2) : "0.00";
+                const symbol = item.currency === 'INR' ? '₹' : (item.currency || '');
+                const formattedPrice = item.currency === 'INR' ? `₹${price}` : `${price} ${symbol}`;
+
+                return `
+                        <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
+                             onclick="saveSearchQuery(document.getElementById('searchInput').value); window.location.href='../product/?id=${item.id}'">
+                            <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
+                            <div>
+                                <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
+                                <p class="text-xs text-gold-600 font-bold">${formattedPrice}</p>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+            searchDropdown.innerHTML = html;
+            searchDropdown.classList.remove('hidden');
+        }
+
+        // Voice Search Logic
+        const voiceBtn = document.getElementById('voiceSearchBtn');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition && voiceBtn && searchInput) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            voiceBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.log("Recognition already started");
+                }
+            });
+
+            recognition.onstart = () => {
+                voiceBtn.classList.add('text-red-500', 'animate-pulse');
+                searchInput.placeholder = "Listening...";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                searchInput.dispatchEvent(new Event('input'));
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Error:", event.error);
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                if (event.error === 'not-allowed') alert("Please allow microphone access");
+            };
+
+            recognition.onend = () => {
+                voiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                searchInput.placeholder = "Search products...";
+            };
+        } else if (voiceBtn) {
+            voiceBtn.style.display = 'none';
+        }
+
+        // Technician Data
+        let technicians = [];
+
+        async function loadTechnicians() {
+            const query = `
+                query {
+                    pages(first: 100) {
+                        edges {
+                            node {
+                                id
+                                title
+                                slug
+                                content
+                                attributes {
+                                    attribute {
+                                        name
+                                    }
+                                    values {
+                                        name
+                                    }
+                                }
+                                metadata {
+                                    key
+                                    value
+                                }
+                            }
+                        }
+                    }
+                }
+                `;
+
+            try {
+                const res = await fetch(window.API_BASE_URL + "/graphql/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+
+                const json = await res.json();
+                const pages = json.data?.pages?.edges || [];
+                // Filter pages that are technicians (you can use slug or a specific attribute)
+                // Based on the image, we have 'electriton' and 'plumber'
+                technicians = pages.map(edge => {
+                    const node = edge.node;
+
+                    // Extract metadata from metadata array
+                    const phoneMeta = node.metadata.find(m => m.key === "number");
+                    const chargeMeta = node.metadata.find(m => m.key === "price");
+
+                    // Parse content JSON to get the name from EditorJS format
+                    let techName = node.title;
+                    try {
+                        const contentData = JSON.parse(node.content);
+                        if (contentData.blocks && contentData.blocks.length > 0) {
+                            techName = contentData.blocks[0].data.text;
+                        }
+                    } catch (e) {
+                        console.error("Error parsing content JSON", e);
+                    }
+
+                    return {
+                        category: node.title,
+                        name: techName,
+                        address: "Mumbai",
+                        phone: phoneMeta ? phoneMeta.value : "+917699977771",
+                        charge: chargeMeta ? `₹${chargeMeta.value}` : "₹500"
+                    };
+                });
+            } catch (error) {
+                console.error("Error loading technicians from content:", error);
+            }
+        }
+
+        function renderTechList(data) {
+            const container = document.getElementById('techListContainer');
+            if (data.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-gray-500">No experts found matching your search.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(tech => `
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-gold-500 transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">${tech.category}</span>
+                        <span class="text-gold-600 font-bold">${tech.charge}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">${tech.name}</h3>
+                    <p class="text-gray-500 text-sm flex items-center gap-1 mb-3">
+                        <ion-icon name="location-outline"></ion-icon> ${tech.address}
+                    </p>
+                    <a href="tel:${tech.phone}" class="flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg font-bold hover:bg-gold-600 transition">
+                        <ion-icon name="call-outline"></ion-icon> Call Now
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterTechnicians() {
+            const query = document.getElementById('techSearchInput').value.toLowerCase();
+            const filtered = technicians.filter(tech =>
+                tech.name.toLowerCase().includes(query) ||
+                tech.category.toLowerCase().includes(query)
+            );
+            renderTechList(filtered);
+        }
+
+        function closeTechModal() {
+            document.getElementById('techModal').classList.add('hidden');
+        }
+
+        // Technician Voice Search
+        function setupTechVoiceSearch() {
+            const techVoiceBtn = document.getElementById('techVoiceBtn');
+            const techSearchInput = document.getElementById('techSearchInput');
+            const TechSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (TechSpeechRecognition && techVoiceBtn) {
+                const recognition = new TechSpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                techVoiceBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.log("Recognition already started");
+                    }
+                };
+
+                recognition.onstart = () => {
+                    techVoiceBtn.classList.add('text-red-500', 'animate-pulse');
+                    techSearchInput.placeholder = "Listening...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    techSearchInput.value = transcript;
+                    filterTechnicians(); // Trigger filtering
+                    techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    if (event.error === 'not-allowed') alert("Please allow microphone access");
+                    techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                };
+
+                recognition.onend = () => {
+                    techVoiceBtn.classList.remove('text-red-500', 'animate-pulse');
+                    techSearchInput.placeholder = "Search by name or category...";
+                };
+            } else if (techVoiceBtn) {
+                techVoiceBtn.style.display = 'none';
+            }
+        }
+
+        function openTechModal() {
+            document.getElementById('techSearchInput').value = ''; // सर्च रिसेट करें
+            (async () => {
+                await loadTechnicians();
+                renderTechList(technicians); // पूरी लिस्ट दिखाएं
+                setupTechVoiceSearch(); // Ensure listeners are attached
+            })();
+            document.getElementById('techModal').classList.remove('hidden');
+        }
+    </script>
+    </header>
+    <div class="container mx-auto px-4 py-8 space-y-8">
+
+        <!-- Category Filters -->
+        <div class="creative-card-catalogue">
+            <div class="overflow-x-auto hide-scrollbar">
+                <div id="categoryFilter" class="flex gap-8 min-w-max px-2 items-center"></div>
+            </div>
+        </div>
+
+        <div id="loadingSpinner"
+            class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center backdrop-blur-xl">
+            <div class="relative">
+                <div class="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gold-500"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <img src="../logo.png" class="w-10 h-10 object-contain opacity-50" alt="">
+                </div>
+            </div>
+            <p class="mt-6 text-gold-500 font-black uppercase tracking-[0.3em] text-[10px] animate-pulse">Loading
+                Collection</p>
+        </div>
+
+        <!-- Product Grid -->
+        <main id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8">
+        </main>
+
+    </div>
+
+    <!-- Catalogue Viewer Modal -->
+    <div id="catalogueModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
+
+        <!-- Close Button -->
+        <button onclick="closeCatalogue()"
+            class="absolute top-6 right-6 bg-red-600 text-white rounded-full p-2 z-[200] shadow-lg hover:bg-red-700 transition transform hover:scale-110 flex items-center justify-center">
+            <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+        </button>
+
+        <!-- Floating Prev Button (Outside) -->
+        <button onclick="changePage(-1)" id="catPrevBtn"
+            class="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-back-outline" class="text-4xl"></ion-icon>
+        </button>
+
+        <!-- Floating Next Button (Outside) -->
+        <button onclick="changePage(1)" id="catNextBtn"
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-800/80 text-white hover:bg-gold hover:text-white rounded-full p-4 z-[200] transition transform hover:scale-110 disabled:opacity-0 disabled:pointer-events-none">
+            <ion-icon name="chevron-forward-outline" class="text-4xl"></ion-icon>
+        </button>
+
+        <!-- Zoom Controls -->
+        <div class="absolute top-24 right-6 flex flex-col gap-2 z-[200]">
+            <button onclick="updateZoom(0.25)"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="add-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="updateZoom(-0.25)"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110">
+                <ion-icon name="remove-outline" class="text-xl"></ion-icon>
+            </button>
+            <button onclick="resetZoom()"
+                class="bg-gray-800/90 text-white hover:text-gold p-3 rounded-full shadow-lg transition hover:scale-110"
+                title="Reset Zoom">
+                <ion-icon name="scan-outline" class="text-xl"></ion-icon>
+            </button>
+        </div>
+
+        <div class="relative w-full h-full flex flex-col items-center justify-center p-4 content-center">
+            <div id="catalogueViewer"
+                class="relative max-w-6xl w-full h-[90vh] flex items-center justify-center bg-gray-900 rounded-lg overflow-hidden border border-gray-800 shadow-2xl cursor-grab active:cursor-grabbing">
+                <!-- Canvas injected here -->
+                <div id="catalogueLoader"
+                    class="absolute inset-0 flex items-center justify-center bg-black/50 z-10 hidden rounded-lg">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        const API_URL = window.API_BASE_URL + "/graphql/";
+        const HIDDEN_CATEGORY_NAME = "Gallery Image Category";
+        const FALLBACK_IMG = "images/placeholder.png";
+        var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
+
+        const QUERY = `
+query {
+  categories(first: 100) { 
+    edges { 
+      node { 
+        id 
+        name 
+        backgroundImage {
+            url
+        }
+        parent { 
+          id 
+          name
+        } 
+          children(first: 100) {
+            edges {
+              node {
+               backgroundImage {
+                    url
+                }
+                id
+                name
+              }
+            }
+          }
+      } 
+    } 
+  }
+  products(first: 100, channel: "${SALEOR_CHANNEL}") { 
+    edges { 
+      node { 
+        id 
+        name 
+        slug 
+        description
+        media {
+          url
+          type
+        }
+        attributes {
+          attribute {
+            name
+          }
+          values {
+            name
+            file {
+              url
+            }
+          }
+        }
+        pricing {
+            priceRange {
+              start {
+                gross {
+                  amount
+                  currency
+                }
+              }
+            }
+        }
+        category { 
+          id 
+          name 
+          parent { 
+            id 
+            name 
+          } 
+        } 
+        productType { 
+          id 
+          name 
+        } 
+        thumbnail { 
+          url 
+        } 
+        metadata {
+          key
+          value
+        } 
+      } 
+    } 
+  }
+}
+`;
+
+        // Wishlist — items from this page are tagged Catalogue
+        function getWishlist() {
+            return JSON.parse(localStorage.getItem('wishlist') || '[]');
+        }
+        function saveWishlist(list) {
+            localStorage.setItem('wishlist', JSON.stringify(list));
+        }
+        function isWishlisted(id) {
+            return getWishlist().some(w => w.id === id);
+        }
+        function toggleWishlist(id, name, image, price, currency, category, linkUrl) {
+            let list = getWishlist();
+            const idx = list.findIndex(w => w.id === id);
+            if (idx > -1) {
+                list.splice(idx, 1);
+            } else {
+                list.push({
+                    id,
+                    name,
+                    image,
+                    price: parseFloat(price) || 0,
+                    currency: currency || 'INR',
+                    category,
+                    linkUrl,
+                    wishlistType: 'Catalogue'
+                });
+            }
+            saveWishlist(list);
+            refreshWishlistHearts();
+            updateWishlistBadge();
+        }
+        function refreshWishlistHearts() {
+            document.querySelectorAll('.wishlist-btn').forEach(btn => {
+                const wid = btn.dataset.wid;
+                if (!wid) return;
+                const wishlisted = isWishlisted(wid);
+                const svg = btn.querySelector('svg');
+                if (!svg) return;
+                if (wishlisted) {
+                    svg.setAttribute('fill', '#e8b84b');
+                    svg.setAttribute('stroke', '#e8b84b');
+                    btn.classList.add('scale-110');
+                } else {
+                    svg.setAttribute('fill', 'none');
+                    svg.setAttribute('stroke', 'currentColor');
+                    btn.classList.remove('scale-110');
+                }
+            });
+        }
+        function updateWishlistBadge() {
+            const count = getWishlist().length;
+            document.querySelectorAll('.wishlist-badge').forEach(el => {
+                el.textContent = count;
+                el.style.display = count > 0 ? 'flex' : 'none';
+            });
+        }
+
+        let allCategories = [];
+        let allProducts = [];
+        let selectedParentCategory = null;
+        const catalogueQtys = {};
+
+        async function fetchSaleor() {
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: QUERY })
+                });
+                const json = await res.json();
+                if (json.errors) console.error("GraphQL errors:", json.errors);
+                return json.data;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                return null;
+            }
+        }
+
+        function getCatalogueLink(product) {
+            // Priority 1: Check Attributes (Legacy)
+            if (product.attributes) {
+                const catAttr = product.attributes.find(a => a.attribute.name === "Catalogue");
+                if (catAttr && catAttr.values && catAttr.values.length > 0) {
+                    return catAttr.values[0].file?.url;
+                }
+            }
+
+            // Priority 2: Check Metadata (catalogue_X)
+            if (product.metadata) {
+                // Find any key starting with 'catalogue_'
+                // We prioritize 'catalogue_1', but will take others if available
+                const catalogues = product.metadata
+                    .filter(m => m.key.startsWith("catalogue_"))
+                    .sort((a, b) => {
+                        // sort by number e.g. catalogue_1 before catalogue_2
+                        const numA = parseInt(a.key.split('_')[1]) || 0;
+                        const numB = parseInt(b.key.split('_')[1]) || 0;
+                        return numA - numB;
+                    });
+
+                if (catalogues.length > 0) {
+                    return catalogues[0].value;
+                }
+            }
+
+            return null;
+        }
+
+        function getParentCategories(categories) {
+            return categories.filter(c => !c.parent && c.name !== HIDDEN_CATEGORY_NAME);
+        }
+
+        function getSubcategories(categories, parentId) {
+            return categories.filter(c => c.parent?.id === parentId);
+        }
+        function getCategoryIcon(name) {
+            const lowerName = name.toLowerCase();
+            if (lowerName.includes('wallpaper')) return 'image-outline';
+            if (lowerName.includes('plumbing')) return 'water-outline';
+            if (lowerName.includes('fitting')) return 'build-outline';
+            if (lowerName.includes('electric')) return 'flash-outline';
+            if (lowerName.includes('carpentry')) return 'hammer-outline';
+            return 'cube-outline';
+        }
+
+        function renderCategoryFilters(categories, products) {
+            // Get unique category IDs from products with catalogues
+            const productCategoryIds = new Set();
+            const productParentCategoryIds = new Set();
+
+            products.forEach(p => {
+                if (p.category?.id) productCategoryIds.add(p.category.id);
+                if (p.category?.parent?.id) productParentCategoryIds.add(p.category.parent.id);
+            });
+
+            const parentCategories = getParentCategories(categories).filter(c => {
+                if (productCategoryIds.has(c.id)) return true;
+                if (productParentCategoryIds.has(c.id)) return true;
+                const subcats = getSubcategories(categories, c.id);
+                return subcats.some(sub => productCategoryIds.has(sub.id));
+            });
+
+            let categoriesHtml = "";
+            if (parentCategories.length > 0) {
+                const chips = [];
+                parentCategories.forEach(parent => {
+                    chips.push({ ...parent, isSubcategory: false, parentName: '' });
+                    const subs = getSubcategories(categories, parent.id)
+                        .filter(sub => productCategoryIds.has(sub.id))
+                        .map(sub => ({ ...sub, isSubcategory: true, parentName: parent.name }));
+                    chips.push(...subs);
+                });
+
+                categoriesHtml = chips.map(c => {
+                    const hasImage = c.backgroundImage?.url;
+                    const isActive = selectedParentCategory === c.id;
+                    const iconHtml = hasImage
+                        ? `<img src="${c.backgroundImage.url}" class="w-full h-full object-cover">`
+                        : `<div class="w-full h-full flex items-center justify-center">
+                               <ion-icon name="${getCategoryIcon(c.name)}" class="text-3xl text-gold-500"></ion-icon>
+                           </div>`;
+                    const label = c.isSubcategory ? `${c.name}` : c.name;
+
+                    return `
+                    <div class="filter-category group flex flex-col items-center cursor-pointer transition-all ${isActive ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="${c.id}">
+                        <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border ${isActive ? 'border-gold-500 shadow-[0_0_18px_rgba(212,175,55,0.35)]' : 'border-gold-500/20'} group-hover:border-gold-500 transition-colors">
+                            ${iconHtml}
+                        </div>
+                        <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center leading-tight ${isActive ? 'underline underline-offset-4' : ''}">${label}</span>
+                    </div>`;
+                }).join("");
+            }
+
+            const isAllActive = selectedParentCategory === 'all' || !selectedParentCategory;
+            document.getElementById("categoryFilter").innerHTML = `
+                <div class="filter-category group flex flex-col items-center cursor-pointer transition-all ${isAllActive ? 'opacity-100 scale-100' : 'hover:opacity-100'}" data-category="all">
+                    <div class="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center border ${isAllActive ? 'border-gold-500 shadow-[0_0_18px_rgba(212,175,55,0.35)]' : 'border-gold-500/20'} group-hover:border-gold-500 transition-colors">
+                        <ion-icon name="grid-outline" class="text-3xl text-gold-500"></ion-icon>
+                    </div>
+                    <span class="text-[10px] font-bold text-white mt-2 uppercase tracking-tighter w-16 text-center ${isAllActive ? 'underline underline-offset-4' : ''}">All</span>
+                </div>
+                ${categoriesHtml}
+            `;
+        }
+
+        function getActualPrice(product) {
+            if (!product.attributes) return null;
+            const priceAttr = product.attributes.find(a => a.attribute.name === "Actual Price");
+            if (priceAttr && priceAttr.values && priceAttr.values.length > 0) {
+                return priceAttr.values[0].name;
+            }
+            return null;
+        }
+
+        function renderDesktopList(products) {
+            const desktopList = document.getElementById("productGrid");
+
+            desktopList.innerHTML = products.length ? products.map(p => {
+                const catalogueVal = getCatalogueLink(p); // Raw value (URL or filename)
+                const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+                const currentPriceVal = currentPriceObj ? currentPriceObj.amount : null;
+                const currency = currentPriceObj ? currentPriceObj.currency : "";
+                const price = currentPriceVal?.toFixed(2) || "0.00";
+                const currSymbol = currency === 'INR' ? '₹' : (currency || '');
+                const formattedPrice = currency === 'INR' ? `₹${price}` : `${price} ${currSymbol}`;
+
+                const imageUrl = p.thumbnail?.url || FALLBACK_IMG;
+                const safeImgUrl = imageUrl.replace(/'/g, "\\'");
+                const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeCat = (p.category?.name || 'Catalogue').replace(/'/g, "\\'");
+                const linkUrl = `../product/?id=${p.id}`;
+                const wishlistBtn = `
+                    <button type="button" class="wishlist-btn absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-sm w-7 h-7 flex items-center justify-center rounded-full transition-transform text-white hover:scale-125"
+                        data-wid="${p.id}"
+                        onclick="event.stopPropagation(); event.preventDefault(); toggleWishlist('${p.id}', '${safeName}', '${safeImgUrl}', ${currentPriceVal || 0}, '${currency || 'INR'}', '${safeCat}', '${linkUrl}')"
+                        title="Add to Wishlist">
+                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                        </svg>
+                    </button>`;
+
+                const safeId = p.id.replace(/[^a-zA-Z0-9]/g, '');
+                const addToCartBtn = `
+                    <div onclick="event.stopPropagation()" class="w-full">
+                        <button type="button"
+                            class="flex gap-2 items-center add-btn-${safeId} w-full gold-gradient-bg text-black text-[11px] font-black uppercase py-2.5 rounded-full hover:opacity-90 transition shadow-lg justify-center"
+                            onpointerdown="event.stopPropagation()"
+                            onclick="return onCatalogueAddToCart(event, '${p.id}')">
+                            Add to Cart
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 3H5L6.6 12.59C6.7 13.17 7.2 13.6 7.8 13.6H17.4C18 13.6 18.5 13.17 18.6 12.59L20 6H6"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                                <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <div class="qty-ctrl-row-${safeId} flex items-center gap-2 w-full" style="display:none;">
+                            <div class="flex-1 flex items-center justify-between bg-black/60 border border-[#e8b84b40] rounded-xl overflow-hidden h-10 px-1 shadow-inner">
+                                <button onpointerdown="event.stopPropagation()" onclick="return catalogueDecQty(event, '${p.id}')"
+                                    class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                                <input type="number"
+                                    class="qty-val-${safeId} bg-transparent text-white font-bold text-base w-[60px] text-center outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    value="1"
+                                    onpointerdown="event.stopPropagation()"
+                                    oninput="catalogueHandleQtyInput(this, '${p.id}')"
+                                    onblur="catalogueFinalizeQty(this, '${p.id}')"
+                                    onclick="event.stopPropagation()">
+                                <button onpointerdown="event.stopPropagation()" onclick="return catalogueIncQty(event, '${p.id}')"
+                                    class="w-10 h-full flex items-center justify-center text-[#e8b84b] hover:bg-[#e8b84b10] font-black text-xl select-none transition">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                let buttonHtml = addToCartBtn;
+                if (catalogueVal) {
+                    if (catalogueVal.startsWith("http")) {
+                        buttonHtml += `
+                            <a href="${catalogueVal}" target="_blank"
+                             onpointerdown="event.stopPropagation()"
+                             onclick="return onCatalogueDownloadClick(event)"
+                             class="w-full block text-center bg-gray-200 text-black text-[10px] font-black uppercase tracking-widest px-3 py-2.5 rounded-xl shadow hover:bg-gray-300 transition cursor-pointer">
+                             Download
+                            </a>`;
+                    } else {
+                        buttonHtml += `
+                            <button type="button" onpointerdown="event.stopPropagation()" onclick="return onCatalogueViewClick(event, '${catalogueVal}')"
+                             class="mt-2 w-full border border-gold-500/50 text-gold-500 text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-xl hover:bg-gold-500/10 transition">
+                             View Catalogue
+                            </button>`;
+                    }
+                }
+
+                return `
+                <div class="creative-card flex flex-col group cursor-pointer h-full relative" onclick="window.location.href='../product/?id=${p.id}'">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${imageUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">
+                        ${p.category?.name ? `<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-wider z-10 border border-white/10">${p.category.name}</div>` : ''}
+                        ${wishlistBtn}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span class="gold-gradient-bg text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider">View Details</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-2 flex flex-col flex-grow bg-black/20 backdrop-blur-md">
+                        <span class="gold-gradient-text text-[10px] font-black uppercase tracking-widest mb-1">${p.category?.name || 'Catalogue'}</span>
+                        <h3 class="font-bold text-white text-xs lg:text-sm line-clamp-2 mb-2 group-hover:text-gold-500 transition leading-tight">${p.name}</h3>
+                        <div class="mt-auto pt-1 border-t border-white/5 space-y-3">
+                            <div class="flex flex-col">
+                                <span class="text-[8px] text-white/40 uppercase font-bold tracking-widest">Starting from</span>
+                                <span class="gold-gradient-text text-base font-black">${formattedPrice}</span>
+                            </div>
+                            ${buttonHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join("") : `<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest">No catalogues found</div>`;
+        }
+
+        function renderMobileList(products) {
+            // We'll use the same grid for mobile now, so just call desktop list
+            renderDesktopList(products);
+        }
+
+        function applyFilters() {
+            let filtered = window.allProducts || [];
+
+            // Filter by Search Query
+            const searchInput = document.getElementById("searchInput");
+            const searchQuery = searchInput ? searchInput.value.toLowerCase() : "";
+            if (searchQuery) {
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(searchQuery) ||
+                    (p.category && p.category.name.toLowerCase().includes(searchQuery)) ||
+                    (p.description && p.description.toLowerCase().includes(searchQuery))
+                );
+            }
+
+            if (selectedParentCategory && selectedParentCategory !== "all") {
+                const directSubs = getSubcategories(allCategories, selectedParentCategory);
+                const scopeIds = directSubs.length > 0
+                    ? [selectedParentCategory, ...directSubs.map(s => s.id)]
+                    : [selectedParentCategory];
+
+                filtered = filtered.filter(p => scopeIds.includes(p.category?.id));
+            }
+
+            if (window.innerWidth >= 768) {
+                renderDesktopList(filtered);
+            } else {
+                renderMobileList(filtered);
+            }
+            refreshWishlistHearts();
+            initCatalogueCardStates();
+        }
+
+        function setupFiltering() {
+            // Search Input Listener
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+                searchInput.addEventListener("input", () => {
+                    applyFilters();
+                });
+            }
+
+            document.addEventListener("click", e => {
+                if (e.target.closest(".filter-category")) {
+                    const target = e.target.closest(".filter-category");
+                    selectedParentCategory = target.dataset.category;
+                    renderCategoryFilters(allCategories, window.allProducts || []);
+                    applyFilters();
+                }
+            });
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById("cartCountBadge");
+            if (!badge) return; // Badge element may not exist
+
+            const list = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const count = list.length;
+
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+
+        function addCatalogueItemToCart(id, name, image, price, currency, category) {
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity, 10) || 1) + 1;
+                catalogueQtys[id] = existing.quantity;
+            } else {
+                cart.unshift({
+                    id,
+                    name,
+                    image,
+                    price: parseFloat(price) || 0,
+                    currency: currency || 'INR',
+                    category: category || 'Catalogue',
+                    quantity: 1
+                });
+                catalogueQtys[id] = 1;
+            }
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+        }
+
+        function addCatalogueItemToCartById(productId) {
+            const products = window.allProducts || [];
+            const p = products.find(x => x.id === productId);
+            if (!p) return;
+
+            const currentPriceObj = p.pricing?.priceRange?.start?.gross;
+            const price = currentPriceObj?.amount || 0;
+            const currency = currentPriceObj?.currency || 'INR';
+            const image = p.thumbnail?.url || FALLBACK_IMG;
+            const category = p.category?.name || 'Catalogue';
+
+            addCatalogueItemToCart(
+                p.id,
+                p.name || 'Product',
+                image,
+                price,
+                currency,
+                category
+            );
+        }
+
+        function onCatalogueAddToCart(e, productId) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            addCatalogueItemToCartById(productId);
+            return false;
+        }
+
+        function onCatalogueViewClick(e, catalogueVal) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            openCatalogueViewer(catalogueVal);
+            return false;
+        }
+
+        function onCatalogueDownloadClick(e) {
+            if (e) {
+                e.stopPropagation();
+            }
+            return true;
+        }
+
+        function catalogueHandleQtyInput(input, id) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            value = value.replace(/^0+/, '') || '';
+            input.value = value;
+        }
+
+        function catalogueFinalizeQty(input, id) {
+            let value = parseInt(input.value, 10);
+            if (isNaN(value) || value <= 0) value = 1;
+            input.value = value;
+
+            catalogueQtys[id] = value;
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity = value;
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                updateCartBadge();
+            }
+        }
+
+        function catalogueIncQty(e, id) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            catalogueQtys[id] = (catalogueQtys[id] || 1) + 1;
+            let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            const item = cart.find(i => i.id === id);
+            if (item) item.quantity = catalogueQtys[id];
+            localStorage.setItem("inquiryList", JSON.stringify(cart));
+            updateCartBadge();
+            document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+            return false;
+        }
+
+        function catalogueDecQty(e, id) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const safeId = id.replace(/[^a-zA-Z0-9]/g, '');
+            const current = catalogueQtys[id] || 1;
+            if (current <= 1) {
+                let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                cart = cart.filter(i => i.id !== id);
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                delete catalogueQtys[id];
+                updateCartBadge();
+                document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'none');
+            } else {
+                catalogueQtys[id] = current - 1;
+                let cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+                const item = cart.find(i => i.id === id);
+                if (item) item.quantity = catalogueQtys[id];
+                localStorage.setItem("inquiryList", JSON.stringify(cart));
+                updateCartBadge();
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[id]);
+            }
+            return false;
+        }
+
+        function initCatalogueCardStates() {
+            const cart = JSON.parse(localStorage.getItem("inquiryList") || "[]");
+            cart.forEach(cartItem => {
+                const safeId = cartItem.id.replace(/[^a-zA-Z0-9]/g, '');
+                catalogueQtys[cartItem.id] = parseInt(cartItem.quantity, 10) || 1;
+                document.querySelectorAll(`.add-btn-${safeId}`).forEach(el => el.style.display = 'none');
+                document.querySelectorAll(`.qty-ctrl-row-${safeId}`).forEach(el => el.style.display = 'flex');
+                document.querySelectorAll(`.qty-val-${safeId}`).forEach(el => el.value = catalogueQtys[cartItem.id]);
+            });
+        }
+
+        (async () => {
+            const data = await fetchSaleor();
+            if (!data) {
+                document.getElementById("loadingSpinner").classList.add("hidden");
+                return alert("Error fetching Saleor API");
+            }
+            allCategories = data.categories?.edges?.map(e => e.node) || [];
+            let products = data.products?.edges?.map(e => e.node) || [];
+
+            // Find the "catalogue" category and all its subcategories
+            const catalogueCategory = allCategories.find(c => c.name?.toLowerCase() === "catalogue");
+            const catalogueCategoryId = catalogueCategory?.id;
+            const catalogueSubcategoryIds = catalogueCategoryId
+                ? allCategories.filter(c => c.parent?.id === catalogueCategoryId).map(c => c.id)
+                : [];
+
+            // Find the hidden category and all its subcategories
+            const hiddenCategory = allCategories.find(c => c.name === HIDDEN_CATEGORY_NAME);
+            const hiddenCategoryId = hiddenCategory?.id;
+            const hiddenSubcategoryIds = hiddenCategoryId
+                ? allCategories.filter(c => c.parent?.id === hiddenCategoryId).map(c => c.id)
+                : [];
+
+            // Filter: only products with catalogue AND (category name === "catalogue" OR parent is catalogue) AND not in hidden category
+            window.allProducts = products.filter(p => {
+                // const hasCatalogue = getCatalogueLink(p) !== null;
+                // if (!hasCatalogue) return false;
+
+                const categoryId = p.category?.id;
+                const categoryName = p.category?.name?.toLowerCase();
+                const parentCategoryId = p.category?.parent?.id;
+                const parentCategoryName = p.category?.parent?.name?.toLowerCase();
+
+                // Check if product belongs to catalogue category or its subcategories
+                const isCatalogueCategory = categoryName === "catalogue";
+                const isCatalogueSubcategory = catalogueSubcategoryIds.includes(categoryId);
+                const hasCatalogueParent = parentCategoryName === "catalogue" || parentCategoryId === catalogueCategoryId;
+
+                if (!isCatalogueCategory && !isCatalogueSubcategory && !hasCatalogueParent) return false;
+
+                // Exclude hidden categories
+                if (categoryId === hiddenCategoryId) return false;
+                if (hiddenSubcategoryIds.includes(categoryId)) return false;
+                if (parentCategoryId === hiddenCategoryId) return false;
+
+                return true;
+            });
+            renderCategoryFilters(allCategories, window.allProducts);
+            applyFilters();
+            setupFiltering();
+            updateCartBadge();
+            updateWishlistBadge();
+            document.getElementById("loadingSpinner").classList.add("hidden");
+        })();
+    </script>
+
+    <!-- PDF.js Logic -->
+    <script type="module">
+        import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+
+        let pdfDoc = null; // Represents the CURRENT page's PDF document
+        let currentPage = 1;
+        let totalPages = 1;
+        let isRendering = false;
+        let pageNumPending = null;
+        let currentFilename = "";
+
+        // Caching blobs to avoid re-fetching pages
+
+        const pageBlobCache = new Map(); // Key: "filename_page" -> Blob URL
+        let zoomLevel = 1.0;
+
+        // Pan State
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
+
+        window.openCatalogueViewer = async function (filename) {
+            const nameWithoutExt = filename.replace(/\.[^/.]+$/, "").trim();
+            currentFilename = nameWithoutExt;
+            currentPage = 1;
+            zoomLevel = 1.0;
+            pageBlobCache.clear();
+
+            const modal = document.getElementById("catalogueModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            // Setup Pan Events
+            const container = document.getElementById("catalogueViewer");
+            container.innerHTML = `
+                 <div id="catalogueLoader" class="absolute inset-0 flex items-center justify-center bg-black/50 z-10 hidden rounded-lg">
+                     <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold"></div>
+                 </div>
+            `;
+
+            // Attach mouse events for panning
+            container.onmousedown = (e) => {
+                isDragging = true;
+                container.classList.add('active');
+                startX = e.pageX - container.offsetLeft;
+                startY = e.pageY - container.offsetTop;
+                scrollLeft = container.scrollLeft;
+                scrollTop = container.scrollTop;
+            };
+
+            container.onmouseleave = () => {
+                isDragging = false;
+                container.classList.remove('active');
+            };
+
+            container.onmouseup = () => {
+                isDragging = false;
+                container.classList.remove('active');
+            };
+
+            container.onmousemove = (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const y = e.pageY - container.offsetTop;
+                const walkX = (x - startX) * 2;
+                const walkY = (y - startY) * 2;
+                container.scrollLeft = scrollLeft - walkX;
+                container.scrollTop = scrollTop - walkY;
+            };
+
+            await fetchPageCount();
+            await loadPageDocument(1);
+        };
+
+        window.updateZoom = function (delta) {
+            const newZoom = zoomLevel + delta;
+            if (newZoom >= 0.5 && newZoom <= 3.0) {
+                zoomLevel = newZoom;
+                if (currentFilename && currentPage) {
+                    loadPageDocument(currentPage);
+                }
+            }
+        };
+
+        window.resetZoom = function () {
+            zoomLevel = 1.0;
+            if (currentFilename && currentPage) {
+                loadPageDocument(currentPage);
+            }
+        };
+
+        window.closeCatalogue = function () {
+            document.getElementById("catalogueModal").classList.add("hidden");
+            document.getElementById("catalogueModal").classList.remove("flex");
+            zoomLevel = 1.0;
+        };
+
+        window.changePage = function (delta) {
+            const next = currentPage + delta;
+            if (next >= 1 && next <= totalPages) {
+                currentPage = next;
+                loadPageDocument(next);
+            }
+        };
+
+        async function fetchPageCount() {
+            const encodedName = encodeURIComponent(currentFilename);
+            try {
+                const res = await fetch(`https://pdf-serve.themanagemate.com/list-pdfs/${encodedName}`);
+                if (!res.ok) throw new Error("Failed to list PDF info");
+                const json = await res.json();
+                if (json && json.length > 0) {
+                    totalPages = json[0].pageCount || 1;
+                } else {
+                    totalPages = 1;
+                }
+            } catch (e) {
+                console.error("Error fetching page count:", e);
+                totalPages = 1;
+            }
+            updateUI(currentPage);
+        }
+
+        async function loadPageDocument(pageNum) {
+            const loader = document.getElementById("catalogueLoader");
+            loader.classList.remove("hidden");
+
+            const cacheKey = `${currentFilename}_${pageNum}`;
+            let url = "";
+
+            try {
+                if (pageBlobCache.has(cacheKey)) {
+                    url = pageBlobCache.get(cacheKey);
+                } else {
+                    const encodedName = encodeURIComponent(currentFilename);
+                    const fetchUrl = `https://pdf-serve.themanagemate.com/fetch-page/${encodedName}/${pageNum}`;
+                    const res = await fetch(fetchUrl);
+                    if (!res.ok) throw new Error("Failed to fetch page");
+                    const blob = await res.blob();
+                    url = URL.createObjectURL(blob);
+                    pageBlobCache.set(cacheKey, url);
+                }
+
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdf = await loadingTask.promise;
+
+                await renderPageToCanvas(pdf, 1, pageNum);
+
+                updateUI(pageNum);
+
+            } catch (error) {
+                console.error("Error loading PDF page:", error);
+            } finally {
+                loader.classList.add("hidden");
+            }
+        }
+
+        async function renderPageToCanvas(pdf, pdfPageIndex, globalPageNum) {
+            const page = await pdf.getPage(pdfPageIndex);
+
+            // Create Canvas
+            const canvas = document.createElement("canvas");
+            canvas.className = "shadow-2xl rounded-lg max-h-full max-w-full object-contain";
+
+            const container = document.getElementById("catalogueViewer");
+            // Clear content but keep loader
+            const loader = document.getElementById("catalogueLoader");
+            container.innerHTML = "";
+            container.appendChild(loader);
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const viewport = page.getViewport({ scale: 1 });
+
+            // Scale: Fit to container height (Single Page) * zoomLevel
+            const containerWidth = container.clientWidth || window.innerWidth * 0.8;
+            const containerHeight = container.clientHeight || window.innerHeight * 0.8;
+
+            const hScale = containerHeight / viewport.height;
+            const wScale = containerWidth / viewport.width;
+
+            // Base scale is "Fit Within"
+            let finalScale = Math.min(hScale, wScale);
+
+            // Apply User Zoom
+            finalScale = finalScale * zoomLevel;
+
+            const scaledViewport = page.getViewport({ scale: finalScale });
+
+            canvas.height = scaledViewport.height;
+            canvas.width = scaledViewport.width;
+
+            // Enforce overflow behavior on container
+            if (zoomLevel > 1.0) {
+                container.classList.remove('overflow-hidden');
+                container.classList.add('overflow-auto');
+                container.style.justifyContent = 'flex-start'; // Allow scrolling
+                container.style.alignItems = 'flex-start';
+            } else {
+                container.classList.add('overflow-hidden');
+                container.classList.remove('overflow-auto');
+                container.style.justifyContent = 'center'; // Center it
+                container.style.alignItems = 'center';
+            }
+
+            // CSS to make it responsive but respect zoom
+            canvas.style.maxWidth = "none"; // Allow exceeding container width for zoom
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: scaledViewport
+            };
+
+            await page.render(renderContext).promise;
+        }
+
+        function updateUI(pageNum) {
+            const prevBtn = document.getElementById("catPrevBtn");
+            const nextBtn = document.getElementById("catNextBtn");
+
+            if (prevBtn) {
+                prevBtn.disabled = pageNum <= 1;
+                // If disabled, hide interaction
+                if (pageNum <= 1) {
+                    prevBtn.classList.add("opacity-0", "pointer-events-none");
+                } else {
+                    prevBtn.classList.remove("opacity-0", "pointer-events-none");
+                }
+            }
+
+            if (nextBtn) {
+                nextBtn.disabled = pageNum >= totalPages;
+                if (pageNum >= totalPages) {
+                    nextBtn.classList.add("opacity-0", "pointer-events-none");
+                } else {
+                    nextBtn.classList.remove("opacity-0", "pointer-events-none");
+                }
+            }
+
+            currentPage = pageNum;
+        }
+    </script>
+
+    <script src="../placeholder.js"></script>
+<!-- Free Consultation Modal -->
+    <div id="consultationModal" class="consult-modal-pos fixed inset-0 z-[115] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConsultationModal()"></div>
+        <div class="glass-panel w-full max-w-md p-8 relative z-10 animate-in fade-in zoom-in duration-300 max-h-[92vh] overflow-y-auto hide-scrollbar">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black uppercase tracking-tight gold-gradient-text">Free Consultation</h2>
+                <button type="button" onclick="closeConsultationModal()" class="text-white/80 hover:text-white transition">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Login Section -->
+            <div id="consultLoginSection">
+                <!-- Step 1: Phone Number -->
+                <div id="consultStepPhone">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile Number</label>
+                    <div class="consult-phone-input-wrapper">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="consultPhoneInput" maxlength="10" placeholder="Enter 10-digit mobile number" autocomplete="tel">
+                    </div>
+                    <button type="button" id="consultSendOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2 mt-6">
+                        <span id="consultSendOtpText">Send OTP</span>
+                        <div id="consultSendOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="consultStepOtp" class="hidden">
+                    <p class="text-sm text-gray-400 mb-2">Enter the OTP sent to <span id="consultDisplayPhone" class="text-gold-500 font-bold"></span></p>
+                    <div class="flex justify-center gap-2 mb-6">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="0">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="1">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="2">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="3">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="4">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="5">
+                    </div>
+                    <button type="button" id="consultVerifyOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
+                        <span id="consultVerifyOtpText">Verify OTP</span>
+                        <div id="consultVerifyOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                    <div class="flex items-center justify-between mt-4">
+                        <button type="button" id="consultChangePhoneBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium">← Change Number</button>
+                        <button type="button" id="consultResendOtpBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium resend-btn" disabled>Resend OTP (<span id="consultResendTimer">30</span>s)</button>
+                    </div>
+                </div>
+
+                <div id="consultLoginError" class="consult-error-message text-red-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+                <div id="consultLoginSuccess" class="consult-success-message text-green-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+            </div>
+
+            <!-- Consultation Options Section -->
+            <div id="consultFormSection" class="hidden">
+                <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-3">Select Your Requirement</label>
+                <div id="consultOptionList" class="flex flex-col gap-2"></div>
+                <div id="consultFormMsg" class="mt-3 text-sm hidden"></div>
+            </div>
+
+            <!-- Consultation Success Section -->
+            <div id="consultSuccessSection" class="hidden">
+                <p class="text-green-400 text-sm font-bold mb-4">Message sent successfully!</p>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <a href="tel:+917699977771"
+                        class="flex items-center justify-center gap-2 h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-xs uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition active:scale-95">
+                        <ion-icon name="call-outline" class="text-lg"></ion-icon>
+                        Call
+                    </a>
+                    <a href="https://wa.me/917699977771?text=Hi%20B-One%20Interior%20Team,%20I%20need%20a%20consultation"
+                        target="_blank"
+                        class="flex items-center justify-center gap-2 h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-xs uppercase tracking-[0.1em] shadow-xl hover:bg-green-500/10 transition active:scale-95">
+                        <ion-icon name="logo-whatsapp" class="text-lg"></ion-icon>
+                        WhatsApp
+                    </a>
+                </div>
+                <p class="text-center text-xs text-white/70 leading-relaxed">Aap ko bohot jald consulting kiya jaega reply per dhiyan dein.</p>
+            </div>
+        </div>
+    </div>
+    <script src="../assets/js/consultation.js"></script>
+</body>
+
+</html>

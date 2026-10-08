@@ -164,7 +164,7 @@
                         class="hidden absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gold-500/30 rounded-xl overflow-hidden z-50 shadow-2xl">
                     </div>
                 </div>
-                <a href="https://b-oneinterior.com/cart" aria-label="Cart"
+                <a href="https://b-oneinterior.com/cart/" aria-label="Cart"
                     class="relative flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 text-gold-500 hover:bg-gold-500/10 transition flex-shrink-0">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                     <span id="cartCountBadge" class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden"></span>
@@ -179,12 +179,12 @@
                 <li><a href="https://b-oneinterior.com/" class="text-gold-500 underline transition font-bold">Home</a>
                 </li>
                 <!-- <li><a href="https://b-oneinterior.com/company" class="hover:text-gold-500 transition">Services</a></li> -->
-                <li><a href="https://b-oneinterior.com/catalogue" class="hover:text-gold-500 transition">Catalogue</a>
+                <li><a href="https://b-oneinterior.com/catalogue/" class="hover:text-gold-500 transition">Catalogue</a>
                 </li>
-                <!-- <li><a href="https://b-oneinterior.com/gallery" class="hover:text-gold-500 transition">Gallery</a></li> -->
-                <li><a href="https://b-oneinterior.com/wishlist" class="hover:text-gold-500 transition">Wishlist</a>
+                <!-- <li><a href="https://b-oneinterior.com/gallery/" class="hover:text-gold-500 transition">Gallery</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist/" class="hover:text-gold-500 transition">Wishlist</a>
                 </li>
-                <li><a id="desktopCartLink" href="https://b-oneinterior.com/cart"
+                <li><a id="desktopCartLink" href="https://b-oneinterior.com/cart/"
                         class="hover:text-gold-500 transition">Cart</a></li>
                 <li id="authLinkDesktop"></li>
             </ul>
@@ -210,15 +210,15 @@
         <div id="drawer">
             <ul>
                 <li><a href="https://b-oneinterior.com">Home</a></li>
-                <li><a href="https://b-oneinterior.com/wishlist">Wishlist</a></li>
-                <!-- <li><a href="https://b-oneinterior.com/shop">Shop</a></li> -->
+                <li><a href="https://b-oneinterior.com/wishlist/">Wishlist</a></li>
+                <!-- <li><a href="https://b-oneinterior.com/shop/">Shop</a></li> -->
                 <!-- <li><a href="https://b-oneinterior.com/company">Services</a></li> -->
-                <!-- <li><a href="https://b-oneinterior.com/gallery">Gallery</a></li> -->
+                <!-- <li><a href="https://b-oneinterior.com/gallery/">Gallery</a></li> -->
 
 
                 <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
-                <li><a href="terms.html">Terms and Conditions</a></li>
-                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms/">Terms and Conditions</a></li>
+                <li><a href="privacy/">Privacy Policy</a></li>
                 <li id="authLinkDrawer"></li>
             </ul>
 
@@ -265,7 +265,7 @@
             <a href="https://b-oneinterior.com/" class="logoBx"></a>
             <ul>
                 <li class="relative">
-                    <a href="profile.html"
+                    <a href="profile/"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -276,7 +276,7 @@
                 </li>
 
                 <li class="relative">
-                    <a href="https://b-oneinterior.com/wishlist"
+                    <a href="https://b-oneinterior.com/wishlist/"
                         class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -359,17 +359,17 @@
 
                 if (token && userEmail) {
                     if (desktopLink) {
-                        desktopLink.innerHTML = `<a href="profile.html" class="hover:text-gold-500 transition">Profile</a>`;
+                        desktopLink.innerHTML = `<a href="profile/" class="hover:text-gold-500 transition">Profile</a>`;
                     }
                     if (drawerLink) {
-                        drawerLink.innerHTML = `<a href="profile.html">Profile</a>`;
+                        drawerLink.innerHTML = `<a href="profile/">Profile</a>`;
                     }
                 } else {
                     if (desktopLink) {
-                        desktopLink.innerHTML = `<a href="login.html" class="hover:text-gold-500 transition">Login</a>`;
+                        desktopLink.innerHTML = `<a href="login/" class="hover:text-gold-500 transition">Login</a>`;
                     }
                     if (drawerLink) {
-                        drawerLink.innerHTML = `<a href="login.html">Login</a>`;
+                        drawerLink.innerHTML = `<a href="login/">Login</a>`;
                     }
                 }
             }
@@ -696,7 +696,7 @@
 
                     return `
                         <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex items-center gap-3"
-                             onclick="saveSearchQuery('${query.replace(/'/g, "\\'")}'); window.location.href='product.html?id=${item.id}'">
+                             onclick="saveSearchQuery('${query.replace(/'/g, "\\'")}'); window.location.href='product/?id=${item.id}'">
                             <img src="${item.thumbnail || 'images/placeholder.png'}" class="w-12 h-12 object-cover rounded" alt="${item.name}">
                             <div>
                                 <h4 class="text-sm font-semibold text-gray-800">${item.name}</h4>
@@ -806,7 +806,7 @@
             </div>
             <span class="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-2 py-1 rounded pointer-events-none">Before</span>
             <span class="absolute top-3 right-3 z-10 bg-black/60 backdrop-blur text-white text-[10px] tracking-widest uppercase px-2 py-1 rounded pointer-events-none">After</span>
-            <a href="our-work.html" onclick="event.stopPropagation()" class="absolute bottom-3 right-3 z-[30] bg-black/80 backdrop-blur text-white text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full border border-[#D4AF37]/40 hover:bg-black transition-colors" style="pointer-events:auto;">Click to View our work</a>
+            <a href="our-work/" onclick="event.stopPropagation()" class="absolute bottom-3 right-3 z-[30] bg-black/80 backdrop-blur text-white text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full border border-[#D4AF37]/40 hover:bg-black transition-colors" style="pointer-events:auto;">Click to View our work</a>
         </div>
     </section>
 
@@ -987,7 +987,7 @@
                     <div
                         class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
                         AFTER</div>
-                    <a href="gallery.html"
+                    <a href="gallery/"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
                 <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="1">
@@ -1003,7 +1003,7 @@
                     <div
                         class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
                         AFTER</div>
-                    <a href="gallery.html"
+                    <a href="gallery/"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
                 <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="2">
@@ -1019,7 +1019,7 @@
                     <div
                         class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
                         AFTER</div>
-                    <a href="gallery.html"
+                    <a href="gallery/"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
                 <div class="before-after-container creative-card1 overflow-hidden shadow-2xl" data-index="3">
@@ -1035,7 +1035,7 @@
                     <div
                         class="absolute top-4 right-4 bg-gold-500 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase shadow-lg">
                         AFTER</div>
-                    <a href="gallery.html"
+                    <a href="gallery/"
                         class="absolute bottom-4 right-4 gold-gradient-bg text-black px-6 py-2 rounded-full text-sm font-bold shadow-xl hover:scale-105 transition transform">Gallery</a>
                 </div>
             </div>
@@ -2104,7 +2104,7 @@
                             updateShopPriceFilterVisibility();
                             applyShopFilters();
                         } else {
-                            window.location.href = `category-search.html?catId=${encodeURIComponent(newCategory)}`;
+                            window.location.href = `category-search/?catId=${encodeURIComponent(newCategory)}`;
                         }
                     }
                 };
@@ -2302,7 +2302,7 @@
                 : '';
 
             return `
-                <a href="product.html?id=${item.linkId}" class="group flex items-center gap-3 md:gap-4 rounded-2xl border border-gold-500/20 bg-black/40 hover:bg-black/60 transition p-2.5 md:p-3">
+                <a href="product/?id=${item.linkId}" class="group flex items-center gap-3 md:gap-4 rounded-2xl border border-gold-500/20 bg-black/40 hover:bg-black/60 transition p-2.5 md:p-3">
                     <img src="${item.image || SHOP_FALLBACK_IMG}" alt="${item.displayName}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover border border-gold-500/20 flex-shrink-0">
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-gold-500/90 mb-1">${item.category || 'Collection'}</div>
@@ -2407,7 +2407,7 @@
                 imageHtml = `<img src="${mainImg}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full aspect-square object-cover transition duration-700 group-hover:scale-110" alt="${p.name}">`;
             }
 
-            const linkUrl = (p.variants && p.variants.length > 0) ? `product.html?id=${p.variants[0].id}` : `product.html?id=${p.id}`;
+            const linkUrl = (p.variants && p.variants.length > 0) ? `product/?id=${p.variants[0].id}` : `product/?id=${p.id}`;
 
             // Variant badge — shown only on variant search result cards (bottom-left)
             const variantBadge = p._isVariant
@@ -2659,7 +2659,7 @@ function renderHeroSlider(collections) {
                 return ((x - r.left) / r.width) * 100;
             }
             container.addEventListener("pointerdown", function(e){
-                if (e.target.closest('a[href="our-work.html"]')) return;
+                if (e.target.closest('a[href="our-work/"]')) return;
                 dragging = true;
                 try{container.setPointerCapture(e.pointerId);}catch(_){}
                 setPos(pctFromX(e.clientX));
@@ -2766,7 +2766,7 @@ function renderHeroSlider(collections) {
                             const div = document.createElement("div");
                             div.className = "creative-card1 flex flex-col relative group cursor-pointer h-full";
                             div.innerHTML = `
-                                <a href="product.html?id=${p.node.id}" class="block h-full">
+                                <a href="product/?id=${p.node.id}" class="block h-full">
                                     <div class="relative overflow-hidden aspect-square">
                                         <img src="${img}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
                                         ${badge}
@@ -2873,7 +2873,7 @@ function renderHeroSlider(collections) {
             // }
 
             item.innerHTML = `
-                <a href="product.html?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
+                <a href="product/?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
                     <div class="relative overflow-hidden aspect-square">
                         <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
                         ${isBestSellerCard ? `<div class="absolute top-2 right-2 bg-gold-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full z-10 shadow uppercase tracking-wide">Best Seller</div>` : ''}
@@ -2899,7 +2899,7 @@ function renderHeroSlider(collections) {
             const item = document.createElement("div");
             item.className = "item px-1";
             item.innerHTML = `
-                <a href="product.html?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
+                <a href="product/?id=${p.node.id}" class="creative-card1 flex flex-col relative group cursor-pointer h-full">
                     <div class="relative overflow-hidden aspect-square rounded-lg">
                         <img src="${p.node.thumbnail?.url || SHOP_FALLBACK_IMG}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/placeholder.png';" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${p.node.name}">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
@@ -3024,7 +3024,7 @@ function renderHeroSlider(collections) {
                 const container = document.getElementById('mainCatFilter');
                 if (!container) return;
                 container.innerHTML = categories.map(c => `
-                    <div onclick="window.location.href='category-search.html?catId=${encodeURIComponent(c.id)}'"
+                    <div onclick="window.location.href='category-search/?catId=${encodeURIComponent(c.id)}'"
                         class="main-cat-item group flex flex-col items-center cursor-pointer transition-all hover:opacity-100">
                         <div class="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden border border-gold-500/20 group-hover:border-gold-500 transition-colors flex items-center justify-center">
                             ${c.backgroundImage?.url
@@ -3176,7 +3176,7 @@ function renderHeroSlider(collections) {
             }
             const priceStr = price ? `₹${price.amount.toLocaleString('en-IN')}` : '';
             const origPriceStr = actualPriceVal ? `₹${actualPriceVal.toLocaleString('en-IN')}` : '';
-            const linkUrl = `product.html?id=${encodeURIComponent(p.id)}&slug=${encodeURIComponent(p.slug || '')}`;
+            const linkUrl = `product/?id=${encodeURIComponent(p.id)}&slug=${encodeURIComponent(p.slug || '')}`;
             const catName = p.category?.name || '';
 
             return `
@@ -3238,7 +3238,7 @@ function renderHeroSlider(collections) {
         function goToSearchResultsPage() {
             const q = getShopSearchQuery();
             if (!q) return;
-            window.location.href = `prodcut-list.html?q=${encodeURIComponent(q)}`;
+            window.location.href = `prodcut-list/?q=${encodeURIComponent(q)}`;
         }
 
         let searchDebounceTimer = null;
@@ -3569,7 +3569,7 @@ function renderHeroSlider(collections) {
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button> -->
         <div class="text-center">
-            <a href="login.html" class="block gold-gradient-bg text-black py-2.5 rounded-xl font-bold text-xs mb-2 hover:scale-[1.02] transition transform">Login</a>
+            <a href="login/" class="block gold-gradient-bg text-black py-2.5 rounded-xl font-bold text-xs mb-2 hover:scale-[1.02] transition transform">Login</a>
             <a id="playstoreBtn" href="https://play.google.com/store/apps/details?id=com.boneinterior.store&hl=en_IN" target="_blank" class="block text-gold-500 rounded-xl font-bold text-xs hover:bg-gold/10 transition transform flex items-center justify-center gap-2">
                 <!-- <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.8L13.7 12 3.6 22.2c-.4-.2-.6-.5-.6-1V2.8c0-.5.2-.8.6-1zM16.4 9.2L5.9 2.6l11.6 11.6-1.1-5zM18.2 10.8l1.9 1c.9.5.9 1.8 0 2.3l-1.9 1-2-2 2-2.3zM5.9 21.4l10.5-6.6 2 2-12.5-7.4v12z"/></svg> -->
                 <img class="w-7 h-7" src="assets/playstore.png" alt="">

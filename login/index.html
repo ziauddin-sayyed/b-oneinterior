@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="../config.js"></script>
+    <meta charset="UTF-8" />
+    <title>Login - B-One Interior</title>
+    <meta property="og:title" content="Login - B-One Interior">
+    <meta property="og:description"
+        content="Sign in to your B-One Interior account to access exclusive features and manage your orders.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta property="og:image" content="https://b-oneinterior.com/logo.png">
+    <meta name="twitter:image" content="https://b-oneinterior.com/logo.png">
+
+    <script src="../assets/js/tailwind.min.js"></script>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script type="module" src="../assets/js/ionicons/ionicons.esm.js"></script>
+    <link rel="stylesheet" href="../style.css?v=1.1">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': {
+                            300: '#F4E5C2',
+                            400: '#E8D4A0',
+                            500: '#D4AF37',
+                            600: '#C5A028',
+                            700: '#B8941F'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .login-container {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            outline: none;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn-outline {
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: #D4AF37;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #D4AF37;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            outline: none;
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .phone-input-wrapper:focus-within {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .phone-input-wrapper .country-code {
+            padding: 0.75rem 0.5rem 0.75rem 1rem;
+            color: #D4AF37;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .phone-input-wrapper input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .phone-input-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/consultation.css">
+</head>
+
+<body class="bg-black min-h-screen flex flex-col text-gray-100">
+
+    <!-- Header -->
+    <header class="bg-black shadow-lg sticky top-0 z-50 border-b border-gold-700 pt-1">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between" id="desktop-nav">
+            <div class="text-2xl font-bold text-gold-500"><img src="../logo.png" style="height: 8vh;" alt=""></div>
+            <ul class="hidden md:flex space-x-6 text-gray-300">
+                <li><a href="https://b-oneinterior.com/" class="hover:text-gold-500 transition">Home</a></li>
+                <li><a href="https://b-oneinterior.com/catalogue/" class="hover:text-gold-500 transition">Catalogue</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist/" class="hover:text-gold-500 transition">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/cart/" class="hover:text-gold-500 transition">Cart</a></li>
+                <li id="authLinkDesktop"></li>
+            </ul>
+            <button class="md:hidden text-gold-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </nav>
+
+        <div id="drawer">
+            <ul>
+                <li><a href="https://b-oneinterior.com">Home</a></li>
+                <li><a href="https://b-oneinterior.com/wishlist/">Wishlist</a></li>
+                <li><a href="https://b-oneinterior.com/#contact">Contact Us</a></li>
+                <li><a href="../terms/">Terms and Conditions</a></li>
+                <li><a href="../privacy/">Privacy Policy</a></li>
+                <li id="authLinkDrawer"></li>
+            </ul>
+        </div>
+        <label for="menu-toggle" class="overlay"></label>
+
+        <div class="fixedBottom" style="box-sizing: border-box; width: 100%; max-width: 100vw;">
+            <a href="https://b-oneinterior.com/" class="logoBx"></a>
+            <ul>
+                <li class="relative">
+                    <a href="../profile/"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Account</div>
+                    </a>
+                </li>
+
+                <li class="relative">
+                    <a href="https://b-oneinterior.com/wishlist/"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Wishlist</div>
+                        <span
+                            class="wishlist-badge absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20"
+                            style="display:none;"></span>
+                    </a>
+                </li>
+
+                <li class="mt-7 active:scale-90 font-black tracking-tighter underline text-gold-500"> Home</li>
+
+                <li class="relative">
+                    <a href="#" onclick="openConsultationModal(); return false;"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg class="w-[25.5px] h-[25.5px]" fill="currentColor" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M323.4 85.2l-96.8 78.4c-16.1 13-19.2 36.4-7 53.1c12.9 17.8 38 21.3 55.3 7.8l99.3-77.2c7-5.4 17-4.2 22.5 2.8s4.2 17-2.8 22.5l-20.9 16.2L512 316.8V128h-.7l-3.9-2.5L434.8 79c-15.3-9.8-33.2-15-51.4-15c-21.8 0-43 7.5-60 21.2zm22.8 124.4l-51.7 40.2C263 274.4 217.3 268 193.7 235.6c-22.2-30.5-16.6-73.1 12.7-96.8l83.2-67.3c-11.6-4.9-24.1-7.4-36.8-7.4C234 64 215.7 69.6 200 80l-72 48V352h28.2l91.4 83.4c19.6 17.9 49.9 16.5 67.8-3.1c5.5-6.1 9.2-13.2 11.1-20.6l17 15.6c19.5 17.9 49.9 16.6 67.8-2.9c4.5-4.9 7.8-10.6 9.9-16.5c19.4 13 45.8 10.3 62.1-7.5c17.9-19.5 16.6-49.9-2.9-67.8l-134.2-123zM16 128c-8.8 0-16 7.2-16 16V352c0 17.7 14.3 32 32 32H64c17.7 0 32-14.3 32-32V128H16zM48 320a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM544 128V352c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V144c0-8.8-7.2-16-16-16H544zm32 208a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z"/></svg>
+                        <div class="text-[12px] tracking-tighter">Consultation</div>
+                        <span id="cartCountBadge"
+                            class="absolute -top-1 right-2 bg-gold text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-lg border border-black/20 hidden">
+                        </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="toggleDrawer(); return false;"
+                        class="flex flex-col items-center justify-center gap-1 transition-all active:scale-90">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <div class="text-[12px] tracking-tighter">Menu</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById("drawer");
+            const overlay = document.querySelector(".overlay");
+            if (drawer.style.left === "0px") {
+                drawer.style.left = "-250px";
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+            } else {
+                drawer.style.left = "0px";
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "auto";
+            }
+        }
+        const overlay = document.querySelector(".overlay");
+        overlay.addEventListener("click", () => {
+            const drawer = document.getElementById("drawer");
+            drawer.style.left = "-250px";
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+        });
+    </script>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+        <div class="login-container w-full max-w-md p-8 rounded-2xl shadow-2xl">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <img src="../logo.png" alt="B-One Interior" class="h-20 mx-auto mb-4">
+                <h1 class="text-2xl font-bold text-white">Contractor Login</h1>
+                <p class="text-gray-400 mt-2">Sign in with your mobile number</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden error-message text-red-400 p-4 rounded-lg mb-6 text-sm text-center">
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage"
+                class="hidden success-message text-green-400 p-4 rounded-lg mb-6 text-sm text-center">
+            </div>
+
+            <!-- Step 1: Phone Number -->
+            <div id="stepPhone">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Mobile Number</label>
+                <div class="phone-input-wrapper">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="phoneInput" maxlength="10" placeholder="Enter 10-digit mobile number"
+                        autocomplete="tel">
+                </div>
+                <button type="button" id="sendOtpBtn"
+                    class="login-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2 mt-6">
+                    <span id="sendOtpText">Send OTP</span>
+                    <div id="sendOtpSpinner" class="hidden">
+                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="stepOtp" class="hidden">
+                <p class="text-sm text-gray-400 mb-2">Enter the OTP sent to <span id="displayPhone" class="text-gold-500 font-bold"></span></p>
+                <div class="flex justify-center gap-3 mb-6">
+                    <input type="text" maxlength="1" class="otp-input" data-index="0">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                <button type="button" id="verifyOtpBtn"
+                    class="login-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
+                    <span id="verifyOtpText">Verify OTP</span>
+                    <div id="verifyOtpSpinner" class="hidden">
+                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
+                <div class="flex items-center justify-between mt-4">
+                    <button type="button" id="changePhoneBtn"
+                        class="login-btn-outline px-4 py-2 rounded-lg text-sm font-medium">
+                        ← Change Number
+                    </button>
+                    <button type="button" id="resendOtpBtn"
+                        class="login-btn-outline px-4 py-2 rounded-lg text-sm font-medium resend-btn" disabled>
+                        Resend OTP (<span id="resendTimer">30</span>s)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="mt-8 text-center text-sm text-gray-400">
+                <a href="https://b-oneinterior.com/" class="text-gold-500 hover:underline">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-6">
+        <div class="container mx-auto text-center text-gray-400">
+            <p>&copy; 2025 B-Oneinterior. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ─── MSG91 SDK Load & Init ────────────────────────────────
+        (function() {
+            window.msg91Config = {
+                widgetId: "3666416d5868313933373531",
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                exposeMethods: true,
+                success: function(data) {
+                    console.log('MSG91 client success callback', data);
+                    if (data && typeof data === 'object') {
+                        var r = data.reqId || data.requestId || data.req_id || (data.data && (data.data.reqId || data.data.requestId || data.data.req_id));
+                        if (r) msg91ReqId = r;
+                    }
+                },
+                failure: function(error) {
+                    console.log('MSG91 client failure callback', error);
+                }
+            };
+
+            function initMsg91() {
+                if (typeof window.initSendOTP === 'function') {
+                    try {
+                        window.initSendOTP(window.msg91Config);
+                        console.log('MSG91 widget initialized');
+                    } catch (err) {
+                        console.error('Error during initSendOTP:', err);
+                    }
+                } else {
+                    console.warn('initSendOTP not ready yet, retrying...');
+                    setTimeout(initMsg91, 500);
+                }
+            }
+
+            if (typeof window.initSendOTP === 'function') {
+                initMsg91();
+            } else {
+                var script = document.createElement('script');
+                script.src = 'https://verify.msg91.com/otp-provider.js';
+                script.async = true;
+                script.onload = initMsg91;
+                script.onerror = function() {
+                    console.error('Failed to load MSG91 SDK');
+                };
+                document.body.appendChild(script);
+            }
+        })();
+
+        // ─── Configuration ─────────────────────────────────────────
+        // const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
+        const DJANGO_API_URL = window.API_BASE_URL + "/api/verify-otp/";
+
+        let verifiedMobile = '';
+        let msg91ReqId = '';
+        let resendCooldown = 30;
+        let resendTimer = null;
+
+        // ─── DOM refs ──────────────────────────────────────────────
+        const stepPhone = document.getElementById('stepPhone');
+        const stepOtp = document.getElementById('stepOtp');
+        const phoneInput = document.getElementById('phoneInput');
+        const displayPhone = document.getElementById('displayPhone');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const sendOtpText = document.getElementById('sendOtpText');
+        const sendOtpSpinner = document.getElementById('sendOtpSpinner');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const verifyOtpText = document.getElementById('verifyOtpText');
+        const verifyOtpSpinner = document.getElementById('verifyOtpSpinner');
+        const changePhoneBtn = document.getElementById('changePhoneBtn');
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        const resendTimerEl = document.getElementById('resendTimer');
+        const errorEl = document.getElementById('errorMessage');
+        const successEl = document.getElementById('successMessage');
+        const otpInputs = document.querySelectorAll('.otp-input');
+
+        // ─── Helpers ───────────────────────────────────────────────
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+            successEl.classList.add('hidden');
+        }
+
+        function showSuccess(msg) {
+            successEl.textContent = msg;
+            successEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+        }
+
+        function hideMessages() {
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+        }
+
+        function setSendOtpLoading(loading) {
+            sendOtpBtn.disabled = loading;
+            sendOtpText.textContent = loading ? 'Sending OTP...' : 'Send OTP';
+            sendOtpSpinner.classList.toggle('hidden', !loading);
+        }
+
+        function setVerifyOtpLoading(loading) {
+            verifyOtpBtn.disabled = loading;
+            verifyOtpText.textContent = loading ? 'Verifying OTP...' : 'Verify OTP';
+            verifyOtpSpinner.classList.toggle('hidden', !loading);
+        }
+
+        function startResendTimer() {
+            resendCooldown = 30;
+            resendOtpBtn.disabled = true;
+            resendTimerEl.textContent = resendCooldown;
+            if (resendTimer) clearInterval(resendTimer);
+            resendTimer = setInterval(() => {
+                resendCooldown--;
+                resendTimerEl.textContent = resendCooldown;
+                if (resendCooldown <= 0) {
+                    clearInterval(resendTimer);
+                    resendTimer = null;
+                    resendOtpBtn.disabled = false;
+                    resendOtpBtn.innerHTML = 'Resend OTP';
+                }
+            }, 1000);
+        }
+
+        function getOtpValue() {
+            let val = '';
+            otpInputs.forEach(inp => val += inp.value);
+            return val;
+        }
+
+        function clearOtpInputs() {
+            otpInputs.forEach(inp => inp.value = '');
+            if (otpInputs[0]) otpInputs[0].focus();
+        }
+
+        // ─── Wait for MSG91 methods ──────────────────────────────
+        function waitForMsg91Method(methodName, callback, maxRetries) {
+            if (maxRetries === undefined) maxRetries = 20;
+            var attempts = 0;
+            var check = function() {
+                if (typeof window[methodName] === 'function') {
+                    callback(true);
+                } else if (attempts < maxRetries) {
+                    attempts++;
+                    setTimeout(check, 250);
+                } else {
+                    console.warn(methodName + ' not found after ' + maxRetries + ' tries');
+                    callback(false);
+                }
+            };
+            check();
+        }
+
+        // ─── OTP input auto‑advance ────────────────────────────────
+        otpInputs.forEach(function(inp, idx) {
+            inp.addEventListener('input', function() {
+                if (inp.value && idx < otpInputs.length - 1) {
+                    otpInputs[idx + 1].focus();
+                }
+            });
+            inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !inp.value && idx > 0) {
+                    otpInputs[idx - 1].focus();
+                }
+                if (e.key === 'Enter') {
+                    document.getElementById('verifyOtpBtn').click();
+                }
+            });
+        });
+
+        phoneInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('sendOtpBtn').click();
+            }
+        });
+
+        // ─── Step 1: Send OTP ──────────────────────────────────────
+        sendOtpBtn.addEventListener('click', function() {
+            var mobile = phoneInput.value.trim();
+            if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) {
+                showError('Please enter a valid 10-digit mobile number');
+                return;
+            }
+
+            hideMessages();
+            setSendOtpLoading(true);
+            var sendOtpTimeout = setTimeout(function() { setSendOtpLoading(false); }, 15000);
+
+            waitForMsg91Method('sendOtp', function(ready) {
+                if (!ready) {
+                    showError('Verification service is initializing. Please try again in a moment.');
+                    setSendOtpLoading(false);
+                    return;
+                }
+
+                var phoneForMsg91 = '91' + mobile;
+
+                try {
+                    window.sendOtp(phoneForMsg91,
+                        function(data) {
+                            clearTimeout(sendOtpTimeout);
+                            console.log('OTP sent successfully:', data);
+                            try {
+                                if (typeof data === 'object' && data) {
+                                // if (data.type == "success") {
+                                    msg91ReqId = data.reqId || data.requestId || data.req_id || data.message || '';
+                                    console.log('Captured msg91ReqId:', msg91ReqId);
+                                }
+                            } catch(e) { console.warn('reqId extraction error:', e); }
+                            verifiedMobile = mobile;
+                            displayPhone.textContent = '+91 ' + mobile;
+                            stepPhone.classList.add('hidden');
+                            stepOtp.classList.remove('hidden');
+                            clearOtpInputs();
+                            startResendTimer();
+                            hideMessages();
+                            setSendOtpLoading(false);
+                        },
+                        function(errorData) {
+                            clearTimeout(sendOtpTimeout);
+                            console.error('MSG91 sendOtp error:', errorData);
+                            showError(errorData?.message || 'Failed to send OTP. Please check your number.');
+                            setSendOtpLoading(false);
+                        }
+                    );
+                } catch(e) {
+                    clearTimeout(sendOtpTimeout);
+                    console.error('sendOtp call error:', e);
+                    showError('Failed to send OTP. Please try again.');
+                    setSendOtpLoading(false);
+                }
+            });
+        });
+
+        // ─── Change phone number ──────────────────────────────────
+        changePhoneBtn.addEventListener('click', function() {
+            stepOtp.classList.add('hidden');
+            stepPhone.classList.remove('hidden');
+            if (resendTimer) {
+                clearInterval(resendTimer);
+                resendTimer = null;
+            }
+            hideMessages();
+        });
+
+        // ─── Resend OTP ────────────────────────────────────────────
+        resendOtpBtn.addEventListener('click', function() {
+            if (resendOtpBtn.disabled) return;
+            hideMessages();
+
+            waitForMsg91Method('retryOtp', function(ready) {
+                if (!ready) {
+                    showError('Verification service is not ready.');
+                    return;
+                }
+
+                setSendOtpLoading(true);
+                window.retryOtp(msg91ReqId || '11',
+                    function(data) {
+                        console.log('OTP resent successfully:', data);
+                        if (typeof data === 'object' && data) {
+                            msg91ReqId = data.reqId || data.requestId || data.req_id || msg91ReqId;
+                        }
+                        startResendTimer();
+                        clearOtpInputs();
+                        setSendOtpLoading(false);
+                    },
+                    function(errorData) {
+                        console.error('MSG91 retryOtp error:', errorData);
+                        showError(errorData?.message || 'Failed to resend OTP.');
+                        setSendOtpLoading(false);
+                    }
+                );
+            });
+        });
+
+        // ─── Step 2: Verify OTP ────────────────────────────────────
+        verifyOtpBtn.addEventListener('click', function() {
+            var otp = getOtpValue();
+            if (otp.length !== 6) {
+                showError('Please enter the complete 6-digit OTP');
+                return;
+            }
+
+            hideMessages();
+            setVerifyOtpLoading(true);
+
+            if (!msg91ReqId) {
+                showError('Session expired. Please request a new OTP.');
+                setVerifyOtpLoading(false);
+                return;
+            }
+            var mobile = phoneInput.value.trim();
+            var payload = {
+                tokenAuth: "545332T55g909s1UHa6a3fdfa2P1",
+                otp: otp,
+                identifier:mobile,
+                widgetId: "3666416d5868313933373531",
+                reqId: msg91ReqId
+            };
+
+            fetch(DJANGO_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.text().then(function(t) { throw new Error(t || 'Verification failed'); });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                localStorage.setItem('saleor_auth_token', data.token || data.access || '');
+                localStorage.setItem('saleor_refresh_token', data.refreshToken || data.refresh || '');
+                localStorage.setItem('saleor_csrf_token', data.csrfToken || '');
+
+                if (data.user) {
+                    localStorage.setItem('saleor_user_email', data.user.email || '');
+                    localStorage.setItem('saleor_user_name',
+                        (data.user.firstName || '') + ' ' + (data.user.lastName || '').trim() || data.user.email || ''
+                    );
+                    localStorage.setItem('saleor_user_is_staff', data.user.isStaff || false);
+                }
+
+                showSuccess('Login successful! Redirecting...');
+
+                setTimeout(function() {
+                    var redirectTo = new URLSearchParams(window.location.search).get('redirectTo');
+                    var token = localStorage.getItem('saleor_auth_token');
+                    if (token) {
+                        fetch(window.API_BASE_URL + "/graphql/", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({
+                                query: 'query { me { id metadata { key value } } }'
+                            })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function(json) {
+                            var user = json && json.data && json.data.me;
+                            if (user && user.metadata) {
+                                for (var i = 0; i < user.metadata.length; i++) {
+                                    if (user.metadata[i].key === 'role') {
+                                        localStorage.setItem('role', user.metadata[i].value);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (redirectTo === 'checkout') { window.location.replace('../checkout/'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior/'); } else { window.location.replace('https://b-oneinterior.com/'); }
+                        })
+                        .catch(function(err) {
+                            console.error('Failed to fetch user metadata:', err);
+                            if (redirectTo === 'checkout') { window.location.replace('../checkout/'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior/'); } else { window.location.replace('https://b-oneinterior.com/'); }
+                        });
+                    } else {
+                        if (redirectTo === 'checkout') { window.location.replace('../checkout/'); } else if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { window.location.replace(location.origin + '/b-oneinterior/'); } else { window.location.replace('https://b-oneinterior.com/'); }
+                    }
+                }, 1500);
+            })
+            .catch(function(err) {
+                console.error('Verify OTP error:', err);
+                showError(err.message || 'Invalid or expired OTP.');
+                setVerifyOtpLoading(false);
+            });
+        });
+
+        // ─── Auth UI (header) ──────────────────────────────────────
+        function checkAuth() {
+            var token = localStorage.getItem('saleor_auth_token');
+            var userEmail = localStorage.getItem('saleor_user_email');
+            var desktopLink = document.getElementById('authLinkDesktop');
+            var drawerLink = document.getElementById('authLinkDrawer');
+
+            if (token && userEmail) {
+                if (desktopLink) {
+                    desktopLink.innerHTML = '<a href="#" onclick="signOut()" class="hover:text-gold-500 transition flex items-center gap-1">' +
+                        '<ion-icon name="log-out-outline"></ion-icon> Sign Out</a>';
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = '<a href="#" onclick="signOut()">Sign Out (' + userEmail + ')</a>';
+                }
+            } else {
+                if (desktopLink) {
+                    desktopLink.innerHTML = '<a href="../login/" class="hover:text-gold-500 transition flex items-center gap-1">' +
+                        '<ion-icon name="person-outline"></ion-icon> Login</a>';
+                }
+                if (drawerLink) {
+                    drawerLink.innerHTML = '<a href="../login/">Login</a>';
+                }
+            }
+        }
+
+        function signOut() {
+            localStorage.clear();
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var token = localStorage.getItem('saleor_auth_token');
+            var userEmail = localStorage.getItem('saleor_user_email');
+            if (token && userEmail) {
+                if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                    window.location.replace(location.origin + '/b-oneinterior/');
+                } else {
+                    window.location.replace('https://b-oneinterior.com/');
+                }
+                return;
+            }
+            checkAuth();
+        });
+    </script>
+<!-- Free Consultation Modal -->
+    <div id="consultationModal" class="consult-modal-pos fixed inset-0 z-[115] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConsultationModal()"></div>
+        <div class="glass-panel w-full max-w-md p-8 relative z-10 animate-in fade-in zoom-in duration-300 max-h-[92vh] overflow-y-auto hide-scrollbar">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black uppercase tracking-tight gold-gradient-text">Free Consultation</h2>
+                <button type="button" onclick="closeConsultationModal()" class="text-white/80 hover:text-white transition">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Login Section -->
+            <div id="consultLoginSection">
+                <!-- Step 1: Phone Number -->
+                <div id="consultStepPhone">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-1">Mobile Number</label>
+                    <div class="consult-phone-input-wrapper">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="consultPhoneInput" maxlength="10" placeholder="Enter 10-digit mobile number" autocomplete="tel">
+                    </div>
+                    <button type="button" id="consultSendOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2 mt-6">
+                        <span id="consultSendOtpText">Send OTP</span>
+                        <div id="consultSendOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="consultStepOtp" class="hidden">
+                    <p class="text-sm text-gray-400 mb-2">Enter the OTP sent to <span id="consultDisplayPhone" class="text-gold-500 font-bold"></span></p>
+                    <div class="flex justify-center gap-2 mb-6">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="0">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="1">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="2">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="3">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="4">
+                        <input type="text" maxlength="1" class="consult-otp-input" data-consult-index="5">
+                    </div>
+                    <button type="button" id="consultVerifyOtpBtn"
+                        class="consult-btn w-full py-3 rounded-lg text-black font-bold text-lg flex items-center justify-center gap-2">
+                        <span id="consultVerifyOtpText">Verify OTP</span>
+                        <div id="consultVerifyOtpSpinner" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        </div>
+                    </button>
+                    <div class="flex items-center justify-between mt-4">
+                        <button type="button" id="consultChangePhoneBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium">← Change Number</button>
+                        <button type="button" id="consultResendOtpBtn" class="consult-btn-outline px-4 py-2 rounded-lg text-sm font-medium resend-btn" disabled>Resend OTP (<span id="consultResendTimer">30</span>s)</button>
+                    </div>
+                </div>
+
+                <div id="consultLoginError" class="consult-error-message text-red-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+                <div id="consultLoginSuccess" class="consult-success-message text-green-400 text-sm p-3 rounded-lg mt-4 hidden"></div>
+            </div>
+
+            <!-- Consultation Options Section -->
+            <div id="consultFormSection" class="hidden">
+                <label class="block text-[10px] font-black uppercase tracking-widest text-white/80 mb-3">Select Your Requirement</label>
+                <div id="consultOptionList" class="flex flex-col gap-2"></div>
+                <div id="consultFormMsg" class="mt-3 text-sm hidden"></div>
+            </div>
+
+            <!-- Consultation Success Section -->
+            <div id="consultSuccessSection" class="hidden">
+                <p class="text-green-400 text-sm font-bold mb-4">Message sent successfully!</p>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <a href="tel:+917699977771"
+                        class="flex items-center justify-center gap-2 h-12 rounded-2xl border-2 border-green-500 bg-green-500 text-white font-black text-xs uppercase tracking-[0.1em] shadow-xl hover:bg-green-600 transition active:scale-95">
+                        <ion-icon name="call-outline" class="text-lg"></ion-icon>
+                        Call
+                    </a>
+                    <a href="https://wa.me/917699977771?text=Hi%20B-One%20Interior%20Team,%20I%20need%20a%20consultation"
+                        target="_blank"
+                        class="flex items-center justify-center gap-2 h-12 rounded-2xl border-2 border-green-500 text-green-500 font-black text-xs uppercase tracking-[0.1em] shadow-xl hover:bg-green-500/10 transition active:scale-95">
+                        <ion-icon name="logo-whatsapp" class="text-lg"></ion-icon>
+                        WhatsApp
+                    </a>
+                </div>
+                <p class="text-center text-xs text-white/70 leading-relaxed">Aap ko bohot jald consulting kiya jaega reply per dhiyan dein.</p>
+            </div>
+        </div>
+    </div>
+    <script src="../assets/js/consultation.js"></script>
+</body>
+
+</html>
