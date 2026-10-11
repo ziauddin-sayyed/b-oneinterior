@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Invoice — B-One Interior</title>
-<meta name="description" content="Tax invoice — B-One Interior."/>
+<title>Invoice / Purchase Order — B-One Interior</title>
+<meta name="description" content="Tax invoice and vendor purchase order — B-One Interior."/>
 <link rel="icon" href="../logo.png"/>
 <style>
   *{box-sizing:border-box}
@@ -38,6 +38,18 @@
   .foot{display:flex;align-items:flex-end;gap:12px;margin-top:8px}
   .foot .left{flex:1;font-size:10px}
   #invQr{width:92px;height:92px;padding:4px;border:2px solid #D4AF37;border-radius:12px}
+  /* ── Vendor PO (compact) ─────────────────────────────── */
+  .po-pad{padding:0.22in 0.28in}
+  .po-head{text-align:center;border-bottom:3px double #8a6d0b;padding-bottom:6px}
+  .po-head h1{margin:0;font-size:20px;letter-spacing:.06em;color:#111}
+  .po-head p{margin:2px 0 0;font-size:10px;color:#444}
+  .po-doc{display:inline-block;margin-top:5px;padding:2px 20px;border-radius:999px;background:#111;color:#F5E6A3;font-size:10px;font-weight:800;letter-spacing:.24em;text-indent:.24em}
+  .po-date{margin-top:3px;font-size:9.5px;color:#6b5f2a}
+  table.po-items{width:100%;border-collapse:collapse;margin-top:8px;font-size:10.5px}
+  table.po-items th{font-size:9px;text-align:left;padding:4px 4px;border-bottom:2px solid #8a6d0b;color:#8a6d0b;text-transform:uppercase;letter-spacing:.08em}
+  table.po-items td{padding:4px;border-bottom:1px solid #e6cf7a;vertical-align:middle}
+  table.po-items td img.pth{width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #e6cf7a;display:block}
+  .po-foot{margin-top:8px;padding-top:5px;border-top:1px solid #8a6d0b;font-size:9px;color:#555;display:flex;justify-content:space-between}
   @page{size:A4 landscape;margin:0}
   @media print{
     body{background:#fff}
@@ -49,7 +61,8 @@
 <body>
 <div class="toolbar">
   <button onclick="location.href='../profile/'">← Back to Profile</button>
-  <button class="primary" onclick="window.print()">🖨 Print Invoice</button>
+  <button class="primary" onclick="printPO()">🏭 Print PO</button>
+  <button class="primary" onclick="printInvoice()">🖨 Print Invoice</button>
   <button id="pdfBtn" class="primary" onclick="savePdf()">⬇ Save PDF</button>
   <span id="tbMsg" style="font-size:12px;color:#bbb"></span>
 </div>
@@ -60,6 +73,9 @@
 <script>
 var GRAPHQL=(window.API_BASE_URL?window.API_BASE_URL+"/graphql/":"https://api.b-oneinterior.com/graphql/");
 var SELLER={name:"B-One Interior",addr:"Mumbai, India",phone:"+91 76999 77771",site:"www.b-oneinterior.com"};
+// Vendor-PO letterhead. TODO: replace addr/gstin with the registered office
+// address and GSTIN (not found anywhere in the codebase — placeholders below).
+var SELLER_PO={name:"B-One Interior",addr:"TODO street address, Mumbai, Maharashtra",phone:"+91 76999 77771",site:"www.b-oneinterior.com",gstin:"TODO GSTIN"};
 var PLACEHOLDER="../images/placeholder.png";
 function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function money(a,c){c=c||"INR";try{return new Intl.NumberFormat('en-IN',{style:'currency',currency:c,maximumFractionDigits:0}).format(a)}catch(e){return "Rs."+a}}
@@ -116,13 +132,55 @@ async function fetchOrder(number){
   return (edges.map(e=>e.node).find(o=>String(o.number)===String(number)))||null;
 }
 var currentOrder=null;
+var currentDoc="po"; // "po" | "invoice" — PO is the default view
+function setTitle(){
+  if(!currentOrder) return;
+  document.title=(currentDoc==="po"?"Purchase Order":"Invoice #"+(currentOrder.number||""))+" — B-One Interior";
+}
 function lineThumb(l){
   if(l&&l.thumbnail&&l.thumbnail.url) return l.thumbnail.url;
   if(l&&l.product&&l.product.thumbnail&&l.product.thumbnail.url) return l.product.thumbnail.url;
   return PLACEHOLDER;
 }
+function renderPO(o){
+  currentOrder=o;
+  currentDoc="po";
+  setTitle();
+  const lines=o.lines||[];
+  const rows=lines.map((l,ix)=>{
+    const nm=l.variantName||l.productName||l.productSku||"Item";
+    const img=lineThumb(l);
+    return `<tr><td>${ix+1}</td><td><img class="pth" crossorigin="anonymous" src="${esc(img)}" alt="" onerror="this.onerror=null;this.src='${PLACEHOLDER}'"/></td><td>${esc(nm)}</td><td align="center"><b>${l.quantity}</b></td></tr>`;
+  }).join("");
+  const totalQty=lines.reduce((s,l)=>s+(+l.quantity||0),0);
+  document.getElementById('sheet').innerHTML=`
+    <div class="inv-band"></div>
+    <div class="po-pad">
+    <div class="po-head">
+      <h1>${esc(SELLER_PO.name)}</h1>
+      <p>${esc(SELLER_PO.addr)} · ${esc(SELLER_PO.phone)} · ${esc(SELLER_PO.site)}</p>
+      <p>GSTIN: ${esc(SELLER_PO.gstin)}</p>
+      <div><span class="po-doc">PURCHASE ORDER</span></div>
+      <div class="po-date">${esc(fmtDate(o.created))}</div>
+    </div>
+    <table class="po-items"><tr><th>#</th><th>Photo</th><th>Item</th><th>Qty</th></tr>${rows}</table>
+    <div class="po-foot"><span>Total items: <b>${lines.length}</b> · Total qty: <b>${totalQty}</b></span><span>For ${esc(SELLER_PO.name)}</span></div>
+    </div>`;
+}
+function printPO(){
+  if(!currentOrder) return;
+  renderPO(currentOrder);
+  setTimeout(()=>window.print(),150);
+}
+function printInvoice(){
+  if(!currentOrder) return;
+  renderInvoice(currentOrder);
+  setTimeout(()=>window.print(),150);
+}
 function renderInvoice(o){
   currentOrder=o;
+  currentDoc="invoice";
+  setTitle();
   const a=o.shippingAddress||o.billingAddress||{};
   const cname=[a.firstName,a.lastName].filter(Boolean).join(" ")||"Customer";
   const addrLines=[cname,a.streetAddress1,a.streetAddress2,[a.city,a.countryArea].filter(Boolean).join(", ")+(a.postalCode?" - "+a.postalCode:""),a.phone||""].filter(Boolean).map(esc).join("<br/>");
@@ -182,7 +240,7 @@ async function savePdf(){
   msg.textContent="Preparing PDF…";
   try{
     const el=document.getElementById('sheet');
-    const fname="B-One_Invoice_"+(currentOrder.number||"order")+".pdf";
+    const fname=(currentDoc==="po"?"B-One_PO_":"B-One_Invoice_")+(currentOrder.number||"order")+".pdf";
     await window.html2pdf().set({
       margin:0,
       filename:fname,
@@ -209,8 +267,7 @@ async function savePdf(){
     document.getElementById('tbMsg').textContent="";
   }
   if(!o){ document.getElementById('sheet').innerHTML="<p>No order found in this browser's session/local storage. Open an order from <a href='../profile/'>Profile → Invoice</a> on the same device and browser.</p>"; return; }
-  document.title="Invoice #"+(o.number||"")+" — B-One Interior";
-  renderInvoice(o);
+  renderPO(o);
   if(q.get("autoprint")!=="0") setTimeout(()=>window.print(),800);
 })();
 </script>
@@ -223,8 +280,7 @@ async function savePdf(){
     if (!e || e.source !== window.opener) return;
     var o = e.data;
     if (looksLikeOrder(o)) {
-      document.title = "Invoice #" + (o.number || "") + " — B-One Interior";
-      renderInvoice(o);
+      renderPO(o);
       var q = new URLSearchParams(location.search);
       if (q.get("autoprint") !== "0") setTimeout(function () { window.print(); }, 800);
     }
