@@ -72,10 +72,10 @@
 <script src="../config.js"></script>
 <script>
 var GRAPHQL=(window.API_BASE_URL?window.API_BASE_URL+"/graphql/":"https://api.b-oneinterior.com/graphql/");
-var SELLER={name:"B-One Interior",addr:"Next Gulshan Hotel, Santacruz East, Abdul Hakim Chowk, Near Khar Subway, Golibar, Mumbai, Maharashtra 400055",phone:"+91 96190 95891",site:"www.b-oneinterior.com"};
+var SELLER={name:"B-One Interior",addr:"Next Gulshan Hotel, Santacruz East, Abdul Hakim Chowk, Near Khar Subway, Golibar, Mumbai, Maharashtra 400055",phone:"+91 76999 77771",site:"www.b-oneinterior.com"};
 // Vendor-PO letterhead. NOTE: gstin still TODO (not provided) —
 // update it before sending POs to vendors.
-var SELLER_PO={name:"B-One Interior",addr:"Next Gulshan Hotel, Santacruz East, Abdul Hakim Chowk, Near Khar Subway, Golibar, Mumbai, Maharashtra 400055",phone:"+91 96190 95891",site:"www.b-oneinterior.com",gstin:"TODO GSTIN"};
+var SELLER_PO={name:"B-One Interior",addr:"Next Gulshan Hotel, Santacruz East, Abdul Hakim Chowk, Near Khar Subway, Golibar, Mumbai, Maharashtra 400055",phone:"+91 76999 77771",site:"www.b-oneinterior.com",gstin:"TODO GSTIN"};
 var PLACEHOLDER="../images/placeholder.png";
 function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function money(a,c){c=c||"INR";try{return new Intl.NumberFormat('en-IN',{style:'currency',currency:c,maximumFractionDigits:0}).format(a)}catch(e){return "Rs."+a}}
