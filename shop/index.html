@@ -311,7 +311,17 @@
     const API_URL = window.API_BASE_URL + "/graphql/";
     const HIDDEN_CATEGORY_NAMES = ["Gallery Image Category", "Catalogue"];
     const FALLBACK_IMG = "images/placeholder.png";
-    var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
+    var SALEOR_CHANNEL = window.getSaleorChannel ? window.getSaleorChannel() : 'in';
+
+    // Pick the channel listing that matches the active channel. When the
+    // query did not return channel slugs, fall back to the first listing.
+    function getActiveChannelListing(variant) {
+      if (!variant || !Array.isArray(variant.channelListings) || variant.channelListings.length === 0) return null;
+      const match = variant.channelListings.find(l => l.channel && l.channel.slug === SALEOR_CHANNEL);
+      if (match) return match;
+      const hasSlug = variant.channelListings.some(l => l.channel && l.channel.slug);
+      return hasSlug ? null : variant.channelListings[0];
+    }
 
     // Updated query to fetch parent category information and product attributes
     function getGraphqlQuery(isStaff) {
@@ -327,6 +337,7 @@
           ${isStaff ? `
           channelListings {
             channel {
+              slug
               name
               currencyCode
             }
@@ -680,8 +691,8 @@ query {
     function getVariantPricing(product) {
       if (product.variants && product.variants.length > 0) {
         const variant = product.variants[0]; // Use first variant
-        if (variant.channelListings && variant.channelListings.length > 0) {
-          const listing = variant.channelListings[0]; // Use first listing
+        const listing = getActiveChannelListing(variant);
+        if (listing) {
           return {
             price: listing.price,
             costPrice: listing.costPrice
@@ -760,7 +771,7 @@ query {
 
         if (loggedIn && p.variants && p.variants.length) {
           const costs = p.variants.map(v => {
-            const listing = v.channelListings && v.channelListings[0];
+            const listing = getActiveChannelListing(v);
             return listing ? listing.costPrice?.amount : null;
           }).filter(c => c !== null);
 

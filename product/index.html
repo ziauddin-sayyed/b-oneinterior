@@ -984,7 +984,18 @@
         const API_URL = window.API_BASE_URL + "/graphql/";
         const FALLBACK_IMG = "images/placeholder.png";
         const PRODUCT_SEARCH_LIMIT = 10;
-        var SALEOR_CHANNEL = ['contractor','other'].includes((localStorage.getItem('role') || '').toLowerCase()) ? (localStorage.getItem('role') || '').toLowerCase() : 'in';
+        var SALEOR_CHANNEL = window.getSaleorChannel ? window.getSaleorChannel() : 'in';
+
+        // Pick the channel listing that matches the active channel. When the
+        // query did not return channel slugs, fall back to the first listing.
+        function getActiveChannelListing(variant) {
+            if (!variant || !Array.isArray(variant.channelListings) || variant.channelListings.length === 0) return null;
+            const match = variant.channelListings.find(l => l.channel && l.channel.slug === SALEOR_CHANNEL);
+            if (match) return match;
+            const hasSlug = variant.channelListings.some(l => l.channel && l.channel.slug);
+            return hasSlug ? null : variant.channelListings[0];
+        }
+
         /** Raw product nodes from GraphQL (includes variants for variant search, same idea as index.html shop search). */
         let headerSearchProductsRaw = [];
 
@@ -1070,6 +1081,7 @@
             return isStaff ? `
           channelListings {
             channel {
+              slug
               name
               currencyCode
             }
@@ -2554,8 +2566,9 @@
 
             const activeVariant = selectedVariant || (p.variants && p.variants.length > 0 ? p.variants[0] : null);
 
-            if (activeVariant?.channelListings?.[0]) {
-                const listing = activeVariant.channelListings[0];
+            const activeListing = getActiveChannelListing(activeVariant);
+            if (activeListing) {
+                const listing = activeListing;
                 sellingPrice = listing.price?.amount || 0;
                 currency = listing.price?.currency || 'INR';
                 costPrice = listing.costPrice?.amount || null;
@@ -2864,8 +2877,9 @@
                 let costPrice = null;
                 currency = 'INR';
 
-                if (selectedVariant.channelListings && selectedVariant.channelListings.length > 0) {
-                    const listing = selectedVariant.channelListings[0];
+                const selectedListing = getActiveChannelListing(selectedVariant);
+                if (selectedListing) {
+                    const listing = selectedListing;
                     sellingPrice = listing.price?.amount || 0;
                     currency = listing.price?.currency || 'INR';
                     costPrice = listing.costPrice?.amount || null;
@@ -2962,8 +2976,9 @@
                 let costPrice = null;
                 currency = 'INR';
 
-                if (selectedVariant.channelListings && selectedVariant.channelListings.length > 0) {
-                    const listing = selectedVariant.channelListings[0];
+                const selectedListing = getActiveChannelListing(selectedVariant);
+                if (selectedListing) {
+                    const listing = selectedListing;
                     sellingPrice = listing.price?.amount || 0;
                     currency = listing.price?.currency || 'INR';
                     costPrice = listing.costPrice?.amount || null;
@@ -3256,10 +3271,11 @@
                 let sellingPrice = 0;
                 let costPrice = null;
                 let currency = 'INR';
-                if (v.channelListings?.[0]) {
-                    sellingPrice = v.channelListings[0].price?.amount || 0;
-                    currency = v.channelListings[0].price?.currency || 'INR';
-                    costPrice = v.channelListings[0].costPrice?.amount || null;
+                const variantListing = getActiveChannelListing(v);
+                if (variantListing) {
+                    sellingPrice = variantListing.price?.amount || 0;
+                    currency = variantListing.price?.currency || 'INR';
+                    costPrice = variantListing.costPrice?.amount || null;
                 } else {
                     const gross = v.pricing?.price?.gross || currentProduct.pricing?.priceRange?.start?.gross;
                     sellingPrice = gross?.amount || 0;
@@ -3395,10 +3411,11 @@
                 let sellingPrice = 0;
                 let costPrice = null;
                 let currency = 'INR';
-                if (v.channelListings?.[0]) {
-                    sellingPrice = v.channelListings[0].price?.amount || 0;
-                    currency = v.channelListings[0].price?.currency || 'INR';
-                    costPrice = v.channelListings[0].costPrice?.amount || null;
+                const variantListing = getActiveChannelListing(v);
+                if (variantListing) {
+                    sellingPrice = variantListing.price?.amount || 0;
+                    currency = variantListing.price?.currency || 'INR';
+                    costPrice = variantListing.costPrice?.amount || null;
                 } else {
                     const gross = v.pricing?.price?.gross || currentProduct.pricing?.priceRange?.start?.gross;
                     sellingPrice = gross?.amount || 0;
@@ -3547,10 +3564,11 @@
                 let currency = 'INR';
 
                 const target = selectedVariant || (currentProduct.variants?.[0]);
-                if (target?.channelListings?.[0]) {
-                    sellingPrice = target.channelListings[0].price?.amount || 0;
-                    currency = target.channelListings[0].price?.currency || 'INR';
-                    costPrice = target.channelListings[0].costPrice?.amount || null;
+                const targetListing = getActiveChannelListing(target);
+                if (targetListing) {
+                    sellingPrice = targetListing.price?.amount || 0;
+                    currency = targetListing.price?.currency || 'INR';
+                    costPrice = targetListing.costPrice?.amount || null;
                 } else {
                     sellingPrice = target?.pricing?.price?.gross?.amount || currentProduct.pricing?.priceRange?.start?.gross?.amount || 0;
                     currency = target?.pricing?.price?.gross?.currency || currentProduct.pricing?.priceRange?.start?.gross?.currency || 'INR';
@@ -3984,10 +4002,13 @@
                 }
 
                 // Validate token and capture user metadata (mirrors login.html)
-                const meData = await fetchSaleor(`query { me { id email metadata { key value } } }`);
+                const meData = await fetchSaleor(`query { me { id email isStaff metadata { key value } } }`);
                 const me = meData && meData.me;
                 if (me && me.email) {
                     localStorage.setItem('saleor_user_email', me.email);
+                }
+                if (me && typeof me.isStaff !== 'undefined') {
+                    localStorage.setItem('saleor_user_is_staff', me.isStaff ? 'true' : 'false');
                 }
                 if (me && me.metadata) {
                     for (const m of me.metadata) {

@@ -331,6 +331,25 @@
                 </div>
             </div>
 
+            <!-- Sales Channel (staff only) -->
+            <div id="channelSwitcherCard" class="bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8 mb-6 hidden">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-full bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Sales Channel</h2>
+                        <p class="text-gray-400 text-sm">Staff only — switch the active channel used for pricing and checkout across the website.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 sm:items-center mt-5">
+                    <select id="channelSelect" onchange="changeSaleorChannel(this.value)"
+                        class="w-full sm:max-w-xs bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold-500 outline-none transition text-sm appearance-none">
+                    </select>
+                    <span id="channelStatus" class="text-xs text-gray-500"></span>
+                </div>
+            </div>
+
             <!-- My Orders -->
             <div class="bg-[#111] border border-gold-500/20 rounded-2xl p-6 md:p-8">
                 <h2 class="text-xl font-bold text-white mb-6">My Orders</h2>
@@ -534,6 +553,58 @@
             window.location.href = '../';
         }
 
+        // ─── Sales Channel (staff) ───────────────────────────────────
+        async function initChannelSwitcher() {
+            const card = document.getElementById('channelSwitcherCard');
+            if (!card || !window.isSaleorStaff || !window.isSaleorStaff()) return;
+
+            card.classList.remove('hidden');
+
+            const select = document.getElementById('channelSelect');
+            const status = document.getElementById('channelStatus');
+            const current = window.getSaleorChannel ? window.getSaleorChannel() : 'in';
+
+            let channels = (window.SALEOR_CHANNELS || []).slice();
+            try {
+                const result = await apiCall(`query GetChannels { channels { slug name isActive } }`);
+                const live = result?.data?.channels;
+                if (Array.isArray(live) && live.length) {
+                    channels = live
+                        .filter(c => c.isActive !== false)
+                        .map(c => ({ slug: c.slug, name: c.name }));
+                    window.SALEOR_CHANNELS = channels;
+                }
+            } catch (e) {
+                console.warn('Failed to fetch channels, using defaults:', e);
+            }
+
+            if (!channels.some(c => c.slug === current)) {
+                channels.unshift({ slug: current, name: window.getSaleorChannelName(current) });
+            }
+
+            select.innerHTML = '';
+            channels.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.slug;
+                option.textContent = c.name;
+                if (c.slug === current) option.selected = true;
+                select.appendChild(option);
+            });
+
+            if (status) {
+                status.textContent = 'Active channel: ' + window.getSaleorChannelName(current);
+            }
+        }
+
+        function changeSaleorChannel(slug) {
+            if (!slug) return;
+            window.setSaleorChannel(slug);
+            const status = document.getElementById('channelStatus');
+            if (status) {
+                status.textContent = 'Active channel: ' + window.getSaleorChannelName(slug) + ' — applied site-wide';
+            }
+        }
+
         // ─── Profile Edit ────────────────────────────────────────────
         function enableProfileEdit() {
             const firstName = localStorage.getItem('saleor_user_first_name') || '';
@@ -569,11 +640,13 @@
                             firstName
                             lastName
                             phone
+                            isStaff
                         }
                     }
                 `);
                 const me = result?.data?.me;
                 if (me) {
+                    localStorage.setItem('saleor_user_is_staff', me.isStaff ? 'true' : 'false');
                     if (me.firstName) localStorage.setItem('saleor_user_first_name', me.firstName);
                     if (me.lastName) localStorage.setItem('saleor_user_last_name', me.lastName);
                     if (me.email) localStorage.setItem('saleor_user_email', me.email);
@@ -1631,6 +1704,7 @@
             fetchOrders();
             if (localStorage.getItem('saleor_auth_token')) {
                 await fetchUserProfileFromApi();
+                await initChannelSwitcher();
                 await fetchUserAddressesFromApi();
                 fetchMessages();
             }
